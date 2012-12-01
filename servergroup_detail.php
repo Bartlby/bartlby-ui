@@ -100,4 +100,4 @@ $layout->OUT .= $btl->getServerGroupOptions($defaults, $layout);
 
 
 
-$layout->display("server_detail");
+$layout->display("servergroup_detail");

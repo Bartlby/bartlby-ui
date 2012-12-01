@@ -90,6 +90,77 @@ function toggle_extension($ext) {
 }
 
 
+function toggle_servicegroup_notify_check($service_id, $service_id1) {
+	global $btl;
+	global $layout;
+	$res = new xajaxresponse();
+	
+		
+			$servicegroups=$btl->GetServiceGroups();
+			for($x=0; $x<count($servicegroups); $x++) {
+				if($servicegroups[$x][servicegroup_id] == $service_id) {
+					$defaults=$servicegroups[$x];
+					break;	
+				}
+			}
+			
+			$cur=bartlby_toggle_servicegroup_notify($btl->CFG, $defaults[shm_place], 1);
+			
+			if($cur == 1) { //Active
+				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+				$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/trigger.gif");
+				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
+			} else {
+				//$res->addAlert("Check disabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
+				$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
+			}
+			
+			
+			
+			
+		
+	
+	
+	return $res;
+}
+
+
+function toggle_servicegroup_check($service_id, $service_id1) {
+	global $btl;
+	global $layout;
+	$res = new xajaxresponse();
+	
+		
+			$servicegroups=$btl->GetServiceGroups();
+			for($x=0; $x<count($servicegroups); $x++) {
+				if($servicegroups[$x][servicegroup_id] == $service_id) {
+					$defaults=$servicegroups[$x];
+					break;	
+				}
+			}
+			
+			$cur=bartlby_toggle_servicegroup_active($btl->CFG, $defaults[shm_place], 1);
+			
+			if($cur == 1) { //Active
+				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+				$res->AddAssign("servicegroup_" . $service_id, "src", "themes/" . $layout->theme . "/images/enabled.gif");
+				//$res->AddAssign("service_" . $service_id, "title", "Disable Checks");
+			} else {
+				//$res->addAlert("Check disabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
+				$res->AddAssign("servicegroup_" . $service_id, "src", "themes/" . $layout->theme . "/images/diabled.gif");
+				//$res->AddAssign("service_" . $service_id, "title", "Enable Checks");
+			}
+			
+			
+			
+			
+		
+	
+	
+	return $res;
+}
+
 
 function toggle_servergroup_notify_check($server_id, $service_id) {
 	global $btl;

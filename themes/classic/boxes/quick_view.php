@@ -17,7 +17,7 @@ $quick_view = "<table class='nopad' width=100%>";
 				$STATE="DOWN";
 			}
 			$quick_view .= "<tr>";
-			$quick_view .= "<td class=$cl><img src='server_icons/" . $qck[$k][server_icon] . "'><font size=1><a href='services.php?server_id=" . $qck[$k][10] . "'>" . $qck[$k][server_name] . "</A></td>";
+			$quick_view .= "<td class=$cl><img src='server_icons/" . $qck[$k][server_icon] . "'><font size=1><a href='server_detail.php?server_id=" . $qck[$k][10] . "'>" . $qck[$k][server_name] . "</A></td>";
 			$quick_view .= "<td class=$cl><font size=1>$STATE</td>";
 			$quick_view .= "<td class=$cl><table width=100>";
 			

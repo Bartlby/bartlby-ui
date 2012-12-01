@@ -37,6 +37,8 @@ $map=$btl->getSVCMap($btl->CFG, NULL, NULL);
 $server_map=$map[$_GET[server_id]];
 
 
+
+
 if($btl->isServerUp($_GET[server_id], $map)) {
 	$isup="<font color='green'>UP</font>";	
 } else {
@@ -79,6 +81,7 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 			"server_detail_server_info");
 
 
+
 $info_box_title='Services';  
 $layout->create_box($info_box_title, $core_content, "server_detail_services", array(
 									"services_assigned" => $services_assigned,
@@ -87,6 +90,11 @@ $layout->create_box($info_box_title, $core_content, "server_detail_services", ar
 			, "server_detail_services");
 	
 
+$layout->create_box("Group", $core_content, "server_detail_server_group_info", array(
+										"server_groups" => $defaults[groups]
+										
+										),
+			"server_detail_server_group_info");
 
 
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);

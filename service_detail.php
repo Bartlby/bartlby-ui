@@ -160,6 +160,14 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											)
 											
 		, "service_detail_service_info");
+		
+
+$info_box_title='Group Info';  
+$layout->create_box($info_box_title, $core_content, "service_detail_group_info", array(
+											"service_groups" => $defaults[groups]
+			)
+											
+		, "service_detail_group_info");
 
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  

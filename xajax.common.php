@@ -21,6 +21,9 @@ $xajax->registerFunction("toggle_service_notify_check");
 $xajax->registerFunction("toggle_servergroup_check");
 $xajax->registerFunction("toggle_servergroup_notify_check");
 
+$xajax->registerFunction("toggle_servicegroup_check");
+$xajax->registerFunction("toggle_servicegroup_notify_check");
+
 
 $xajax->registerFunction("toggle_server_check");
 $xajax->registerFunction("toggle_extension");

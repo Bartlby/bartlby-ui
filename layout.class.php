@@ -251,13 +251,7 @@ class Layout {
                 $this->ext_menu .= $this->addSub("Server/s", "Delete","server_list.php?script=delete_server.php");
 		$this->ext_menu .= $this->EndMenu();
 
-		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Packages");
-                $this->ext_menu .= $this->addSub("Packages", "Install","server_list.php?script=install_pkg.php");
-                $this->ext_menu .= $this->addSub("Packages", "Uninstall","server_list.php?script=uninstall_pkg.php");
-                $this->ext_menu .= $this->addSub("Packages", "Create","package_create.php");
-                $this->ext_menu .= $this->addSub("Packages", "Delete","package_delete.php");
-		$this->ext_menu .= $this->endMenu();
+		
 
 		$this->ext_menu .= $this->beginMenu();
 		$this->ext_menu .= $this->addRoot("Service/s");
@@ -266,6 +260,33 @@ class Layout {
                 $this->ext_menu .= $this->addSub("Service/s", "Delete","service_list.php?script=delete_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Bulk","bulk_actions.php");
 		$this->ext_menu .= $this->endMenu();
+
+
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("Packages");
+                $this->ext_menu .= $this->addSub("Packages", "Install","server_list.php?script=install_pkg.php");
+                $this->ext_menu .= $this->addSub("Packages", "Uninstall","server_list.php?script=uninstall_pkg.php");
+                $this->ext_menu .= $this->addSub("Packages", "Create","package_create.php");
+                $this->ext_menu .= $this->addSub("Packages", "Delete","package_delete.php");
+		$this->ext_menu .= $this->endMenu();
+
+
+//ServerGroups
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("ServerGroups/s");
+                $this->ext_menu .= $this->addSub("ServerGroups/s", "Add","add_servergroup.php");
+                $this->ext_menu .= $this->addSub("ServerGroups/s", "Modify","servergroup_list.php?script=modify_servergroup.php");
+                $this->ext_menu .= $this->addSub("ServerGroups/s", "Delete","servergroup_list.php?script=delete_servergroup.php");
+		$this->ext_menu .= $this->endMenu();
+		
+		
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("ServiceGroup/s");
+                $this->ext_menu .= $this->addSub("ServiceGroup/s", "Add","add_servicegroup.php");
+                $this->ext_menu .= $this->addSub("ServiceGroup/s", "Modify","servicegroup_list.php?script=modify_servicegroup.php");
+                $this->ext_menu .= $this->addSub("ServiceGroup/s", "Delete","servicegroup_list.php?script=delete_servicegroup.php");
+		$this->ext_menu .= $this->endMenu();
+		
 
 		$this->ext_menu .= $this->beginMenu();
 		$this->ext_menu .= $this->addRoot("Downtime/s");

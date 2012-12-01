@@ -610,7 +610,7 @@ switch($act) {
 		}     
 	break;
 	case 'modify_servergroup':
-		if($_GET[servergroup_name] && $_GET[servergroup_active] && $_GET[servergroup_notify] && $_GET[servergroup_members] && $_GET[servergroup_id]) {
+		if($_GET[servergroup_name] &&  $_GET[servergroup_members] && $_GET[servergroup_id]) {
 			
 			for($x=0; $x<count($_GET[servergroup_members]); $x++) {
 				$group_members .= "|" . $_GET[servergroup_members][$x];
@@ -634,7 +634,7 @@ switch($act) {
 	
 	
 	case 'modify_servicegroup':
-		if($_GET[servicegroup_name] && $_GET[servicegroup_active] && $_GET[servicegroup_notify] && $_GET[servicegroup_members] && $_GET[servicegroup_id]) {
+		if($_GET[servicegroup_name]  && $_GET[servicegroup_members] && $_GET[servicegroup_id]) {
 			
 			for($x=0; $x<count($_GET[servicegroup_members]); $x++) {
 				$group_members .= "|" . $_GET[servicegroup_members][$x];
@@ -657,7 +657,7 @@ switch($act) {
 	
 	
 	case 'add_servicegroup':
-		if($_GET[servicegroup_name] && $_GET[servicegroup_active] && $_GET[servicegroup_notify] && $_GET[servicegroup_members]) {
+		if($_GET[servicegroup_name]  && $_GET[servicegroup_members]) {
 			
 			for($x=0; $x<count($_GET[servicegroup_members]); $x++) {
 				$group_members .= "|" . $_GET[servicegroup_members][$x];
@@ -682,7 +682,7 @@ switch($act) {
 	
 	
 	case 'add_servergroup':
-		if($_GET[servergroup_name] && $_GET[servergroup_active] && $_GET[servergroup_notify] && $_GET[servergroup_members]) {
+		if($_GET[servergroup_name]  && $_GET[servergroup_members]) {
 			
 			for($x=0; $x<count($_GET[servergroup_members]); $x++) {
 				$group_members .= "|" . $_GET[servergroup_members][$x];

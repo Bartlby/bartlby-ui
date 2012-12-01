@@ -44,7 +44,22 @@ while(list($k, $servs) = @each($map)) {
 			$servers[$optind][k]="" . $servs[$x][server_name] . "";
 			$servers[$optind][is_group]=1;
 			
+			
+			
 			$optind++;
+			
+			$servers[$optind][c]="";
+ 		  $servers[$optind][v]=$servs[$x][service_id];
+      $servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+      
+      
+       	if(strstr($defaults[servicegroup_members], "|" . $servs[$x][service_id] . "|")) {
+      		$servers[$optind][s]=1;
+      		
+      	}
+      
+      
+      $optind++;
 
 	} else {
       $servers[$optind][c]="";

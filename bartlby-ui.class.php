@@ -1093,6 +1093,16 @@ class BartlbyUi {
 		}	
 		return $r;
 	}
+	
+	function GetServerGroups() {
+		$map=bartlby_servergroup_map($this->CFG);
+		return $map;
+	}
+	
+	function GetServiceGroups() {
+		$map=bartlby_servicegroup_map($this->CFG);
+		return $map;
+	}
 	function GetServers() {
 		
 		$map=bartlby_svc_map($this->CFG,$this->rights[services], $this->rights[servers]);

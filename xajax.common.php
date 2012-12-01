@@ -2,6 +2,9 @@
 $xajax = new xajax("xajax_dispatcher.php");
 $xajax->registerFunction("AddModifyWorker");
 $xajax->registerFunction("AddModifyClient");
+$xajax->registerFunction("AddModifyServerGroup");
+
+
 $xajax->registerFunction("AddModifyService");
 $xajax->registerFunction("CreateReport");
 $xajax->registerFunction("CreatePackage");

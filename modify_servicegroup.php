@@ -19,52 +19,67 @@ $layout->Table("100%");
 
 //$defaults=bartlby_get_servergroup_by_id($btl->CFG, $_GET[server_id]);
 
-$servergroups=$btl->GetServerGroups();
-for($x=0; $x<count($servergroups); $x++) {
-	if($servergroups[$x][servergroup_id] == $_GET[servergroup_id]) {
-		$defaults=$servergroups[$x];
+$servicegroups=$btl->GetServiceGroups();
+for($x=0; $x<count($servicegroups); $x++) {
+	if($servicegroups[$x][servicegroup_id] == $_GET[servicegroup_id]) {
+		$defaults=$servicegroups[$x];
 		break;	
 	}
 }
 
-$optind=0;
+$map = $btl->GetSVCMap();
 
-
-	$servs=$btl->GetServers();
-	$optind=0;
-	
-	while(list($k, $v) = @each($servs)) {
-		$servers[$optind][c]="";
-		$servers[$optind][v]=$k;	
-		$servers[$optind][k]="" . $v;
-		
-		if(strstr($defaults[servergroup_members], "|" . $k . "|")) {
-			$servers[$optind][s]=1;
-		}
-		
-		$optind++;
-	}
-	
-	
 
 $optind=0;
+while(list($k, $servs) = @each($map)) {
+
+	for($x=0; $x<count($servs); $x++) {
+		
+				
+		if($x == 0) {
+			//$isup=$btl->isServerUp($v1[server_id]);
+			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+			$servers[$optind][c]="";
+			$servers[$optind][v]="s" . $servs[$x][server_id];	
+			$servers[$optind][k]="" . $servs[$x][server_name] . "";
+			$servers[$optind][is_group]=1;
+			
+			$optind++;
+
+	} else {
+      $servers[$optind][c]="";
+ 		  $servers[$optind][v]=$servs[$x][service_id];
+      $servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+      
+      
+      	if(strstr($defaults[servicegroup_members], "|" . $servs[$x][service_id] . "|")) {
+      		$servers[$optind][s]=1;
+      	}
+      
+      
+      
+      $optind++;
+	}	
+	
+}
+}
 
 
 
 //error_reporting(E_ALL);
 
 
-$fm_action="modify_servergroup";
-$layout->setTitle("Modify Servergroup");
+$fm_action="modify_servicegroup";
+$layout->setTitle("Modify Servicegroup");
 if($_GET["copy"] == "true") {
-	$fm_action="add_servergroup";
-	$btl->hasRight("action.copy_servergroup");
-	$layout->setTitle("Copy Servergroup");
+	$fm_action="add_servicegroup";
+	$btl->hasRight("action.copy_servicegroup");
+	$layout->setTitle("Copy Servicegroup");
 }
 if($_GET["new"] == "true") {
-	$fm_action="add_servergroup";
-	$btl->hasRight("action.add_servergroup");
-	$layout->setTitle("Add Servergroup");
+	$fm_action="add_servicegroup";
+	$btl->hasRight("action.add_servicegroup");
+	$layout->setTitle("Add Servicegroup");
 	
 	
 	
@@ -81,7 +96,7 @@ $notenabled[1][v] = 1; //No
 $notenabled[1][k] = "Yes"; //No
 $notenabled[1][s]=0;
 
-if(is_int($defaults[servergroup_notify]) && $defaults[servergroup_notify] == 0) {
+if(is_int($defaults[servicegroup_notify]) && $defaults[servicegroup_notify] == 0) {
 	$notenabled[0][s]=1;	
 	
 } else {
@@ -101,7 +116,7 @@ $servactive[1][k] = "Yes"; //No
 $servactive[1][s]=0;
 
 
-if(is_int($defaults[servergroup_active]) && $defaults[servergroup_active] == 0) {
+if(is_int($defaults[servicegroup_active]) && $defaults[servicegroup_active] == 0) {
 	$servactive[0][s]=1;	
 	
 } else {
@@ -110,8 +125,8 @@ if(is_int($defaults[servergroup_active]) && $defaults[servergroup_active] == 0) 
 }
 
 
-if($fm_action == "modify_servergroup") {
-	$btl->hasRight("action.modify_servergroup");	
+if($fm_action == "modify_servicegroup") {
+	$btl->hasRight("action.modify_servicegroup");	
 }
 
 
@@ -123,8 +138,8 @@ if($defaults == false && $_GET["new"] != "true") {
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
-			0=>"Servergroup Name",
-			1=>$layout->Field("servergroup_name", "text", $defaults[servergroup_name]) . $layout->Field("action", "hidden", $fm_action) 
+			0=>"Servicegroup Name",
+			1=>$layout->Field("servicegroup_name", "text", $defaults[servicegroup_name]) . $layout->Field("action", "hidden", $fm_action) 
 		)
 	)
 ,true);
@@ -132,8 +147,8 @@ $ov .= $layout->Tr(
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
-			0=>"Servergroup Members",
-			1=>$layout->DropDown("servergroup_members[]", $servers,"multiple")
+			0=>"Servicegroup Members",
+			1=>$layout->DropDown("servicegroup_members[]", $servers,"multiple", "", false)
 		)
 	)
 ,true);
@@ -142,8 +157,8 @@ $ov .= $layout->Tr(
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
-			0=>"Servergroup Enabled",
-			1=>$layout->DropDown("servergroup_active", $servactive)
+			0=>"Servicegroup Enabled",
+			1=>$layout->DropDown("servicegroup_active", $servactive)
 			
 		)
 	)
@@ -152,8 +167,8 @@ $ov .= $layout->Tr(
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
-			0=>"Servergroup Notify?",
-			1=>$layout->DropDown("servergroup_notify", $notenabled) . $layout->Field("servergroup_id", "hidden", $_GET[servergroup_id])
+			0=>"Servicegroup Notify?",
+			1=>$layout->DropDown("servicegroup_notify", $notenabled) . $layout->Field("servicegroup_id", "hidden", $_GET[servicegroup_id])
 			
 		)
 	)
@@ -169,7 +184,7 @@ $ov .= $layout->Tr(
 
 
 
-$title="add servergroup";  
+$title="add servicegroup";  
 $content = "<table>" . $ov . "</table>";
 $layout->push_outside($layout->create_box($layout->BoxTitle, $content));
 	
@@ -182,7 +197,7 @@ $layout->Tr(
 				0=>Array(
 					'colspan'=> 2,
 					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyServerGroup(xajax.getFormValues(\"fm1\"))'")
+					'show'=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyServiceGroup(xajax.getFormValues(\"fm1\"))'")
 					)
 			)
 		)

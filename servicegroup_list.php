@@ -6,7 +6,7 @@ $btl=new BartlbyUi($Bartlby_CONF);
 
 
 $layout= new Layout();
-$layout->setTitle("Select a Servergroup");
+$layout->setTitle("Select a Servicegroup");
 $layout->Form("fm1", $_GET[script]);
 $layout->Table("100%");
 $layout->set_menu("client");
@@ -14,14 +14,13 @@ $layout->set_menu("client");
 
 
 if($dropdownded != "true")  {
-	$servs=$btl->GetServerGroups();
+	$servs=$btl->GetServiceGroups();
 	$optind=0;
-	//$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
 	
 	for($x=0; $x<count($servs); $x++ ) {
-		$servergroups[$optind][c]="";
-		$servergroups[$optind][k]=$servs[$x][servergroup_name];	
-		$servergroups[$optind][v]=$servs[$x][servergroup_id];
+		$servicegroups[$optind][c]="";
+		$servicegroups[$optind][k]=$servs[$x][servicegroup_name];	
+		$servicegroups[$optind][v]=$servs[$x][servicegroup_id];
 		$optind++;
 	}
 	
@@ -30,8 +29,8 @@ if($dropdownded != "true")  {
 	$layout->Tr(
 		$layout->Td(
 				Array(
-					0=>"Servergroup:",
-					1=>$layout->DropDown("servergroup_id", $servergroups)
+					0=>"Servicegroup:",
+					1=>$layout->DropDown("servicegroup_id", $servicegroups)
 				)
 			)
 	

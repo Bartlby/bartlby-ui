@@ -41,7 +41,7 @@ if($dropdownded != "true")  {
 			$state=$btl->getState($servs[$x][current_state]);
 			$servers[$optind][c]="";
 			$servers[$optind][v]=$servs[$x][service_id];	
-			$servers[$optind][k]="" .  $servs[$x][service_name];
+			$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
 			
 			$optind++;
 		}

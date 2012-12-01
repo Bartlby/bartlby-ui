@@ -5,18 +5,18 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 
 $layout= new Layout();
-$layout->setTitle("Delete Servergroup");
+$layout->setTitle("Delete Servicegroup");
 $layout->set_menu("client");
 $layout->Form("fm1", "bartlby_action.php");
 $layout->Table("100%");
 
 
 
-$btl->hasRight("action.delete_servergroup");
+$btl->hasRight("action.delete_servicegroup");
 
-$global_msg[servergroup_name]="asdf";
+$global_msg[servicegroup_name]="asdf";
 
-$dlmsg=$btl->finScreen("delete_servergroup1");
+$dlmsg=$btl->finScreen("delete_servicegroup1");
 
 $layout->Tr(
 	$layout->Td(
@@ -39,7 +39,7 @@ $layout->Tr(
 				0=>Array(
 					'colspan'=> 2,
 					"align"=>"right",
-					'show'=>$layout->Field("Subm", "submit", "next->") . $layout->Field("action", "hidden", "delete_servergroup") . $layout->Field("servergroup_id", "hidden", $_GET[servergroup_id])
+					'show'=>$layout->Field("Subm", "submit", "next->") . $layout->Field("action", "hidden", "delete_servicegroup") . $layout->Field("servicegroup_id", "hidden", $_GET[servicegroup_id])
 					)
 			)
 		)

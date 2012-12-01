@@ -630,6 +630,57 @@ switch($act) {
 		}
 	
 	break;
+	
+	
+	
+	case 'modify_servicegroup':
+		if($_GET[servicegroup_name] && $_GET[servicegroup_active] && $_GET[servicegroup_notify] && $_GET[servicegroup_members] && $_GET[servicegroup_id]) {
+			
+			for($x=0; $x<count($_GET[servicegroup_members]); $x++) {
+				$group_members .= "|" . $_GET[servicegroup_members][$x];
+			}
+			$group_members .= "|";
+			
+		
+			
+			
+			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_name], (int)$_GET[servicegroup_active], (int)$_GET[servicegroup_notify], $group_members, (int)$_GET[servicegroup_id]);
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	
+	break;
+	
+	
+	case 'add_servicegroup':
+		if($_GET[servicegroup_name] && $_GET[servicegroup_active] && $_GET[servicegroup_notify] && $_GET[servicegroup_members]) {
+			
+			for($x=0; $x<count($_GET[servicegroup_members]); $x++) {
+				$group_members .= "|" . $_GET[servicegroup_members][$x];
+			}
+			$group_members .= "|";
+			
+		
+			
+			
+			$add_servergroup = bartlby_add_servicegroup($btl->CFG, $_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members);
+			
+			
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	
+	break;
+	
+	
 	case 'add_servergroup':
 		if($_GET[servergroup_name] && $_GET[servergroup_active] && $_GET[servergroup_notify] && $_GET[servergroup_members]) {
 			
@@ -655,6 +706,10 @@ switch($act) {
 	break;
 	case 'delete_servergroup':
 			$s = bartlby_delete_servergroup($btl->CFG, $_GET[servergroup_id]);
+	
+	break;
+	case 'delete_servicegroup':
+			$s = bartlby_delete_servicegroup($btl->CFG, $_GET[servicegroup_id]);
 	
 	break;
 	

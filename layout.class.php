@@ -154,15 +154,14 @@ class Layout {
 		}
 		
 	}
-	function DropDown($name,$options=array(), $type='', $style='') {
+	function DropDown($name,$options=array(), $type='', $style='', $addserver=true) {
 		$r = "<select name='$name' $type $style data-rel='chosen'>\n";
 		for ($x=0;$x<count($options); $x++) {
 			$sel="";
 			if ($options[$x][s] == 1) $sel="selected";
 			if($options[$x][is_group] == 1) {
 					$r .= '</optgroup><optgroup label="' .  $options[$x][k] . '">';
-					
-					$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>Server: " . $options[$x][k] . "\n";	
+					if($addserver) 	$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>Server: " . $options[$x][k] . "\n";	
 			} else{
 							$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>" . $options[$x][k] . "\n";	
 			}

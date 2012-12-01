@@ -696,7 +696,31 @@ function CreateReport($aFormValues) {
 	
 	
 }
-
+function AddModifyServiceGroup($aFormValues) {
+	global $_GET, $_POST;
+	
+	$av = $aFormValues;
+	
+	$res = new xajaxResponse();
+	
+	
+	
+	$al="";
+	
+	if(!bartlbize_field($av[servicegroup_name])) {
+		$res->addAssign("error_servicegroup_name", "innerHTML", "You must specify a correct group name");
+		$al="1";
+	} else {
+		$res->addAssign("error_servicegroup_name", "innerHTML", "");
+	}
+		
+	
+	if($al == "")  {
+		$res->addScript("document.fm1.submit()");
+	}
+	
+	return $res;	
+}
 
 function AddModifyServerGroup($aFormValues) {
 	global $_GET, $_POST;

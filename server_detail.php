@@ -90,12 +90,15 @@ $layout->create_box($info_box_title, $core_content, "server_detail_services", ar
 			, "server_detail_services");
 	
 
-$layout->create_box("Group", $core_content, "server_detail_server_group_info", array(
-										"server_groups" => $defaults[groups]
-										
-										),
-			"server_detail_server_group_info");
-
+if(is_array($defaults[groups])) {
+	
+	$layout->create_box("Group", $core_content, "server_detail_server_group_info", array(
+											"server_groups" => $defaults[groups]
+											
+											),
+				"server_detail_server_group_info");
+	
+}
 
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);
 

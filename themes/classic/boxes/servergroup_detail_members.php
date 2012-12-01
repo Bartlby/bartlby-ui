@@ -6,11 +6,10 @@ Member of following ServerGroups:
 </tr>
 	
 <?
-
 echo "<tr><td>";
 for($x=0; $x<count($plcs[server_groups]); $x++) {
 
-	echo "<b><a href='servergroup_detail.php?servergroup_id=" . $plcs[server_groups][$x][servergroup_id] . "'>" . $plcs[server_groups][$x][servergroup_name] . "</A>,</b>";
+	echo "<b>" . $plcs[server_groups][$x][servergroup_name] . ",</b>";
 	
 }
 echo "</td></tr>";

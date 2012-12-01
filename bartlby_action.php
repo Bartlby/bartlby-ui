@@ -609,6 +609,55 @@ switch($act) {
 			$act="missing_param";
 		}     
 	break;
+	case 'modify_servergroup':
+		if($_GET[servergroup_name] && $_GET[servergroup_active] && $_GET[servergroup_notify] && $_GET[servergroup_members] && $_GET[servergroup_id]) {
+			
+			for($x=0; $x<count($_GET[servergroup_members]); $x++) {
+				$group_members .= "|" . $_GET[servergroup_members][$x];
+			}
+			$group_members .= "|";
+			
+		
+			
+			
+			$add_servergroup = bartlby_modify_servergroup($btl->CFG, $_GET[servergroup_name], (int)$_GET[servergroup_active], (int)$_GET[servergroup_notify], $group_members, (int)$_GET[servergroup_id]);
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	
+	break;
+	case 'add_servergroup':
+		if($_GET[servergroup_name] && $_GET[servergroup_active] && $_GET[servergroup_notify] && $_GET[servergroup_members]) {
+			
+			for($x=0; $x<count($_GET[servergroup_members]); $x++) {
+				$group_members .= "|" . $_GET[servergroup_members][$x];
+			}
+			$group_members .= "|";
+			
+		
+			
+			
+			$add_servergroup = bartlby_add_servergroup($btl->CFG, $_GET[servergroup_name], $_GET[servergroup_active], $_GET[servergroup_notify], $group_members);
+			
+			
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	
+	break;
+	case 'delete_servergroup':
+			$s = bartlby_delete_servergroup($btl->CFG, $_GET[servergroup_id]);
+	
+	break;
+	
 	case 'add_server':
 		$layout->set_menu("client");
 			if($_GET[server_name] && $_GET[server_port] && $_GET[server_ip] && $_GET[server_icon]) {

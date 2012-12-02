@@ -69,6 +69,16 @@ if($defaults["server_enabled"]==1) {
 }
 
 
+for($x=0; $x<count($defaults[groups]); $x++) {
+	if($defaults[groups][$x][servergroup_active] == 0) {
+		$server_en .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $defaults[groups][$x][servergroup_id] . "'>" . $defaults[groups][$x][servergroup_name] . "</A>)";
+	}
+	if($defaults[groups][$x][servergroup_notify] == 0) {
+		$noti_en .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $defaults[groups][$x][servergroup_id] . "'>" . $defaults[groups][$x][servergroup_name] . "</A>)";
+	}
+}
+
+
 $info_box_title='Server Info';  
 
 $layout->create_box($info_box_title, $core_content, "server_detail_server_info", array(

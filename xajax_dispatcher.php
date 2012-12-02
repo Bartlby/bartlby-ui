@@ -103,7 +103,7 @@ function toggle_servicegroup_notify_check($service_id, $service_id1) {
 					break;	
 				}
 			}
-			
+		
 			$cur=bartlby_toggle_servicegroup_notify($btl->CFG, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active

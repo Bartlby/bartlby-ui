@@ -12,6 +12,10 @@ $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("ServerGroup");
 
+if($_GET[all_servers] == 1) {
+$layout->setTitle("Server List");	
+}
+
 $servergroups=$btl->GetServerGroups();
 for($x=0; $x<count($servergroups); $x++) {
 	if($servergroups[$x][servergroup_id] == $_GET[servergroup_id]) {
@@ -20,7 +24,7 @@ for($x=0; $x<count($servergroups); $x++) {
 	}
 }
 
-if(!$defaults) {
+if(!$defaults && !$_GET[all_servers]) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
@@ -46,7 +50,7 @@ while(list($k,$v)=@each($servers)) {
 		
 		for($y=0; $y<count($v); $y++) {
 			
-			if(strstr($defaults[servergroup_members], "|" . $v[$y][server_id] . "|")) {
+			if(strstr($defaults[servergroup_members], "|" . $v[$y][server_id] . "|") || $_GET[all_servers] == 1) {
 				
 				$qck[$v[$y][server_id]][$v[$y][current_state]]++;	
 				$qck[$v[$y][server_id]][10]=$v[$y][server_id];
@@ -89,6 +93,7 @@ while(list($k,$v)=@each($servers)) {
 
 $info_box_title='ServerGroup Info';  
 
+if($_GET[all_servers] != 1) {
 $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergroup_info", array(
 										"servergroup" => $defaults,
 										"" => $isup,
@@ -97,7 +102,7 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 										
 										),
 			"servergroup_detail_servergroup_info");
-
+}
 
 
 
@@ -111,8 +116,10 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 
 $r=$btl->getExtensionsReturn("_servergroupDetails", $layout);
 
-$layout->OUT .= $btl->getServerGroupOptions($defaults, $layout);
 
+if($_GET[all_servers] != 1) {
+	$layout->OUT .= $btl->getServerGroupOptions($defaults, $layout);
+}
 
 
 

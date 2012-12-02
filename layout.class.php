@@ -232,7 +232,7 @@ class Layout {
 		$this->ext_menu .= $this->addRoot("Monitoring");
                 $this->ext_menu .= $this->addSub("Monitoring", "Overview","overview.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
-                $this->ext_menu .= $this->addSub("Monitoring", "Servers","extensions_wrap.php?script=ServerGroups/groupview.php");
+                $this->ext_menu .= $this->addSub("Monitoring", "Servers","servergroup_detail.php?all_servers=1");
 		$this->ext_menu .= $this->endMenu();
 
 

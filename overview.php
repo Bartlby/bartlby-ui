@@ -97,6 +97,8 @@ $Author: hjanuschka $
 			
 			if($v[$y][is_gone]) $reload_status="<font color=red>Reload needed</font>";		
 			
+			$service_state_a[$v[$y][service_id]][$v[$y][current_state]]++;	
+			
 			$qck[$v[$y][server_id]][$v[$y][current_state]]++;	
 			$qck[$v[$y][server_id]][10]=$v[$y][server_id];
 			$qck[$v[$y][server_id]][server_icon]=$v[$y][server_icon];
@@ -350,6 +352,84 @@ $Author: hjanuschka $
 	
 		
 	}
+	
+	
+	
+	
+	//SErvice Groups
+			$all[0]=0;
+		$all[1]=0;
+		$all[2]=0;
+			
+		$grp_map=$btl->GetServiceGroups();
+		for($z=0; $z<count($grp_map); $z++) {
+			$members=explode("|",$grp_map[$z][servicegroup_members]);
+			$grp_map[$z][members]=array();
+			
+			$all[0]=0;
+			$all[1]=0;
+			$all[2]=0;
+			
+			for($x=0; $x<count($members); $x++) {
+					if(strlen($members[$x]) <= 0) continue;
+					array_push($grp_map[$z][members], $members[$x]);
+					
+					
+					$all[0] += $service_state_a[$members[$x]][0];
+					$all[1] += $service_state_a[$members[$x]][1];
+					$all[2] += $service_state_a[$members[$x]][2];
+					
+					
+					
+					
+					
+			}
+				$service_sum=($all[0]+$all[1]+$all[2]);
+				if($service_sum == 0) {
+					$criticals=100;
+				} else {
+					$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
+				}
+     		
+				$proz=100-$criticals;
+			
+			
+			
+			
+				$prozent_zahl = floor($proz);
+				$prozent_float = number_format($proz, 1); 
+				$prozent_crit_zahl = floor($criticals);
+				$prozent_crit_float = number_format($criticals, 1); 
+			
+				$color="green";
+	
+				if($prozent_float <= 60) {
+					$color="red";	
+					$lbl = "label-important";
+				} else if($prozent_float <= 90) {
+					$lbl = "label-warning";
+				} else if($prozent_float <= 80) {
+					$lbl = "label-important";
+				} else {
+					$lbl = "label-success";
+				}
+			
+				$grp_map[$z][prozent_float]=$prozent_float;
+				$grp_map[$z][prozent_zahl]=$prozent_zahl;
+				$grp_map[$z][prozent_crit_zahl]=$prozent_crit_zahl;
+				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
+				$grp_map[$z][lbl]=$lbl;
+				
+		}
+	
+		if(count($grp_map) > 0) {
+	
+			$health_title='Service Groups';  
+			$layout->create_box($health_title, $health_content,"service_groups", array(
+					'groups' => $grp_map
+				), "service_groups");
+				
+		}
 	
 	
 	

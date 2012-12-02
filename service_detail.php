@@ -116,6 +116,34 @@ if($defaults[server_notify] != 1) {
 	$server_noti_enabled=";<i>disabled via server</i>";	
 }
 
+
+//Check if checks/notify's are disabled through a group
+for($x=0; $x<count($defaults[groups]); $x++) {
+	if($defaults[groups][$x][servicegroup_active] == 0) {
+		$server_enabled = ";<i>servicegroup disabled (<a href='servicegroup_detail.php?servicegroup_id=" . $defaults[groups][$x][servicegroup_id] . "'>" . $defaults[groups][$x][servicegroup_name] . "</A>)";
+	}
+	if($defaults[groups][$x][servicegroup_notify] == 0) {
+		$server_noti_enabled = ";<i>servicegroup disabled (<a href='servicegroup_detail.php?servicegroup_id=" . $defaults[groups][$x][servicegroup_id] . "'>" . $defaults[groups][$x][servicegroup_name] . "</A>)";
+	}
+}
+
+//check if ServerGroup Disabled Notify's/Check's
+$servergroups = $btl->getServerGroups();
+//$server_group_membership=array();
+for($x=0; $x<count($servergroups); $x++) {
+	if(strstr($servergroups[$x][servergroup_members], "|" . $defaults[server_id] . "|")) {
+			if($servergroups[$x][servergroup_active] == 0) {
+				$server_enabled .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $servergroups[$x][servergroup_id] . "'>" . $servergroups[$x][servergroup_name] . "</A>)";
+			}
+			if($servergroups[$x][servergroup_notify] == 0) {
+				$server_noti_enabled .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $servergroups[$x][servergroup_id] . "'>" . $servergroups[$x][servergroup_name] . "</A>)";
+			}
+			
+			
+	}
+}
+
+
 if($defaults[check_starttime] != 0) {
 	$currun=date("d.m.Y H:i:s", $defaults[check_starttime]) . " (PID: $defaults[check_is_running] )";
 } else {

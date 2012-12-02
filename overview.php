@@ -334,14 +334,22 @@ $Author: hjanuschka $
 				
 		}
 
+
+
 	
-	$health_title='Server Groups';  
-	$layout->create_box($health_title, $health_content,"server_groups", array(
-			'groups' => $grp_map
-		), "server_groups");
+	if(count($grp_map) <= 0) {
+		$quickview_disabled	 = "true";
+	} else {
+		
+		$health_title='Server Groups';  
+		$layout->create_box($health_title, $health_content,"server_groups", array(
+				'groups' => $grp_map
+			), "server_groups");
 	
 	
 	
+		
+	}
 	
 	
 	

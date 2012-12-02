@@ -39,10 +39,10 @@ if($defaults["servergroup_active"]==1) {
 	$server_en="false";
 }
 
-
+$services_found = array();
 while(list($k,$v)=@each($servers)) {
 		$x=$k;
-		$services_found = array();
+		
 		
 		for($y=0; $y<count($v); $y++) {
 			
@@ -67,7 +67,13 @@ while(list($k,$v)=@each($servers)) {
 		
 		}
 			
-			$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
+		
+		
+		
+	}
+	
+
+	$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
 											array(
 												"services" => $services_found,
 												"state" => $svc_state,
@@ -78,12 +84,6 @@ while(list($k,$v)=@each($servers)) {
 				
 				,"service_list_element");
 				
-		
-		
-	}
-	
-
-
 	
 
 

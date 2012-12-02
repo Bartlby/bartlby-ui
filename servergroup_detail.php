@@ -42,7 +42,7 @@ if($defaults["servergroup_active"]==1) {
 
 while(list($k,$v)=@each($servers)) {
 		$x=$k;
-		
+		$services_found = array();
 		
 		for($y=0; $y<count($v); $y++) {
 			
@@ -57,17 +57,34 @@ while(list($k,$v)=@each($servers)) {
 					$qck[$v[$y][server_id]][downtime]++;
 					
 				}
+				array_push($services_found, $v[$y]);
 			
 			}
 		
 			
-			
+			$abc=$v[$y][server_id];
 		
 		
 		}
+			
+			$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
+											array(
+												"services" => $services_found,
+												"state" => $svc_state,
+												"color" => $svc_color,
+												
+												
+											)
+				
+				,"service_list_element");
+				
 		
 		
 	}
+	
+
+
+	
 
 
 $info_box_title='ServerGroup Info';  
@@ -86,7 +103,7 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 
 			
 			$qv_title='Members';  
-			$layout->create_box($qv_title, $core_content,"quick_view", array(
+			$layout->create_box($qv_title, $core_content,"servergroup_detail_members", array(
 				'quick_view' => $qck
 			), "quick_view");
 	

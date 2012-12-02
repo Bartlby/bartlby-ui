@@ -24,7 +24,7 @@ if(!$defaults) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
-
+$map=$btl->GetSVCMap();
 
 
 if($defaults["servicegroup_notify"]==1) {
@@ -56,7 +56,30 @@ $layout->create_box($info_box_title, $core_content, "servicegroup_detail_service
 
 
 
-			
+while(list($k, $servs) = @each($map)) {
+	$services_found=array();
+	for($x=0; $x<count($servs); $x++) {
+			if(strstr($defaults[servicegroup_members], "|" . $servs[$x][service_id] . "|")) {
+				$svc_color=$btl->getColor($servs[$x][current_state]);
+				$svc_state=$btl->getState($servs[$x][current_state]);
+				$abc=$servs[$x][server_id];
+
+				array_push($services_found, $servs[$x]);	
+			}
+	}
+	$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
+											array(
+												"services" => $services_found,
+												"state" => $svc_state,
+												"color" => $svc_color,
+												
+												
+											)
+				
+				,"service_list_element");
+				
+	
+}
 			
 
 

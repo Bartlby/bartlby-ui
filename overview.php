@@ -264,6 +264,87 @@ $Author: hjanuschka $
 	
 	), "tactical_overview");
 	
+	
+	
+	//Group info
+		$quickview_disabled="false";
+			
+		$all[0]=0;
+		$all[1]=0;
+		$all[2]=0;
+			
+		$grp_map=$btl->GetServerGroups();
+		for($z=0; $z<count($grp_map); $z++) {
+			$members=explode("|",$grp_map[$z][servergroup_members]);
+			$grp_map[$z][members]=array();
+			
+			$all[0]=0;
+			$all[1]=0;
+			$all[2]=0;
+			
+			for($x=0; $x<count($members); $x++) {
+					if(strlen($members[$x]) <= 0) continue;
+					array_push($grp_map[$z][members], $members[$x]);
+					
+					$ret=$btl->getServerInfs($members[$x], $servers);	
+					$all[0] += $ret[0];
+					$all[1] += $ret[1];
+					$all[2] += $ret[2];
+					
+					
+					
+					
+					
+			}
+				$service_sum=($all[0]+$all[1]+$all[2]);
+				if($service_sum == 0) {
+					$criticals=100;
+				} else {
+					$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
+				}
+     		
+				$proz=100-$criticals;
+			
+			
+			
+			
+				$prozent_zahl = floor($proz);
+				$prozent_float = number_format($proz, 1); 
+				$prozent_crit_zahl = floor($criticals);
+				$prozent_crit_float = number_format($criticals, 1); 
+			
+				$color="green";
+	
+				if($prozent_float <= 60) {
+					$color="red";	
+					$lbl = "label-important";
+				} else if($prozent_float <= 90) {
+					$lbl = "label-warning";
+				} else if($prozent_float <= 80) {
+					$lbl = "label-important";
+				} else {
+					$lbl = "label-success";
+				}
+			
+				$grp_map[$z][prozent_float]=$prozent_float;
+				$grp_map[$z][prozent_zahl]=$prozent_zahl;
+				$grp_map[$z][prozent_crit_zahl]=$prozent_crit_zahl;
+				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
+				$grp_map[$z][lbl]=$lbl;
+				
+		}
+
+	
+	$health_title='Server Groups';  
+	$layout->create_box($health_title, $health_content,"server_groups", array(
+			'groups' => $grp_map
+		), "server_groups");
+	
+	
+	
+	
+	
+	
 	$health_title='System Health';  
 	$layout->create_box($health_title, $health_content,"system_health", array(
 			'prozent_float' => $prozent_float,

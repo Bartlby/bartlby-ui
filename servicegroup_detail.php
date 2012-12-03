@@ -63,6 +63,12 @@ while(list($k, $servs) = @each($map)) {
 				$svc_color=$btl->getColor($servs[$x][current_state]);
 				$svc_state=$btl->getState($servs[$x][current_state]);
 				$abc=$servs[$x][server_id];
+				
+				
+				
+				$servs[$x][color]=$svc_color;
+				$servs[$x][state_readable]=$svc_state;
+				
 				array_push($services_found, $servs[$x]);	
 			}
 	}

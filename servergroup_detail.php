@@ -61,6 +61,12 @@ while(list($k,$v)=@each($servers)) {
 					$qck[$v[$y][server_id]][downtime]++;
 					
 				}
+				
+				$svc_color=$btl->getColor($v[$y][current_state]);
+				$svc_state=$btl->getState($v[$y][current_state]);
+				$v[$y][color]=$svc_color;
+				$v[$y][state_readable]=$svc_state;
+				
 				array_push($services_found, $v[$y]);
 			
 			}

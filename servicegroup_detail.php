@@ -65,6 +65,10 @@ while(list($k, $servs) = @each($map)) {
 				$abc=$servs[$x][server_id];
 				
 				
+				if($servs[$x][is_downtime] == 1) {
+					$svc_state="Downtime";
+					$svc_color="silver";	
+				}
 				
 				$servs[$x][color]=$svc_color;
 				$servs[$x][state_readable]=$svc_state;

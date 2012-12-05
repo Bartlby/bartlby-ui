@@ -197,7 +197,6 @@ if(is_array($defaults[groups])) {
 												
 			, "service_detail_group_info");
 }
-
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  
 	$core_content = "";

@@ -64,6 +64,12 @@ while(list($k,$v)=@each($servers)) {
 				
 				$svc_color=$btl->getColor($v[$y][current_state]);
 				$svc_state=$btl->getState($v[$y][current_state]);
+				
+				if($v[$y][is_downtime] == 1) {
+					$svc_state="Downtime";
+					$svc_color="silver";	
+				}
+				
 				$v[$y][color]=$svc_color;
 				$v[$y][state_readable]=$svc_state;
 				

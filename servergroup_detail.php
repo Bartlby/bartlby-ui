@@ -101,7 +101,13 @@ while(list($k,$v)=@each($servers)) {
 				,"service_list_element");
 				
 	
+if($defaults[is_downtime] == 1) {
 
+	$info_box_title='Downtime';  
+	$core_content = "";
+	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice");
+	
+}
 
 $info_box_title='ServerGroup Info';  
 

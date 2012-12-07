@@ -1,7 +1,7 @@
 <?=$this->disp_box("MAIN")?>
 <?=$this->disp_box("servicegroup_detail_servicegroup_info")?>
 <?=$this->disp_box("servicegroup_detail_members")?>
-
+<?=$this->disp_box("service_detail_downtime_notice")?>
 <table class="table table-striped table-bordered " id='services_table'>
 						  <thead>
 							  <tr>

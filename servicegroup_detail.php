@@ -20,6 +20,8 @@ for($x=0; $x<count($servergroups); $x++) {
 	}
 }
 
+
+
 if(!$defaults) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
@@ -79,7 +81,18 @@ while(list($k, $servs) = @each($map)) {
 
 	
 	
+
 }
+
+
+if($defaults[is_downtime] == 1) {
+
+	$info_box_title='Downtime';  
+	$core_content = "";
+	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice");
+	
+}
+
 		$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
 											array(
 												"services" => $services_found,

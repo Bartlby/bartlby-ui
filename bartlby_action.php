@@ -85,10 +85,18 @@ switch($act) {
 	case 'modify_downtime':
 		$layout->set_menu("downtimes");
 		if($_GET[downtime_notice] && $_GET[downtime_from] && $_GET[downtime_to] && $_GET[downtime_type]) {
-			sscanf($_GET[downtime_from],"%d.%d.%d %d:%d", &$d, &$m, &$y, &$h, &$s);
+		
+		
+			$d_from = $_GET[downtime_from] . " " . $_GET[downtime_from_h];
+			$d_to = $_GET[downtime_to] . " " . $_GET[downtime_to_h];
+			
+			sscanf($d_from,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
 			$dfrom=mktime($h, $s, 0, $m, $d,$y);
-			sscanf($_GET[downtime_to],"%d.%d.%d %d:%d", &$d, &$m, &$y, &$h, &$s);
+			sscanf($d_to,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
 			$dto=mktime($h, $s, 0, $m, $d,$y);
+			
+		
+		
 			$clean_service=str_replace("s", "", $_GET[service_id]);
 			
 			$rdt=bartlby_modify_downtime($btl->CFG, $dfrom, $dto, $_GET[downtime_type], $_GET[downtime_notice], $clean_service, $_GET[downtime_id]);
@@ -102,9 +110,13 @@ switch($act) {
 		$layout->set_menu("downtimes");
 		if($_GET[downtime_notice] && $_GET[downtime_from] && $_GET[downtime_to] && $_GET[downtime_type]) {
 			$msg = $_GET[downtime_from];
-			sscanf($_GET[downtime_from],"%d.%d.%d %d:%d", &$d, &$m, &$y, &$h, &$s);
+			
+			$d_from = $_GET[downtime_from] . " " . $_GET[downtime_from_h];
+			$d_to = $_GET[downtime_to] . " " . $_GET[downtime_to_h];
+			
+			sscanf($d_from,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
 			$dfrom=mktime($h, $s, 0, $m, $d,$y);
-			sscanf($_GET[downtime_to],"%d.%d.%d %d:%d", &$d, &$m, &$y, &$h, &$s);
+			sscanf($d_to,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
 			$dto=mktime($h, $s, 0, $m, $d,$y);
 			
 			$clean_service=str_replace("s", "", $_GET[service_id]);

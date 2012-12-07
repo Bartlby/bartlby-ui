@@ -55,7 +55,7 @@ if($dropdownded != "true")  {
 		$layout->Td(
 				Array(
 					0=>"Server:",
-					1=>$layout->DropDown("service_id", $servers) . $passthrough
+					1=>$layout->DropDown("service_id", $servers,"","",false) . $passthrough
 				)
 			)
 	

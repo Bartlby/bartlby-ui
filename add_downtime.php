@@ -48,7 +48,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Reason",
-			1=>$layout->Field("downtime_notice", "text", "") . $layout->Field("action", "hidden", "add_downtime") . $layout->Field("service_id", "hidden", $dt_service)
+			1=>$layout->Field("downtime_notice", "text", "", "", "") . $layout->Field("action", "hidden", "add_downtime") . $layout->Field("service_id", "hidden", $dt_service)
 		)
 	)
 ,true);
@@ -56,7 +56,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"From",
-			1=>$layout->Field("downtime_from", "text", date("d.m.Y H:i", time())) . $layout->Field("downtime_type", "hidden", $dt_hidden)
+			1=>$layout->Field("downtime_from", "text", date("m/d/Y", time()), "", "class='datepicker'") .  $layout->Field("downtime_from_h", "text","00:00") . $layout->Field("downtime_type", "hidden", $dt_hidden)
 		)
 	)
 ,true);
@@ -65,7 +65,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"To",
-			1=>$layout->Field("downtime_to", "text", date("d.m.Y H:i", time()+1024))
+			1=>$layout->Field("downtime_to", "text", date("m/d/Y", time()), "", "class='datepicker'") . $layout->Field("downtime_to_h", "text","23:59")
 		)
 	)
 ,true);

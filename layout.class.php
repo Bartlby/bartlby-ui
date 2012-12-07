@@ -289,7 +289,7 @@ class Layout {
 
 		$this->ext_menu .= $this->beginMenu();
 		$this->ext_menu .= $this->addRoot("Downtime/s");
-                $this->ext_menu .= $this->addSub("Downtime/s", "Add","service_list.php?script=add_downtime.php");
+                $this->ext_menu .= $this->addSub("Downtime/s", "Add","downtime_type_list.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Modify","downtime_list.php?script=modify_downtime.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Delete","downtime_list.php?script=delete_downtime.php");
 		$this->ext_menu .= $this->endMenu();

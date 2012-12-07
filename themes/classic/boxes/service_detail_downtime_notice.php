@@ -5,7 +5,7 @@
 		</tr>
 		<tr>
 			<td width=150 class='font2'>To:</td>
-			<td><?=date("d.m.Y H:i", $plcs[service][downtime_from])?></td> 
+			<td><?=date("d.m.Y H:i", $plcs[service][downtime_to])?></td> 
 		</tr>
 		<tr>
 			<td width=150 class='font2'>Left:</td>

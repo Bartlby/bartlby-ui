@@ -27,15 +27,33 @@ if($default == false) {
 	exit(1);	
 }
 
-if($default[downtime_type]==2) {
-	$dt_type="Server";	
-	$dt_hidden=2;
-	$btl->hasServerRight($default[service_id]);
-} else {
-	$dt_type="service";
-	$dt_hidden=1;
-	$btl->hasServerorServiceRight($default[service_id]);
+switch($default[downtime_type]) {
+	
+	case 1:
+		$dt_type="Service";
+		$dt_hidden=1;
+		$btl->hasServerorServiceRight($default[service_id]);
+	break;
+	
+	case 2:
+		$dt_type="Server";	
+		$dt_hidden=2;
+		$btl->hasServerRight($default[service_id]);
+	break;
+	
+	case 3:
+		$dt_type="Servergroup";	
+		$dt_hidden=3;
+	break;
+	
+	case 4:
+		$dt_type="Servicegroup";	
+		$dt_hidden=2;
+	break;
+	
 }
+
+
 
 
 $btl->hasRight("action.modify_downtime");

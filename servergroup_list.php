@@ -11,7 +11,9 @@ $layout->Form("fm1", $_GET[script]);
 $layout->Table("100%");
 $layout->set_menu("client");
 
-
+if($_GET[pkey] && $_GET[pval]) {
+	$passthrough = $layout->Field($_GET[pkey], "hidden", $_GET[pval]);
+}
 
 if($dropdownded != "true")  {
 	$servs=$btl->GetServerGroups();
@@ -31,7 +33,7 @@ if($dropdownded != "true")  {
 		$layout->Td(
 				Array(
 					0=>"Servergroup:",
-					1=>$layout->DropDown("servergroup_id", $servergroups)
+					1=>$layout->DropDown("servergroup_id", $servergroups) . $passthrough
 				)
 			)
 	

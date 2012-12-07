@@ -7,6 +7,16 @@
 				global_reload=1;
 		}
 	}
+	function downtime_type_selected() {
+		drop = document.getElementsByName("downtime_type")[0];
+		url ="";
+		if(drop.options[drop.selectedIndex].value == 1) 	url = "service_list.php?script=add_downtime.php&pkey=downtime_type&pval=1";
+		if(drop.options[drop.selectedIndex].value == 2) 	url = "server_list.php?script=add_downtime.php&pkey=downtime_type&pval=2";
+		if(drop.options[drop.selectedIndex].value == 3)  	url = "servergroup_list.php?script=add_downtime.php&pkey=downtime_type&pval=3";
+		if(drop.options[drop.selectedIndex].value == 4) 	url = "servicegroup_list.php?script=add_downtime.php&pkey=downtime_type&pval=4";
+		
+		document.location.href=url;
+	}
 	function GenericToggleFix(elID, st) {
 	//alert(elID);
 	//alert(st);

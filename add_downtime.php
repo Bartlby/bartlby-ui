@@ -14,19 +14,28 @@ $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
 $layout->Table("100%");
 
 
-if($_GET[service_id]{0} == 's') {
-	$dt_type="Server";
-	$cl=str_replace("s", "", $_GET[service_id]);
-	$rr=bartlby_get_server_by_id($btl->CFG, $cl);
-	$lappend=$rr[server_name];
-	$dt_hidden=2;
-} else {
-	$rr=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+switch($_GET[downtime_type]) {
+	case 1:
+		$dt_hidden = 1;
+		$dt_service = $_GET[service_id];
+		$dt_type = "Service (" .  $dt_service . ")";
+	break;
+	case 2:
+		$dt_hidden = 2;
+		$dt_service = $_GET[server_id];
+		$dt_type = "Server (" .  $dt_service . ")";
+	break;
+	case 3:
+		$dt_hidden = 3;
+		$dt_service = $_GET[servergroup_id];
+		$dt_type = "Servergroup (" .  $dt_service . ")";
+	break;
+	case 4:
+		$dt_hidden = 4;
+		$dt_service = $_GET[servicegroup_id];
+		$dt_type = "Servicegroup (" .  $dt_service . ")";
+	break;
 	
-	$lappend=$rr[server_name] . "/" . $rr[service_name];
-	
-	$dt_type="service";
-	$dt_hidden=1;
 }
 
 $map = $btl->GetSVCMap();
@@ -39,7 +48,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Reason",
-			1=>$layout->Field("downtime_notice", "text", "") . $layout->Field("action", "hidden", "add_downtime") . $layout->Field("service_id", "hidden", $_GET[service_id])
+			1=>$layout->Field("downtime_notice", "text", "") . $layout->Field("action", "hidden", "add_downtime") . $layout->Field("service_id", "hidden", $dt_service)
 		)
 	)
 ,true);

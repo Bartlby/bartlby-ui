@@ -15,7 +15,9 @@ $map = $btl->GetSVCMap();
 $optind=0;
 //$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
 
-
+if($_GET[pkey] && $_GET[pval]) {
+	$passthrough = $layout->Field($_GET[pkey], "hidden", $_GET[pval]);
+}
 
 if($dropdownded != "true")  {
 	while(list($k, $servs) = @each($map)) {
@@ -53,7 +55,7 @@ if($dropdownded != "true")  {
 		$layout->Td(
 				Array(
 					0=>"Server:",
-					1=>$layout->DropDown("service_id", $servers)
+					1=>$layout->DropDown("service_id", $servers) . $passthrough
 				)
 			)
 	

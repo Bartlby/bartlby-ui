@@ -1,5 +1,6 @@
 <?=$this->disp_box("MAIN")?>
 <?=$this->disp_box("servergroup_detail_servergroup_info")?>
+<?=$this->disp_box("service_detail_downtime_notice")?>
 <?=$this->disp_box("servergroup_detail_members")?>
 
 

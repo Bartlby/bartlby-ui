@@ -109,6 +109,12 @@ if(is_array($defaults[groups])) {
 				"server_detail_server_group_info");
 	
 }
+if($defaults[is_downtime] == 1) {
+	$info_box_title='Downtime';  
+	$core_content = "";
+	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice");
+	
+}
 
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);
 

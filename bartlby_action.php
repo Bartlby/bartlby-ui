@@ -503,7 +503,7 @@ switch($act) {
 		 }     
 	break;
 	case 'modify_service':
-		set_magic_quotes_runtime(0);
+		//set_magic_quotes_runtime(0);
 		$layout->set_menu("services");
 		
 		if($_GET[service_id] != "" && $_GET[service_id] && $_GET[service_server] && $_GET[service_type] &&  $_GET[service_name] &&  $_GET[service_interval] != "") {
@@ -554,7 +554,7 @@ switch($act) {
 						//&min_from,
 						//&min_to,&check_interva	l, &service_type,&service_var,&service_passive_timeout
 			
-			set_magic_quotes_runtime(0);
+			//set_magic_quotes_runtime(0);
 			
 			$exec_plan = "";
 			$df=false;

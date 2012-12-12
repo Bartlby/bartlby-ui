@@ -53,7 +53,7 @@ for($x=0; $x<count($r); $x++) {
 		event.start = new Date(" . $y_from . "," . $m_from . "," . $d_from . ", " . $h_from . ", " . $i_from . "); // this should be date object
 		event.end = new Date(" . $y_to . "," . $m_to . "," . $d_to . ", " . $h_to . ", " . $i_to . ");
 		event.color = '" . $cl . "';
-		event.url = 'modify_downtime.php?downtime_id=" . $r[$x][downtime_id] . "';
+		event.url = '" . $_GET[script] . "?downtime_id=" . $r[$x][downtime_id] . "';
 		event.allDay = false;
 		events.push(event);
 	

@@ -43,11 +43,11 @@ class AutoDiscoverAddons {
         	$re = new XajaxResponse();
         	$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
         	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
-		if(!$svc_counter) {
-			$r = $this->_globExt($_GET[xajaxargs][2], $rrd_dir);
-			$re->addAssign("autodiscoveraddons_layer", "innerHTML", $r);
-			$re->addAssign("AutoDiscoverAddonsHide", "style.display", "none");
-		}
+					if(!$svc_counter) {
+						$r = $this->_globExt($_GET[xajaxargs][2], $rrd_dir);
+						$re->addAssign("autodiscoveraddons_layer", "innerHTML", $r);
+						$re->addAssign("AutoDiscoverAddonsHide", "style.display", "none");
+					}
         	
         	
         	return $re;	
@@ -85,7 +85,7 @@ class AutoDiscoverAddons {
                 foreach(glob($path . "/" . $svcid . "_*.png") as $fn) {
                         $r .= "<img onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
                         $x++;
-                }
+                } 
                return $r;
         }
 
@@ -101,10 +101,54 @@ class AutoDiscoverAddons {
                         		    $re = $this->getJavascripts();
                         		    $re .= $this->_globExt($svcid, $rrd_dir);
                         		    $re .= $this->endScripts();
-                            	    return $re;
+                            	    
                         	}
-
-
+                        $pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
+													if($pnp4_nagios) {
+														
+														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+														$i_start = time()-(60*60);
+														$i_end = time();
+														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "";
+														$re .= "<img src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+														
+														
+														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+														$i_start = time()-86400;
+														$i_end = time();
+														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "";
+														$re .= "<img src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+														
+														
+														
+														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+														$i_start = time()-(86400*7);
+														$i_end = time();
+														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "";
+														$re .= "<img src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+														
+														
+														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+														$i_start = time()-(86400*30);
+														$i_end = time();
+														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "";
+														$re .= "<img src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+														
+														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+														$i_start = time()-(86400*365);
+														$i_end = time();
+														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "";
+														$re .= "<img src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+														
+														
+														
+													}	
+													return $re;
 	                } else {
        	                 return "";
               	  }

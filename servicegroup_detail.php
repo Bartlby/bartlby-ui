@@ -50,7 +50,9 @@ $layout->create_box($info_box_title, $core_content, "servicegroup_detail_service
 										"servicegroup" => $defaults,
 										"" => $isup,
 										"notify_enabled" => $noti_en,
-										"servicegroup_enabled" => $server_en
+										"servicegroup_enabled" => $server_en,
+										"servicegroup_dead" => $defaults[servicegroup_dead],
+										"map" => $map
 										
 										),
 			"servicegroup_detail_servicegroup_info");

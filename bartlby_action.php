@@ -632,7 +632,7 @@ switch($act) {
 		
 			
 			
-			$add_servergroup = bartlby_modify_servergroup($btl->CFG, $_GET[servergroup_name], (int)$_GET[servergroup_active], (int)$_GET[servergroup_notify], $group_members, (int)$_GET[servergroup_id]);
+			$add_servergroup = bartlby_modify_servergroup($btl->CFG, $_GET[servergroup_name], (int)$_GET[servergroup_active], (int)$_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"], (int)$_GET[servergroup_id]);
 			
 			
 			
@@ -656,7 +656,7 @@ switch($act) {
 		
 			
 			
-			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_name], (int)$_GET[servicegroup_active], (int)$_GET[servicegroup_notify], $group_members, (int)$_GET[servicegroup_id]);
+			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_name], (int)$_GET[servicegroup_active], (int)$_GET[servicegroup_notify], $group_members,(int)$_GET["text_service_search1"], (int)$_GET[servicegroup_id]);
 			
 			
 			
@@ -679,7 +679,7 @@ switch($act) {
 		
 			
 			
-			$add_servergroup = bartlby_add_servicegroup($btl->CFG, $_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members);
+			$add_servergroup = bartlby_add_servicegroup($btl->CFG, $_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"]);
 			
 			
 			
@@ -704,7 +704,7 @@ switch($act) {
 		
 			
 			
-			$add_servergroup = bartlby_add_servergroup($btl->CFG, $_GET[servergroup_name], $_GET[servergroup_active], $_GET[servergroup_notify], $group_members);
+			$add_servergroup = bartlby_add_servergroup($btl->CFG, $_GET[servergroup_name], $_GET[servergroup_active], $_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"]);
 			
 			
 			

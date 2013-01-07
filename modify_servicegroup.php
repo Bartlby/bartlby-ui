@@ -26,6 +26,9 @@ for($x=0; $x<count($servicegroups); $x++) {
 		break;	
 	}
 }
+if($defaults[servicegroup_dead] != 0) {
+	$svc_dead_marker = bartlby_get_service_by_id($btl->CFG, $defaults[servicegroup_dead]);
+}
 
 $map = $btl->GetSVCMap();
 
@@ -187,6 +190,14 @@ $ov .= $layout->Tr(
 			0=>"Servicegroup Notify?",
 			1=>$layout->DropDown("servicegroup_notify", $notenabled) . $layout->Field("servicegroup_id", "hidden", $_GET[servicegroup_id])
 			
+		)
+	)
+,true);
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Alive indicator",
+			1=>$btl->service_selector("dead_marker", $svc_dead_marker[server_name] . "/" . $svc_dead_marker[service_name] , "service_search1", $defaults[servicegroup_dead])
 		)
 	)
 ,true);

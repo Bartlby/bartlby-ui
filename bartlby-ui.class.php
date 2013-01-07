@@ -161,7 +161,7 @@ class BartlbyUi {
 					
 					if($v[$x][service_id] == $cur_id) {
 						$f = true;					
-						$r .= str_repeat("&nbsp;&nbsp;&nbsp;", $rr) .  "<a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A> (<font color='" .  $this->getColor($v[$x][current_state])  . "'>" . $this->getState($v[$x][current_state]) . "</font>)<br>";
+						$r .= str_repeat("&nbsp;&nbsp;&nbsp;", $rr) .  "<a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A> (<font color='" .  $this->getColor($v[$x][current_state])  . "'>" . $this->getState($v[$x][current_state]) . "</font>) active: " . $v[$x][service_active] . "<br>";
 						
 						
 						$l = $cur_id;	

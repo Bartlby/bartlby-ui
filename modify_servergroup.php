@@ -26,6 +26,9 @@ for($x=0; $x<count($servergroups); $x++) {
 		break;	
 	}
 }
+if($defaults[servergroup_dead] != 0) {
+	$svc_dead_marker = bartlby_get_service_by_id($btl->CFG, $defaults[servergroup_dead]);
+}
 
 $optind=0;
 
@@ -60,6 +63,7 @@ if($_GET["copy"] == "true") {
 	$fm_action="add_servergroup";
 	$btl->hasRight("action.copy_servergroup");
 	$layout->setTitle("Copy Servergroup");
+		
 }
 if($_GET["new"] == "true") {
 	$fm_action="add_servergroup";
@@ -69,6 +73,11 @@ if($_GET["new"] == "true") {
 	
 	
 }
+
+
+
+
+
 
 //Notify Enabled
 $notenabled[0][c]="";
@@ -155,6 +164,14 @@ $ov .= $layout->Tr(
 			0=>"Servergroup Notify?",
 			1=>$layout->DropDown("servergroup_notify", $notenabled) . $layout->Field("servergroup_id", "hidden", $_GET[servergroup_id])
 			
+		)
+	)
+,true);
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Alive indicator",
+			1=>$btl->service_selector("dead_marker", $svc_dead_marker[server_name] . "/" . $svc_dead_marker[service_name] , "service_search1", $defaults[servergroup_dead])
 		)
 	)
 ,true);

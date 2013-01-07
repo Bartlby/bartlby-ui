@@ -116,8 +116,9 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 										"servergroup" => $defaults,
 										"" => $isup,
 										"notify_enabled" => $noti_en,
-										"servergroup_enabled" => $server_en
-										
+										"servergroup_enabled" => $server_en,
+										"servergroup_dead" => $defaults[servergroup_dead],
+										"map" => $servers
 										),
 			"servergroup_detail_servergroup_info");
 }

@@ -44,7 +44,7 @@ while(list($k, $servs) = @each($map)) {
 		$state=$btl->getState($servs[$x][current_state]);
 		$servers[$optind][c]="";
 		$servers[$optind][v]=$servs[$x][service_id];	
-		$servers[$optind][k]="" .  $servs[$x][service_name];
+		$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
 		if(@in_array($servs[$x][service_id], $worker_rights[services])) {
 			$servers[$optind][s]=1;	
 		}

@@ -91,9 +91,15 @@
 		<td align=left ><?=$plcs[notify_enabled]?> <?=$plcs[server_notifications]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
+	
 	<tr>
 		<td width=150 class='font2'>Check Enabled:</td>
 		<td align=left ><?=$plcs[service_enabled]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
+	<tr>
+		<td width=150 class='font2'>Fires Events:</td>
+		<td align=left ><?=$plcs[fires_events]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
 	<tr>

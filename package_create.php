@@ -24,6 +24,7 @@ while(list($k, $servs) = @each($map)) {
 			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
 			$servers[$optind][c]="";
 			$servers[$optind][v]="";	
+		
 			$servers[$optind][k]="" . $servs[$x][server_name] . "";
 			$servers[$optind][is_group]=1;
 			$optind++;
@@ -33,7 +34,7 @@ while(list($k, $servs) = @each($map)) {
 		$state=$btl->getState($servs[$x][current_state]);
 		$servers[$optind][c]="";
 		$servers[$optind][v]=$servs[$x][service_id];	
-		$servers[$optind][k]="" .  $servs[$x][service_name];
+		$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
 		
 		
 		if(strstr((string)$defaults[services],"|" . $servs[$x][service_id] . "|")) {

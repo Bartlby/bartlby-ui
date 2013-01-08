@@ -87,6 +87,12 @@ if($defaults["service_active"]==1) {
 } else {
 	$serv_en="false";
 }
+if($defaults["fires_events"]==1) {
+	$events_en="true";
+} else {
+	$events_en="false";
+}
+
 //echo $defaults[last_notify_send] . "<br>";
 
 if( $defaults[service_delay_sum] > 0 && $defaults[service_delay_count] > 0) {
@@ -180,6 +186,7 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											"service_ms" => $svcMS,
 											"service_delay" => $svcDEL,
 											"service_enabled" => $serv_en,
+											"fires_events" => $events_en,
 											"notify_enabled" => $noti_en,
 											"needs_ack" => $needs_ack,
 											"color" => $svc_color,

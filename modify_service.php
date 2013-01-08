@@ -122,6 +122,26 @@ if(is_int($defaults[notify_enabled]) && $defaults[notify_enabled] == 0) {
 	$notenabled[1][s]=1;
 }
 
+//Events Enabled
+$eventenabled[0][c]="";
+$eventenabled[0][v] = 0; //No
+$eventenabled[0][k] = "No"; //No
+$eventenabled[0][s]=0;
+
+$eventenabled[1][c]="";
+$eventenabled[1][v] = 1; //No
+$eventenabled[1][k] = "Yes"; //No
+$eventenabled[1][s]=0;
+
+if(is_int($defaults[fires_events]) && $defaults[fires_events] == 1) {
+	$eventenabled[1][s]=1;	
+	
+} else {
+	
+	$eventenabled[0][s]=1;
+}
+
+
 //Notify Enabled
 $servactive[0][c]="";
 $servactive[0][v] = 0; //No
@@ -404,6 +424,16 @@ $active_box_out .= $layout->Tr(
 	)
 ,true);
 
+
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Fires Events?",
+			1=>$layout->DropDown("fires_events", $eventenabled)
+			
+		)
+	)
+,true);
 
 
 $active_box_out .= $layout->Tr(

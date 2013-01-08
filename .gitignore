@@ -1,3 +1,4 @@
+*.disabled
 rrd
 setup.php
 config.php

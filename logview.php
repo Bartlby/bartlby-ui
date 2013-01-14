@@ -174,6 +174,24 @@
 			}
 			$outline =  $tmp[3] . " for " . $tmp[4] . " Service:<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $tmp[6];
 			$stcheck=7;	
+		} else if($log_detail_o[1] == "EV-HANDLER") {
+			$tmp=explode("|", $log_detail_o[2]);
+			
+			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
+				continue;	
+			}
+			
+			if($_GET[service_id] && $tmp[0] != $_GET[service_id]) {
+				
+				continue;	
+			}
+			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
+				continue;	
+			}
+			$clean = htmlentities($tmp[3]);
+			$outline = "<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> event handler called STATE: "  . $clean . "<br>";
+			
+			$stcheck=7;	
 		}else if($log_detail_o[1] == "FORCE") {
 			$tmp=explode("|", $log_detail_o[2]);
 			

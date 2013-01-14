@@ -87,11 +87,22 @@ if($defaults["service_active"]==1) {
 } else {
 	$serv_en="false";
 }
-if($defaults["fires_events"]==1) {
-	$events_en="true";
-} else {
-	$events_en="false";
+
+switch($defaults["fires_events"]) {
+		case 0:
+			$events_en="false";
+		break;
+		case 1:
+			$events_en="true (HARD)";
+		break;
+		case 2:
+			$events_en="true (SOFT)";
+		break;
+		case 3:
+			$events_en="true (HARD|SOFT)";
+		break;
 }
+
 
 //echo $defaults[last_notify_send] . "<br>";
 

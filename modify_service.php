@@ -125,19 +125,35 @@ if(is_int($defaults[notify_enabled]) && $defaults[notify_enabled] == 0) {
 //Events Enabled
 $eventenabled[0][c]="";
 $eventenabled[0][v] = 0; //No
-$eventenabled[0][k] = "No"; //No
+$eventenabled[0][k] = "Disabled"; //No
 $eventenabled[0][s]=0;
 
 $eventenabled[1][c]="";
 $eventenabled[1][v] = 1; //No
-$eventenabled[1][k] = "Yes"; //No
+$eventenabled[1][k] = "HARD"; //No
 $eventenabled[1][s]=0;
+
+$eventenabled[2][c]="";
+$eventenabled[2][v] = 2; //No
+$eventenabled[2][k] = "SOFT"; //No
+$eventenabled[2][s]=0;
+
+
+$eventenabled[3][c]="";
+$eventenabled[3][v] = 3; //No
+$eventenabled[3][k] = "BOTH"; //No
+$eventenabled[3][s]=0;
+
 
 if(is_int($defaults[fires_events]) && $defaults[fires_events] == 1) {
 	$eventenabled[1][s]=1;	
 	
-} else {
+} else if (is_int($defaults[fires_events]) && $defaults[fires_events] == 2) {
 	
+	$eventenabled[2][s]=1;
+} else if(is_int($defaults[fires_events]) && $defaults[fires_events] == 3) {
+	$eventenabled[3][s]=1;
+} else {
 	$eventenabled[0][s]=1;
 }
 

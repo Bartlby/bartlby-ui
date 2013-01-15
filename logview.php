@@ -188,7 +188,7 @@
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			$clean = htmlentities($tmp[3]);
+			$clean = htmlentities($tmp[3] . "-" . $tmp[4]);
 			$outline = "<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> event handler called STATE: "  . $clean . "<br>";
 			
 			$stcheck=7;	

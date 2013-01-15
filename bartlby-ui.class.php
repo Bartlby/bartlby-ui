@@ -209,7 +209,7 @@ class BartlbyUi {
 	}
 	function service_selector($f, $v, $d, $d1) {
 		$mydiv="<div style='background-color:#ffffff; position:absolute' id='" . $d . "'></div>";
-		$r = "<input type=hidden id='text_" . $d . "'  name='text_" . $d . "' value='" . $d1 . "'><input autocomplete=off type=text id='search_" . $d . "' name='search_" .  $d . "' value='" . $v . "' onkeyup=\"buffer_suggest.modified('search_" . $d . "', 'xajax_service_noaction', '" . $d . "');\">" . $mydiv;
+		$r = "<input type=hidden id='text_" . $d . "'  name='text_" . $d . "' value='" . $d1 . "'><input autocomplete=off type=text id='search_" . $d . "' name='search_" .  $d . "' value='" . $v . "' onkeyup=\"buffer_suggest.modified('search_" . $d . "', 'xajax_service_noaction', '" . $d . "');\"> <a href='javascript:document.getElementById(\"text_" . $d . "\").value=\"0\";document.getElementById(\"search_" . $d . "\").value=\"removed\";'>remove</A>" . $mydiv;
 		return $r;	
 	}
 	function format_report($rep, $type='html', $hdr, $do_perf=false) {

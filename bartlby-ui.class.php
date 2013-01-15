@@ -1896,7 +1896,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		$defaults[service_id]="";
 		$modify = "<a href='modify_servicegroup.php?servicegroup_id=" . $defaults[servicegroup_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this servicegroup' border=0></A>";
 		$copy = "<a href='modify_servicegroup.php?copy=true&servicegroup_id=" . $defaults[servicegroup_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Servicegroup' border=0></A>";
-		//$logview= "<a href='logview.php?service_id=" . $defaults[service_id]. "' ><font size=1><img  title='View Events for this Service' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
+		$logview= "<a href='logview.php?servicegroup_id=" . $defaults[servicegroup_id]. "' ><font size=1><img  title='View Events for this Servicegroup' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
 		
 		
 		if($defaults[servicegroup_active] == 1) {
@@ -1924,7 +1924,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		$defaults[service_id]="";
 		$modify = "<a href='modify_servergroup.php?servergroup_id=" . $defaults[servergroup_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this servergroup' border=0></A>";
 		$copy = "<a href='modify_servergroup.php?copy=true&servergroup_id=" . $defaults[servergroup_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Servergroup' border=0></A>";
-		//$logview= "<a href='logview.php?server_id=" . $defaults[server_id]. "' ><font size=1><img  title='View Events for this Server' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
+		$logview= "<a href='logview.php?servergroup_id=" . $defaults[servergroup_id]. "' ><font size=1><img  title='View Events for this Servergroup' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
 		
 		
 		if($defaults[servergroup_active] == 1) {

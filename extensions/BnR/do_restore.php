@@ -94,6 +94,27 @@ for($x=0; $x<count($dtmap); $x++) {
 			
 }
 
+
+$dtmap = unserialize(file_get_contents($bdir . "/servergroup.ser"));
+
+for($x=0; $x<count($dtmap); $x++) {
+	
+	
+	$add_dt = bartlby_add_servergroup($btl->CFG, $dtmap[$x][servergroup_name], $dtmap[$x][servergroup_active], $dtmap[$x][servergroup_notify], $dtmap[$x][servergroup_members], $dtmap[$x][servergroup_dead]);
+	bartlby_set_servergroup_id($btl->CFG, $add_dt, $dtmap[$x][servergroup_id]);
+			
+}
+
+$dtmap = unserialize(file_get_contents($bdir . "/servicegroup.ser"));
+
+for($x=0; $x<count($dtmap); $x++) {
+	
+	
+	$add_dt = bartlby_add_servicegroup($btl->CFG, $dtmap[$x][servicegroup_name], $dtmap[$x][servicegroup_active], $dtmap[$x][servicegroup_notify], $dtmap[$x][servicegroup_members], $dtmap[$x][servicegroup_dead]);
+	bartlby_set_servicegroup_id($btl->CFG, $add_dt, $dtmap[$x][servicegroup_id]);
+			
+}
+
 $btl->doReload();
 $o .= ".... reloaded<br>";
 $o .= "<b>done ($bdir)</b><br>";

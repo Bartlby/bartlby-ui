@@ -61,6 +61,25 @@ fclose($fp);
 
 $o .= "Downtimes saved<br>";
 
+
+
+$srvgrpmap = bartlby_servergroup_map($btl->CFG);
+$fp=fopen($bdir . "/servergroup.ser", "w");
+fwrite($fp, serialize($srvgrpmap));
+fclose($fp);
+
+$o .= "ServerGroups saved<br>";
+
+
+$svcgrpmap = bartlby_servicegroup_map($btl->CFG);
+$fp=fopen($bdir . "/servicegroup.ser", "w");
+fwrite($fp, serialize($svcgrpmap));
+fclose($fp);
+
+$o .= "ServiceGroups saved<br>";
+
+
+
 if($_GET[package_with_config]) {
 	@copy("ui-extra.conf", $bdir . "/ui-extra.conf");
 	@copy($btl->CFG, $bdir . "/bartlby.cfg");

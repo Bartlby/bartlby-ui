@@ -92,6 +92,13 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 
 
 
+if($defaults[server_ssh_keyfile] != " ") {
+	$info_box_title='SSH Options';  
+	$layout->create_box($info_box_title, $core_content, "service_detail_ssh_info", array(
+											"service" => $defaults),
+				"service_detail_ssh_info");
+}			
+			
 $info_box_title='Services';  
 $layout->create_box($info_box_title, $core_content, "server_detail_services", array(
 									"services_assigned" => $services_assigned,

@@ -254,6 +254,15 @@ if($defaults[service_type] == 8) {
 	$types[7][s]=1;
 }
 
+
+$types[9][c]="";
+$types[9][v]="10";
+$types[9][k]="SSH";
+if($defaults[service_type] == 10) {
+	$types[9][s]=1;
+}
+
+
 if(!$defaults[service_type]) {
 	$types[0][s]=1;	
 }
@@ -308,7 +317,7 @@ $layout->OUT .= "<script>
 				GenericToggleFix(\"passive\", \"block\");
 				GenericToggleFix(\"active\", \"block\");
 			}
-			if(va == 1 || va == 6 || va == 7 || va == 8 ||  va == 9) {
+			if(va == 1 || va == 6 || va == 7 || va == 8 ||  va == 9 || va == 10) {
 				GenericToggleFix(\"active\", \"block\");
 			}
 			if(va == 3) {

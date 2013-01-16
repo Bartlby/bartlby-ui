@@ -248,6 +248,44 @@ $ov .= $layout->Tr(
 
 ,true);
 
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>array("colspan"=>2, "show"=>"<hr><b>SSH Options</b>")
+		)
+	)
+,true);
+
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Keyfile Path",
+			1=>$layout->Field("server_ssh_keyfile", "text", $defaults[server_ssh_keyfile])
+		)
+	)
+,true);
+
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Key-Passphrase",
+			1=>$layout->Field("server_ssh_passphrase", "text", $defaults[server_ssh_passphrase])
+		)
+	)
+,true);
+
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Username ",
+			1=>$layout->Field("server_ssh_username", "text", $defaults[server_ssh_username])
+		)
+	)
+,true);
+
+
+
+
 
 
 

@@ -228,7 +228,7 @@ if($defaults[is_downtime] == 1) {
 $info_box_title='Last Output';  
 $layout->create_box($info_box_title, $core_content, "service_detail_status_text", array("service" => $defaults), "service_detail_status_text");
 
-if($defaults[service_type] == 2 || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9){
+if($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9){
 	$info_box_title='Plugin settings';  
 	$core_content = "";
 	

@@ -627,7 +627,17 @@ switch($act) {
 		if($_GET[server_id] && $_GET[server_name] && $_GET[server_port] && $_GET[server_ip] && $_GET[server_icon]) {
 				$btl->hasServerRight($_GET[server_id]);
 				// text_service_search1 == dead marker
-				$mod_server=bartlby_modify_server($btl->CFG, $_GET[server_id], $_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon], $_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds], $_GET["text_service_search1"], $_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username]);
+				
+				$triggerstr="";
+				for($x=0;$x<count($_GET[server_triggers]); $x++) {
+					$triggerstr .="" . $_GET[server_triggers][$x] . "|";	
+				}
+				if($triggerstr != "") {
+					$triggerstr = "|" . $triggerstr;
+				}
+			
+				
+				$mod_server=bartlby_modify_server($btl->CFG, $_GET[server_id], $_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon], $_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds], $_GET["text_service_search1"], $_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr);
 				$defaults=bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
 				$layout->DisplayHelp(array(0=>"CRIT|You should restart bartlby for applieng changes "));
 				$layout->OUT .= "<script>doReloadButton();</script>";
@@ -643,10 +653,17 @@ switch($act) {
 			}
 			$group_members .= "|";
 			
+			$triggerstr="";
+			for($x=0;$x<count($_GET[servergroup_triggers]); $x++) {
+				$triggerstr .="" . $_GET[servergroup_triggers][$x] . "|";	
+			}
+			if($triggerstr != "") {
+				$triggerstr = "|" . $triggerstr;
+			}
 		
 			
 			
-			$add_servergroup = bartlby_modify_servergroup($btl->CFG, $_GET[servergroup_name], (int)$_GET[servergroup_active], (int)$_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"], (int)$_GET[servergroup_id]);
+			$add_servergroup = bartlby_modify_servergroup($btl->CFG, $_GET[servergroup_name], (int)$_GET[servergroup_active], (int)$_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr, (int)$_GET[servergroup_id]);
 			
 			
 			
@@ -668,9 +685,15 @@ switch($act) {
 			$group_members .= "|";
 			
 		
+			$triggerstr="";
+			for($x=0;$x<count($_GET[servicegroup_triggers]); $x++) {
+				$triggerstr .="" . $_GET[servicegroup_triggers][$x] . "|";	
+			}
+			if($triggerstr != "") {
+				$triggerstr = "|" . $triggerstr;
+			}
 			
-			
-			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_name], (int)$_GET[servicegroup_active], (int)$_GET[servicegroup_notify], $group_members,(int)$_GET["text_service_search1"], (int)$_GET[servicegroup_id]);
+			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_name], (int)$_GET[servicegroup_active], (int)$_GET[servicegroup_notify], $group_members,(int)$_GET["text_service_search1"],$triggerstr, (int)$_GET[servicegroup_id]);
 			
 			
 			
@@ -690,10 +713,16 @@ switch($act) {
 			}
 			$group_members .= "|";
 			
-		
+			$triggerstr="";
+			for($x=0;$x<count($_GET[servicegroup_triggers]); $x++) {
+				$triggerstr .="" . $_GET[servicegroup_triggers][$x] . "|";	
+			}
+			if($triggerstr != "") {
+				$triggerstr = "|" . $triggerstr;
+			}
 			
 			
-			$add_servergroup = bartlby_add_servicegroup($btl->CFG, $_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"]);
+			$add_servergroup = bartlby_add_servicegroup($btl->CFG, $_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr);
 			
 			
 			
@@ -716,9 +745,16 @@ switch($act) {
 			$group_members .= "|";
 			
 		
+			$triggerstr="";
+			for($x=0;$x<count($_GET[servergroup_triggers]); $x++) {
+				$triggerstr .="" . $_GET[servergroup_triggers][$x] . "|";	
+			}
+			if($triggerstr != "") {
+				$triggerstr = "|" . $triggerstr;
+			}
 			
 			
-			$add_servergroup = bartlby_add_servergroup($btl->CFG, $_GET[servergroup_name], $_GET[servergroup_active], $_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"]);
+			$add_servergroup = bartlby_add_servergroup($btl->CFG, $_GET[servergroup_name], $_GET[servergroup_active], $_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr);
 			
 			
 			
@@ -743,7 +779,17 @@ switch($act) {
 		$layout->set_menu("client");
 			if($_GET[server_name] && $_GET[server_port] && $_GET[server_ip] && $_GET[server_icon]) {
 				
-				$add_server=bartlby_add_server($btl->CFG, $_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon],$_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds],  0,$_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username]);
+				
+				$triggerstr="";
+				for($x=0;$x<count($_GET[server_triggers]); $x++) {
+					$triggerstr .="" . $_GET[server_triggers][$x] . "|";	
+				}
+				if($triggerstr != "") {
+					$triggerstr = "|" . $triggerstr;
+				}
+			
+				
+				$add_server=bartlby_add_server($btl->CFG, $_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon],$_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds],  0,$_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr);
 				
 				$global_msg["package"]="";
 				$global_msg["init_service"]="";

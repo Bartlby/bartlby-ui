@@ -109,6 +109,20 @@ if($defaults[is_downtime] == 1) {
 	
 }
 
+$triggers = "";
+if(strlen($defaults[enabled_triggers]) > 2) {
+	$tr_array = explode("|", $defaults[enabled_triggers]);
+	for($x=0; $x<count($tr_array); $x++) {
+			if($tr_array[$x] != "") {
+				$triggers .= $tr_array[$x] . ",";
+			}
+	}
+	
+	
+}
+
+if($triggers == "") $triggers = "all";
+
 $info_box_title='ServerGroup Info';  
 
 if($_GET[all_servers] != 1) {
@@ -118,7 +132,8 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 										"notify_enabled" => $noti_en,
 										"servergroup_enabled" => $server_en,
 										"servergroup_dead" => $defaults[servergroup_dead],
-										"map" => $servers
+										"map" => $servers,
+										"triggers" => $triggers
 										),
 			"servergroup_detail_servergroup_info");
 }

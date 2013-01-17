@@ -185,6 +185,18 @@ if($defaults[escalate_divisor] != 0) {
 }
 
 
+$triggers = "";
+if(strlen($defaults[enabled_triggers]) > 2) {
+	$tr_array = explode("|", $defaults[enabled_triggers]);
+	for($x=0; $x<count($tr_array); $x++) {
+			if($tr_array[$x] != "") {
+				$triggers .= $tr_array[$x] . ",";
+			}
+	}
+	
+	
+}
+if($triggers == "") $triggers = "all";
 
 $info_box_title='Service Info';  
 $layout->create_box($info_box_title, $core_content, "service_detail_service_info", array(
@@ -205,7 +217,8 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											"needs_ack" => $needs_ack,
 											"color" => $svc_color,
 											"state" => $svc_state,
-											"check_plan" => $plan_box
+											"check_plan" => $plan_box,
+											"triggers" => $triggers
 											)
 											
 		, "service_detail_service_info");

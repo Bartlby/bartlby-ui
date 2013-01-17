@@ -145,5 +145,10 @@
 		<td align=left ><?= $plcs[service_delay]?> Seconds</font></td>
 		<td>&nbsp;</td>           
 	</tr>
+	<tr>
+		<td width=150 class='font2'>Triggers:</td>
+		<td align=left ><?= $plcs[triggers]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
 	
 </table>

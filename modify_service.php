@@ -719,7 +719,9 @@ $layout->push_outside($layout->create_box("SNMP Settings<form id='fm1' name='fm1
 
 if(!$_GET["copy"] && !$_GET["new"]) {
 	$idx=$btl->findSHMPlace($_GET[service_id]);
+	
 	$ssvc=bartlby_get_service($btl->CFG, $idx);
+	
 	if($ssvc[service_active] == 1) {
 		bartlby_toggle_service_active($btl->CFG, $idx, 0);
 		$dounlock=$idx;

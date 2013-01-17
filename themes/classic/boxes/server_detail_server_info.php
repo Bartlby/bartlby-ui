@@ -55,7 +55,11 @@
 		<td align=left ><?=$btl->resolveDeadMarker($plcs[service][server_dead], $plcs[map])?></font></td>  
 		<td>&nbsp;</td>         
 	</tr>
-	
+	<tr>
+		<td width=150 class='font2'>Triggers:</td>
+		<td align=left ><?= $plcs[triggers]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
 	
 	
 </table>

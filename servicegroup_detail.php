@@ -41,7 +41,18 @@ if($defaults["servicegroup_active"]==1) {
 }
 
 
-
+$triggers = "";
+if(strlen($defaults[enabled_triggers]) > 2) {
+	$tr_array = explode("|", $defaults[enabled_triggers]);
+	for($x=0; $x<count($tr_array); $x++) {
+			if($tr_array[$x] != "") {
+				$triggers .= $tr_array[$x] . ",";
+			}
+	}
+	
+	
+}
+if($triggers == "") $triggers = "all";
 
 $info_box_title='ServiceGroup Info';  
 
@@ -52,7 +63,8 @@ $layout->create_box($info_box_title, $core_content, "servicegroup_detail_service
 										"notify_enabled" => $noti_en,
 										"servicegroup_enabled" => $server_en,
 										"servicegroup_dead" => $defaults[servicegroup_dead],
-										"map" => $map
+										"map" => $map,
+										"triggers" => $triggers
 										
 										),
 			"servicegroup_detail_servicegroup_info");

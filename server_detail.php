@@ -67,7 +67,18 @@ if($defaults["server_enabled"]==1) {
 } else {
 	$server_en="false";
 }
-
+$triggers = "";
+if(strlen($defaults[server_enabled_triggers]) > 2) {
+	$tr_array = explode("|", $defaults[server_enabled_triggers]);
+	for($x=0; $x<count($tr_array); $x++) {
+			if($tr_array[$x] != "") {
+				$triggers .= $tr_array[$x] . ",";
+			}
+	}
+	
+	
+}
+if($triggers == "") $triggers="all";
 
 for($x=0; $x<count($defaults[groups]); $x++) {
 	if($defaults[groups][$x][servergroup_active] == 0) {
@@ -86,7 +97,8 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 										"isup" => $isup,
 										"notify_enabled" => $noti_en,
 										"server_enabled" => $server_en,
-										"map" => $map
+										"map" => $map,
+										"triggers" => $triggers
 										),
 			"server_detail_server_info");
 

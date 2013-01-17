@@ -16,6 +16,8 @@ if($_GET[service_id]) {
 }
 
 $defaults=bartlby_get_service($btl->CFG, $_GET[service_place]);
+
+
 $btl->hasServerorServiceRight($defaults[service_id]);
 
 if(!$defaults) {
@@ -196,6 +198,7 @@ if(strlen($defaults[enabled_triggers]) > 2) {
 	
 	
 }
+
 if($triggers == "") $triggers = "all";
 
 $info_box_title='Service Info';  
@@ -298,12 +301,19 @@ $ibox[3][c]="grey";
 $ibox[3][v]=4;
 $ibox[3][k]="Info";
 
+
+
 $ibox[$defaults[current_state]][s]=1;
+
 $state_dropdown=$layout->DropDown("passive_state", $ibox);
 $info_box_title='Manual state change';  
 $layout->create_box($info_box_title, $core_content, "service_detail_manual", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_manual");
 
+
+$odefaults=$defaults;
 $r=$btl->getExtensionsReturn("_serviceDetail", $layout);
+
+$defaults=$odefaults;
 
 $layout->OUT .= $btl->getserviceOptions($defaults, $layout);
 

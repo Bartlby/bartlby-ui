@@ -421,6 +421,7 @@ $Author: hjanuschka $
 				$grp_map[$z][prozent_zahl]=$prozent_zahl;
 				$grp_map[$z][prozent_crit_zahl]=$prozent_crit_zahl;
 				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
+				$grp_map[$z][service_sum]=$service_sum;
 				$grp_map[$z][lbl]=$lbl;
 				
 		}

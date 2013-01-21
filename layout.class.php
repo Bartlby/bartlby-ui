@@ -331,6 +331,7 @@ class Layout {
                 $this->ext_menu .= $this->addSub("Core", "Reload","bartlby_action.php?action=reload");
                 $this->ext_menu .= $this->addSub("Core", "Config","choose_config.php");
                 $this->ext_menu .= $this->addSub("Core", "Statistic","statistic.php");
+                
 		$this->ext_menu .= $this->addSub("Core", "Event Queue","event_queue.php");
 		$this->ext_menu .= $this->addSub("Core", "Extensions","extensions.php");
 		$this->ext_menu .= $this->addSub("Core", "About","version.php");

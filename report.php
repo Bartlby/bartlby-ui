@@ -77,15 +77,27 @@ if(!$_GET[report_service] || !$log_mask) {
 			$out .= "<td>Time:  " . $btl->intervall($time) . " seconds</td>";
 			$out .= "<td><b>" . round($perc,2) . "%</b>   </td>";
 			
-			$flash[$state]=$perc;
+			$flash[$state]=ceil($perc);
 			
 			
 		}
+		$out .= '
+		<script>
+			var data1 = [	';
+						
 		
+			
 		for($x=0; $x<3; $x++) {
 			$nstate= $x+1;
+			if($x==0) $col="green";
+			if($x==1) $col="orange";
+			if($x==2) $col="red";
 			$rstr .= "&text_" . $nstate . "=" . $btl->getState($x) . "&value_" . $nstate . "=" . $flash[$x];	
+			$out .= '{ color: "' . $col . '", label: "' . $btl->getState($x) . '",  data: ' . $flash[$x] . '},';
 		}
+		
+		$out .= '{}]</script>';
+		
 		$idx=$btl->findSHMPlace($defaults[service_id]);
 		$svc_option_line="<a href='service_detail.php?service_place=$idx'>" . $defaults[server_name] . ":" . $defaults[client_port] . "/" . $defaults[service_name] . "</A>" . $btl->getServiceOptions($defaults, $layout) . "<a href='print_report.php?report_start=" . $_GET[report_start] . "&report_end=" .  $_GET[report_end] . "&report_init=" . $_GET[report_init] . "&report_service=" . $_GET[report_service] . "' target='_blank'>Print</A>";
 		
@@ -93,18 +105,8 @@ if(!$_GET[report_service] || !$log_mask) {
 		
 			$out .= '<td colspan=2 align=center>
 			
-				<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" 
-					codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" 
-					width="350" 
-					height="250" 
-					id="pie" 
-					align="middle">
-				<param name="wmode" value="transparent">
-				<param name="allowScriptAccess" value="sameDomain" />
-				<param name="movie" value="flash/pie.swf?a=' . $rstr . '" />
-				<param name="quality" value="high" />
-				<embed src="flash/pie.swf?a=' . $rstr . '" quality="high" width="350" height="250" name="pie" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="transparent"/>
-				</object>
+			 <div id="donutchart1" style="height: 300px;"></div>
+				
 				<br>
 				<!--http://actionscript.org/showMovie.php?id=483-->
 				' . $svc_option_line	 . '

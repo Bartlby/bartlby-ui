@@ -125,6 +125,7 @@ $Author: hjanuschka $
 					
 				<?=$this->BTLEXTMENU?>
 				
+			
 				</div><!--/.well -->
 				<div id='bartlby_basket'></div>
 			</div><!--/span-->

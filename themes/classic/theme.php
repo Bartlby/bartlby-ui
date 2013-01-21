@@ -125,7 +125,6 @@ $Author: hjanuschka $
 					
 				<?=$this->BTLEXTMENU?>
 				
-			
 				</div><!--/.well -->
 				<div id='bartlby_basket'></div>
 			</div><!--/span-->
@@ -229,6 +228,7 @@ $Author: hjanuschka $
 	<script src="themes/classic/js/jquery.flot.pie.min.js"></script>
 	<script src="themes/classic/js/jquery.flot.stack.js"></script>
 	<script src="themes/classic/js/jquery.flot.resize.min.js"></script>
+	<script src="themes/classic/js/jquery.flot.threshold.js"></script>
 	<!-- chart libraries end -->
 
 	<!-- select or dropdown enhancer -->

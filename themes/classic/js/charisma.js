@@ -566,22 +566,7 @@ function docReady(){
 	}
 	if($("#donutchart1").length)
 	{
-		$.plot($("#donutchart1"), data1,
-		{
-				series: {
-						pie: {
-								radius: 80,
-								innerRadius: 0.5,
-								show: true,
-								label: {
-                        show: true
-                 }
-						}
-				},
-				legend: {
-					show: true
-				}
-		});
+		
 	}
 	//donut chart
 	if($("#donutchart").length)

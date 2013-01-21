@@ -66,7 +66,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Start Date:",
-				1=>$layout->Field("report_start", "text", date("d.m.Y",time()-86800)) 
+				1=>$layout->Field("report_start", "text", date("m/d/Y",time()-86800), "", "class='datepicker'") 
 			)
 		)
 
@@ -77,7 +77,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"End Date:",
-				1=>$layout->Field("report_end", "text", date("d.m.Y",time())) 
+				1=>$layout->Field("report_end", "text", date("m/d/Y",time()), "", "class='datepicker'") 
 			)
 		)
 

@@ -37,23 +37,59 @@ if(!$_GET[report_service] || !$log_mask) {
 	$out ="You v choosen a server? or log file is not set";	
 } else {
 	
+	
+	$date_start=explode("/", $_GET[report_start]);
+	$date_end=explode("/", $_GET[report_end]);
+	
+	$_GET[report_start] = $date_start[1] . "." . $date_start[0] . "." . $date_start[2];
+	$_GET[report_end] = $date_end[1] . "." . $date_end[0] . "." . $date_end[2];
+	
 	if($_POST[report_rcpt]) {
 		
 		$out .= $btl->send_custom_report($_POST[report_rcpt], $_GET[report_service], $_GET[report_start], $_GET[report_end]);
 	}
+	
+	
+	
 	$out .= "creating report for service: $_GET[report_service] From: $_GET[report_start] To: $_GET[report_end]<br>";	
 	$ra=$btl->do_report($_GET[report_start], $_GET[report_end], $_GET[report_init], $_GET[report_service]);
+	
+	
+	$date_start=explode(".", $_GET[report_start]);
+	$date_end=explode(".", $_GET[report_end]);
+	
+	$time_start=mktime(0,0,0, $date_start[1], $date_start[0], $date_start[2]);
+	$time_end=mktime(23,59,0, $date_end[1], $date_end[0], $date_end[2]);
+		
+		
+	
+	
 	
 	$svc=$ra[svc];
 	$state_array=$ra[state_array];
 	$notify=$ra[notify];
 	$files_scanned=$ra[files_scanned];
 		
+	$idx=$btl->findSHMPlace($defaults[service_id]);
+		$svc_option_line="<a href='service_detail.php?service_place=$idx'>" . $defaults[server_name] . ":" . $defaults[client_port] . "/" . $defaults[service_name] . "</A>" . $btl->getServiceOptions($defaults, $layout) . "<a href='print_report.php?report_start=" . $_GET[report_start] . "&report_end=" .  $_GET[report_end] . "&report_init=" . $_GET[report_init] . "&report_service=" . $_GET[report_service] . "' target='_blank'>Print</A>";
+		
 	
-	
-	
-		$out .= "<table width=100%>";
-		$out .= "<td colspan=3 class=header>Service Time</td>";
+	$out .= $svc_option_line . "<br><br>";
+			 
+			 
+			 
+			 
+		$out .= "<table  border=5 class='table table-striped table-bordered ' id='services_table2'>
+						  <thead>
+							  <tr>
+							  	<th>Time</th>
+								  <th>State</th>
+								  <th>Percentage</th>
+								  
+							  </tr>
+						  </thead>
+						    <tbody>";
+		$out .= "";
 		
 		$hun=$svc[0]+$svc[1]+$svc[2];
 		$flash[0]="0";
@@ -69,18 +105,24 @@ if(!$_GET[report_service] || !$log_mask) {
 			
 			$perc =   (($hun-$time) * 100 / $hun);
 			$perc =100-$perc;
+			$lbl="";
+			if($state == 0) $lbl="label-success";
+			if($state == 1) $lbl="label-warning";
+			if($state == 2) $lbl="label-important";
+			
 			
 			$out .= "<tr>";
-			$out .= "<td width=200 class='" . $btl->getColor($state) . "'>State:  " . $btl->getState($state) . "<a href='#' onClick=\"return dropdownmenu(this, event, menu_state" . $state . ", '400px')\" onMouseout=\"delayhidemenu()\">X</A><br>";
+			$out .= "<td width=200><span class='label " .  $lbl . "'>" . $btl->getState($state) . "</span><br>";
 			
 			$out .= "</td>";
 			$out .= "<td>Time:  " . $btl->intervall($time) . " seconds</td>";
-			$out .= "<td><b>" . round($perc,2) . "%</b>   </td>";
+			$out .= "<td><b>" . round($perc,2) . "%</b>   </td></tr>";
 			
-			$flash[$state]=ceil($perc);
+			$flash[$state]=$perc;
 			
 			
 		}
+
 		$out .= '
 		<script>
 			var data1 = [	';
@@ -98,24 +140,68 @@ if(!$_GET[report_service] || !$log_mask) {
 		
 		$out .= '{}]</script>';
 		
-		$idx=$btl->findSHMPlace($defaults[service_id]);
-		$svc_option_line="<a href='service_detail.php?service_place=$idx'>" . $defaults[server_name] . ":" . $defaults[client_port] . "/" . $defaults[service_name] . "</A>" . $btl->getServiceOptions($defaults, $layout) . "<a href='print_report.php?report_start=" . $_GET[report_start] . "&report_end=" .  $_GET[report_end] . "&report_init=" . $_GET[report_init] . "&report_service=" . $_GET[report_service] . "' target='_blank'>Print</A>";
-		
 		$out .= "<tr>";
 		
-			$out .= '<td colspan=2 align=center>
+			$out .= '
 			
-			 <div id="donutchart1" style="height: 300px;"></div>
+			 
+				<script>
 				
+				window.setTimeout("doChart()", 1000);
+				function doChart() {
+					$.plot($("#placeholder"),[{data:d, threshold:  [{
+								below: 1,
+								color: "orange"
+							},{
+								below: -1,
+								color: "red"
+							}],
+							color: "green",
+							
+            	lines: { steps: true}}], {
+							 xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S" },
+						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"]], max: 2 }, 
+						 	
+            	
+					});
+					
+					$.plot($("#donutchart1"), data1,
+					{
+							series: {
+									pie: {
+											radius: 80,
+											innerRadius: 0.5,
+											show: true,
+											label: {
+			                        show: true
+			                 }
+									}
+							},
+							legend: {
+								show: true
+							}
+					});
+					
+				}
+				</script>
 				<br>
-				<!--http://actionscript.org/showMovie.php?id=483-->
-				' . $svc_option_line	 . '
-			</td>';
+				
+			';
 				$out .= "</tr>";
-		$out .= "</table>";
-		
-		$out .= "<table width=100%>";
-		$out .= "<td colspan=2 class=header>Notifications:</td>";
+		$out .= "<tbody></table>";
+		$out .= '<div id="donutchart1" style="height: 300px;"></div>
+		<div id="placeholder" style="left: 40px;width:90%;height:400px;"></div>';
+		$out .= "<table  border=5 class='table table-striped table-bordered ' id='services_table3'>
+						  <thead>
+							  <tr>
+							  	<th>Worker</th>
+								  <th>Trigger</th>
+								  
+								  
+							  </tr>
+						  </thead>
+						    <tbody>";
+		$out .= "<td colspan=2 class=header><font color='black'>Notifications:</td>";
 		$hun=$daycnt;
 		while(list($worker, $dd) = @each($notify)) {
 			
@@ -130,7 +216,11 @@ if(!$_GET[report_service] || !$log_mask) {
 			while(list($trigger, $dd1) = @each($dd)) {
 				$out .=	"<i>" . $trigger . "</i><br>";
 				while(list($k, $ts) = @each($dd1)) {
-					$out .= "&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp; "  . date("d.m.Y H:i:s", $ts[0]) . " (<font color='" . $btl->getColor($ts[1]) . "'>" . $btl->getState($ts[1]) . "</font>)<br>";
+					$lbl="";
+					if($ts[1] == 0) $lbl="label-success";
+					if($ts[1] == 1) $lbl="label-warning";
+					if($ts[1] == 2) $lbl="label-important";
+					$out .= "&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp; "  . date("d.m.Y H:i:s", $ts[0]) . " <span class='label " .  $lbl . "'>" . $btl->getState($ts[1]) . "</span><br>";
 				}
 			}
 			
@@ -140,21 +230,52 @@ if(!$_GET[report_service] || !$log_mask) {
 			$out .= "</tr>";
 		}
 		
-		$out .= "</table>";
+		$out .= "</tbody></table>";
 		
+		if($_GET[report_init] == 0) $st_r = 1;
+		if($_GET[report_init] == 1) $st_r = -1;
+		if($_GET[report_init] == 2) $st_r = -2;
 		
-		$o1 .= "<table width=100%>";
-		$o1 .= "<td colspan=3 class=header>Output:</td>";
+		$o1 .= "<table class='table table-striped table-bordered ' id='services_table1'>
+						  <thead>
+							  <tr>
+							  	<th>Time</th>
+								  <th>State</th>
+								  <th>Output</th>
+								  
+							  </tr>
+						  </thead>
+						    <tbody>";
+		$o1 .= "<tr><td colspan=3 class=header><font color=black>Output:</font></td></tr>";
+		$js_out .= "<script>var d = [";
+		$js_out .= "[" . ($time_start*1000) . ", " . $st_r . "],";
+
 		for($xy=0; $xy<count($state_array);$xy++) {
+					
+				if($state_array[$xy][lstate] == 0) $st_r = 1;
+				if($state_array[$xy][lstate] == 1) $st_r = -1;
+				if($state_array[$xy][lstate] == 2) $st_r = -2;
+				
+			$lbl="";
+			if($state_array[$xy][lstate] == 0) $lbl="label-success";
+			if($state_array[$xy][lstate] == 1) $lbl="label-warning";
+			if($state_array[$xy][lstate] == 2) $lbl="label-important";
+			
 					$o1 .= "<tr>";
 					$o1 .= "<td>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
-					$o1 .= "<td valign=top width=200><b><font color='" . $btl->getColor($state_array[$xy][lstate]) . "'>" . $btl->getState($state_array[$xy][lstate]) . "</font></b></td>";
+					$o1 .= "<td valign=top width=200><span class='label " .  $lbl . "'>" . $btl->getState($state_array[$xy][lstate]) . "</span></b></td>";
 			
 					$o1 .= "<td>" . $state_array[$xy][msg] . "</td></tr>";
-						
+					$js_out .= "[" . ($state_array[$xy][end]*1000) . ", " . $st_r . "],";
 		}
-		$o1 .= "</table>";
+		$o1 .= "</tbody></table>";
+		if($time_end > time()) {
+			$time_end=time();
+		}
+		$js_out .= "[" . ($time_end*1000) . ", " . $st_r . "],";
 		
+		$js_out .= "[]];</script>";
+		$o1 .= $js_out;
 	
 }
 
@@ -197,4 +318,5 @@ $layout->TableEnd();
 
 $layout->FormEnd();
 $layout->display();
+
 

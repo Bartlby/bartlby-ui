@@ -149,7 +149,8 @@ if(!$_GET[report_service] || !$log_mask) {
 				
 				window.setTimeout("doChart()", 1000);
 				function doChart() {
-					$.plot($("#placeholder"),[{data:d, threshold:  [{
+					$.plot($("#placeholder"),[{data:d, 
+					threshold:  [{
 								below: 1,
 								color: "orange"
 							},{
@@ -158,7 +159,8 @@ if(!$_GET[report_service] || !$log_mask) {
 							}],
 							color: "green",
 							
-            	lines: { steps: true}}], {
+							points: { show: true },
+            	lines: { show: true, steps: true }}], {
 							 xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S" },
 						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"]], max: 2 }, 
 						 	
@@ -318,5 +320,4 @@ $layout->TableEnd();
 
 $layout->FormEnd();
 $layout->display();
-
 

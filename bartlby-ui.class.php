@@ -327,7 +327,9 @@ class BartlbyUi {
 		$c2="#eeeeee";
 		$cl = $c1;
 		$z=0;
-		for($xy=count($state_array)-1; $xy>=0;$xy=$xy-2) {
+		$state_array=array_reverse($state_array);
+		
+		for($xy=0;$xy<count($state_array);$xy++) {
 			
 				switch($type) {
 					case 'html':
@@ -348,12 +350,7 @@ class BartlbyUi {
 							$o1 .= "<td bgcolor='$cl'>" . $state_array[$xy][msg] . " </td>";
 							$o1 .= "</tr>";
 						
-							$o1 .= "<tr>";
-							$o1 .= "<td bgcolor='$cl'>" . date("d.m.Y H:i:s", $state_array[$xy-1][end]) . "</td>";
-							$o1 .= "<td bgcolor='$cl'>" .  $btl->getState($state_array[$xy-1][lstate]) . " $stay_time </td>";
-							$o1 .= "<td bgcolor='$cl'>" . $state_array[$xy-1][msg] . " </td>";
-							$o1 .= "</tr>";
-						
+							
 						
 							$z++;
 							$z++;
@@ -476,6 +473,7 @@ class BartlbyUi {
 		$files_scanned=array();
 		
 		$work_on=$time_start;
+		$last_state=$state_in;
 		for($x=0; $x<$day_x; $x++) {
 			$filename = $log_mask . "." . date("Y.m.d", $work_on);
 			$last_mark=$work_on;
@@ -488,7 +486,7 @@ class BartlbyUi {
 			array_push($files_scanned, array(0=>$filename, 1=>$lines));
 			
 			
-			$last_state=$state_in;
+			
 			
 			$dig_map[$time_start]=$last_state;
 			while(list($k,$v) = @each($fdata)) {
@@ -510,7 +508,7 @@ class BartlbyUi {
 						continue;	
 					}
 					
-					if($last_state != $tmp[1]) {
+					//if($last_state != $tmp[1]) {
 						
 						
 						
@@ -524,7 +522,7 @@ class BartlbyUi {
 						$last_state=$tmp[1];
 						$last_mark=$log_stamp;
 						$dig_map[$log_stamp]=$last_state;
-					}
+					//}
 					
 					//$out = $tmp[2] . " changed to " . $btl->getState($tmp[1]) . "(" . $tmp[3] . ")";
 					
@@ -547,11 +545,12 @@ class BartlbyUi {
 				} 	
 			}
 			if($work_on > time()) {
-				$work_on=time();	
+					$diff = time() - $last_mark;
+					$svc[$last_state] += $diff;
+			} else {
+				$diff = $work_on - $last_mark;
+				$svc[$last_state] += $diff;
 			}
-			$diff = $work_on - $last_mark;
-			//$out .= "EOD: " . $diff . " " . $btl->getState($last_state) . "<br>";
-			$svc[$last_state] += $diff;
 			
 			
 			

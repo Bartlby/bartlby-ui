@@ -87,8 +87,8 @@ switch($act) {
 		if($_GET[downtime_notice] && $_GET[downtime_from] && $_GET[downtime_to] && $_GET[downtime_type]) {
 		
 		
-			$d_from = $_GET[downtime_from] . " " . $_GET[downtime_from_h];
-			$d_to = $_GET[downtime_to] . " " . $_GET[downtime_to_h];
+			$d_from = $_GET[downtime_from];
+			$d_to = $_GET[downtime_to];
 			
 			sscanf($d_from,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
 			$dfrom=mktime($h, $s, 0, $m, $d,$y);
@@ -111,8 +111,8 @@ switch($act) {
 		if($_GET[downtime_notice] && $_GET[downtime_from] && $_GET[downtime_to] && $_GET[downtime_type]) {
 			$msg = $_GET[downtime_from];
 			
-			$d_from = $_GET[downtime_from] . " " . $_GET[downtime_from_h];
-			$d_to = $_GET[downtime_to] . " " . $_GET[downtime_to_h];
+			$d_from = $_GET[downtime_from] ;
+			$d_to = $_GET[downtime_to];
 			
 			sscanf($d_from,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
 			$dfrom=mktime($h, $s, 0, $m, $d,$y);

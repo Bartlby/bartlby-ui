@@ -103,8 +103,8 @@ function docReady(){
 	$('.cleditor').cleditor();
 	
 	//datepicker
-	$('.datepicker').datepicker();
-	$('.timepicker').timepicker();
+	$('.datepicker').datetimepicker();
+	
 	
 	//notifications
 	$('.noty').click(function(e){

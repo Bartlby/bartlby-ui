@@ -56,7 +56,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"From",
-			1=>$layout->Field("downtime_from", "text", date("m/d/Y 00:00", time()), "", "class='datepicker'")  . $layout->Field("downtime_type", "hidden", $dt_hidden)
+			1=>$layout->Field("downtime_from", "text", date("m/d/Y 00:00", time()), "", "class='datetimepicker'")  . $layout->Field("downtime_type", "hidden", $dt_hidden)
 		)
 	)
 ,true);
@@ -65,7 +65,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"To",
-			1=>$layout->Field("downtime_to", "text", date("m/d/Y 23:59", time()), "", "class='datepicker'")
+			1=>$layout->Field("downtime_to", "text", date("m/d/Y 23:59", time()), "", "class='datetimepicker'")
 		)
 	)
 ,true);

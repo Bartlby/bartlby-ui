@@ -327,7 +327,7 @@ $layout->OUT .= "<script>
 			window.open('execv.php?cmd='+plugin+' -h', 'plgwnd', 'width=600, height=600');
 		}
 		function GrpChk() {
-			window.open('grpstr.php?str='+document.fm1.service_var.value, 'grp', 'width=600, height=600, scrollbars=yes');
+			window.open('grpstr.php?str='+document.fm1.service_var.value, 'grp', 'width=750, height=600, scrollbars=yes');
 		}
 		function CheckTables() {
 			va=document.fm1.service_type.options[document.fm1.service_type.selectedIndex].value;

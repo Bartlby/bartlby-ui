@@ -155,7 +155,7 @@ class Layout {
 		
 	}
 	function DropDown($name,$options=array(), $type='', $style='', $addserver=true) {
-		$r = "<select name='$name' $type $style data-rel='chosen'>\n";
+		$r = "<select name='$name' id='$name' $type $style data-rel='chosen'>\n";
 		for ($x=0;$x<count($options); $x++) {
 			$sel="";
 			if ($options[$x][s] == 1) $sel="selected";

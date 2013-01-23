@@ -105,6 +105,12 @@ function docReady(){
 	//datepicker
 	$('.datetimepicker').datetimepicker();
 	$('.datepicker').datepicker();
+	$('#grp_service_id').change(function(f) {
+  				group_str_selected(f);
+	});
+	$('button[id^=\"remove_service_\"]').click(function(f) {
+				group_str_remove(f);
+	});
 	
 	
 	//notifications

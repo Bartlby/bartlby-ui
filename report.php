@@ -41,6 +41,8 @@ if(!$_GET[report_service] || !$log_mask) {
 	$date_start=explode("/", $_GET[report_start]);
 	$date_end=explode("/", $_GET[report_end]);
 	
+	
+	
 	$_GET[report_start] = $date_start[1] . "." . $date_start[0] . "." . $date_start[2];
 	$_GET[report_end] = $date_end[1] . "." . $date_end[0] . "." . $date_end[2];
 	

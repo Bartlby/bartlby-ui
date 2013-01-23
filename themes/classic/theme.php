@@ -217,6 +217,7 @@ $Author: hjanuschka $
 	<script src="themes/classic/js/bootstrap-tour.js"></script>
 	<!-- library for cookie management -->
 	<script src="themes/classic/js/jquery.cookie.js"></script>
+	<script src="themes/classic/js/jquery-ui-timepicker-addon.js"></script>
 	<!-- calander plugin -->
 	<script src='themes/classic/js/fullcalendar.min.js'></script>
 	<!-- data table plugin -->

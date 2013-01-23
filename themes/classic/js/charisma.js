@@ -104,6 +104,7 @@ function docReady(){
 	
 	//datepicker
 	$('.datepicker').datepicker();
+	$('.timepicker').timepicker();
 	
 	//notifications
 	$('.noty').click(function(e){

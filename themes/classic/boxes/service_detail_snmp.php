@@ -29,5 +29,10 @@
 			<td align=left ><?=$plcs[snmp_type]?></font></td>
 			<td>&nbsp;</td>           
 		</tr>
+			<tr>
+			<td width=150 class='font2'>Textmatch:</td>
+			<td align=left ><?=$plcs[service][service_snmp_textmatch]?></font></td>
+			<td>&nbsp;</td>           
+		</tr>
 		
 	</table>

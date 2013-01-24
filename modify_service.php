@@ -640,6 +640,31 @@ if($defaults[service_snmp_type] == 2) {
 	 $snmptypes[1][s]=1;
 }
 
+$snmptypes[2][c]="";
+$snmptypes[2][v]="3";
+$snmptypes[2][k]="Equal";
+
+if($defaults[service_snmp_type] == 3) {
+	 $snmptypes[2][s]=1;
+}
+
+$snmptypes[3][c]="";
+$snmptypes[3][v]="4";
+$snmptypes[3][k]="Not-Equal";
+
+if($defaults[service_snmp_type] == 4) {
+	 $snmptypes[3][s]=1;
+}
+
+$snmptypes[4][c]="";
+$snmptypes[4][v]="5";
+$snmptypes[4][k]="contains";
+
+if($defaults[service_snmp_type] == 5) {
+	 $snmptypes[4][s]=1;
+}
+
+
 $snmpversions[0][c]="";
 $snmpversions[0][v]="1";
 $snmpversions[0][k]="1";
@@ -704,6 +729,17 @@ $active_box_out .= $layout->Tr(
 		)
 	)
 ,true);
+
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"TextMatch",
+			1=>$layout->Field("service_snmp_textmatch", "text", $defaults[service_snmp_textmatch])
+			
+		)
+	)
+,true);
+
 $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(

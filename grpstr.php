@@ -22,9 +22,11 @@ $layout->OUT .= "
 					if(parseInt(ar[2])==ar[2]) {
 						svc_id=ar[2];
 						svc_state=$('#sel_service_state_'+svc_id).val();
-						grp_str += '|' + svc_id + '=' + svc_state;
+						if(svc_state >= 0)  {
+							grp_str += '|' + svc_id + '=' + svc_state;
+						}
 									
-					}
+					} 
 					
 				});
 				grp_str +='|';

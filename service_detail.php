@@ -259,6 +259,15 @@ if($defaults[service_type] == 5){
 	if($defaults[service_snmp_type]  == 2) {
 		$snmp_type = "Greater";
 	} 
+	if($defaults[service_snmp_type]  == 3) {
+		$snmp_type = "Equal";
+	}
+	if($defaults[service_snmp_type]  == 4) {
+		$snmp_type = "Not-Equal";
+	}
+	if($defaults[service_snmp_type]  == 5) {
+		$snmp_type = "Contains";
+	}
 	$info_box_title='SNMP Service';  
 	$layout->create_box($info_box_title, $core_content, "service_detail_snmp", array("service"=>$defaults, "snmp_type"=>$snmp_type), "service_detail_snmp");
 }

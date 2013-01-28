@@ -4,6 +4,11 @@ include "config.php";
 include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 
+
+if($Bartlby_CONF_Remote == true && $Bartlby_CONF_DBSYNC == false) {
+	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
+}
+
 $layout= new Layout();
 $layout->setTitle("Delete Service");
 $layout->set_menu("services");

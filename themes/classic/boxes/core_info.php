@@ -45,7 +45,10 @@
 			<td colspan=2 class='font1'>Reload: <font class='font2'><?=$plcs[reload_state]?></font></td>
 			
 		</tr>
-		
+		<tr>
+			<td colspan=2 class='font1'>Last Sync: <font class='font2'><?=$plcs[last_sync]?></font></td>
+			
+		</tr>
 		
 		
 		<tr>

@@ -124,8 +124,14 @@ class BartlbyUi {
 	}
 	
 	function doReload() {
+		global $Bartlby_CONF_Remote;
+		
+		if($Bartlby_CONF_Remote == true) {
+				$this->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
+		}
+		
 		bartlby_reload($this->CFG);
-		while(1) {
+		while(1 ) {
 			$x++;
 			$i = @bartlby_get_info($this->CFG);
 			flush();
@@ -571,11 +577,16 @@ class BartlbyUi {
 		
 	}
 	function setUIRight($k, $v, $user) {
-		if(!file_exists("rights/" . $user . ".dat")) {
-			copy("rights/template.dat", "rights/" . $user . ".dat");
+		$base="rights/";
+		if($Bartlby_CONF_IDX>0) {
+			$base="rights-" . $Bartlby_CONF_IDX . "/";
 		}
-		if(file_exists("rights/" . $user . ".dat")) {
-			$orig = file_get_contents("rights/" . $user . ".dat");
+		if(!file_exists($base . $user . ".dat")) {
+			copy($base . "/template.dat", $base . $user . ".dat");
+		}
+		
+		if(file_exists($base . "/" . $user . ".dat")) {
+			$orig = file_get_contents($base . $user . ".dat");
 			
 			if(!preg_match("/" . $k . "=/", $orig)) {
 				$orig .= "\n" . $k . "=\n";	
@@ -597,7 +608,7 @@ class BartlbyUi {
 				}
 			}
 			
-			$fp = fopen("rights/" . $user . ".dat", "w");
+			$fp = fopen($base . "/" . $user . ".dat", "w");
 			fwrite($fp, $new);
 			fclose($fp);
 			
@@ -906,11 +917,20 @@ class BartlbyUi {
 		
 	}
 	function loadRights() {
-		if(!file_exists("rights/" . $this->user_id . ".dat")) {
-			copy("rights/template.dat", "rights/" . $this->user_id . ".dat");
+		global $Bartlby_CONF_IDX;
+		$base="rights/";
+		
+		$ui_extra_file = "ui-extra.conf";
+		if($Bartlby_CONF_IDX>0) {
+			$base="rights-" . $Bartlby_CONF_IDX . "/";
+			$ui_extra_file = "ui-extra-" . $Bartlby_CONF_IDX . ".conf";
 		}
-		if(file_exists("rights/" . $this->user_id . ".dat")) {
-			$fa=file("rights/" . $this->user_id . ".dat");
+		if(!file_exists($base . "/" . $this->user_id . ".dat")) {
+			copy($base . "/template.dat", "rights/" . $this->user_id . ".dat");
+		}
+		//echo "RIGHTS:" . $base . "/" . $this->user_id . ".dat";
+		if(file_exists($base . "/" . $this->user_id . ".dat")) {
+			$fa=file($base . "/" . $this->user_id . ".dat");
 			while(list($k, $v) = each($fa)) {
 				$s1=explode("=", $v);
 				$this->rights[$s1[0]]=explode(",", trim($s1[1]));
@@ -968,7 +988,7 @@ class BartlbyUi {
 		
 		// if is super_user ALL services and servers are allowed
 		
-		if($this->user == @bartlby_config("ui-extra.conf", "super_user") || $this->rights[super_user][0] == "true") {
+		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user][0] == "true") {
 		
 				$this->rights[services]=null;
 				$this->rights[servers]=null;
@@ -1332,7 +1352,7 @@ class BartlbyUi {
 				$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
 				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $re[$x][service_type] . "<br>";
 				
-				$ads=bartlby_add_service($this->CFG, $server, $re[$x][plugin],$re[$x][service_name],$re[$x][plugin_arguments],$re[$x][notify_enabled],$re[$x][exec_plan],$re[$x][check_interval],$re[$x][service_type],$re[$x][service_var], $re[$x][service_passive_timeout], $re[$x][service_check_timeout], $re[$x][service_ack], $re[$x][service_retain],$re[$x][service_snmp_community], $re[$x][service_snmp_objid],$re[$x][service_snmp_version],$re[$x][service_snmp_warning],$re[$x][service_snmp_critical],$re[$x][service_snmp_type], $re[$x][service_active], $re[$x][flap_seconds],$re[$x][renotify_interval],$re[$x][escalate_divisor],$re[$x][fires_events], $re[$x][enabled_triggers]);
+				$ads=bartlby_add_service($this->CFG, $server, $re[$x][plugin],$re[$x][service_name],$re[$x][plugin_arguments],$re[$x][notify_enabled],$re[$x][exec_plan],$re[$x][check_interval],$re[$x][service_type],$re[$x][service_var], $re[$x][service_passive_timeout], $re[$x][service_check_timeout], $re[$x][service_ack], $re[$x][service_retain],$re[$x][service_snmp_community], $re[$x][service_snmp_objid],$re[$x][service_snmp_version],$re[$x][service_snmp_warning],$re[$x][service_snmp_critical],$re[$x][service_snmp_type],$re[$x][service_snmp_textmatch], $re[$x][service_active], $re[$x][flap_seconds],$re[$x][renotify_interval],$re[$x][escalate_divisor],$re[$x][fires_events], $re[$x][enabled_triggers]);
 				$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
 				
 				if($re[$x][__install_plugin]) {

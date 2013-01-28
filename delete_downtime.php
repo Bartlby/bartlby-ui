@@ -5,6 +5,11 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("action.delete_downtime");
 
+
+if($Bartlby_CONF_Remote == true && $Bartlby_CONF_DBSYNC == false) {
+	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
+}
+
 $layout= new Layout();
 $layout->setTitle("Delete Downtime");
 $layout->set_menu("downtimes");

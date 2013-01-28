@@ -238,9 +238,18 @@ class Layout {
 				if($_SESSION[instance_id] == $x) {
 					$sel = "selected";
 				}
+				
+				
 				$r = "(LOCAL)";
-				if($confs[$x][remote]) $r = "(REMOTE)";
-				$this->BTL_INSTANCES .= "<option value=" . $x ." $sel>" . basename($confs[$x][file]) . " $r</option>";
+				$read_only = "";
+				$rw="green";
+				if($confs[$x][remote]) {
+					 $r = "(REMOTE)";
+					if($confs[$x][db_sync] == false) {
+						 $rw = "grey";
+					}
+				}
+				$this->BTL_INSTANCES .= "<option style='background-color: $rw' value=" . $x ." $sel>" . $confs[$x][display_name] . " $r</option>";
 			}
 			$this->BTL_INSTANCES .= "</select>";
 		}

@@ -1,11 +1,19 @@
 <?php
+
 	class bartlbyStorage {
+		
 		function bartlbyStorage($plugin_name) {
+			global $Bartlby_CONF_IDX;
 			$this->plugin_name=$plugin_name;
 			$this->base_dir="store";
+			if($Bartlby_CONF_IDX>0) {
+				$this->base_dir = "store-" . $Bartlby_CONF_IDX;
+			}
+		
 			$this->save_path=$this->base_dir . "/" . $this->plugin_name;
+				
 			if(!is_dir($this->save_path)) {
-				if(!@mkdir($this->save_path)) {
+				if(!@mkdir($this->save_path, 0777, true)) {
 					return false;
 				}
 			}

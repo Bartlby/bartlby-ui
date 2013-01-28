@@ -205,6 +205,11 @@ $Author: hjanuschka $
 		$avgDEL = 0;	
 	}
 	
+		$health_title='System Health';  
+	$layout->create_box($health_title, $health_content,"system_health", array(
+			'prozent_float' => $prozent_float,
+			'color' => $color
+		), "system_health");
 	
 	
 	$max_running = bartlby_config($btl->CFG, "max_concurent_checks");
@@ -227,6 +232,12 @@ $Author: hjanuschka $
 	} else {
 		$load_bar = "<font color=green>" . $info[current_running]  . "</font> Load: <font color=green>" . $curr_load[0] . " / " . $max_load . " </font>";	
 	}
+	$fin_last_sync =  "MASTER";
+	$last_sync = @file_get_contents("last_sync-" . $Bartlby_CONF_IDX);
+	if($last_sync != "") {
+		$fin_last_sync = $btl->intervall(time()-$last_sync);
+	}
+	
 	$info_box_title='Core Information';  
 	$core_content = "";
 	$layout->create_box($info_box_title, $core_content, "core_info", array(
@@ -243,7 +254,8 @@ $Author: hjanuschka $
 		'average_delay' => $avgDEL,
 		'release_name' => $btl->getRelease(),
 		'reload_state' => $reload_status,
-		'sirene'  => $sir
+		'sirene'  => $sir,
+		'last_sync' => $fin_last_sync
 		
 		), "core_info");
 	
@@ -276,6 +288,7 @@ $Author: hjanuschka $
 		$all[2]=0;
 			
 		$grp_map=$btl->GetServerGroups();
+	
 		for($z=0; $z<count($grp_map); $z++) {
 			$members=explode("|",$grp_map[$z][servergroup_members]);
 			$grp_map[$z][members]=array();
@@ -437,12 +450,7 @@ $Author: hjanuschka $
 	
 	
 	
-	$health_title='System Health';  
-	$layout->create_box($health_title, $health_content,"system_health", array(
-			'prozent_float' => $prozent_float,
-			'color' => $color
-		), "system_health");
-	
+
 	
 	$layout->setTitle("QuickView");
 	$r=$btl->getExtensionsReturn("_overview", $layout);

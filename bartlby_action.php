@@ -1,6 +1,6 @@
 <?php
-include "layout.class.php";
 include "config.php";
+include "layout.class.php";
 include "bartlby-ui.class.php";
 
 $act=$_GET[action];
@@ -23,6 +23,11 @@ if($act != "delete_package_ask") {
 	$btl->hasRight("action." . $act);
 }
 switch($act) {
+	case 'set_instance_id':
+		$_SESSION["instance_id"] = $_GET[instance_id];
+		Header("Location: overview.php");
+		
+	break;
 	case 'save_permissions':
 	
 		while(list($k, $v) = each($_POST)) {

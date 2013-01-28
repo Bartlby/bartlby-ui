@@ -3,6 +3,12 @@ include "layout.class.php";
 include "config.php";
 include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
+
+
+if($Bartlby_CONF_Remote == true) {
+	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
+}
+
 $btl->hasRight("action.add_downtime");
 $layout= new Layout();
 

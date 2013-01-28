@@ -1,7 +1,9 @@
 <?
-include "layout.class.php";
 include "config.php";
+include "layout.class.php";
 include "bartlby-ui.class.php";
+
+
 $btl=new BartlbyUi($Bartlby_CONF);
 
 

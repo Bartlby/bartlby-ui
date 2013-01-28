@@ -20,13 +20,48 @@ $HeadURL: http://bartlby.svn.sourceforge.net/svnroot/bartlby/trunk/bartlby-core/
 $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */
+session_start();
+
+
+if($_SERVER[SERVER_NAME] == "www.bartlby.org") {
+$confs[0][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
+$confs[0][remote] = false;
+$confs[1][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local.second";
+$confs[1][remote] = true;
+} else {
+	$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
+	$confs[0][remote] = false;
+}
+
+
+
+
+if(!$_SESSION[instance_id]) {
+	$Bartlby_CONF=$confs[0][file];
+	$Bartlby_CONF_Remote=$confs[0][remote];
+} else {
+	$Bartlby_CONF=$confs[$_SESSION[instance_id]][file];
+	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
+}
+if($_SESSION[instance_id] > count($confs)) {
+	$Bartlby_CONF=$confs[0][file];
+	$Bartlby_CONF_Remote=$confs[0][remote];
+}
+
+
+
+	if($do_not_merge_post_get != true) {
+		$_GET=array_merge($_GET, $_POST);
+	}
+/*
 
 	$Bartlby_CONF="/opt/bartlby/etc/bartlby.cfg";
 	if(file_exists("setup.php")) {
 		include("setup.php");
 		exit(1);	
 	}
-	if($do_not_merge_post_get != true) {
-		$_GET=array_merge($_GET, $_POST);
-	}
+
+
+$Bartlby_CONF="/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
+*/
 ?>

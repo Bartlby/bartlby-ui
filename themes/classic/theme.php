@@ -89,9 +89,11 @@ $Author: hjanuschka $
 					<span class="icon-bar"></span>
 				</a>
 				<a  href="overview.php"> <img src="themes/classic/images/btl-logo.gif" /> </a>
+				
 				<div class="pull-right">
 					<button class="btn btn-small" onClick="document.location.href='bartlby_action.php?action=reload';"><i class="icon-refresh"></i> Reload</button>
 					<button class="btn btn-small" onClick="document.location.href='logout.php';"><i class="icon-remove"></i> Logout</button>
+					<?=$this->BTL_INSTANCES?>
 				</div>
 				<div class="pull-right" style="padding-top: 8px;">
 					<div  id="quick_look" style="z-index:100"><font size=1>Auto Reload<input type='checkbox' checked onClick='toggleReload()' style='height:10px'>   Quick look<input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>

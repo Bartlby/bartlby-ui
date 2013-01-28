@@ -55,6 +55,9 @@ class Layout {
 		} else {
 			$this->theme="classic";
 		}
+		
+		
+	
 
 		$this->template_file="template.html";
 		$this->start_time=$this->microtime_float();
@@ -207,8 +210,10 @@ class Layout {
 	}
 	
 	function display($lineup_file="") {
+	global $xajax;
+	global $confs;
 		if($lineup_file=="no") $lineup_file="";
-		global $xajax;
+		
 		
 		if($this->menu_set == false) {
 			$this->set_menu("core");	
@@ -225,7 +230,21 @@ class Layout {
 			
 		$this->end_time=$this->microtime_float();
 		$diff=$this->end_time-$this->start_time;
-		
+			
+		if(count($confs) > 0) {
+			$this->BTL_INSTANCES .= "<select name='btl_instance_id' onChange='btl_change(this)'>";
+			for($x=0; $x<count($confs); $x++) {
+				$sel = " ";
+				if($_SESSION[instance_id] == $x) {
+					$sel = "selected";
+				}
+				$r = "(LOCAL)";
+				if($confs[$x][remote]) $r = "(REMOTE)";
+				$this->BTL_INSTANCES .= "<option value=" . $x ." $sel>" . basename($confs[$x][file]) . " $r</option>";
+			}
+			$this->BTL_INSTANCES .= "</select>";
+		}
+			
 
 		//Create Menu.
 		$this->ext_menu .= $this->beginMenu();

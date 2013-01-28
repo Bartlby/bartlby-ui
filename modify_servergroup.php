@@ -7,6 +7,12 @@ include "bartlby-ui.class.php";
 
 $btl=new BartlbyUi($Bartlby_CONF);
 
+
+if($Bartlby_CONF_Remote == true) {
+	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
+}
+
+
 $layout= new Layout();
 
 

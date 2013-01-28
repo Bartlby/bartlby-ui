@@ -43,6 +43,7 @@ $confs[1][display_name] = "Old-Hetzner";
 	$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
 	$confs[0][remote] = false;
 	$confs[0][db_sync] = true;
+	$confs[0][display_name] = "Primary";
 }
 
 
@@ -65,6 +66,7 @@ if($_SESSION[instance_id] > count($confs)) {
 	$Bartlby_CONF_Remote=$confs[0][remote];
 	$Bartlby_CONF_IDX=0;
 	$Bartlby_CONF_DBSYNC=true;
+	
 }
 
 

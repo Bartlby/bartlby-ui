@@ -11,7 +11,7 @@ $c=0;
 				continue;
 		}
 			echo  "<td align=left valign=top width=300>";					
-			echo  "<table width='100%'><tr><td><b><a href='servicegroup_detail.php?servicegroup_id=" . $grp[servicegroup_id] . "'>" . $grp[servicegroup_name] . "</b></td><tr><tr><td ><span class='label " . $grp[lbl] . "'>" . $grp[prozent_float] . " % OK</span></td></tr></table>";
+			echo  "<table width='100%'><tr><td><b><a href='servicegroup_detail.php?servicegroup_id=" . $grp[servicegroup_id] . "'>" . $grp[servicegroup_name] . "</b></td><tr><tr><td ><div class='progress " . $grp[lbl] . "' style='width:80px;'><div class='bar' style='width: " . $grp[prozent_float] . "%;'>" . $grp[prozent_float] . " % OK</div></td></tr></table>";
 
 			$c++;
 			

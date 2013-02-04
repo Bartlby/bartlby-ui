@@ -332,13 +332,13 @@ $Author: hjanuschka $
 	
 				if($prozent_float <= 60) {
 					$color="red";	
-					$lbl = "label-important";
+					$lbl = "progress-danger";
 				} else if($prozent_float <= 90) {
-					$lbl = "label-warning";
+					$lbl = "progress-warning";
 				} else if($prozent_float <= 80) {
-					$lbl = "label-important";
+					$lbl = "progress-danger";
 				} else {
-					$lbl = "label-success";
+					$lbl = "progress-success";
 				}
 				
 				$grp_map[$z][prozent_float]=$prozent_float;
@@ -424,13 +424,13 @@ $Author: hjanuschka $
 	
 				if($prozent_float <= 60) {
 					$color="red";	
-					$lbl = "label-important";
+					$lbl = "progress-danger";
 				} else if($prozent_float <= 90) {
-					$lbl = "label-warning";
+					$lbl = "progress-warning";
 				} else if($prozent_float <= 80) {
-					$lbl = "label-important";
+					$lbl = "progress-danger";
 				} else {
-					$lbl = "label-success";
+					$lbl = "progress-success";
 				}
 			
 				$grp_map[$z][prozent_float]=$prozent_float;

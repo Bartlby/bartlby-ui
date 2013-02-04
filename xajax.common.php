@@ -54,4 +54,5 @@ $xajax->registerFunction("BulkServiceSearch");
 $xajax->registerFunction("IphoneOverView");
 
 $xajax->registerFunction("setWorkerState");
+$xajax->registerFunction("updateServiceDetail");
 ?>

@@ -20,6 +20,15 @@
 */
 
 ?>
+<script>
+	function svcUpdater(id) {
+		window.clearTimeout();
+		xajax_updateServiceDetail(id);
+		window.setTimeout("svcUpdater(" + id + ")", 2000);
+	}
+	svcUpdater(<?= $_GET[service_place]?>);
+	
+</script>
 <table  width='100%'>
 	<tr>
 		<td width=150 class='font2'>Server:</td>
@@ -43,7 +52,7 @@
 	</tr>
 	<tr>
 		<td width=150 class='font2'>Current State:</td>
-		<td align=left><font color='<?=$plcs[color]?>'><?=$plcs[state]?></font></td> 
+		<td align=left id='service_current_state' name='service_current_state'><font color='<?=$plcs[color]?>'><?=$plcs[state]?></font></td> 
 		<td>&nbsp;</td>          
 	</tr>
 	<tr>
@@ -54,12 +63,12 @@
 	
 	<tr>
 		<td width=150 class='font2'>Last Check:</td>
-		<td align=left ><?=date("d.m.Y H:i:s", $plcs[service][last_check])?></font></td>
+		<td align=left id='service_last_check' name='service_last_check'><?=date("d.m.Y H:i:s", $plcs[service][last_check])?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
 	<tr>
 		<td width=150 class='font2'>approx. next Check:</td>
-		<td align=left ><?=date("d.m.Y H:i:s", $plcs[service][last_check]+$plcs[service][check_interval])?></font></td>
+		<td align=left  id='service_next_check' name='service_next_check'><?=date("d.m.Y H:i:s", $plcs[service][last_check]+$plcs[service][check_interval])?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
 	
@@ -71,7 +80,7 @@
 	<tr>
 		<td width=150 class='font2'>Last Notify Send:</td>
 		
-		<td align=left ><?=date("d.m.Y H:i:s", $plcs[service][last_notify_send])?></font></td>
+		<td align=left id='service_last_notify_send' name='service_last_notify_send'><?=date("d.m.Y H:i:s", $plcs[service][last_notify_send])?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
 		<tr>
@@ -132,7 +141,7 @@
 	
 		<tr>
 		<td width=150 class='font2'>Is Running?:</td>
-		<td align=left ><?= $plcs[currently_running]?></font></td>
+		<td align=left id='service_currently_running' name='service_currently_running'><?= $plcs[currently_running]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>	
 	<tr>

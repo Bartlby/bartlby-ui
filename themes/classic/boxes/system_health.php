@@ -13,12 +13,12 @@ if($plcs[color] == "green") {
 }
 if($plcs[color] == "red") {
 	
-	$progress_css = "progress-warning";
+	$progress_css = "progress-danger";
 }
 
-if($plcs[color] == "yello") {
+if($plcs[color] == "yellow") {
 	
-	$progress_css = "progress-danger";
+	$progress_css = "progress-warning";
 }
 
 

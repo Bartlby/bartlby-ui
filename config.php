@@ -45,6 +45,9 @@ $confs[1][uniq_id] = 1;
 	$confs[0][remote] = false;
 	$confs[0][db_sync] = true;
 	$confs[0][display_name] = "Primary";
+	
+	
+	
 }
 
 
@@ -75,13 +78,16 @@ if($_SESSION[instance_id] > count($confs)) {
 	if($do_not_merge_post_get != true) {
 		$_GET=array_merge($_GET, $_POST);
 	}
+	if($_SERVER[SERVER_NAME] != "www.bartlby.org") {
+		if(file_exists("setup.php")) {
+			include("setup.php");
+			exit(1);	
+		}
+	}
 /*
 
 	$Bartlby_CONF="/opt/bartlby/etc/bartlby.cfg";
-	if(file_exists("setup.php")) {
-		include("setup.php");
-		exit(1);	
-	}
+	
 
 
 $Bartlby_CONF="/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";

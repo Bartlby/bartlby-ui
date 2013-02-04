@@ -25,7 +25,8 @@ if($act != "delete_package_ask") {
 switch($act) {
 	case 'set_instance_id':
 		$_SESSION["instance_id"] = $_GET[instance_id];
-		Header("Location: overview.php");
+		
+		Header("Location: " .  $_SERVER['HTTP_REFERER']);
 		
 	break;
 	case 'save_permissions':

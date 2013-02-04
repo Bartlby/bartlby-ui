@@ -19,7 +19,7 @@
 <table class='nopad' width='100%'>
 		<tr>
 			<td colspan=2 class='font1'>Hosts:<font class='font2'><?=$plcs[host_sum]?></font></td>
-			<td colspan=5 align=left class='font1'>Services:<font Fav. Services class='font2'><?=$plcs[services_sum]?></font></td>
+			<td colspan=6 align=left class='font1'>Services:<font Fav. Services class='font2'><?=$plcs[services_sum]?></font></td>
 		</tr>
 		<tr>
 			<td class='font1'>Up:<font class='font2'><?=$plcs[hosts_up]?></font></td>

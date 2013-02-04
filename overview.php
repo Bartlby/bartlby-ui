@@ -347,6 +347,9 @@ $Author: hjanuschka $
 				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
 				$grp_map[$z][service_sum]=$service_sum;
 				$grp_map[$z][lbl]=$lbl;
+				$grp_map[$z][0]=$all[0];
+				$grp_map[$z][1]=$all[1];
+				$grp_map[$z][2]=$all[2];
 				
 				
 				
@@ -436,6 +439,9 @@ $Author: hjanuschka $
 				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
 				$grp_map[$z][service_sum]=$service_sum;
 				$grp_map[$z][lbl]=$lbl;
+				$grp_map[$z][0]=$all[0];
+				$grp_map[$z][1]=$all[1];
+				$grp_map[$z][2]=$all[2];
 				
 		}
 	

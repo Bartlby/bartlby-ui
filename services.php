@@ -29,6 +29,7 @@
 				continue;	
 			}
 			
+			
 			$curp = $_GET[$k ."site"] > 0 ? $_GET[$k ."site"] : 1;
 			$perp=bartlby_config("ui-extra.conf", "services_per_page");
 			$perp=1000000000000000000;
@@ -44,6 +45,13 @@
 			$services_found=array();
 			for($x=$skip_em; $x<count($servs); $x++) {
 				//echo $servs[$x][service_id] . "->" . $_GET[service_id] . "<br>";
+
+				if($_GET[servergroup_id] && !isInServerGroup($servs[$x], $_GET[servergroup_id])) {
+					continue;
+				}
+				if($_GET[servicegroup_id] && !isInServiceGroup($servs[$x], $_GET[servicegroup_id])) {
+					continue;
+				}
 				if($_GET[service_id] != "" && $servs[$x][service_id] != $_GET[service_id]) {
 					
 					continue;
@@ -161,4 +169,21 @@
 	$layout->TableEnd();
 	$layout->display("services");
 	
+	
+function isInServiceGroup($svc, $group) {
+	for($x=0; $x<count($svc[servicegroups]); $x++) {
+				if($svc[servicegroups][$x][servicegroup_id] == $group) {
+					return true;
+				}
+	}
+	return false;
+}
+function isInServerGroup($svc, $group) {
+	for($x=0; $x<count($svc[servergroups]); $x++) {
+				if($svc[servergroups][$x][servergroup_id] == $group) {
+					return true;
+				}
+	}
+	return false;
+}
 ?>

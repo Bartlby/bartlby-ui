@@ -46,11 +46,12 @@ class Basket {
 		
 		while(@list($k, $v) = @each($sto[services])) {
 			$idx=$btl->findSHMPlace($k);
+			if($idx < 0) continue;
 			$svc = bartlby_get_service($btl->CFG, $idx);
 			$beauty_state = $btl->getState($svc[current_state]);
 			$label=$svc[server_name] . "/" . $svc[service_name];
 			$label=substr($label, 0,20);
-			$r .= "<tr><td style='font-size:10px; font-family:tahoma'><a href='service_detail.php?service_place=" . $idx . "'><font size=1>" .  $label . "</A> ($beauty_state) <a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '" . $svc[service_id] . "')\">X</A></td></tr>";	
+			$r .= "<tr><td style='font-size:10px;'><b><a href='service_detail.php?service_place=" . $idx . "'><font size=1>" .  $label . "</A> ($beauty_state) <a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '" . $svc[service_id] . "')\">X</A></b></td></tr>";	
 			
 		}
 

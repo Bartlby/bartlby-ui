@@ -28,13 +28,14 @@ $confs[0][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
 $confs[0][remote] = false;
 $confs[0][db_sync] = true;
 $confs[0][display_name] = "2ka-primary";
+$confs[0][uniq_id] = 0;
 
 
 $confs[1][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local.second";
 $confs[1][remote] = true;
 $confs[1][db_sync] = true;
 $confs[1][display_name] = "Old-Hetzner";
-
+$confs[1][uniq_id] = 1;
 
 
 
@@ -53,18 +54,18 @@ if(!$_SESSION[instance_id]) {
 	$Bartlby_CONF=$confs[0][file];
 	$Bartlby_CONF_Remote=$confs[0][remote];
 	$Bartlby_CONF_DBSYNC=$confs[0][db_sync];
-	$Bartlby_CONF_IDX=0;
+	$Bartlby_CONF_IDX=$confs[0][uniq_id];
 } else {
 	$Bartlby_CONF=$confs[$_SESSION[instance_id]][file];
 	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
 	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
 	$Bartlby_CONF_DBSYNC=$confs[$_SESSION[instance_id]][db_sync];
-	$Bartlby_CONF_IDX=$_SESSION[instance_id];
+	$Bartlby_CONF_IDX=$confs[$_SESSION[instance_id]][uniq_id];
 }
 if($_SESSION[instance_id] > count($confs)) {
 	$Bartlby_CONF=$confs[0][file];
 	$Bartlby_CONF_Remote=$confs[0][remote];
-	$Bartlby_CONF_IDX=0;
+	$Bartlby_CONF_IDX=$confs[0][uniq_id];
 	$Bartlby_CONF_DBSYNC=true;
 	
 }

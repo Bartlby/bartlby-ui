@@ -43,7 +43,7 @@ function updateServiceDetail($svc_idx) {
 	}
 	
 	
-	
+	$res->AddAssign("service_status", "innerHTML", $defaults[service_retain_current] . " / " . $defaults[service_retain]);
 	$res->AddAssign("service_next_check", "innerHTML", date("d.m.Y H:i:s", $defaults[last_check]+$defaults[check_interval]));
 	$res->AddAssign("service_last_check", "innerHTML", date("d.m.Y H:i:s", $defaults[last_check]));
 	$res->AddAssign("service_new_server_text", "innerHTML",  $defaults[new_server_text]);

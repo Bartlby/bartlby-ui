@@ -238,6 +238,13 @@ $Author: hjanuschka $
 		$fin_last_sync = $btl->intervall(time()-$last_sync);
 	}
 	
+	$rel_name = $btl->getRelease();
+	$tmpa = explode(":", $rel_name);
+	
+	if(count($tmpa) > 1) {
+		$tmpa[1]= str_replace(")", "", $tmpa[1]);
+		$rel_name = $tmpa[0] . " <a href='https://github.com/Bartlby/bartlby-core/commit/" . $tmpa[1] . "'>" . $tmpa[1] . "</A>)";
+	}
 	$info_box_title='Core Information';  
 	$core_content = "";
 	$layout->create_box($info_box_title, $core_content, "core_info", array(
@@ -252,7 +259,7 @@ $Author: hjanuschka $
 		'running' => $load_bar,
 		'round_ms_time' => $rndMS,
 		'average_delay' => $avgDEL,
-		'release_name' => $btl->getRelease(),
+		'release_name' => $rel_name,
 		'reload_state' => $reload_status,
 		'sirene'  => $sir,
 		'last_sync' => $fin_last_sync
@@ -305,7 +312,6 @@ $Author: hjanuschka $
 					$all[0] += $ret[0];
 					$all[1] += $ret[1];
 					$all[2] += $ret[2];
-					
 					
 					
 					

@@ -127,6 +127,7 @@ function docReady(){
 	//chosen - improves select
 	$('[data-rel="chosen"],[rel="chosen"]').css("width", "100%");
 	$('[data-rel="chosen"],[rel="chosen"]').css("max-width", "300px");
+	$('[data-rel="chosen"],[rel="chosen"]').css("min-width", "200px");
 	$('[data-rel="chosen"],[rel="chosen"]').chosen({ search_contains: true });
 	
 

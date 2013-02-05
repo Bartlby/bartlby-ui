@@ -20,15 +20,7 @@
 */
 
 ?>
-<script>
-	function svcUpdater(id) {
-		window.clearTimeout();
-		xajax_updateServiceDetail(id);
-		window.setTimeout("svcUpdater(" + id + ")", 2000);
-	}
-	svcUpdater(<?= $_GET[service_place]?>);
-	
-</script>
+
 <table  width='100%'>
 	<tr>
 		<td width=150 class='font2'>Server:</td>

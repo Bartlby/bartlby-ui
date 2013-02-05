@@ -40,6 +40,7 @@ $confs[1][uniq_id] = 1;
 
 
 
+
 } else {
 	$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
 	$confs[0][remote] = false;

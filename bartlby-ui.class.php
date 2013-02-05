@@ -897,6 +897,7 @@ class BartlbyUi {
 			
 		} else {
 			if(!preg_match("/error.php/" , $_SERVER[SCRIPT_NAME])) {
+				
 				$this->redirectError("BARTLBY::RIGHT::FILE::NOT::FOUND");
 				exit(1);	
 			}
@@ -928,7 +929,7 @@ class BartlbyUi {
 		if(!file_exists($base . "/" . $this->user_id . ".dat")) {
 			copy($base . "/template.dat", "rights/" . $this->user_id . ".dat");
 		}
-		//echo "RIGHTS:" . $base . "/" . $this->user_id . ".dat";
+		
 		if(file_exists($base . "/" . $this->user_id . ".dat")) {
 			$fa=file($base . "/" . $this->user_id . ".dat");
 			while(list($k, $v) = each($fa)) {
@@ -966,6 +967,7 @@ class BartlbyUi {
 			}
 		} else {
 			if(!preg_match("/error.php/" , $_SERVER[SCRIPT_NAME])) {
+		
 				$this->redirectError("BARTLBY::RIGHT::FILE::NOT::FOUND");
 				exit(1);	
 			}

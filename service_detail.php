@@ -326,5 +326,8 @@ $defaults=$odefaults;
 
 $layout->OUT .= $btl->getserviceOptions($defaults, $layout);
 
-
-$layout->display("service_detail");
+if($_GET[json] == 1) {
+		echo json_encode($layout);
+	} else {
+		$layout->display("service_detail");
+}

@@ -33,7 +33,7 @@ $Author: hjanuschka $
 	$btl->hasRight("main.overview");
 
 	$layout->set_menu("main");
-	$layout->MetaRefresh(30);
+	//$layout->MetaRefresh(30);
 	$layout->Table("100%");
 	$lib=bartlby_lib_info($btl->CFG);
 	$info=$btl->info;
@@ -478,7 +478,13 @@ $Author: hjanuschka $
 	
 	$layout->boxes_placed[MAIN]=false;
 	$layout->TableEnd();
-	$layout->display("overview");
+	
+	
+	if($_GET[json] == 1) {
+		echo json_encode($layout);
+	} else {
+		$layout->display("overview");
+	}
 	
 	
 function my_sys_getloadavg() {

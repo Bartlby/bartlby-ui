@@ -120,34 +120,25 @@ $Author: hjanuschka $
 
 				case 0:
 					$services_ok++;
-					if($v[$y][is_downtime] == 1) {
-						$services_ok--;
-						$services_downtime++;	
-					}
+					
 				break;
 				case 1:
 					$services_warning++;
-					if($v[$y][is_downtime] == 1) {
-						$services_warning--;
-						$services_downtime++;	
-					}
+					
 				break;
 				case 2:
 					$services_critical++;
-					if($v[$y][is_downtime] == 1) {
-						$services_critical--;
-						$services_downtime++;	
-					}
+				
 				break;
 				case 4:
 					$services_info++;
-					if($v[$y][is_downtime] == 1) {
-                                                $services_info--;
-                                                $services_downtime++;
-                                        }
+					
 
 				break;
-
+				case 8:
+					//$services_info++;
+					$services_downtime++;
+				break;
 				default:
 					$services_unkown++;
 					if($v[$y][is_downtime] == 1) {
@@ -281,7 +272,7 @@ $Author: hjanuschka $
 		'services_critical' => $services_critical,
 		'services_downtime' => $services_downtime,
 		'acks_outstanding' => $acks_outstanding,
-		'services_sum' => $service_sum
+		'services_sum' => $info[services]
 	
 	), "tactical_overview");
 	

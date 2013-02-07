@@ -1235,6 +1235,7 @@ class BartlbyUi {
 			case 4: return "INFO"; break;
 			case 5: return "TRIGGER"; break;
 			case 6: return "FLAPPING"; break;
+			case 8: return "DOWNTIME"; break;
 			case -3: return "S-DEAD"; break;
 			default:
 			return "UNKOWN($state)";

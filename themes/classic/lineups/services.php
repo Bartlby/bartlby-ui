@@ -1,3 +1,4 @@
+
 <?=$this->disp_box("legend")?>
 
 <table class="table table-striped table-bordered " id='services_table'>
@@ -12,7 +13,7 @@
 								  <th>Options</th>
 							  </tr>
 						  </thead>
-						    <tbody>
+						    <tbody id=server_boxes_ajax>
 
 
 <?=$this->disp_box("server_box_.*")?>

@@ -101,17 +101,32 @@ if(!$_GET[report_service] || !$log_mask) {
 		//$img_file=$btl->create_report_img($state_array, $time_start, $time_end);
 		
 		
-		
+		$script_out .= '
+		<script>
+			var data1 = [	';
+			
 		while(list($state, $time) = @each($svc)) {
 						
 			
 			$perc =   (($hun-$time) * 100 / $hun);
 			$perc =100-$perc;
 			$lbl="";
-			if($state == 0) $lbl="label-success";
-			if($state == 1) $lbl="label-warning";
-			if($state == 2) $lbl="label-important";
-			
+			if($state == 0) {
+					 $lbl="label-success";
+					 $col="green";
+			}
+			if($state == 1) {
+				$lbl="label-warning";
+				$col="orange";
+			}
+			if($state == 2) {
+				 $lbl="label-important";
+				 $col="red";
+			}
+			if($state == 8) {
+				 $lbl="";
+				 $col="grey";
+			}
 			
 			$out .= "<tr>";
 			$out .= "<td width=200><span class='label " .  $lbl . "'>" . $btl->getState($state) . "</span><br>";
@@ -120,27 +135,23 @@ if(!$_GET[report_service] || !$log_mask) {
 			$out .= "<td>Time:  " . $btl->intervall($time) . " seconds</td>";
 			$out .= "<td><b>" . round($perc,2) . "%</b>   </td></tr>";
 			
+			$script_out .= '{ color: "' . $col . '", label: "' . $btl->getState($state) . '",  data: ' . $perc . '},';
+			
 			$flash[$state]=$perc;
 			
 			
 		}
-
-		$out .= '
-		<script>
-			var data1 = [	';
+		$script_out .= '{}]</script>';
+		
+		$out .= $script_out;
+		
 						
 		
 			
-		for($x=0; $x<3; $x++) {
-			$nstate= $x+1;
-			if($x==0) $col="green";
-			if($x==1) $col="orange";
-			if($x==2) $col="red";
-			$rstr .= "&text_" . $nstate . "=" . $btl->getState($x) . "&value_" . $nstate . "=" . $flash[$x];	
-			$out .= '{ color: "' . $col . '", label: "' . $btl->getState($x) . '",  data: ' . $flash[$x] . '},';
-		}
 		
-		$out .= '{}]</script>';
+	
+		
+		
 		
 		$out .= "<tr>";
 		
@@ -153,8 +164,14 @@ if(!$_GET[report_service] || !$log_mask) {
 				function doChart() {
 					$.plot($("#placeholder"),[{data:d, 
 					threshold:  [{
+								below: 3,
+								color: "grey"
+							},{
 								below: 1,
 								color: "orange"
+							},{
+								below: 2,
+								color: "green"
 							},{
 								below: -1,
 								color: "red"
@@ -164,7 +181,7 @@ if(!$_GET[report_service] || !$log_mask) {
 							points: { show: true },
             	lines: { show: true, steps: true }}], {
 							 xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S" },
-						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"]], max: 2 }, 
+						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"], [2, "Downtime"]], max: 2 }, 
 						 	
             	
 					});
@@ -259,11 +276,13 @@ if(!$_GET[report_service] || !$log_mask) {
 				if($state_array[$xy][lstate] == 0) $st_r = 1;
 				if($state_array[$xy][lstate] == 1) $st_r = -1;
 				if($state_array[$xy][lstate] == 2) $st_r = -2;
+				if($state_array[$xy][lstate] == 8) $st_r = 2;
 				
 			$lbl="";
 			if($state_array[$xy][lstate] == 0) $lbl="label-success";
 			if($state_array[$xy][lstate] == 1) $lbl="label-warning";
 			if($state_array[$xy][lstate] == 2) $lbl="label-important";
+			if($state_array[$xy][lstate] == 8) $lbl="";
 			
 					$o1 .= "<tr>";
 					$o1 .= "<td>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";

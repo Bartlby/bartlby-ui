@@ -12,7 +12,7 @@ function reload_service_detail_json(id) {
  			$("#service_detail_plugin_info_ajax").html(data.boxes.service_detail_plugin_info);
  			$("#service_detail_snmp_ajax").html(data.boxes.service_detail_snmp);
  			$("#service_detail_passive_ajax").html(data.boxes.service_detail_passive);
- 			$("#service_detail_manual_ajax").html(data.boxes.service_detail_manual);
+ 			//$("#service_detail_manual_ajax").html(data.boxes.service_detail_manual);
  			$("#service_detail_group_check_ajax").html(data.boxes.service_detail_group_check);
  			$("#UNPLACED_ajax").html(data.boxes.UNPLACED);
  			

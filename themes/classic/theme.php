@@ -232,6 +232,7 @@ $Author: hjanuschka $
 	<script src="themes/classic/js/jquery.flot.stack.js"></script>
 	<script src="themes/classic/js/jquery.flot.resize.min.js"></script>
 	<script src="themes/classic/js/jquery.flot.threshold.js"></script>
+	<script src="themes/classic/js/jquery.flot.selection.js"></script>
 	<!-- chart libraries end -->
 
 	<!-- select or dropdown enhancer -->

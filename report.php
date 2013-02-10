@@ -162,7 +162,9 @@ if(!$_GET[report_service] || !$log_mask) {
 				
 				window.setTimeout("doChart()", 1000);
 				function doChart() {
+					
 					$.plot($("#placeholder"),[{data:d, 
+					
 					threshold:  [{
 								below: 3,
 								color: "grey"
@@ -177,14 +179,16 @@ if(!$_GET[report_service] || !$log_mask) {
 								color: "red"
 							}],
 							color: "green",
-							
-							points: { show: true },
+							points: { show: false },
+							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
 							 xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S" },
 						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"], [2, "Downtime"]], max: 2 }, 
 						 	
             	
 					});
+					
+				
 					
 					$.plot($("#donutchart1"), data1,
 					{

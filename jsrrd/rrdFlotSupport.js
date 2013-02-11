@@ -100,7 +100,7 @@ function rrdRRA2FlotObj(rrd_file,rra_idx,ds_list,want_ds_labels,want_rounding) {
 //  of the stack is invalid
 function rrdRRAStackFlotObj(rrd_file,rra_idx,
 			    ds_positive_stack_list,ds_negative_stack_list,ds_single_list,
-                            timestamp_shift, want_ds_labels,want_rounding,one_undefined_enough) {
+                            timestamp_shift, want_ds_labels,want_rounding,one_undefined_enough,octets) {
   var rra=rrd_file.getRRA(rra_idx);
   var rra_rows=rra.getNrRows();
   var last_update=rrd_file.getLastUpdate();
@@ -193,6 +193,10 @@ function rrdRRAStackFlotObj(rrd_file,rra_idx,
     var flot_series=[];
     for (var i=0;i<rra_rows;i++) {
       var el=rra.getEl(i,ds_idx);
+      console.log("OCTETS: " + octets);
+      if(octets == true) {
+      		el=el*8;
+      }
       if (el!=undefined) {
 	flot_series.push([(timestamp+timestamp_shift)*1000.0,el]);
       }

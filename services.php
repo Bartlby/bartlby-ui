@@ -139,7 +139,7 @@
 	
 	$legend_content="";
 	
-	$layout->create_box("Legend", $legend_content, "legend", array("a"=>"b"), "legend");
+	$layout->create_box("Legend", $legend_content, "legend", array("a"=>"b"), "legend", true);
 	
 	
 	$layout->Tr(
@@ -154,6 +154,8 @@
 		)
 
 	);	
+
+	
 
 	$r=$btl->getExtensionsReturn("_services", $layout);
 	

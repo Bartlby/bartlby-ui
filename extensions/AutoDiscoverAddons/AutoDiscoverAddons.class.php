@@ -69,7 +69,7 @@ class AutoDiscoverAddons {
         	  	
         	  </script>
         	  <div id=AutoDiscoverAddonsHide style='display:none'><font color='red'><img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> reload in progress....</font></div><a href='javascript:updatePerfhandlerExt();'>Update Perfhandler data</A><br>
-        	  <div id='autodiscoveraddons_layer'>";
+        	  <a href='#' onClick=\"$('#autodiscoveraddons_layer').toggle()\">Display generated Graphs</A><div id='autodiscoveraddons_layer' style='display:none;'>";
         	  return $r;
        }
        function endScripts() {
@@ -147,7 +147,49 @@ class AutoDiscoverAddons {
                         	//see if someone has hardcoded some special_addon_stuff in ui config
                         	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
                         	if(!$svc_counter) {
-                        		    $re = $this->getJavascripts();
+                        		
+                        			if(file_exists($rrd_dir . "/" . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd')) {
+																	  $re .= '<script>
+																		
+																		function fname_update() {
+																	        fname="http://www.bartlby.org/bartlby-ui/rrd/' . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd";
+																	        
+																	        try {
+																	          FetchBinaryURLAsync(fname,update_fname_handler);
+																	        } catch (err) {
+																	           alert("Failed loading "+fname+"\n"+err);
+																	        }
+																	      }
+																	      
+																	   function update_fname_handler(bf) {
+																	          var i_rrd_data=undefined;
+																	          try {
+																	            var i_rrd_data=new RRDFile(bf);            
+																	          } catch(err) {
+																	            alert("File "+fname+" is not a valid RRD archive!\n"+err);
+																	          }
+																	          if (i_rrd_data!=undefined) {
+																	            rrd_data=i_rrd_data;
+																	            update_fname()
+																	          }
+																	      }
+																	  
+																	   function update_fname() {
+																																		        
+																	  			var dopts = {graph_width: "800px", graph_height: "300px", timezone: "+2", legend:"Bottom"};
+																	        // the rrdFlot object creates and handles the graph
+																	        var f=new rrdFlot("mygraph",rrd_data,null, null, dopts);
+																	      }
+																	      
+																	      fname_update();
+																	      
+																		
+																	
+																	</script>
+																	<div id="mygraph"></div>';
+																}
+                        		
+                        		    $re .= $this->getJavascripts();
                         		    $re .= $this->_globExt($svcid, $rrd_dir);
                         		    $re .= $this->endScripts();
                             	    

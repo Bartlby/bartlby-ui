@@ -440,7 +440,7 @@ class Layout {
 			return $r;
 		}
 	}
-	function create_box($title, $content, $id="", $plcs="", $box_file="") {
+	function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false) {
 		global $btl;
 		
 		$layout=$this;
@@ -462,6 +462,15 @@ class Layout {
 			
 			$boxes_path="themes/classic/boxes/" . $box_file;
 		}
+		$hidden = "block";
+		$updown = "up";
+		if($collapsed == true) {
+		
+			$hidden = "none";
+			$updown = "down";
+		}
+		
+		
 		ob_start();
 			include($boxes_path);
 		
@@ -470,7 +479,7 @@ class Layout {
 		ob_end_clean();		
 		$this->boxes[$oid]=$o;
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
-			$this->create_box($title, $o, $oid);
+			$this->create_box($title, $o, $oid, "","", $collapsed);
 		}
 
 

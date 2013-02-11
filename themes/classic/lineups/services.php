@@ -1,4 +1,5 @@
 
+<?=$this->disp_box("MAIN")?>
 <?=$this->disp_box("legend")?>
 
 <table class="table table-striped table-bordered " id='services_table'>
@@ -22,5 +23,7 @@
 </table>
 
 
-
 <?=$this->disp_box("UNPLACED")?>
+
+
+

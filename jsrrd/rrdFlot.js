@@ -192,7 +192,7 @@ rrdFlot.prototype.createHTML = function() {
     // the passed timezone does not make sense
     // find the local time
     var d= new Date();
-    true_tz=-Math.ceil(d.getTimezoneOffset()/60);
+    true_tz=Math.ceil(d.getTimezoneOffset()/60)+2;
  
 
   
@@ -306,9 +306,9 @@ rrdFlot.prototype.populateDScb = function() {
     var title=name; 
     if(this.rrdflot_defaults.use_checked_DSs) {
        if(this.rrdflot_defaults.checked_DSs.length==0) {
-          var checked=(i==0); // only first checked by default
-       } else{checked=false;}
-    } else {var checked=(i==0);}
+          var checked=true; // only first checked by default
+       } else{checked=true;}
+    } else {var checked=true;}
     if (this.ds_graph_options[name]!=null) {
       var dgo=this.ds_graph_options[name];
       if (dgo['title']!=null) {
@@ -401,13 +401,13 @@ rrdFlot.prototype.drawFlotGraph = function() {
 
   var timeSelect=document.getElementById(this.time_sel_id);
   var d= new Date();
-  var true_tz=-Math.ceil(d.getTimezoneOffset()/60);
+  var true_tz=Math.ceil(d.getTimezoneOffset()/60)+2;
   timezone_shift=true_tz;
 
   // then extract RRA data about those DSs
   var flot_obj=rrdRRAStackFlotObj(this.rrd_file,rra_idx,
 				  ds_positive_stack_list,ds_negative_stack_list,ds_single_list,
-                                  timezone_shift*3600);
+                                  timezone_shift*3600,true ,true,true,this.rrdflot_defaults.octets);
 
   // fix the colors, based on the position in the RRD
   for (var i=0; i<flot_obj.data.length; i++) {

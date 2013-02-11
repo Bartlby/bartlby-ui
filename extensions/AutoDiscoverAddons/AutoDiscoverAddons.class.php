@@ -4,8 +4,20 @@ include "config.php";
 
 class AutoDiscoverAddons {
         function AutoDiscoverAddons() {
+        				global $btl, $defaults;
                 $this->layout = new Layout();
-
+                $this->disp="block";
+                $rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
+								if(file_exists($rrd_dir . "/" . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd')) {
+                      $this->disp="none";
+                      
+                }
+                $pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
+								if($pnp4_nagios) {
+	                if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
+	                	$this->disp="none";
+	                }
+	              }
         }
 
 
@@ -69,7 +81,7 @@ class AutoDiscoverAddons {
         	  	
         	  </script>
         	  <div id=AutoDiscoverAddonsHide style='display:none'><font color='red'><img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> reload in progress....</font></div><a href='javascript:updatePerfhandlerExt();'>Update Perfhandler data</A><br>
-        	  <a href='#' onClick=\"$('#autodiscoveraddons_layer').toggle()\">Display generated Graphs</A><div id='autodiscoveraddons_layer' style='display:none;'>";
+        	  <a href='#' onClick=\"$('#autodiscoveraddons_layer').toggle()\">Display generated Graphs</A><div id='autodiscoveraddons_layer' style='display:" . $this->disp .  ";'>";
         	  return $r;
        }
        function endScripts() {
@@ -149,10 +161,14 @@ class AutoDiscoverAddons {
                         	if(!$svc_counter) {
                         		
                         			if(file_exists($rrd_dir . "/" . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd')) {
+                        						$is_octets="false";
+                        						if($defaults[plugin] == "bartlby_if") {
+                        							$is_octets="true";
+                        						}
 																	  $re .= '<script>
 																		
 																		function fname_update() {
-																	        fname="http://www.bartlby.org/bartlby-ui/rrd/' . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd";
+																	        fname="rrd/' .  $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd";
 																	        
 																	        try {
 																	          FetchBinaryURLAsync(fname,update_fname_handler);
@@ -176,7 +192,7 @@ class AutoDiscoverAddons {
 																	  
 																	   function update_fname() {
 																																		        
-																	  			var dopts = {graph_width: "800px", graph_height: "300px", timezone: "+2", legend:"Bottom"};
+																	  			var dopts = {graph_width: "800px", graph_height: "300px", timezone: "+2", legend:"Bottom", "octets": ' . $is_octets . '};
 																	        // the rrdFlot object creates and handles the graph
 																	        var f=new rrdFlot("mygraph",rrd_data,null, null, dopts);
 																	      }
@@ -187,8 +203,53 @@ class AutoDiscoverAddons {
 																	
 																	</script>
 																	<div id="mygraph"></div>';
-																}
-                        		
+															}
+                        			$pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
+                        			if($pnp4_nagios) {
+                        				
+			                        			if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
+			                        				
+																				  $re .= '<script>
+																					
+																					function fname_updatePNP() {
+																				        fname="pnp4data/' .  $defaults[server_id] . '-' .  str_replace(" ", "_",$defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_",$defaults[service_name]) . '.rrd";
+																				        
+																				        try {
+																				          FetchBinaryURLAsync(fname,update_fname_handlerPNP);
+																				        } catch (err) {
+																				           alert("Failed loading "+fname+"\n"+err);
+																				        }
+																				      }
+																				      
+																				   function update_fname_handlerPNP(bf) {
+																				          var i_rrd_data=undefined;
+																				          try {
+																				            var i_rrd_data=new RRDFile(bf);            
+																				          } catch(err) {
+																				            alert("File "+fname+" is not a valid RRD archive!\n"+err);
+																				          }
+																				          if (i_rrd_data!=undefined) {
+																				            rrd_data=i_rrd_data;
+																				            update_fnamePNP()
+																				          }
+																				      }
+																				  
+																				   function update_fnamePNP() {
+																																					        
+																				  			var dopts = {graph_width: "800px", graph_height: "300px", timezone: "+2", legend:"Bottom"};
+																				        // the rrdFlot object creates and handles the graph
+																				        var f=new rrdFlot("mygraphPNP",rrd_data,null, null, dopts);
+																				      }
+																				      
+																				      fname_updatePNP();
+																				      
+																					
+																				
+																				</script>
+																				<div id="mygraphPNP"></div>';
+																		}
+                        				
+                        			}
                         		    $re .= $this->getJavascripts();
                         		    $re .= $this->_globExt($svcid, $rrd_dir);
                         		    $re .= $this->endScripts();

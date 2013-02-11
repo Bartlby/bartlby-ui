@@ -182,13 +182,78 @@ if(!$_GET[report_service] || !$log_mask) {
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
-							 xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S" },
+							xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S" },
+							selection: { mode: "x" },
+							tooltip: true,
+    					tooltipOpts: { content: "<h4>%s</h4> Value: %y.3" },
+		    			grid: { hoverable: true },
 						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"], [2, "Downtime"]], max: 2 }, 
 						 	
             	
 					});
+					$("#placeholder_reset").click(function() {
+						
+	            $.plot($("#placeholder"),[{data:d, 
 					
-				
+					threshold:  [{
+								below: 3,
+								color: "grey"
+							},{
+								below: 1,
+								color: "orange"
+							},{
+								below: 2,
+								color: "green"
+							},{
+								below: -1,
+								color: "red"
+							}],
+							color: "green",
+							points: { show: false },
+							selection: { 	mode: "x"  },
+            	lines: { show: true, steps: true }}], {
+							xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S"},
+							selection: { mode: "x" },
+							tooltip: true,
+    					tooltipOpts: { content: "<h4>%s</h4> Value: %y.3" },
+		    			grid: { hoverable: true },
+						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"], [2, "Downtime"]], max: 2 }, 
+						 	
+            	
+					});				
+					});
+					$("#placeholder").bind("plotselected", function (event, ranges) {
+        	
+
+	            $.plot($("#placeholder"),[{data:d, 
+					
+					threshold:  [{
+								below: 3,
+								color: "grey"
+							},{
+								below: 1,
+								color: "orange"
+							},{
+								below: 2,
+								color: "green"
+							},{
+								below: -1,
+								color: "red"
+							}],
+							color: "green",
+							points: { show: false },
+							selection: { 	mode: "x"  },
+            	lines: { show: true, steps: true }}], {
+							xaxis: { mode: "time",timeformat: "%y/%d/%m - %H:%M:%S", min: ranges.xaxis.from, max: ranges.xaxis.to},
+							selection: { mode: "x" },
+							tooltip: true,
+    					tooltipOpts: { content: "<h4>%s</h4> Value: %y.3" },
+		    			grid: { hoverable: true },
+						 	yaxis: { min: -3, ticks: [[1, "OK"], [-1, "Warning"], [-2, "Critical"], [2, "Downtime"]], max: 2 }, 
+						 	
+            	
+					});
+				 });
 					
 					$.plot($("#donutchart1"), data1,
 					{
@@ -214,7 +279,7 @@ if(!$_GET[report_service] || !$log_mask) {
 			';
 				$out .= "</tr>";
 		$out .= "<tbody></table>";
-		$out .= '<div id="donutchart1" style="height: 300px;"></div>
+		$out .= '<div id="donutchart1" style="height: 300px;"></div><a  name=placeholder_reset id=placeholder_reset href="#">Reset</a>
 		<div id="placeholder" style="left: 40px;width:90%;height:400px;"></div>';
 		$out .= "<table  border=5 class='table table-striped table-bordered ' id='services_table3'>
 						  <thead>
@@ -345,4 +410,5 @@ $layout->TableEnd();
 
 $layout->FormEnd();
 $layout->display();
+
 

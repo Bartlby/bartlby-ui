@@ -111,6 +111,19 @@
 			if( typeof (item.series.percent) !== 'undefined' ) {
 				content = adjustValPrecision(percentPattern, content, item.series.percent);
 			}
+		
+			try {
+				if( item.datapoint[0] != 0 ) {
+					if(item.datapoint[1] > -3 && item.datapoint[1] < 4) {
+						
+						var d = new Date(item.datapoint[0]);
+						content = d.toString();
+					
+						return content;
+					}
+				}
+			} catch(e) {}
+			
 			//series match
 			if( typeof(item.series.label) !== 'undefined' ) {
 				content = content.replace(seriesPattern, item.series.label);

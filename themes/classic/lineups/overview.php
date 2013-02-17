@@ -3,6 +3,12 @@
 		window.clearTimeout();
 		//alert(1);
 		$.getJSON('overview.php?json=1', function(data) {
+ 			$("#core_info_ajax").empty();
+ 			$("#tactical_overview_ajax").empty();
+ 			$("#system_health_ajax").empty();
+ 			$("#server_groups_ajax").empty();
+ 			$("#service_groups_ajax").empty();
+ 			
  			
  			$("#core_info_ajax").html(data.boxes.core_info);
  			$("#tactical_overview_ajax").html(data.boxes.tactical_overview);

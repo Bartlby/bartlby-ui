@@ -157,6 +157,17 @@ function translatedKey($k) {
 	$ar["sysmessages"]="system messages visible? in logview.";
 	$ar["view_service_output"]="service output visible?";
 	
+	
+	$ar["main.servergroup_detail"]="view servergroup details";
+	$ar["main.servicegroup_detail"]="view servicegroup details";
+	$ar["action.add_servicegroup"]="add servicegroup";
+	$ar["action.add_servergroup"]="add servergroup";
+	$ar["action.modify_servergroup"]="modify servergroup";
+	$ar["action.modify_servicegroup"]="modify servicegroup";
+	$ar["action.delete_servergroup"]="delete servergroup";
+	$ar["action.delete_servicegroup"]="delete servergroup";
+	
+	
 	if(!$ar[$k]) {
 		return "Key ('$k') not translated";	
 	} else {
@@ -169,12 +180,13 @@ $layout->TableEnd();
 	
 	$title="UI privileges";  
 	$ov .= $layout->Field("worker_id", "hidden", $_GET[worker_id]) . "<input type=submit value='Save'>";
-	$ov .= "</form>";
+	
 	$content = "<table>" . $ov . "</table>";
 	$layout->push_outside($layout->create_box($title, $content));
 	
 	$r=$btl->getExtensionsReturn("_permissions", $layout);
 
+	$layout->OUT .= "</form>";
 	
 	$title="";  
 

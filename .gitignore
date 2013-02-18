@@ -1,3 +1,4 @@
+*.disabled
 rrd
 config.php
 rigths/1.dat

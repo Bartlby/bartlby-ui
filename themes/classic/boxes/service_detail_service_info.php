@@ -127,7 +127,7 @@
 
 	<tr>
 		<td width=150 class='font2'>Status:</td>
-		<td align=left id='service_status' name='service_status'><?=$plcs[service][service_retain_current]?> / <?=$plcs[service][service_retain]?> (since:  <?=$btl->intervall($plcs[service][service_retain_current]*$plcs[service][check_interval])?>)</font></td>
+		<td align=left id='service_status' name='service_status'><?=$plcs[service][service_retain_current]?> / <?=$plcs[service][service_retain]?> (since:  <?=$btl->intervall(time()-$plcs[service][last_state_change])?>)</font></td>
 		<td>&nbsp;</td>           
 	</tr>	
 	<tr>

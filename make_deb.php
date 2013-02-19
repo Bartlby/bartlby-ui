@@ -5,7 +5,7 @@ require_once 'wdm/debian/Autoloader.php';
 $control = new \wdm\debian\control\StandardFile();
 $control
     ->setPackageName("bartlby-ui")
-    ->setVersion("1.4.5")
+    ->setVersion($argv[1])
     ->setDepends(array("php5", "php5-cli", "apache2"))
     ->setInstalledSize(4096)
     ->setMaintainer("Helmut Januschka", "helmut@januschka.com")

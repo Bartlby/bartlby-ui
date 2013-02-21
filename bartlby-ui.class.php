@@ -27,7 +27,7 @@ session_start();
 
 set_time_limit(0);
 if(function_exists("set_magic_quotes")) set_magic_quotes_runtime(0);
-define("BARTLBY_UI_VERSION", "2.2-1.4.6");
+define("BARTLBY_UI_VERSION", "2.2-1.4.9");
 define("BARTLBY_RELNOT", "");
 $wdays[0]="Sunday";
 $wdays[1]="Monday";

@@ -81,7 +81,7 @@
 			
 			
 				
-				if($_GET[acks] == "yes" && $servs[$x][service_ack] != 2) {
+				if($_GET[acks] == "yes" && $servs[$x][service_ack_current] != 2) {
 					continue;	
 				}
 				
@@ -90,7 +90,7 @@
 				$displayed_services++;
 				$svc_color=$btl->getColor($servs[$x][current_state]);
 				$svc_state=$btl->getState($servs[$x][current_state]);
-				if($servs[$x][service_ack] == 2) {
+				if($servs[$x][service_ack_current] == 2) {
 					
 					$svc_state .= "<br>(ACKW)";	
 				}

@@ -133,7 +133,7 @@ function SetProz($servers = array(), $btl) {
 			$qck[$v[$y][server_name]][downtime]++;
 			
 		}
-		if($v[$y][service_ack] == 2) {
+		if($v[$y][service_ack_current] == 2) {
 			$qck[$v[$y][server_name]][acks]++;	
 			$acks_outstanding++;
 			

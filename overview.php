@@ -108,7 +108,7 @@ $Author: hjanuschka $
 				$qck[$v[$y][server_id]][downtime]++;
 				
 			}
-			if($v[$y][service_ack] == 2) {
+			if($v[$y][service_ack_current] == 2) {
 				$qck[$v[$y][server_id]][acks]++;	
 				$acks_outstanding++;
 				

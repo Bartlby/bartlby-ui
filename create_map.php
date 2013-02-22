@@ -302,7 +302,7 @@ visibility: hidden;
 				$qck[$svcs[$y][server_name]][downtime]++;
 				
 			}
-			if($svcs[$y][service_ack] == 2) {
+			if($svcs[$y][service_ack_current] == 2) {
 				$qck[$svcs[$y][server_name]][acks]++;	
 				$acks_outstanding++;
 				

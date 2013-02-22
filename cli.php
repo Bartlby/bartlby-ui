@@ -483,7 +483,7 @@ function btl_disp_service() {
 	} else {
 		$currun="(Currently not running)";
 	}
-	switch($defaults[service_ack]) {
+	switch($defaults[service_ack_current]) {
 		case 0:
 			$needs_ack="no";
 		break;

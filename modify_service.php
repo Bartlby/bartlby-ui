@@ -64,7 +64,7 @@ if($_GET["new"] == "true") {
 	$defaults["exec_plan"] = "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59";
 	$defaults["check_interval"]=bartlby_config("ui-extra.conf", "new.service.interval");
 	$defaults[service_type]=(int)bartlby_config("ui-extra.conf", "new.service.type");
-	$defaults[service_ack]=(int)bartlby_config("ui-extra.conf", "new.service.ack");
+	$defaults[service_ack_enabled]=(int)bartlby_config("ui-extra.conf", "new.service.ack");
 	$defaults[service_retain]=(int)bartlby_config("ui-extra.conf", "new.service.retain");
 	
 	$defaults[service_check_timeout]=(int)bartlby_config("ui-extra.conf", "new.service.active.tcptimeout");
@@ -209,7 +209,7 @@ if(is_int($defaults[service_active]) && $defaults[service_active] == 0) {
 
 
 
-if(is_int($defaults[service_ack]) && $defaults[service_ack] == 0) {
+if(is_int($defaults[service_ack_enabled]) && $defaults[service_ack_enabled] == 0) {
 	$ack[0][s]=1;	
 } else {
 
@@ -493,7 +493,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Service Acknowledgement",
-			1=>$layout->DropDown("service_ack", $ack)
+			1=>$layout->DropDown("service_ack_enabled", $ack)
 			
 		)
 	)

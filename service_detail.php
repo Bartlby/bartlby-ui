@@ -35,17 +35,18 @@ $map=$btl->getSVCMap($btl->CFG, NULL, NULL);
 $svc_color=$btl->getColor($defaults[current_state]);
 $svc_state=$btl->getState($defaults[current_state]);
 
-switch($defaults[service_ack]) {
-	case 0:
-		$needs_ack="no";
-	break;
-	case 1:
-		$needs_ack="yes";
-	break;		
+switch($defaults[service_ack_current]) {
+	
 	case 2:
 		$needs_ack="outstanding <input type=button value='Acknowledge this problem' onClick=\"document.location.href='ack_service.php?service_id=" . $defaults[service_id]  . "';\">";
 	break;
 }
+if($defaults[service_ack_enabled] == 1) {
+		$needs_ack = "enabled $needs_ack";
+} else {
+	$needs_ack = "disabled";
+}
+
 
 
 if($defaults[service_type] == 1) {

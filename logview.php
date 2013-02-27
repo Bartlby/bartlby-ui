@@ -326,6 +326,11 @@
 			)
 
 		);
+		
+		$log_line_json[$lcounter][date]=$date;
+		$log_line_json[$lcounter][icon]="<img src='themes/" . $layout->theme . "/images/$img'>";
+		$log_line_json[$lcounter][txt]=$outline;
+		
 	}
 	$layout->TableEnd();
 	
@@ -333,6 +338,13 @@
 	$layout->FormEnd();
 	
 	$r=$btl->getExtensionsReturn("_logView", $layout);
+	
+	
+	
+	if($_GET[json]) {
+		echo json_encode($log_line_json);
+		exit;
+	}
 	$layout->display("no");
 	
 	

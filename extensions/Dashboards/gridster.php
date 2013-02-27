@@ -38,6 +38,11 @@ $optind=0;
 		
 		$optind++;
 		$servers[$optind][c]="";
+		$servers[$optind][v]="logview";	
+		$servers[$optind][k]="LogView";
+		
+		$optind++;
+		$servers[$optind][c]="";
 		$servers[$optind][v]="overview_servergroups";	
 		$servers[$optind][k]="ServerGroups";
 		
@@ -248,6 +253,38 @@ li.gridst {
 					
 					
 				break;
+				
+				case 'logview':
+					
+					$.getJSON('logview.php?json=1', function(data) {
+ 								if(data != null) {
+ 									rd = '<table width=100%>';
+ 									console.log(data);
+ 									
+ 									for(e in data) {
+ 										console.log(data[e].date);
+ 										rd += '<tr>';
+ 										rd += '<td style=\'font-size: 10px;\'>';
+ 										rd += data[e].date;
+ 										rd += '</td>';
+ 										
+ 										rd += '<td>';
+ 										rd += data[e].icon;
+ 										rd += '</td>';
+ 										rd += '<td style=\'font-size: 10px;\'>';
+ 										rd += data[e].txt;
+ 										rd += '</td>';
+ 										rd += '</tr>';
+ 										
+ 									}
+ 									rd += '</table>';
+ 									$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> LogView</h2><div class=\'box-icon\'><a href=\'#\' class=\'btn btn-minimize btn-round\'><i class=\'icon-chevron-up\'></i></a></div></div><div class=\'box-content\' style=\'display:block\' >' +  rd + '<div class=\'clearfix\'></div></div></div>');
+ 								}
+ 					});
+					
+					
+				break;
+				
 				case 'overview_servergroups':
 					
 					$.getJSON('overview.php?json=1', function(data) {
@@ -333,7 +370,7 @@ li.gridst {
 		json = JSON.parse(in_data);
 		for(i=0; i<json.length; i++) {
 	   	 grid.add_widget(
-	       	 '<div style=\'overflow:auto\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"></div>', 
+	       	 '<div style=\'overflow:auto\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', 
 	        json[i]['size_x'], 
 	        json[i]['size_y'], 
 	        json[i]['col'], 
@@ -388,6 +425,7 @@ li.gridst {
  		$('#reload_dashboard').click(function(e) {
  			e.preventDefault();
  			$('[data-rel=\"widget\"]').each(function() {
+ 							//$(this).html('<img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'>');
  				 			loadWidget($(this)[0].id);
  			});
 			
@@ -433,6 +471,13 @@ li.gridst {
 					
 					
 				break;
+				case 'logview':
+					
+					w=2;
+					h=2;
+					
+					
+				break;
 				case 'overview_health':
 					w=3;
 					h=1;
@@ -465,7 +510,7 @@ li.gridst {
  									w=data.width;
  									h=data.height;
  									
- 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'>asd</div>', w,h,1,1);
+ 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
 									loadWidget(id);
  								});
  								do_not_add=1;
@@ -484,7 +529,7 @@ li.gridst {
  									pipe='-1';
  									h=data.height;
  									
- 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'>asd</div>', w,h,1,1);
+ 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
 									loadWidget(id);
  								});
  								do_not_add=1;
@@ -513,7 +558,7 @@ li.gridst {
 			}
 			
 			if(do_not_add == 0) {
-				grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'>asd</div>', w,h,1,1);
+				grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
 				loadWidget(id);
 			}
 			
@@ -576,4 +621,5 @@ li.gridst {
 	
 	
 ?>
+
 

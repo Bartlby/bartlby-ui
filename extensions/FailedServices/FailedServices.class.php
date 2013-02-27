@@ -18,21 +18,15 @@ class FailedServices {
         	global $_GET;
         	
 					$a[width] = 2;
-					$a[height] = 2;
+					$a[height] = 1;
 					return $a;
         }
         function widget_do_standalone() {
 						global $_GET;
 						global $btl;
-						$r = '<br><table class="table table-striped table-bordered " >
-						  <thead>
-							  <tr>
-							  	<th>Service</th>
-								  <th>LastCheck</th>
-								  
-								  <th>State</th>
-							  </tr>
-						  </thead>
+						$l = new Layout();
+						$r = '<table  width="100%">
+						  
 						    <tbody>';
 						 $found=0;
 						$map = $btl->GetSVCMap();
@@ -53,7 +47,7 @@ class FailedServices {
 									if($svc_color == "red") {
 											$lbl = "label-important";
 									}
-								$r .= "<tr>";
+								$r .= "<tr >";
 								$r .= "<td>";
 								$r .= "<a href='service_detail.php?service_id=" . $servs[$x][service_id] . "'>" . $servs[$x][server_name] . "/" . $servs[$x][service_name] . "</A>";
 								$r .= "</td>";
@@ -72,6 +66,9 @@ class FailedServices {
 						}
 						$r .= '</tbody>
 									</table>';
+									
+						$l->create_box("FailedServices", $r, "extension_FailedServices");
+						$r = $l->boxes[extension_FailedServices];
 						return $r;
 				}
   			function widget_standalone() {

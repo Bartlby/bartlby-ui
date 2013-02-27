@@ -325,7 +325,7 @@ li.gridst {
 		window.clearTimeout();
 		$('#reload_dashboard').click();
 		if(auto_reload==1) {
-			window.setTimeout('autoReloader()', 5000);
+			window.setTimeout('autoReloader()', 30000);
 		}
 	}
 	function loadDashboardLocal(in_data) {
@@ -410,7 +410,7 @@ li.gridst {
  			window.clearTimeout();
  			console.log('auto reload click' + $('#auto_reload').prop('checked'));
  			if(auto_reload == 1) {
- 				window.setTimeout('autoReloader()', 5000);
+ 				window.setTimeout('autoReloader()', 30000);
  			}
  		});
  		

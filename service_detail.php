@@ -328,6 +328,12 @@ $defaults=$odefaults;
 $layout->OUT .= $btl->getserviceOptions($defaults, $layout);
 
 if($_GET[json] == 1) {
+		
+		$defaults[svc_options]=$btl->getserviceOptions($defaults, $layout);
+		$defaults[svc_state]=$svc_state;
+		$defaults[svc_color]=$svc_color;
+		$layout->SVC_DETAIL=$defaults;
+		
 		echo json_encode($layout);
 	} else {
 		$layout->display("service_detail");

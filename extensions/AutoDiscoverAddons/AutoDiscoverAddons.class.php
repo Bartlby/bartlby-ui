@@ -2,12 +2,14 @@
 
 include "config.php";
 
+
 class AutoDiscoverAddons {
         function AutoDiscoverAddons() {
         				global $btl, $defaults;
                 $this->layout = new Layout();
                 $this->disp="block";
                 $rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
+                $this->rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
 								if(file_exists($rrd_dir . "/" . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd')) {
                       $this->disp="none";
                       
@@ -19,8 +21,31 @@ class AutoDiscoverAddons {
 	                }
 	              }
         }
-
-
+				function widget_do_pipe() {
+						global $_GET;
+						global $btl;
+						$svcid=$_GET[service_id];
+						$rrd_dir=$this->rrd_dir;
+						$defaults[service_id]=$svcid;
+						$btl->updatePerfHandler(0, $svcid);
+             $re .= $this->_globExt($svcid, $rrd_dir);
+            
+						return $re;
+						
+						return $this->_globExt($_GET[service_id], $this->rrd_dir);
+						return "AutoDiscoverAddons Pipe Threw of ID:" . $_GET[service_id];
+				}
+				function widget_pipe_get_size() {
+					global $_GET;
+					$a[width] = 2;
+					$a[height] = 2;
+					return $a;
+				}
+				function widget_pipe() {
+      			$a[has_widget]=1;
+      			
+      			return $a;
+      	}
         function _About() {
                 return "AutoDiscoverAddons Version 0.1 by h.januschka";
         }
@@ -102,49 +127,50 @@ class AutoDiscoverAddons {
                  $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
                  $pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
 									if($pnp4_nagios) {
-														$t=time();
-														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
-														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
-														$i_start = time()-(60*60);
-														$i_end = time();
-														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-														$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+														if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
+															$t=time();
+															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+															$i_start = time()-(60*60);
+															$i_end = time();
+															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
+															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															
+															
+															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+															$i_start = time()-86400;
+															$i_end = time();
+															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
+															$re .= "<img   onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															
+															
+															
+															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+															$i_start = time()-(86400*7);
+															$i_end = time();
+															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
+															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															
+															
+															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+															$i_start = time()-(86400*30);
+															$i_end = time();
+															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
+															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															
+															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
+															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
+															$i_start = time()-(86400*365);
+															$i_end = time();
+															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
+															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															
+													}
 														
-														
-														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
-														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
-														$i_start = time()-86400;
-														$i_end = time();
-														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-														$re .= "<img   onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
-														
-														
-														
-														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
-														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
-														$i_start = time()-(86400*7);
-														$i_end = time();
-														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-														$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
-														
-														
-														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
-														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
-														$i_start = time()-(86400*30);
-														$i_end = time();
-														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-														$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
-														
-														$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
-														$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
-														$i_start = time()-(86400*365);
-														$i_end = time();
-														$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-														$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
-														
-														
-														
-													}	
+												}	
 													$r .= $re;
                 
                return $r;

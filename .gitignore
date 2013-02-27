@@ -1,3 +1,4 @@
+extensions/Dashboards.disabled
 *.disabled
 rrd
 config.php

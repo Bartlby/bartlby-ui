@@ -28,11 +28,17 @@ class AutoDiscoverAddons {
 						$rrd_dir=$this->rrd_dir;
 						$defaults[service_id]=$svcid;
 						$btl->updatePerfHandler(0, $svcid);
-             $re .= $this->_globExt($svcid, $rrd_dir);
+             $re .= $this->_globExt($svcid, $rrd_dir, "width='80%'");
+            
+            $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
+            
+            $l = new Layout();
+            $l->create_box("Graph of " . $defaults[server_name] . "/" . $defaults[service_name], "<center>" . $re . "</center>", "extension_AutoDiscover");
+						$re = $l->boxes[extension_AutoDiscover];
             
 						return $re;
 						
-						return $this->_globExt($_GET[service_id], $this->rrd_dir);
+						return $this->_globExt($_GET[service_id], $this->rrd_dir, "width=90%");
 						return "AutoDiscoverAddons Pipe Threw of ID:" . $_GET[service_id];
 				}
 				function widget_pipe_get_size() {
@@ -116,11 +122,11 @@ class AutoDiscoverAddons {
        	
        	return $r;
        }
-        function _globExt($svcid, $path) {
+        function _globExt($svcid, $path, $width="") {
         	  global $defaults, $xajax, $btl;
         	  $x = 0;        	  
                 foreach(glob($path . "/" . $svcid . "_*.png") as $fn) {
-                        $r .= "<img onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
+                        $r .= "<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
                         $x++;
                 } 
                 

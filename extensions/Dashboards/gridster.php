@@ -265,7 +265,7 @@ li.gridst {
 								if(svc_type == 'servicebox') {
 									if(pipe == '-1') {
 											$.getJSON('service_detail.php?service_id=' + svc_id + '&json=1', function(data) {
- 												$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name +  ' </h2><div class=\'box-icon\'><a href=\'#\' class=\'btn btn-minimize btn-round\'><i class=\'icon-chevron-up\'></i></a></div></div><div class=\'box-content\' style=\'display:block\' ><font color=\'' +  data.SVC_DETAIL.svc_color  + '\'>' + data.SVC_DETAIL.svc_state + '</font>- <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A><br>' + data.SVC_DETAIL.svc_options  + '<div class=\'clearfix\'></div></div></div>');
+ 												$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </h2><div class=\'box-icon\'><a href=\'#\' class=\'btn btn-minimize btn-round\'><i class=\'icon-chevron-up\'></i></a></div></div><div class=\'box-content\' style=\'display:block\' ><font color=\'' +  data.SVC_DETAIL.svc_color  + '\'>' + data.SVC_DETAIL.svc_state + '</font>- <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A><br>' + data.SVC_DETAIL.svc_options  + '<div class=\'clearfix\'></div></div></div>');
  								
  											});
  									} else {

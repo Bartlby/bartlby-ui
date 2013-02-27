@@ -114,6 +114,24 @@ while(list($k, $servs) = @each($map)) {
 			
 	//Widget Pipes
 	$el = new Layout();
+	
+	$servers[$optind][c]="";
+	$servers[$optind][v]="";	
+	$servers[$optind][k]="Extensions";
+	$servers[$optind][is_group]=1;
+	$optind++;
+	
+	$widget_standalones = $btl->getExtensionsReturn("widget_standalone", $el);
+	
+	for($x=0; $x<count($widget_standalones); $x++ ) {
+				$servers[$optind][c]="";
+				$servers[$optind][v]="extension_" . $widget_standalones[$x][ex_name];
+				$servers[$optind][k]=$widget_standalones[$x][ex_name];
+				$optind++;
+	}
+	
+	
+	
 	$widget_pipes = $btl->getExtensionsReturn("widget_pipe", $el);
 	$optind=0;
 	$pipes[$optind][c]="";
@@ -278,7 +296,13 @@ li.gridst {
  									}
  											f=1;
  								}
- 								
+ 								if(svc_type == 'extension') { 
+ 									f=1;
+ 									$.getJSON('extensions_json.php?extension=' + svc_id + '&action=widget_do_standalone', function(data) {
+ 													console.log('GG:' + data);
+ 													$('#' + id).html(data);
+ 									});
+ 								}
  								if(f==0) {
  									$('#' + id).html('TYPE not defined ->' + svc_type + '-> ' + pipe);
  								}
@@ -451,6 +475,23 @@ li.gridst {
 							
 							
 					}
+					if(svc_type == 'extension') {
+						f=1;
+						ext=id.split('_')[1];
+						
+						$.getJSON('extensions_json.php?extension=' + ext + '&action=widget_standalone_size', function(data) {
+ 									w=data.width;
+ 									pipe='-1';
+ 									h=data.height;
+ 									
+ 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'>asd</div>', w,h,1,1);
+									loadWidget(id);
+ 								});
+ 								do_not_add=1;
+						
+					}
+					
+					
 					if(svc_type == 'servicegroupbox') {
 							f=1;
 							svc_id=id.split('_')[1];

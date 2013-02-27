@@ -28,7 +28,7 @@ class AutoDiscoverAddons {
 						$rrd_dir=$this->rrd_dir;
 						$defaults[service_id]=$svcid;
 						$btl->updatePerfHandler(0, $svcid);
-             $re .= $this->_globExt($svcid, $rrd_dir, "width='80%'");
+             $re .= $this->_globExt($svcid, $rrd_dir);
             
             $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
             

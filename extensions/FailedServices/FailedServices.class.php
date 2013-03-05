@@ -16,23 +16,27 @@ class FailedServices {
         }
         function widget_standalone_size() {
         	global $_GET;
-        	
-					$a[width] = 2;
-					$a[height] = 1;
+        	//$_GET[pipe] = type (errors, all)
+					$a[width] = 4;
+					$a[height] = 2;
 					return $a;
         }
         function widget_do_standalone() {
 						global $_GET;
 						global $btl;
+						
+						//$_GET[pipe] = type (errors, all)
 						$l = new Layout();
-						$r = '<table  width="100%">
+						$r = '<div style="height: 100%; min-height:190px"><table  width="100%">
 						  
 						    <tbody>';
 						 $found=0;
 						$map = $btl->GetSVCMap();
 						while(list($k, $servs) = @each($map)) {
 							for($x=0; $x<count($servs); $x++) {
-								if($servs[$x][current_state] != 1 && $servs[$x][current_state] != 2) continue;
+								if($_GET[pipe] != "all") {
+									if($servs[$x][current_state] == 0 || $servs[$x][current_state] == 4) continue;
+								}
 								$found++;
 								$svc_color=$btl->getColor($servs[$x][current_state]);
 								$svc_state=$btl->getState($servs[$x][current_state]);
@@ -49,10 +53,10 @@ class FailedServices {
 									}
 								$r .= "<tr >";
 								$r .= "<td>";
-								$r .= "<a href='service_detail.php?service_id=" . $servs[$x][service_id] . "'>" . $servs[$x][server_name] . "/" . $servs[$x][service_name] . "</A>";
+								$r .= "<a href='service_detail.php?service_id=" . $servs[$x][service_id] . "' >" . substr($servs[$x][server_name] . "/" . $servs[$x][service_name],0, 45) . "</A>";
 								$r .= "</td>";
 								$r .= "<td>";
-								$r .= date("d.m.Y H:i:s", $servs[$x][last_check]);
+								$r .= date("H:i:s", $servs[$x][last_check]);
 								$r .= "</td>";
 								
 								$r .= "<td>";
@@ -65,14 +69,20 @@ class FailedServices {
 								$r .= "<tr><td colspan=3>No Warn/Crit found</td></tr>";
 						}
 						$r .= '</tbody>
-									</table>';
+									</table></div>';
+						
+						
 									
 						$l->create_box("FailedServices", $r, "extension_FailedServices");
 						$r = $l->boxes[extension_FailedServices];
 						return $r;
 				}
   			function widget_standalone() {
-  				return "1";  				
+  				$a[widgets][0][k]="Only Errors";
+      		$a[widgets][0][v]="errors";
+      		$a[widgets][1][k]="All";
+      		$a[widgets][1][v]="all";
+  				return $a;
   			}
       
        

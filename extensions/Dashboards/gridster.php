@@ -59,19 +59,15 @@ $optind=0;
 			$servers[$optind][is_group]=1;
 			$optind++;
 
+$displayed_servers=0;
 while(list($k, $servs) = @each($map)) {
-	$displayed_servers++;
+	
+	$real_servers[$displayed_servers][c]="";
+	$real_servers[$displayed_servers][k]=$servs[0][server_name];
+	$real_servers[$displayed_servers][v]="serverbox_" . $servs[0][server_id];
 	
 	for($x=0; $x<count($servs); $x++) {
-		//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
-		
-		if($x == 0) {
-			//$isup=$btl->isServerUp($v1[server_id]);
-			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
-		
-		} else {
-			
-		}
+				
 		$state=$btl->getState($servs[$x][current_state]);
 		$servers[$optind][c]="";
 		$servers[$optind][v]="servicebox_" . $servs[$x][service_id];	
@@ -79,8 +75,22 @@ while(list($k, $servs) = @each($map)) {
 		
 		$optind++;
 	}
+	$displayed_servers++;
 }
-	
+			$servers[$optind][c]="";
+			$servers[$optind][v]="";	
+			$servers[$optind][k]="Servers";
+			$servers[$optind][is_group]=1;
+			$optind++;
+			
+			for($x=0; $x<count($real_servers); $x++) {
+				$servers[$optind][c]=$real_servers[$x][c];
+				$servers[$optind][v]=$real_servers[$x][v];	
+				$servers[$optind][k]=$real_servers[$x][k];
+				$optind++;
+				
+			}
+			
 			$servers[$optind][c]="";
 			$servers[$optind][v]="";	
 			$servers[$optind][k]="Server Groups";
@@ -129,10 +139,24 @@ while(list($k, $servs) = @each($map)) {
 	$widget_standalones = $btl->getExtensionsReturn("widget_standalone", $el);
 	
 	for($x=0; $x<count($widget_standalones); $x++ ) {
-				$servers[$optind][c]="";
-				$servers[$optind][v]="extension_" . $widget_standalones[$x][ex_name];
-				$servers[$optind][k]=$widget_standalones[$x][ex_name];
-				$optind++;
+		
+			$servers[$optind][c]="";
+			$servers[$optind][v]="";	
+			$servers[$optind][k]=$widget_standalones[$x][ex_name];
+			$servers[$optind][is_group]=1;
+			$optind++;
+			for($y=0; $y<count($widget_standalones[$x][out][widgets]); $y++) {
+					
+					
+					
+					
+					$servers[$optind][c]="";
+					$servers[$optind][v]="extension_" . $widget_standalones[$x][ex_name] . "_" . $widget_standalones[$x][out][widgets][$y][v];
+					$servers[$optind][k]=$widget_standalones[$x][ex_name] . "/" . $widget_standalones[$x][out][widgets][$y][k];
+					$optind++;
+				}
+		
+				
 	}
 	
 	
@@ -144,18 +168,36 @@ while(list($k, $servs) = @each($map)) {
 	$pipes[$optind][k]="-none-";
 	$pipes[$optind][v]=-1;
 	$optind++;
+
 	for($x=0; $x<count($widget_pipes); $x++ ) {
+		
 				$pipes[$optind][c]="";
+				$pipes[$optind][v]="";	
 				$pipes[$optind][k]=$widget_pipes[$x][ex_name];
-				$pipes[$optind][v]=$widget_pipes[$x][ex_name];
+				$pipes[$optind][is_group]=1;
 				$optind++;
+				for($y=0; $y<count($widget_pipes[$x][out][widgets]); $y++) {
+					
+					$pipes[$optind][c]="";
+					$pipes[$optind][k]=$widget_pipes[$x][ex_name] . "/" . $widget_pipes[$x][out][widgets][$y][k];
+					$pipes[$optind][v]=$widget_pipes[$x][ex_name] . "_" . $widget_pipes[$x][out][widgets][$y][v];
+					$optind++;
+				}
 		}
 	
 	$layout= new Layout();
 	$layout->setTitle("Dashboards:");
 	
 	
-	$layout->OUT .= "<script src='https://raw.github.com/ducksboard/gridster.js/master/dist/jquery.gridster.js'></script>
+	$layout->OUT .= "<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.gridster.js'></script>
+	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.gridster.extras.js'></script>
+	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.coords.js'></script>
+	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.draggable.js'></script>
+	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.collision.js'></script>
+	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/utils.js'></script>
+	
+	
+
 
 <style>
 /*! gridster.js - v0.1.0 - 2012-10-20
@@ -231,13 +273,18 @@ ul.gridst
 li.gridst {
 	background-color: grey;
 }
+.modal {
+	overflow:none;
+}
 #myModal {
 	width: 800px; /* SET THE WIDTH OF THE MODAL */
 
-	margin: -250px 0 0 -350px; /* CHANGE MARGINS TO ACCOMODATE THE NEW WIDTH (original = margin: -250px 0 0 -280px;) */
+	xmargin: -250px 0 0 -350px; /* CHANGE MARGINS TO ACCOMODATE THE NEW WIDTH (original = margin: -250px 0 0 -280px;) */
+	overflow:none !important;
 }
 #myModal .modal-body {
 	height: 250px;
+	overflow-y:none;
 }
 </style>
 <script>
@@ -256,7 +303,7 @@ li.gridst {
 				
 				case 'logview':
 					
-					$.getJSON('logview.php?json=1', function(data) {
+					$.getJSON('logview.php?bartlby_filter=@(LOG|NOT)@&json=1', function(data) {
  								if(data != null) {
  									rd = '<table width=100%>';
  									console.log(data);
@@ -278,8 +325,11 @@ li.gridst {
  										
  									}
  									rd += '</table>';
- 									$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> LogView</h2><div class=\'box-icon\'><a href=\'#\' class=\'btn btn-minimize btn-round\'><i class=\'icon-chevron-up\'></i></a></div></div><div class=\'box-content\' style=\'display:block\' >' +  rd + '<div class=\'clearfix\'></div></div></div>');
+ 									
+ 								} else {
+ 								  rd = 'NO LOG DATA FOUND';
  								}
+ 								$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> LogView</h2><div class=\'box-icon\'></div></div><div class=\'box-content\' style=\'display:block; height:100%;\' >' +  rd + '<div class=\'clearfix\'></div></div></div>');
  					});
 					
 					
@@ -304,29 +354,50 @@ li.gridst {
 				case 'overview_health':
 						$.getJSON('overview.php?json=1', function(data) {
  								$('#' + id).html('' + data.boxes.system_health + '');
+ 								$('#system_health').css('height', '113px');
  					});
 				break;
 				case 'overview_tactical':
 						$.getJSON('overview.php?json=1', function(data) {
  								$('#' + id).html('' + data.boxes.tactical_overview + '');
+ 								$('#tactical_overview').css('height', '113px');
  					});
 				break;
 				default:
 								pipe = $('#' + id)[0].dataset.pipe;
+								params = $('#' + id)[0].dataset.params;
 								f=0;
 								svc_type=id.split('_')[0];
 								svc_id=id.split('_')[1];
 								
 								if(svc_type == 'servicebox') {
 									if(pipe == '-1') {
+											
 											$.getJSON('service_detail.php?service_id=' + svc_id + '&json=1', function(data) {
- 												$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </h2><div class=\'box-icon\'><a href=\'#\' class=\'btn btn-minimize btn-round\'><i class=\'icon-chevron-up\'></i></a></div></div><div class=\'box-content\' style=\'display:block\' ><font color=\'' +  data.SVC_DETAIL.svc_color  + '\'>' + data.SVC_DETAIL.svc_state + '</font>- <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A><br>' + data.SVC_DETAIL.svc_options  + '<div class=\'clearfix\'></div></div></div>');
+											lbl='';
+											if(data.SVC_DETAIL.svc_color == 'green') {
+												lbl = 'label-success';
+											}
+												if(data.SVC_DETAIL.svc_color == 'orange') {
+												lbl = 'label-warning';
+											}
+												if(data.SVC_DETAIL.svc_color == 'red') {
+												lbl = 'label-important';
+											}
+								
+								
+ 											st='<span class=\'label ' + lbl + '\'>' + data.SVC_DETAIL.svc_state + '</span>';
+ 												
+ 												$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </h2><div class=\'box-icon\'></div></div><div class=\'box-content\' style=\'display:block; height:55px;\' >' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A><div class=\'clearfix\'></div></div></div>');
  								
  											});
  									} else {
  										//pipe through ext!
  											console.log('PIPE IT');
-											$.getJSON('extensions_json.php?extension=' + pipe + '&service_id=' + svc_id + '&action=widget_do_pipe', function(data) {
+ 											ext=pipe.split('_')[0];
+											pipe=pipe.split('_')[1];
+											svc_id=id.split('_')[0] + '_' + id.split('_')[1];
+											$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&service_id=' + svc_id + '&action=widget_do_pipe&pipe=' + pipe, function(data) {
  													console.log('GG:' + data);
  													$('#' + id).html(data);
  											});
@@ -335,11 +406,31 @@ li.gridst {
  								}
  								if(svc_type == 'extension') { 
  									f=1;
- 									$.getJSON('extensions_json.php?extension=' + svc_id + '&action=widget_do_standalone', function(data) {
+ 									widget_sub = id.split('_')[2];
+ 									//svc_id=id.split('_')[0] + '_' + id.split('_')[1];
+ 									$.getJSON('extensions_json.php?params=' + params + '&extension=' + svc_id + '&action=widget_do_standalone&pipe=' + widget_sub, function(data) {
  													console.log('GG:' + data);
  													$('#' + id).html(data);
  									});
  								}
+ 								
+ 								if(svc_type == 'servicegroupbox' || svc_type == 'servergroupbox' || svc_type == 'serverbox') {
+									if(pipe != '-1') {
+											//pipe through ext!
+ 											console.log('PIPE IT');
+ 											ext=pipe.split('_')[0];
+											pipe=pipe.split('_')[1];
+											svc_id=id.split('_')[0] + '_' + id.split('_')[1];
+											$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&service_id=' + svc_id + '&action=widget_do_pipe&pipe=' + pipe, function(data) {
+ 													console.log('GG:' + data);
+ 													$('#' + id).html(data);
+ 											});
+ 											f=1;
+ 									}
+ 											
+ 								}
+ 								
+ 								
  								if(f==0) {
  									$('#' + id).html('TYPE not defined ->' + svc_type + '-> ' + pipe);
  								}
@@ -370,7 +461,7 @@ li.gridst {
 		json = JSON.parse(in_data);
 		for(i=0; i<json.length; i++) {
 	   	 grid.add_widget(
-	       	 '<div style=\'overflow:auto\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', 
+	       	 '<div style=\'overflow:auto\' data-params=\'' + json[i]['params'] + '\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', 
 	        json[i]['size_x'], 
 	        json[i]['size_y'], 
 	        json[i]['col'], 
@@ -386,7 +477,7 @@ li.gridst {
 	}
 	$(function(){ //DOM Ready
    grid = $('.gridster ul').gridster({
-        widget_margins: [5, 0],
+        widget_margins: [2, 0],
           serialize_params: function(w, wgd) { 
           console.log(wgd.el[0].dataset.pipe);
         		return { 
@@ -395,10 +486,13 @@ li.gridst {
 	            row: wgd.row,
 	            size_y: wgd.size_y,
 	            size_x: wgd.size_x,
-	            pipe: wgd.el[0].dataset.pipe
+	            pipe: wgd.el[0].dataset.pipe,
+	            params: wgd.el[0].dataset.params
         	} 
     		},
-        widget_base_dimensions: [250, 120]
+        widget_base_dimensions: [100, 135],
+        max_size_x: 50,
+        max_size_y: 50
       
     }).data('gridster');
     
@@ -452,65 +546,78 @@ li.gridst {
  			}
  		});
  		
- 		
+ 		$('#clear_dashboard').click(function() {
+ 			$('[data-rel=\"widget\"]').each(function() {
+ 				 			grid.remove_widget($(this));
+ 				 			
+ 			});
+ 		});
  		$('#btn_add_widget_done').click(function(e) {
  			e.preventDefault();
 			$('#myModal').modal('hide');
 			id=$('#widget_type').val();
 			pipe=$('#widget_pipe').val();
+			params=$('#widget_params').val();
 			if(pipe != '-1') {
 				id = id + '_' + pipe;
+				pipe_str=pipe;
+				ext=pipe.split('_')[0];
+				pipe=pipe.split('_')[1];
+			}
+			if(params != '') {
+						id = id + '_' + hashCode(params);	
 			}
 			do_not_add=0;
 			
 			switch(id) {
 				case 'overview_core':
 					
-					w=3;
+					w=6;
 					h=2;
 					
 					
 				break;
 				case 'logview':
 					
-					w=2;
+					w=4;
 					h=2;
 					
 					
 				break;
 				case 'overview_health':
-					w=3;
+					w=4;
 					h=1;
 				break;
 				case 'overview_servergroups':
-					w=3;
+					w=6;
 					h=2;
 				break;
 				case 'overview_servicegroups':
-					w=3;
+					w=6;
 					h=2;
 				break;
 				case 'overview_tactical':
-						w=3;
+						w=6;
 						h=1;
 				break;
 				default:
 					f=0;
-					w=1;
+					w=2;
 					h=1;
 					
 					svc_type=id.split('_')[0];
 					if(svc_type == 'servicebox') {
 							f=1;
-							svc_id=id.split('_')[1];
-							w=1;
+							
+							w=2;
 							h=1;
 							if(pipe != '-1') {
-								$.getJSON('extensions_json.php?extension=' + pipe + '&service_id=' + svc_id + '&action=widget_pipe_get_size', function(data) {
+								svc_id=id.split('_')[0] + '_' +  id.split('_')[1];
+								$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&service_id=' + svc_id + '&action=widget_pipe_get_size&pipe=' + pipe, function(data) {
  									w=data.width;
  									h=data.height;
  									
- 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
+ 									grid.add_widget('<div style=\'overflow:auto\' data-params=\'' + params + '\' data-pipe=\'' +  pipe_str + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
 									loadWidget(id);
  								});
  								do_not_add=1;
@@ -523,13 +630,13 @@ li.gridst {
 					if(svc_type == 'extension') {
 						f=1;
 						ext=id.split('_')[1];
-						
-						$.getJSON('extensions_json.php?extension=' + ext + '&action=widget_standalone_size', function(data) {
+						widget_sub=id.split('_')[2];
+						$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&action=widget_standalone_size&pipe=' + widget_sub, function(data) {
  									w=data.width;
  									pipe='-1';
  									h=data.height;
  									
- 									grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
+ 									grid.add_widget('<div style=\'overflow:auto\' data-params=\'' + params + '\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
 									loadWidget(id);
  								});
  								do_not_add=1;
@@ -542,12 +649,53 @@ li.gridst {
 							svc_id=id.split('_')[1];
 							w=2;
 							h=2;
+							
+							if(pipe != '-1') {
+								svc_id=id.split('_')[0] + '_' +  id.split('_')[1];
+								$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&service_id=' + svc_id + '&action=widget_pipe_get_size&pipe=' + pipe, function(data) {
+ 									w=data.width;
+ 									h=data.height;
+ 									
+ 									grid.add_widget('<div style=\'overflow:auto\' data-params=\'' + params + '\' data-pipe=\'' +  pipe_str + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
+									loadWidget(id);
+ 								});
+ 								do_not_add=1;
+							}
+							
 					}
 					if(svc_type == 'servergroupbox') {
 							f=1;
 							svc_id=id.split('_')[1];
 							w=2;
 							h=2;
+							if(pipe != '-1') {
+								svc_id=id.split('_')[0] + '_' +  id.split('_')[1];
+								$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&service_id=' + svc_id + '&action=widget_pipe_get_size&pipe=' + pipe, function(data) {
+ 									w=data.width;
+ 									h=data.height;
+ 									
+ 									grid.add_widget('<div style=\'overflow:auto\' data-params=\'' + params + '\' data-pipe=\'' +  pipe_str + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
+									loadWidget(id);
+ 								});
+ 								do_not_add=1;
+							}
+					}
+					if(svc_type == 'serverbox') {
+							f=1;
+							svc_id=id.split('_')[1];
+							w=2;
+							h=2;
+							if(pipe != '-1') {
+								svc_id=id.split('_')[0] + '_' +  id.split('_')[1];
+								$.getJSON('extensions_json.php?params=' + params + '&extension=' + ext + '&service_id=' + svc_id + '&action=widget_pipe_get_size&pipe=' + pipe, function(data) {
+ 									w=data.width;
+ 									h=data.height;
+ 									
+ 									grid.add_widget('<div style=\'overflow:auto\' data-params=\'' + params + '\' data-pipe=\'' +  pipe_str + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
+									loadWidget(id);
+ 								});
+ 								do_not_add=1;
+							}
 					}
 					
 				
@@ -558,7 +706,8 @@ li.gridst {
 			}
 			
 			if(do_not_add == 0) {
-				grid.add_widget('<div style=\'overflow:auto\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
+				console.log('W:' + w + ' H:' +h);
+				grid.add_widget('<div style=\'overflow:auto\' data-params=\'' + params + '\' data-pipe=\'' +  pipe + '\' data-rel=\'widget\' id=\'' +  id + '\'><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', w,h,1,1);
 				loadWidget(id);
 			}
 			
@@ -575,10 +724,22 @@ li.gridst {
 
  
 });
+hashCode = function(str){
+    var hash = 0;
+    if (str.length == 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
 	</script>
 ";
 	$layout->OUT .= '<button id="add_widget" class="btn btn-small btn-default">add widget</button>&nbsp;';
 	$layout->OUT .= '<button id="save_dashboard" class="btn btn-small btn-default">Save Dashboard</button>&nbsp;';
+	$layout->OUT .= '<button id="clear_dashboard" class="btn btn-small btn-default">Clear Dashboard</button>&nbsp;';
 	$layout->OUT .= '<button id="reload_dashboard" class="btn btn-small btn-default">Reload</button>&nbsp;';
 	$layout->OUT .= '<input data-no-uniform="true" id="auto_reload" type="checkbox" > Auto Reload';
 	$layout->OUT .= '<div class="gridster">
@@ -605,6 +766,12 @@ li.gridst {
 					' . $layout->DropDown("widget_pipe", $pipes,"","",false) . '					
 					</td>
 					</tr>
+					<tr>
+					<td>Widget Params</td>
+					<td>
+					' . $layout->Field("widget_params", "") . '					
+					</td>
+					</tr>
 					
 				</table>
 			</div>
@@ -621,5 +788,4 @@ li.gridst {
 	
 	
 ?>
-
 

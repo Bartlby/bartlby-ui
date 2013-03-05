@@ -24,32 +24,65 @@ class AutoDiscoverAddons {
 				function widget_do_pipe() {
 						global $_GET;
 						global $btl;
-						$svcid=$_GET[service_id];
+						//$_GET[pipe] -> TYPE (24h, all)
+						$a = explode("_", $_GET[service_id]);
+						
+						
+						if($a[0] != "servicebox") {
+							return $a[0] . print_r($_GET, true);
+						}
+						
+						$svcid=$a[1];
 						$rrd_dir=$this->rrd_dir;
 						$defaults[service_id]=$svcid;
 						$btl->updatePerfHandler(0, $svcid);
-             $re .= $this->_globExt($svcid, $rrd_dir);
+						$all=true;
+						$ww="height='190'";
+						if($_GET[pipe] == "24h") {
+								$all=false;
+								
+						}
+						
+						
+						if($_GET[pipe] == "raw24h") {
+							$all=false;
+							$ww="";
+						}
+						
+            $re .= $this->_globExt($svcid, $rrd_dir, $ww,$all);
+            if($_GET[pipe] == "raw24h") {
+            	return $re;            	
+            }
             
             $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
             
+            
             $l = new Layout();
-            $l->create_box("Graph of " . $defaults[server_name] . "/" . $defaults[service_name], "<center>" . $re . "</center>", "extension_AutoDiscover");
+            $l->create_box("Graph of " . $defaults[server_name] . "/" . $defaults[service_name], "<div style='height: 100%; min-height:190px'><center>" . $re . "</center></div>", "extension_AutoDiscover");
 						$re = $l->boxes[extension_AutoDiscover];
             
-						return $re;
+            return "" . $re . "";
 						
-						return $this->_globExt($_GET[service_id], $this->rrd_dir, "width=90%");
-						return "AutoDiscoverAddons Pipe Threw of ID:" . $_GET[service_id];
+						
+						
 				}
 				function widget_pipe_get_size() {
 					global $_GET;
-					$a[width] = 2;
+					$a[width] = 4;
 					$a[height] = 2;
+					//$_GET[pipe] -> TYPE (24h, all)
 					return $a;
 				}
 				function widget_pipe() {
       			$a[has_widget]=1;
+      			$a[widgets][0][k]="24h Graph";
+      			$a[widgets][0][v]="24h";
+      			$a[widgets][1][k]="All Graphs";
+      			$a[widgets][1][v]="all";
+      			$a[widgets][2][k]="Raw 24h Image";
+      			$a[widgets][2][v]="raw24h";
       			
+
       			return $a;
       	}
         function _About() {
@@ -122,10 +155,19 @@ class AutoDiscoverAddons {
        	
        	return $r;
        }
-        function _globExt($svcid, $path, $width="") {
+        function _globExt($svcid, $path, $width="", $all=true) {
         	  global $defaults, $xajax, $btl;
         	  $x = 0;        	  
                 foreach(glob($path . "/" . $svcid . "_*.png") as $fn) {
+                				if($all == false) {
+                					
+                						if(!preg_match("/24h.png/", basename($fn)) ) {
+                							continue;
+                						} else {
+                							$r .= "<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
+                							break;
+                						}
+                				}
                         $r .= "<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
                         $x++;
                 } 
@@ -140,7 +182,7 @@ class AutoDiscoverAddons {
 															$i_start = time()-(60*60);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															$re .= "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
 															
 															
 															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
@@ -148,8 +190,15 @@ class AutoDiscoverAddons {
 															$i_start = time()-86400;
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img   onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+																						
 															
+															$tre .= "<img  $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
+															
+															if($all == false) {
+																	return $tre;
+																	
+															}
+															$re .= $tre . "<br>";
 															
 															
 															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
@@ -157,7 +206,7 @@ class AutoDiscoverAddons {
 															$i_start = time()-(86400*7);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															$re .= "<img $width  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 															
 															
 															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
@@ -165,14 +214,14 @@ class AutoDiscoverAddons {
 															$i_start = time()-(86400*30);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															$re .= "<img $width  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 															
 															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
 															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
 															$i_start = time()-(86400*365);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															$re .= "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 															
 													}
 														
@@ -181,18 +230,13 @@ class AutoDiscoverAddons {
                 
                return $r;
         }
-
-        function _serviceDetail() {
-                global $defaults, $btl;
-                if($btl->hasRight("ada_allowed", false)) {
-                	$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
-                	if($rrd_dir) {
-                     	   $svcid=$defaults[service_id];
-                        	//see if someone has hardcoded some special_addon_stuff in ui config
-                        	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
-                        	if(!$svc_counter) {
-                        		
-                        			if(file_exists($rrd_dir . "/" . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd')) {
+				function getRRDWidget() {
+					global $defaults, $btl;
+					
+					$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
+						
+						if(file_exists($rrd_dir . "/" . $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd')) {
+							
                         						$is_octets="false";
                         						if($defaults[plugin] == "bartlby_if") {
                         							$is_octets="true";
@@ -282,6 +326,19 @@ class AutoDiscoverAddons {
 																		}
                         				
                         			}
+                        			return $re;
+				}
+        function _serviceDetail() {
+                global $defaults, $btl;
+                if($btl->hasRight("ada_allowed", false)) {
+                	$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
+                	if($rrd_dir) {
+                     	   $svcid=$defaults[service_id];
+                        	//see if someone has hardcoded some special_addon_stuff in ui config
+                        	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
+                        	if(!$svc_counter) {
+                        		
+                        				$re .= $this->getRRDWidget();
                         		    $re .= $this->getJavascripts();
                         		    $re .= $this->_globExt($svcid, $rrd_dir);
                         		    $re .= $this->endScripts();

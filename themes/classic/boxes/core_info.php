@@ -20,14 +20,15 @@
 ?>
 
 
+<div style='min-height:190px'>
 						
-						<table class='nopad' width='100%' border=0>
+						<table class='nopad' width='100%'  border=0>
 		<tr>
 			<td class='font1'>(Logged in as: <font class='font2'><?=$plcs[user]?></font>)</td>
 			<td align=right class='font1'>Uptime:<font class='font2'><?=$plcs[uptime]?></font></td>
 		</tr>
 		<tr>
-			<td class='font1'>Services: <font class='font2'><?=$plcs[services]?>&nbsp;&nbsp;&nbsp;&nbsp;Workers: <?=$plcs[workers]?>&nbsp;&nbsp;&nbsp;&nbsp;Downtimes: <?=$plcs[downtimes]?>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td class='font1'>Services: <font class='font2'><?=$plcs[services]?>&nbsp;&nbsp;&nbsp;&nbsp;Workers: <?=$plcs[workers]?></td>
 			<td align=right class='font1'>Datalib:<font class='font2'><?=$plcs[datalib]?>-<?=$plcs[datalib_version]?></font></td>
 		</tr>
 		<tr>
@@ -57,5 +58,5 @@
 		</tr>
 	</table>
 	
-				
+</div>				
 

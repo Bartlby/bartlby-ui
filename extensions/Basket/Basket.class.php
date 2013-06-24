@@ -19,7 +19,7 @@ class Basket {
         	global $_GET, $btl;
         	$re = new XajaxResponse();
         	$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
-        	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
+        	$svc_counter=bartlby_config(getcwd() . "/ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
 		if(!$svc_counter) {
 			$r = $this->_globExt($_GET[xajaxargs][2], $rrd_dir);
 			$re->addAssign("autodiscoveraddons_layer", "innerHTML", $r);

@@ -7,7 +7,7 @@ include "config.php";
 
 $btl=new BartlbyUi($Bartlby_CONF);
 $layout = new Layout();
-$layout->setTheme(bartlby_config("ui-extra.conf", "theme"));
+$layout->setTheme(bartlby_config(getcwd() . "/ui-extra.conf", "theme"));
 
 
 $xajax->processRequests();

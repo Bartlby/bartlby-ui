@@ -846,7 +846,7 @@ while(list($k, $v) = @each($global_msg)) {
 @reset($_GET);
 @reset($_POST);
 @reset($global_msg);
-if($act != "edit_cfg" && @bartlby_config("ui-extra.conf", "ui_event_log") == "true") {
+if($act != "edit_cfg" && @bartlby_config(getcwd() . "/ui-extra.conf", "ui_event_log") == "true") {
 	$btl->_log("UI Event: (action->$act IP->" .  $_SERVER[REMOTE_ADDR] . ")\\dbr $get_line $post_line \\dbr $global_line");
 }
 

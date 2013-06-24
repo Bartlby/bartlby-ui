@@ -14,7 +14,7 @@ class AutoDiscoverAddons {
                       $this->disp="none";
                       
                 }
-                $pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
+                $pnp4_nagios=bartlby_config(getcwd() . "/ui-extra.conf", "pnp4nagios");
 								if($pnp4_nagios) {
 	                if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
 	                	$this->disp="none";
@@ -118,7 +118,7 @@ class AutoDiscoverAddons {
         	global $_GET, $btl;
         	$re = new XajaxResponse();
         	$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
-        	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
+        	$svc_counter=bartlby_config(getcwd() . "/ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
 					if(!$svc_counter) {
 						$r = $this->_globExt($_GET[xajaxargs][2], $rrd_dir);
 						$re->addAssign("autodiscoveraddons_layer", "innerHTML", $r);
@@ -173,7 +173,7 @@ class AutoDiscoverAddons {
                 } 
                 
                  $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
-                 $pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
+                 $pnp4_nagios=bartlby_config(getcwd() . "/ui-extra.conf", "pnp4nagios");
 									if($pnp4_nagios) {
 														if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
 															$t=time();
@@ -280,7 +280,7 @@ class AutoDiscoverAddons {
 																	</script>
 																	<div id="mygraph"></div>';
 															}
-                        			$pnp4_nagios=bartlby_config("ui-extra.conf", "pnp4nagios");
+                        			$pnp4_nagios=bartlby_config(getcwd() . "/ui-extra.conf", "pnp4nagios");
                         			if($pnp4_nagios) {
                         				
 			                        			if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
@@ -335,7 +335,7 @@ class AutoDiscoverAddons {
                 	if($rrd_dir) {
                      	   $svcid=$defaults[service_id];
                         	//see if someone has hardcoded some special_addon_stuff in ui config
-                        	$svc_counter=bartlby_config("ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
+                        	$svc_counter=bartlby_config(getcwd() . "/ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
                         	if(!$svc_counter) {
                         		
                         				$re .= $this->getRRDWidget();

@@ -27,7 +27,7 @@
 	
 	while(list($k,$v)=@each($servers)) {
 		$x=$k;
-		if($btl->isServerUp($x, &$servers)) {
+		if($btl->isServerUp($x, $servers)) {
 			$hosts_up++;	
 		} else {
 			$hosts_down++;	

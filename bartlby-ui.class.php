@@ -663,8 +663,8 @@ class BartlbyUi {
 	
 		
 
-		if(bartlby_config("ui-extra.conf", "theme") != "") {
-			$this->theme=bartlby_config("ui-extra.conf", "theme");
+		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
+			$this->theme=bartlby_config(getcwd() . "/ui-extra.conf", "theme");
 		} else {
 			$this->theme="classic";
 		}
@@ -921,7 +921,7 @@ class BartlbyUi {
 		global $Bartlby_CONF_IDX;
 		$base="rights/";
 		
-		$ui_extra_file = "ui-extra.conf";
+		$ui_extra_file = getcwd() . "/ui-extra.conf";
 		if($Bartlby_CONF_IDX>0) {
 			$base="rights-" . $Bartlby_CONF_IDX . "/";
 			$ui_extra_file = "ui-extra-" . $Bartlby_CONF_IDX . ".conf";

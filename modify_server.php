@@ -69,8 +69,8 @@ if($_GET["new"] == "true") {
 	$defaults["hour_to"]="24";
 	$defaults["server_dead"] = "0";
 	
-	$defaults[server_port]=(int)bartlby_config("ui-extra.conf", "new.server.port");
-	$defaults[server_icon]=bartlby_config("ui-extra.conf", "new.server.icon");
+	$defaults[server_port]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.server.port");
+	$defaults[server_icon]=bartlby_config(getcwd() . "/ui-extra.conf", "new.server.icon");
 	
 	
 }

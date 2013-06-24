@@ -50,8 +50,8 @@ class Layout {
 	}
 	function Layout($scr='') {
 		$this->box_count=1;
-		if(bartlby_config("ui-extra.conf", "theme") != "") {
-			$this->theme=bartlby_config("ui-extra.conf", "theme");
+		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
+			$this->theme=bartlby_config(getcwd() . "/ui-extra.conf", "theme");
 		} else {
 			$this->theme="classic";
 		}

@@ -27,9 +27,9 @@
 	}
 	if($client_found == 0) {
 		//Auto register?
-		$auto_reg = bartlby_config("ui-extra.conf", "sync_auto_register");
-		$exclude = bartlby_config("ui-extra.conf", "sync_exclude_clients");
-		$default_pkg = bartlby_config("ui-extra.conf", "sync_default_pkg");
+		$auto_reg = bartlby_config(getcwd() . "/ui-extra.conf", "sync_auto_register");
+		$exclude = bartlby_config(getcwd() . "/ui-extra.conf", "sync_exclude_clients");
+		$default_pkg = bartlby_config(getcwd() . "/ui-extra.conf", "sync_default_pkg");
 		$exclude_list=explode(",", $exclude);
 		
 		

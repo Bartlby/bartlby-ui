@@ -62,20 +62,20 @@ if($_GET["new"] == "true") {
 	$btl->hasRight("action.add_service");
 	
 	$defaults["exec_plan"] = "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59";
-	$defaults["check_interval"]=bartlby_config("ui-extra.conf", "new.service.interval");
-	$defaults[service_type]=(int)bartlby_config("ui-extra.conf", "new.service.type");
-	$defaults[service_ack_enabled]=(int)bartlby_config("ui-extra.conf", "new.service.ack");
-	$defaults[service_retain]=(int)bartlby_config("ui-extra.conf", "new.service.retain");
+	$defaults["check_interval"]=bartlby_config(getcwd() . "/ui-extra.conf", "new.service.interval");
+	$defaults[service_type]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.type");
+	$defaults[service_ack_enabled]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.ack");
+	$defaults[service_retain]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.retain");
 	
-	$defaults[service_check_timeout]=(int)bartlby_config("ui-extra.conf", "new.service.active.tcptimeout");
-	$defaults[plugin]=bartlby_config("ui-extra.conf", "new.service.active.plugin");
-	$defaults[service_args]=bartlby_config("ui-extra.conf", "new.service.active.arguments");
+	$defaults[service_check_timeout]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.active.tcptimeout");
+	$defaults[plugin]=bartlby_config(getcwd() . "/ui-extra.conf", "new.service.active.plugin");
+	$defaults[service_args]=bartlby_config(getcwd() . "/ui-extra.conf", "new.service.active.arguments");
 	
-	$defaults[service_passive_timeout]=(int)bartlby_config("ui-extra.conf", "new.service.passive.timeout");
-	$defaults[flap_seconds]=(int)bartlby_config("ui-extra.conf", "new.service.flap_seconds");
+	$defaults[service_passive_timeout]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.passive.timeout");
+	$defaults[flap_seconds]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.flap_seconds");
 	
-	$defaults[escalate_divisor]=(int)bartlby_config("ui-extra.conf", "new.service.escalate_divisor");
-	$defaults[renotify_interval]=(int)bartlby_config("ui-extra.conf", "new.service.renotify_interval");
+	$defaults[escalate_divisor]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.escalate_divisor");
+	$defaults[renotify_interval]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.renotify_interval");
 	$server_list_type="multiple";
 	$server_field_name="service_server[]";	
 	

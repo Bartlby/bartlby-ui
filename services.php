@@ -31,7 +31,7 @@
 			
 			
 			$curp = $_GET[$k ."site"] > 0 ? $_GET[$k ."site"] : 1;
-			$perp=bartlby_config("ui-extra.conf", "services_per_page");
+			$perp=bartlby_config(getcwd() . "/ui-extra.conf", "services_per_page");
 			$perp=1000000000000000000;
 			$forward_link=$btl->create_pagelinks("services.php?expect_state=" . $_GET[expect_state] . "&server_id=" . $_GET[server_id], count($servs)-1, $perp, $curp,$k ."site");
 			

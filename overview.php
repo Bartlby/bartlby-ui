@@ -52,7 +52,7 @@ $Author: hjanuschka $
 	
 	
 	
-	$quickview_disabled=bartlby_config("ui-extra.conf", "quickview_enabled");
+	$quickview_disabled=bartlby_config(getcwd() . "/ui-extra.conf", "quickview_enabled");
 	
 	if($info[round_time_count] > 0 &&  $info[round_time_sum] > 0 ) {
 		$rndMS=round($info[round_time_sum] / $info[round_time_count], 2);

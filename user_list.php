@@ -15,7 +15,7 @@ $servs=$btl->GetWorker();
 $optind=0;
 
 
-$ajaxed = bartlby_config("ui-extra.conf", "ajaxed");
+$ajaxed = bartlby_config(getcwd() . "/ui-extra.conf", "ajaxed");
 
 if($dropdownded != "true")  {
 

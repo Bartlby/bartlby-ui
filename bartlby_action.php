@@ -96,9 +96,9 @@ switch($act) {
 			$d_from = $_GET[downtime_from];
 			$d_to = $_GET[downtime_to];
 			
-			sscanf($d_from,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
+			sscanf($d_from,"%d/%d/%d %d:%d", $m, $d, $y, $h, $s);
 			$dfrom=mktime($h, $s, 0, $m, $d,$y);
-			sscanf($d_to,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
+			sscanf($d_to,"%d/%d/%d %d:%d", $m, $d, $y, $h, $s);
 			$dto=mktime($h, $s, 0, $m, $d,$y);
 			
 		
@@ -120,9 +120,9 @@ switch($act) {
 			$d_from = $_GET[downtime_from] ;
 			$d_to = $_GET[downtime_to];
 			
-			sscanf($d_from,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
+			sscanf($d_from,"%d/%d/%d %d:%d", $m, $d, $y, $h, $s);
 			$dfrom=mktime($h, $s, 0, $m, $d,$y);
-			sscanf($d_to,"%d/%d/%d %d:%d", &$m, &$d, &$y, &$h, &$s);
+			sscanf($d_to,"%d/%d/%d %d:%d", $m, $d, $y, $h, $s);
 			$dto=mktime($h, $s, 0, $m, $d,$y);
 			
 			$clean_service=str_replace("s", "", $_GET[service_id]);

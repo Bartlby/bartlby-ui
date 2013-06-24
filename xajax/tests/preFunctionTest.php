@@ -40,7 +40,7 @@ $xajax = new xajax();
 //$xajax->debugOn();
 if (@$_GET['useObjects'] == "true") {
 	$preObj = new myPreObject();
-	$xajax->registerPreFunction(array("myPreFunction", &$preObj, "preMethod"));
+	$xajax->registerPreFunction(array("myPreFunction", $preObj, "preMethod"));
 }
 else {
 	$xajax->registerPreFunction("myPreFunction");

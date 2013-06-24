@@ -67,7 +67,7 @@ ncurses_init_pair(5,NCURSES_COLOR_BLACK,NCURSES_COLOR_WHITE);
 
 while(1){
 
-	ncurses_getmaxyx(&$main, $lines, $columns);
+	ncurses_getmaxyx($main, $lines, $columns);
 	ncurses_timeout(2);
 	$k = ncurses_getch();
 	$info = @bartlby_get_info($btl->CFG);

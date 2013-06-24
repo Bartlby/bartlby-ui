@@ -1090,7 +1090,7 @@ class BartlbyUi {
 		}
 		return -1;	
 	}
-	function isServerUp($server_id, &$map) {
+	function isServerUp($server_id, $map) {
 		
 		if($map[$server_id][0][current_state] == -3) {
 			return false;	

@@ -389,7 +389,7 @@ class xajax
 	 * conflict with any other registered function name.
 	 * 
 	 * <i>Usage:</i> <kbd>$xajax->registerFunction("myFunction");</kbd>
-	 * or: <kbd>$xajax->registerFunction(array("myFunctionName", &$myObject, "myMethod"));</kbd>
+	 * or: <kbd>$xajax->registerFunction(array("myFunctionName", $myObject, "myMethod"));</kbd>
 	 * 
 	 * @param mixed  contains the function name or an object callback array
 	 * @param mixed  request type (XAJAX_GET/XAJAX_POST) that should be used 

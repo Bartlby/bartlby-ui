@@ -189,12 +189,12 @@ while(list($k, $servs) = @each($map)) {
 	$layout->setTitle("Dashboards:");
 	
 	
-	$layout->OUT .= "<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.gridster.js'></script>
-	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.gridster.extras.js'></script>
-	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.coords.js'></script>
-	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.draggable.js'></script>
-	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/jquery.collision.js'></script>
-	<script src='https://raw.github.com/brokenseal/gridster.js/master/src/utils.js'></script>
+	$layout->OUT .= "<script src='extensions/Dashboards/jquery.gridster.js'></script>
+	<script src='extensions/Dashboards/jquery.gridster.extras.js'></script>
+	<script src='extensions/Dashboards/jquery.coords.js'></script>
+	<script src='extensions/Dashboards/jquery.draggable.js'></script>
+	<script src='extensions/Dashboards/jquery.collision.js'></script>
+	<script src='extensions/Dashboards/utils.js'></script>
 	
 	
 

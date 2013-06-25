@@ -24,7 +24,7 @@ if($act != "delete_package_ask") {
 }
 switch($act) {
 	case 'set_instance_id':
-		$_SESSION["instance_id"] = $_GET[instance_id];
+		$_SESSION["instance_id"] = $_GET[set_instance_id];
 		
 		Header("Location: " .  $_SERVER['HTTP_REFERER']);
 		
@@ -54,10 +54,16 @@ switch($act) {
 			$nk = str_replace("log_", "log.", $nk);
 			$new_file .= $nk . "=true\n";	
 		}
-		$wk = bartlby_get_worker_by_id($btl->CFG, $_POST[worker_id]);
-		$fp = @fopen("rights/" . $wk[worker_id] . ".dat", "w");
+		$wk = bartlby_get_worker_by_id($btl->RES, $_POST[worker_id]);
+		$base="rights/";
+		if($Bartlby_CONF_IDX>0) {
+			$base="nodes/" . $Bartlby_CONF_IDX . "/rights/";
+			//$ui_extra_file = "nodes/" . $Bartlby_CONF_IDX . "/ui-extra.conf";
+		}
+		$fp = @fopen($base . "/" . $wk[worker_id] . ".dat", "w");
 		@fwrite($fp, $new_file);
 		@fclose($fp);
+		//echo file_get_contents("rights/" . $wk[worker_id] . ".dat");
 	break;
 	
 	case 'disable_extension':
@@ -81,7 +87,7 @@ switch($act) {
 	case 'delete_downtime':
 		$layout->set_menu("downtimes");
 		if($_GET[downtime_id]) {
-			$rdt = bartlby_delete_downtime($btl->CFG, $_GET[downtime_id]);	
+			$rdt = bartlby_delete_downtime($btl->RES, $_GET[downtime_id]);	
 			$layout->OUT .= "<script>doReloadButton();</script>";
 			
 		} else {
@@ -105,7 +111,16 @@ switch($act) {
 		
 			$clean_service=str_replace("s", "", $_GET[service_id]);
 			
-			$rdt=bartlby_modify_downtime($btl->CFG, $dfrom, $dto, $_GET[downtime_type], $_GET[downtime_notice], $clean_service, $_GET[downtime_id]);
+			$dt_obj = array(
+				"downtime_from" => $dfrom,
+				"downtime_to" => $dto,
+				"downtime_type" => $_GET[downtime_type],
+				"downtime_notice" => $_GET[downtime_notice],
+				"downtime_service" => $clean_service
+			);
+			
+			
+			$rdt=bartlby_modify_downtime($btl->RES, $_GET[downtime_id], $dt_obj);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {
@@ -129,7 +144,16 @@ switch($act) {
 			
 			$notice=$_GET[lappend] . " " . $_GET[downtime_notice];
 			
-			$rdt=bartlby_add_downtime($btl->CFG, $dfrom, $dto, $_GET[downtime_type], $notice, $clean_service);
+			$dt_obj = array(
+				"downtime_from" => $dfrom,
+				"downtime_to" => $dto,
+				"downtime_type" => $_GET[downtime_type],
+				"downtime_notice" => $notice,
+				"downtime_service" => $clean_service
+			);
+			
+			
+			$rdt=bartlby_add_downtime($btl->RES, $dt_obj);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 			
@@ -144,7 +168,7 @@ switch($act) {
 		
 		switch($_POST[ecfg]) {
 			case 'bartlby.cfg':
-				$cfgfile=$btl->CFG;
+				$cfgfile=$btl->RES;
 			break;	
 			case 'ui-extra.conf':
 				$cfgfile="ui-extra.conf";
@@ -177,10 +201,10 @@ switch($act) {
 		if(!preg_match("/^XML.*$/i", $_GET[service_id])) {
 			$btl->hasServerorServiceRight($_GET[service_id]);
 			if($_GET[passive_text]) {
-				$global_msg=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+				$global_msg=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 				$idx=$btl->findSHMPlace($_GET[service_id]);
 				$global_msg[readable_state]="<font color=" . $btl->getColor($_GET[passive_state]) . ">" . $btl->getState($_GET[passive_state]) . "</font>";
-				bartlby_set_passive($btl->CFG, $idx, $_GET[passive_state], $_GET[passive_text]);
+				bartlby_set_passive($btl->RES, $idx, $_GET[passive_state], $_GET[passive_text]);
 			} else {
 				$act="missing_param";
 			}
@@ -220,13 +244,13 @@ switch($act) {
 	case 'ack_problem':
 	case 'add_comment':
 		$btl->hasServerorServiceRight($_GET[service_id]);
-		$global_msg=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+		$global_msg=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 		$layout->set_menu("main");
 		if($act == 'ack_problem') {
 			$_GET[subject]="Acknowledge of problem";
 			$_GET[notify][0]=2;
 			$idx=$btl->findSHMPlace($_GET[service_id]);
-			bartlby_ack_problem($btl->CFG, $idx);
+			bartlby_ack_problem($btl->RES, $idx);
 				
 		}
 		if($_GET[subject] && $_GET[comment]) {
@@ -258,7 +282,7 @@ switch($act) {
 			$re=unserialize($bf);
 			fclose($fp);
 			for($y=0; $y<$btl->info[services]; $y++) {
-				$svc=bartlby_get_service($btl->CFG, $y);
+				$svc=bartlby_get_service($btl->RES, $y);
 				if($svc[server_id] == $_GET[server_id]) {
 					for($x=0; $x<count($re); $x++) {
 						
@@ -268,7 +292,7 @@ switch($act) {
 							$global_msg["package"] .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
 							$global_msg["package"] .= str_repeat("&nbsp;", 20) . "Time: $tfrom - $tto / " . $re[$x][check_interval] . "<br>";	
 							$global_msg["package"] .= str_repeat("&nbsp;", 20) . "Service Type: " . $re[$x][service_type] . "<br>";
-							bartlby_delete_service($btl->CFG, $svc[service_id]);
+							bartlby_delete_service($btl->RES, $svc[service_id]);
 							$found++;
 						}
 					}
@@ -285,7 +309,8 @@ switch($act) {
 		
 		$layout->set_menu("packages");
 		if($_GET[package_name] && $_GET[server_id]) {
-			$global_msg["package"] = $btl->installPackage($_GET[package_name], $_GET[server_id], $_GET[force_plugins], $_GET[force_perf]);
+			
+			$global_msg["package"] = $btl->installPackage($_GET[package_name], $_GET[server_id], $_GET[force_plugins], $_GET[force_perf], NULL, $_GET[force_service_type]);
 			$layout->OUT .= "<script>doReloadButton();</script>";
 		}  else {
 			$act="missing_param";
@@ -307,10 +332,10 @@ switch($act) {
 		if(!preg_match("/^XML.*$/i", $_GET[service_id])) {
 			if($_GET[service_id]) {
 				$btl->hasServerorServiceRight($_GET[service_id]);
-				$global_msg=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+				$global_msg=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 				$idx=$btl->findSHMPlace($_GET[service_id]);
 				
-				$cur=bartlby_check_force($btl->CFG, $idx);
+				$cur=bartlby_check_force($btl->RES, $idx);
 				
 			} else {                                     
 			 	$act="missing_param";
@@ -323,7 +348,7 @@ switch($act) {
 	case 'sirene_enable':
 	case 'sirene_disable':
 		$layout->set_menu("main");
-		$r=bartlby_toggle_sirene($btl->CFG);
+		$r=bartlby_toggle_sirene($btl->RES);
 		 $global_msg[intervall]=bartlby_config($btl->CFG, "sirene_interval");
 		if(!$global_msg[intervall]) {
 			 $global_msg[intervall]=600;
@@ -343,8 +368,8 @@ switch($act) {
 			if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 				$btl->hasRight("modify_all_workers");
 			}
-			$global_msg=bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
-			$d=bartlby_delete_worker($btl->CFG, $_GET[worker_id]);
+			$global_msg=bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
+			$d=bartlby_delete_worker($btl->RES, $_GET[worker_id]);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 
@@ -424,14 +449,33 @@ switch($act) {
 			$end_pw= md5($_GET[worker_password]);
 			
 			if(!$_GET[worker_password]) {
-					$wrk1 = bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
+					$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 					$end_pw=$wrk1[password];
 			}
+			//, , $svcstr, $notifystr, , ,$end_pw, $triggerstr, , , $exec_plan
+			$wrk_obj = array(
+				"worker_name" =>$_GET[worker_name],
+				"worker_icq" => $_GET[worker_icq],
+				"worker_mail" => $_GET[worker_mail],
+				"worker_services" => $svcstr,
+				"worker_notify_levels" => $notifystr,
+				"worker_active" => $_GET[worker_active],
+				"worker_password" => $end_pw,
+				"enabled_triggers" => $triggerstr,
+				"worker_escalation_limit" => $_GET[escalation_limit],
+				"worker_escalation_minutes" => $_GET[escalation_minutes],
+				"worker_notify_plan" => $exec_plan
+				
+				
+				
+				
 			
+			);
 			
-			$add=bartlby_modify_worker($btl->CFG,$_GET[worker_id],  $_GET[worker_mail], $_GET[worker_icq], $svcstr, $notifystr, $_GET[worker_active], $_GET[worker_name],$end_pw, $triggerstr, $_GET[escalation_limit], $_GET[escalation_minutes], $exec_plan);
+			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);
 			$btl->setUIRight("selected_services", $selected_services, $_GET[worker_id]);
+			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 
 		} else {                                     
@@ -452,6 +496,8 @@ switch($act) {
 				}	
 			}
 			
+			$svcstr="";
+			$notifystr="";
 			
 			$msg = "wa:" .  $_GET[worker_active] . "\n";
 			
@@ -488,8 +534,23 @@ switch($act) {
 				$exec_plan="";	
 			}
 			
+			$wrk_obj = array(
+				"worker_name" =>$_GET[worker_name],
+				"worker_icq" => $_GET[worker_icq],
+				"worker_mail" => $_GET[worker_mail],
+				"worker_services" => $svcstr,
+				"worker_notify_levels" => $notifystr,
+				"worker_active" => $_GET[worker_active],
+				"worker_password" => md5($_GET[worker_password]),
+				"enabled_triggers" => $triggerstr,
+				"worker_escalation_limit" => $_GET[escalation_limit],
+				"worker_escalation_minutes" => $_GET[escalation_minutes],
+				"worker_notify_plan" => $exec_plan
+				
+			);
 			
-			$add=bartlby_add_worker($btl->CFG, $_GET[worker_mail], $_GET[worker_icq], $svcstr, $notifystr, $_GET[worker_active], $_GET[worker_name], md5($_GET[worker_password]), $triggerstr, $_GET[escalation_limit], $_GET[escalation_minutes], $exec_plan);
+	
+			$add=bartlby_add_worker($btl->RES, $wrk_obj);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 			
@@ -501,8 +562,8 @@ switch($act) {
 		$layout->set_menu("services");
 		if($_GET[service_id]) {
 			$btl->hasServerorServiceRight($_GET[service_id]);
-			$global_msg=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
-			$del = bartlby_delete_service($btl->CFG, $_GET[service_id]);
+			$global_msg=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
+			$del = bartlby_delete_service($btl->RES, $_GET[service_id]);
 			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {                                     
 		 	$act="missing_param";
@@ -539,13 +600,44 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+				$svc_obj = array(
+					
+					"plugin"=>$_GET[service_plugin],
+					"service_name"=>$_GET[service_name],
+					"notify_enabled"=>$_GET[notify_enabled],					
+					"plugin_arguments"=>$_GET[service_args],
+					"check_interval"=>$_GET[service_interval],
+					"service_type"=>$_GET[service_type],
+					"service_passive_timeout" => $_GET[service_passive_timeout],
+					"server_id" => $_GET[service_server],
+					"service_check_timeout" => $_GET[service_check_timeout],
+					"service_var" => $_GET[service_var],
+					"exec_plan" => $exec_plan,
+					"service_ack_enabled" => $_GET[service_ack_enabled],
+					"service_retain" => $_GET[service_retain],
+					"snmp_community" => $_GET[service_snmp_community],
+					"snmp_version" => $_GET[service_snmp_version],
+					"snmp_objid" => $_GET[service_snmp_objid],
+					"snmp_warning" => $_GET[service_snmp_warning],
+					"snmp_critical" => $_GET[service_snmp_critical],
+					"snmp_type" => $_GET[service_snmp_type],
+					"service_active" => $_GET[service_active],
+					"snmp_textmatch" => $_GET[service_snmp_textmatch],
+					"flap_seconds" => $_GET[flap_seconds],
+					"escalate_divisor" => $_GET[escalate_divisor],
+					"fires_events" => $_GET[fires_events],
+					"renotify_interval" => $_GET[renotify_interval],
+					"enabled_triggers" => $triggerstr,
+					"handled" => $_GET[handled]
+				);
+
 			
-			$ads=bartlby_modify_service($btl->CFG, $_GET[service_id] , $_GET[service_server], $_GET[service_plugin],$_GET[service_name],$_GET[service_args],$_GET[notify_enabled], $exec_plan,$_GET[service_interval],$_GET[service_type],$_GET[service_var], $_GET[service_passive_timeout], $_GET[service_check_timeout], $_GET[service_ack_enabled], $_GET[service_retain], $_GET[service_snmp_community], $_GET[service_snmp_objid], $_GET[service_snmp_version], $_GET[service_snmp_warning], $_GET[service_snmp_critical], $_GET[service_snmp_type],$_GET[service_snmp_textmatch], $_GET[service_active], $_GET[flap_seconds], $_GET[renotify_interval], $_GET[escalate_divisor], $_GET[fires_events], $triggerstr);
-			$global_msg=bartlby_get_server_by_id($btl->CFG, $_GET[service_server]);
+			$ads=bartlby_modify_service($btl->RES, $_GET[service_id] , $svc_obj);
+			$global_msg=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
 			$global_msg[exec_plan]=$btl->resolveServicePlan($exec_plan);
 			
 			if(strlen($_GET["unlock"]) > 0) {
-				bartlby_toggle_service_active($btl->CFG, $_GET["unlock"], 0);
+				bartlby_toggle_service_active($btl->RES, $_GET["unlock"], 0);
 			}
 			$act="service_" . $_GET[service_type];
 			
@@ -596,8 +688,41 @@ switch($act) {
 			
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
-				$ads=bartlby_add_service($btl->CFG, $server_id, $_GET[service_plugin],$_GET[service_name],$_GET[service_args],$_GET[notify_enabled], $exec_plan,$_GET[service_interval],$_GET[service_type],$_GET[service_var], $_GET[service_passive_timeout], $_GET[service_check_timeout], $_GET[service_ack_enabled], $_GET[service_retain], $_GET[service_snmp_community], $_GET[service_snmp_objid], $_GET[service_snmp_version], $_GET[service_snmp_warning], $_GET[service_snmp_critical], $_GET[service_snmp_type],$_GET[service_snmp_textmatch], $_GET[service_active], $_GET[flap_seconds],$_GET[renotify_interval], $_GET[escalate_divisor], $_GET[fires_events], $triggerstr);
-				$tmp=bartlby_get_server_by_id($btl->CFG, $server_id);
+				
+				$svc_obj = array(
+					
+					"plugin"=>$_GET[service_plugin],
+					"service_name"=>$_GET[service_name],
+					"notify_enabled"=>$_GET[notify_enabled],					
+					"plugin_arguments"=>$_GET[service_args],
+					"check_interval"=>$_GET[service_interval],
+					"service_type"=>$_GET[service_type],
+					"service_passive_timeout" => $_GET[service_passive_timeout],
+					"server_id" => $server_id,
+					"service_check_timeout" => $_GET[service_check_timeout],
+					"service_var" => $_GET[service_var],
+					"exec_plan" => $exec_plan,
+					"service_ack_enabled" => $_GET[service_ack_enabled],
+					"service_retain" => $_GET[service_retain],
+					"snmp_community" => $_GET[service_snmp_community],
+					"snmp_version" => $_GET[service_snmp_version],
+					"snmp_objid" => $_GET[service_snmp_objid],
+					"snmp_warning" => $_GET[service_snmp_warning],
+					"snmp_critical" => $_GET[service_snmp_critical],
+					"snmp_type" => $_GET[service_snmp_type],
+					"service_active" => $_GET[service_active],
+					"snmp_textmatch" => $_GET[service_snmp_textmatch],
+					"flap_seconds" => $_GET[flap_seconds],
+					"escalate_divisor" => $_GET[escalate_divisor],
+					"fires_events" => $_GET[fires_events],
+					"renotify_interval" => $_GET[renotify_interval],
+					"enabled_triggers" => $triggerstr,
+					"handled" => $_GET[handled]
+				);
+				
+				
+				$ads=bartlby_add_service($btl->RES, $svc_obj);
+				$tmp=bartlby_get_server_by_id($btl->RES, $server_id);
 
 				$global_msg[server_name] .= $tmp[server_name] . ",";
 			
@@ -619,9 +744,9 @@ switch($act) {
 		$layout->set_menu("client");
 		if($_GET[server_id]) {
 			$btl->hasServerRight($_GET[server_id]);
-			$global_msg=bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+			$global_msg=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 			
-			$s = bartlby_delete_server($btl->CFG, $_GET[server_id]);
+			$s = bartlby_delete_server($btl->RES, $_GET[server_id]);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {                                     
@@ -641,10 +766,25 @@ switch($act) {
 				if($triggerstr != "") {
 					$triggerstr = "|" . $triggerstr;
 				}
-			
+				//$_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon], $_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds], $_GET["text_service_search1"], 
+				$srv_obj = array(
+					"server_name" => $_GET[server_name],
+					"server_ip" => $_GET[server_ip],
+					"server_port" => $_GET[server_port],
+					"server_icon" => $_GET[server_icon],
+					"server_enabled" => $_GET[server_enabled],
+					"server_notify" => $_GET[server_notify],
+					"server_flap_seconds" => $_GET[server_flap_seconds],
+					"server_ssh_keyfile" => $_GET[server_ssh_keyfile],
+					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
+					"server_ssh_username" => $_GET[server_ssh_username],
+					"server_dead" => $_GET[service_id],
+					"enabled_triggers" => $triggerstr
+					
+				);
 				
-				$mod_server=bartlby_modify_server($btl->CFG, $_GET[server_id], $_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon], $_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds], $_GET["text_service_search1"], $_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr);
-				$defaults=bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+				$mod_server=bartlby_modify_server($btl->RES, $_GET[server_id], $srv_obj);
+				$defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 				$layout->DisplayHelp(array(0=>"CRIT|You should restart bartlby for applieng changes "));
 				$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {                                     
@@ -668,8 +808,17 @@ switch($act) {
 			}
 		
 			
+			$srvgrp_obj = array(
+				"servergroup_name" => $_GET[servergroup_name],
+				"servergroup_active" => $_GET[servergroup_active],
+				"servergroup_notify" => $_GET[servergroup_notify],
+				"enabled_triggers" => $triggerstr,
+				"servergroup_members" => $group_members,
+				"servergroup_dead" => (int)$_GET["service_dead"]
+						
+			);
 			
-			$add_servergroup = bartlby_modify_servergroup($btl->CFG, $_GET[servergroup_name], (int)$_GET[servergroup_active], (int)$_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr, (int)$_GET[servergroup_id]);
+			$add_servergroup = bartlby_modify_servergroup($btl->RES, (int)$_GET[servergroup_id], $srvgrp_obj);
 			
 			
 			
@@ -698,8 +847,16 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-			
-			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_name], (int)$_GET[servicegroup_active], (int)$_GET[servicegroup_notify], $group_members,(int)$_GET["text_service_search1"],$triggerstr, (int)$_GET[servicegroup_id]);
+			$svcgrp_obj = array(
+				"servicegroup_name" => $_GET[servicegroup_name],
+				"servicegroup_active" => $_GET[servicegroup_active],
+				"servicegroup_notify" => $_GET[servicegroup_notify],
+				"enabled_triggers" => $triggerstr,
+				"servicegroup_members" => $group_members,
+				"servicegroup_dead" => (int)$_GET["service_dead"]
+						
+			);
+			$add_servergroup = bartlby_modify_servicegroup($btl->RES, $_GET[servicegroup_id], $svcgrp_obj);
 			
 			
 			
@@ -726,9 +883,18 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+			//$_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr
+			$svcgrp_obj = array(
+				"servicegroup_name" => $_GET[servicegroup_name],
+				"servicegroup_active" => $_GET[servicegroup_active],
+				"servicegroup_notify" => $_GET[servicegroup_notify],
+				"enabled_triggers" => $triggerstr,
+				"servicegroup_members" => $group_members,
+				"servicegroup_dead" => (int)$_GET["service_dead"]
+						
+			);
 			
-			
-			$add_servergroup = bartlby_add_servicegroup($btl->CFG, $_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr);
+			$add_servergroup = bartlby_add_servicegroup($btl->RES, $svcgrp_obj);
 			
 			
 			
@@ -758,9 +924,20 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+			$srvgrp_obj = array(
+				"servergroup_name" => $_GET[servergroup_name],
+				"servergroup_active" => $_GET[servergroup_active],
+				"servergroup_notify" => $_GET[servergroup_notify],
+				"enabled_triggers" => $triggerstr,
+				"servergroup_members" => $group_members,
+				"servergroup_dead" => (int)$_GET["service_dead"]
+				
 			
+				
 			
-			$add_servergroup = bartlby_add_servergroup($btl->CFG, $_GET[servergroup_name], $_GET[servergroup_active], $_GET[servergroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr);
+			);
+			
+			$add_servergroup = bartlby_add_servergroup($btl->RES, $srvgrp_obj);
 			
 			
 			
@@ -773,11 +950,11 @@ switch($act) {
 	
 	break;
 	case 'delete_servergroup':
-			$s = bartlby_delete_servergroup($btl->CFG, $_GET[servergroup_id]);
+			$s = bartlby_delete_servergroup($btl->RES, $_GET[servergroup_id]);
 	
 	break;
 	case 'delete_servicegroup':
-			$s = bartlby_delete_servicegroup($btl->CFG, $_GET[servicegroup_id]);
+			$s = bartlby_delete_servicegroup($btl->RES, $_GET[servicegroup_id]);
 	
 	break;
 	
@@ -793,9 +970,23 @@ switch($act) {
 				if($triggerstr != "") {
 					$triggerstr = "|" . $triggerstr;
 				}
-			
-				
-				$add_server=bartlby_add_server($btl->CFG, $_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon],$_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds],  0,$_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr);
+				//,  0,$_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr
+				$srv_obj = array(
+					"server_name" => $_GET[server_name],
+					"server_ip" => $_GET[server_ip],
+					"server_port" => $_GET[server_port],
+					"server_icon" => $_GET[server_icon],
+					"server_enabled" => $_GET[server_enabled],
+					"server_notify" => $_GET[server_notify],
+					"server_flap_seconds" => $_GET[server_flap_seconds],
+					"server_ssh_keyfile" => $_GET[server_ssh_keyfile],
+					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
+					"server_ssh_username" => $_GET[server_ssh_username],
+					"server_dead" => 0,
+					"enabled_triggers" => $triggerstr
+					
+				);
+				$add_server=bartlby_add_server($btl->RES, $srv_obj);
 				
 				$global_msg["package"]="";
 				$global_msg["init_service"]="";
@@ -804,8 +995,8 @@ switch($act) {
 				if($_GET[package_name] != "") {
 					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL);	
 				} else {
-					$add_service=bartlby_add_service($btl->CFG, $add_server, "INIT", "Initial Check", "-h", 0, "" ,2000,1,"",200, 20, 0, 3, "", "","", "", "", "", "", 1, 120,0,0,0, "");
-					$global_msg["init_service"]="<li>Init";
+					//WE DO NOT NEED INIT SERVICE ANYMORE
+					
 				}
 				
 				$layout->OUT .= "<script>doReloadButton();</script>";

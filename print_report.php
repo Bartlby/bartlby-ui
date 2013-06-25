@@ -24,7 +24,7 @@ echo "<input type=submit value='Apply Second Filter'>";
 
 echo "</form>";
 
-$defaults=bartlby_get_service_by_id($btl->CFG, $_GET[report_service]);
+$defaults=bartlby_get_service_by_id($btl->RES, $_GET[report_service]);
 $rap = "Second filter: " . $_GET[sec_filter] . "<br><a href='javascript:window.print();'>Print it</A><br>Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
 
 $rep=$btl->do_report($_GET[report_start], $_GET[report_end], $_GET[report_init], $_GET[report_service]);

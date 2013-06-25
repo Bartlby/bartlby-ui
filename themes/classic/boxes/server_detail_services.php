@@ -1,7 +1,7 @@
 <table  width='100%'>
 	<tr>
 		<td width=150 class='font2'>Number of services:</td>
-		<td><?=count($plcs[server_map])?></td> 
+		<td><?=$plcs[server_service_count]?></td> 
 	</tr>
 	<tr>
 		<td width=150 class='font2' valign=top>Services: </td>

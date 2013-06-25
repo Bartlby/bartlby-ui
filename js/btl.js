@@ -1,14 +1,315 @@
-function btl_change(t) {
-		document.location.href='bartlby_action.php?instance_id=' + t.selectedIndex + '&action=set_instance_id';
-}
-	global_reload=1;
-	function toggleReload() {
-		if(global_reload == 1) {
-				global_reload=0;
-		} else {
-				global_reload=1;
-		}
+window.global_reload=1;
+window.refreshable_objects=new Array();
+window.auto_reloader=-1;
+
+$(window).blur(function() 
+{
+	if(window.auto_reloader != -1) {
+		console.log("DISABLE AUTO RELOAD INVISIBLE");
+		window.clearInterval(window.auto_reloader);
 	}
+});
+$(window).focus(function() {
+	if(window.auto_reloader != -1) {
+		console.log("ENABLE AUTORELOAD VISIBLE");
+		btl_force_reload_ui();
+		btl_start_auto_reload();
+	}
+});
+function quick_look_group() {
+
+ $('#quick_look_table').dataTable({
+					"fnInitComplete": function() {
+						
+					},
+					"iDisplayLength": 50,
+					"fnDrawCallback": function ( oSettings ) {
+						
+						if ( oSettings.aiDisplay.length == 0 )
+						{
+							return;
+						}
+						
+						var nTrs = $('tbody tr', oSettings.nTable);
+						var iColspan = nTrs[0].getElementsByTagName('td').length;
+						var sLastGroup = "";
+						for ( var i=0 ; i<nTrs.length ; i++ )
+						{
+							var iDisplayIndex = oSettings._iDisplayStart + i;
+							//var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
+							var sGroup = oSettings.aoData[ oSettings.aiDisplay[i] ]._aData[0];
+							if ( sGroup != sLastGroup )
+							{
+								var nGroup = document.createElement( 'tr' );
+								var nCell = document.createElement( 'td' );
+								nCell.colSpan = iColspan;
+								nCell.className = "group";
+								nCell.innerHTML = sGroup;
+								nGroup.appendChild( nCell );
+								nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+								sLastGroup = sGroup;
+							}
+						}
+						//$("#services_table").show();
+					},
+					"aoColumnDefs": [
+						{ "bVisible": false, "aTargets": [ 0 ] }
+					],
+					
+					"aaSortingFixed": [[ 0, 'asc' ]],
+					"bSort": false,
+					"bPaginate": false,
+					"bFilter": false,
+					"sDom": '<"top">rt<"bottom"flp><"clear">',
+					"aaSorting": [[ 1, 'asc' ]],
+				   "oLanguage": {
+			    	"sEmptyTable": "No Services found",
+            "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
+        	}
+			    
+       
+				});
+	
+}
+
+function btl_force_reload_ui() {
+			console.log("FORCE LOAD");
+			u = document.location.href;
+			u += (u.match(/\?/) ? '&' : '?') + "json=1";
+		
+			$.getJSON(u, function(data) {
+				btl_call_refreshable_objects(data);
+
+
+
+			});
+		
+			
+
+
+
+}
+function btl_start_auto_reload() {
+		
+		window.auto_reloader= window.setInterval(function() {
+	
+		btl_force_reload_ui();
+			
+		},5000);
+		
+	}
+	
+
+function btl_get_refreshable_value(data, key) {
+	rv=data.refreshable_objects[key];
+
+	return rv;
+}
+
+function btl_add_refreshable_object(fcn_callback) {
+		o = {
+			callback: fcn_callback			
+		}	
+		window.refreshable_objects.push(o);
+		
+}
+function toFixed(num, fixed) {
+    fixed = fixed || 0;
+    fixed = Math.pow(10, fixed);
+    return Math.ceil(num * fixed) / fixed;
+}
+function btl_set_bars() {
+	$(".bar").each(function() {
+				px=$(this).css("width").replace(/px/, "");
+				if(px > 25) {
+					$(this).html($(this).data("perc") + '%');
+				} else {
+					$(this).html("");
+				}
+			});
+		
+}
+function btl_call_refreshable_objects(data) {
+	if(typeof(window.refreshable_objects.length) == "undefined") {
+		return;
+	}
+	for(x=0; x<window.refreshable_objects.length; x++) {
+		tw = 	window.refreshable_objects[x];
+		tw.callback(data);
+	}
+
+
+	btl_set_bars();
+
+}
+	
+
+function btl_change(t) {
+		document.location.href='bartlby_action.php?set_instance_id=' + t.selectedIndex + '&action=set_instance_id';
+}
+$(document).ready(function() {
+		btl_set_bars();
+		$("#services_bulk_force").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkForce(force_services);
+		
+	});
+	
+	
+	$("#services_bulk_enable_checks").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkEnableChecks(force_services);
+		
+	});
+	
+	$("#services_bulk_disable_checks").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkDisableChecks(force_services);
+		
+	});
+	
+	
+	$("#services_bulk_enable_notifys").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkEnableNotifys(force_services);
+		
+	});
+	
+	$("#services_bulk_disable_notifys").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkDisableNotifys(force_services);
+		
+	});
+	
+	
+	
+	
+	
+	$("#service_checkbox_select_all").click(function() {
+		if($(this).is(':checked')) {
+			console.log("check all");
+			$('.service_checkbox').attr("checked", "checked");
+		} else {
+			$('.service_checkbox').removeAttr("checked", "checked");
+		}
+	});
+	
+	
+	
+	//Service-DataTable
+		s_url = document.location.href.replace(/\/s.*\.php/, "/services.php");
+		s_char = "?";
+		if(s_url.match(/\?/)) {
+			s_char = "&";
+		}
+		
+				
+	//$("#services_table").hide();
+	window.oTable = $('#services_table').dataTable({
+					"fnInitComplete": function() {
+						
+					},
+					"iDisplayLength": 50,
+					"fnDrawCallback": function ( oSettings ) {
+						
+						if ( oSettings.aiDisplay.length == 0 )
+						{
+							return;
+						}
+						
+						var nTrs = $('tbody tr', oSettings.nTable);
+						var iColspan = nTrs[0].getElementsByTagName('td').length;
+						var sLastGroup = "";
+						for ( var i=0 ; i<nTrs.length ; i++ )
+						{
+							var iDisplayIndex = oSettings._iDisplayStart + i;
+							//var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
+							var sGroup = oSettings.aoData[ oSettings.aiDisplay[i] ]._aData[1];
+							if ( sGroup != sLastGroup )
+							{
+								var nGroup = document.createElement( 'tr' );
+								var nCell = document.createElement( 'td' );
+								nCell.colSpan = iColspan;
+								nCell.className = "group";
+								nCell.innerHTML = sGroup;
+								nGroup.appendChild( nCell );
+								nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+								sLastGroup = sGroup;
+							}
+						}
+						//$("#services_table").show();
+					},
+					"aoColumnDefs": [
+						{ "bVisible": false, "aTargets": [ 1 ] }
+					],
+					"aoColumns": [
+						{ "sWidth": "1" },
+						{ "sWidth": "1" },
+						{ "sWidth": "50" },
+						{ "sWidth": "100" },
+						{ "sWidth": "100" },
+						{ "sWidth": "150" },
+						{ "sWidth": "450" },
+						{ "sWidth": "320" },
+					],
+					"aaSortingFixed": [[ 0, 'asc' ]],
+					"bSort": false,
+					"aaSorting": [[ 1, 'asc' ]],
+					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+					//"sDom": '<"wrapper"lfptip>',
+					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
+			    "sPaginationType": "bootstrap",
+			    "sAjaxSource": s_url + s_char + "datatables_output=1",
+			    "bServerSide": true,
+			    "bProcessing": true,
+			    "oLanguage": {
+			    	"sEmptyTable": "No Services found",
+            "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
+        	}
+			    
+       
+				});
+				
+
+		 
+		$("#toggle_reload").click(function() {
+			if(global_reload == 1) {
+					global_reload=0;
+					window.clearInterval(window.auto_reloader);
+			} else {
+				global_reload=1;
+				btl_start_auto_reload();
+			}
+		});	
+	});
+
+	
 	function downtime_type_selected() {
 		drop = document.getElementsByName("downtime_type")[0];
 		url ="";

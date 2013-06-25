@@ -22,10 +22,11 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("main.server_detail");
 $layout= new Layout();
+	$layout->do_auto_reload=true;
 $layout->set_menu("main");
 $layout->setTitle("Services");
 
-$defaults=bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+$defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 $btl->hasServerRight($_GET[server_id]);
 
 if(!$defaults) {
@@ -33,26 +34,35 @@ if(!$defaults) {
 	exit(1);	
 }
 
-$map=$btl->getSVCMap($btl->CFG, NULL, NULL);
-$server_map=$map[$_GET[server_id]];
+//$map=$btl->getSVCMap($btl->RES, NULL, NULL);
+//$server_map=$map[$_GET[server_id]];
 
 
 
 
-if($btl->isServerUp($_GET[server_id], $map)) {
-	$isup="<font color='green'>UP</font>";	
-} else {
-	$isup="<font color='red'>DOWN</font>";
-}
+$isup="<font color='green'>UP</font>";	
 
 $services_assigned="";
 
-for($x=0; $x<count($server_map); $x++) {
-	$dmp_info[$server_map[$x][current_state]] += 1;
-	
-}
 
-while(list($k, $v) = each($dmp_info)) {
+$dmp_info[0] = 0;
+$dmp_info[1] = 0;
+$dmp_info[2] = 0;
+$is_up_down=-1;
+$server_service_count=0;
+$btl->service_list_loop(function($svc, $shm) use (&$dmp_info, &$server_service_count) {
+	global $_GET;
+	if($svc[server_id] != $_GET[server_id]) return LOOP_CONTINUE;
+	$server_service_count++;
+	if($svc[current_state] == 0) $is_up_down=1;
+	$dmp_info[$svc[current_state]] += 1;
+});
+
+if($is_up_down > 0) 	$isup="<font color='red'>DOWN</font>";
+	
+	
+
+while(list($k, $v) = @each($dmp_info)) {
 		$services_assigned .= "<a href='services.php?server_id=" . $_GET[server_id] . "&expect_state=" . $k . "'><font color='" . $btl->getColor($k) . "'>" . $btl->getState($k) . "</font></A>:" . $v . ",";
 }
 
@@ -97,10 +107,9 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 										"isup" => $isup,
 										"notify_enabled" => $noti_en,
 										"server_enabled" => $server_en,
-										"map" => $map,
 										"triggers" => $triggers
 										),
-			"server_detail_server_info");
+			"server_detail_server_info", false,true);
 
 
 
@@ -108,15 +117,15 @@ if($defaults[server_ssh_keyfile] != " ") {
 	$info_box_title='SSH Options';  
 	$layout->create_box($info_box_title, $core_content, "service_detail_ssh_info", array(
 											"service" => $defaults),
-				"service_detail_ssh_info");
+				"service_detail_ssh_info",false,true);
 }			
 			
 $info_box_title='Services';  
 $layout->create_box($info_box_title, $core_content, "server_detail_services", array(
 									"services_assigned" => $services_assigned,
-									"server_map" => $server_map
+									"server_service_count" => $server_service_count									
 									)
-			, "server_detail_services");
+			, "server_detail_services", false,true);
 	
 
 if(is_array($defaults[groups])) {
@@ -125,15 +134,22 @@ if(is_array($defaults[groups])) {
 											"server_groups" => $defaults[groups]
 											
 											),
-				"server_detail_server_group_info");
+				"server_detail_server_group_info", false,true);
 	
 }
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  
 	$core_content = "";
-	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice");
+	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice", false,true);
 	
 }
+
+$layout->create_box("Mass Actions", "", "mass_actions",
+											array("a"=>"b")				
+				,"service_list_mass_actions", false);
+	
+
+
 
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);
 

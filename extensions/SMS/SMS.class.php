@@ -50,7 +50,7 @@ class SMS {
 		while(list($k, $v) = @each($servs)) {
 		
 		
-			$v1=bartlby_get_worker_by_id($btl->CFG, $v[worker_id]);
+			$v1=bartlby_get_worker_by_id($btl->RES, $v[worker_id]);
 		
 			$servers[$optind][c]="";
 			$servers[$optind][v]=$v1[name];	
@@ -62,14 +62,14 @@ class SMS {
 		if($default[downtime_type]==2) {
 			//Server
 			
-			$defaults=bartlby_get_server_by_id($btl->CFG, $srvid);
+			$defaults=bartlby_get_server_by_id($btl->RES, $srvid);
 			$msg .= "Server:" . $defaults[server_name] . "\n";
 			
 			
 		} else {
 			//service
 			
-			$defaults=bartlby_get_service_by_id($btl->CFG, $svcid);
+			$defaults=bartlby_get_service_by_id($btl->RES, $svcid);
 			$msg .= "Service:" . $defaults[server_name] . "/" .  $defaults[service_name] . "\n";
 			
 			
@@ -153,6 +153,13 @@ class SMS {
 		return $this->mobile_nr_field($v);	
 		
 		
+	}
+	function _workerDetails() {
+		global $layout, $_GET, $defaults, $btl;
+		$k = $defaults[name] . "_SMSextension_mobile_nr";
+		$v = $this->storage->load_key($k);
+		if(!$v) $v="unset";
+		return "Mobile Number: " . $v;	
 	}
         
         

@@ -7,30 +7,38 @@ error_reporting(0);
 	include "layout.class.php";
 	include "bartlby-ui.class.php";
 
+	
+
 	$uname=getenv("BARTLBY_USER");
-        $pw=getenv("BARTLBY_PASSWORD");
-        if(!$uname && !$pw) {
-                $fp=fopen("/dev/stdin", "r");
-		echo "Username:";
-                $_SERVER[PHP_AUTH_USER]=trim(fgets($fp, 1024));
-		echo "Password";
-                $_SERVER[PHP_AUTH_PW]=trim(fgets($fp, 1024));
-                fclose($fp);
-        } else {
-                $_SERVER[PHP_AUTH_USER]=$uname;
-                $_SERVER[PHP_AUTH_PW]=$pw;
+    $pw=getenv("BARTLBY_PASSWORD");
+        if(!$uname || !$pw) {
+        	$input = new CLInput('Bartlby CLI Authentication', 'Press Ctrl-C to quit');
+        	
+        	$uname = $input->text("Username");
+        	$pw = $input->password("Password");
+        	
         }
 
+     $_SERVER[PHP_AUTH_USER]=$uname;
+     $_SERVER[PHP_AUTH_PW]=$pw;
+         
 
 
 	
 	$btl=new BartlbyUi($Bartlby_CONF, true);
+	if($btl->auth_error == true) {
+		$input->done();
+		
+        echo "AUTH ERROR\n";
+		exit;
+	}
+
 	$info=@$btl->getInfo();
 	$layout= new Layout();
 	$layout->DisplayHelp(array(0=>"WARN|Welcome to BartlbyUI",1=>"INFO|This is the help screen"));
 	$layout->MetaRefresh(30);
 	$layout->Table("100%");
-	$lib=@bartlby_lib_info($btl->CFG);
+	$lib=@bartlby_lib_info($btl->RES);
 	
 // define some key constants.
 define("ESCAPE_KEY", 27);
@@ -47,6 +55,7 @@ $ticker="|";
 $hide_warns=0;
 $hide_infos=0;
 $group_similar=1;
+$hide_handled=0;
 
 $ncurses_session = ncurses_init();
 $main = ncurses_newwin(0, 0, 0, 0); // main window
@@ -63,30 +72,54 @@ ncurses_init_pair(4,NCURSES_COLOR_WHITE,NCURSES_COLOR_BLUE);
 ncurses_init_pair(5,NCURSES_COLOR_BLACK,NCURSES_COLOR_WHITE);
 
 
-
+if(!$_SESSION[instance_id]) $_SESSION[instance_id] = 0;
+$node_name="Primary";
 
 while(1){
-
+	bartlby_close($btl->RES);
+        $btl->RES=bartlby_new($btl->CFG);
 	ncurses_getmaxyx($main, $lines, $columns);
 	ncurses_timeout(2);
 	$k = ncurses_getch();
-	$info = @bartlby_get_info($btl->CFG);
+	$info = @bartlby_get_info($btl->RES);
 	$ztx=0;
 	if($info[do_reload] == 1) {
 		while(1) {
 			disp_reload_window();
-			$info = @bartlby_get_info($btl->CFG);
+			$info = @bartlby_get_info($btl->RES);
 			if($info[do_reload] == 0) {
 				break;
 			}
 			$ztx++;
 			usleep(500000);
+			bartlby_close($btl->RES);
+			$btl->RES=bartlby_new($btl->CFG);
 			
 		}
 	}
 	
-	
-	
+	if($k == 9 ) {
+		//Switch instance_id
+		if($_SESSION[instance_id]+1 > count($confs))  {
+			$_SESSION[instance_id]=0;
+		} else {
+			$_SESSION[instance_id]++;
+		}
+		
+		bartlby_close($btl->RES);
+		$btl->RES=bartlby_new($confs[$_SESSION[instance_id]][file]);
+		$btl->CFG=$confs[$_SESSION[instance_id]][file];
+		$node_name=$confs[$_SESSION[instance_id]][display_name];
+
+		if(!$btl->RES) {
+			$btl->RES=bartlby_new($confs[0][file]);
+			$node_name=$confs[0][display_name];
+		}
+		$btl->info=@bartlby_get_info($btl->RES);
+		$info=@$btl->getInfo();
+		$lib=@bartlby_lib_info($btl->RES);
+		continue;
+	}
 	if($k == ESCAPE_KEY || $k == 113) {
 		ncurses_resetty();
        		ncurses_end();
@@ -130,7 +163,14 @@ while(1){
                         $hide_infos = 0;
                 }
         }
+	if($k == 72) {
+                if($hide_handled == 0)  {
+                        $hide_handled = 1;
+                } else {
+                        $hide_handled = 0;
+                }
 
+        }
 	if($k == 258) {
 		if($selected_pos > $lines/2) {
 			$start_from=$start_from+1;	
@@ -179,8 +219,8 @@ while(1){
 			
 	}
 
-	unset($map);
-	$map = @$btl->GetSVCMap();
+//	unset($map);
+	//$map = @$btl->GetSVCMap();
 	$oks=0;
 	$warns=0;
 	$crits=0;	
@@ -202,21 +242,20 @@ for($tt=0; $tt<$lines; $tt++) {
         $y=2;
 
 	$a=0;
-	@reset($map);
+	//@reset($map);
 	$per_server=false;
 	$already_displayed=false;
 	unset($f);
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-			
-			
-			for($x=0; $x<count($servs); $x++) {
+	$f=array();
+	$selected_svc=array();
+	$selected_pos=0;
 				
+	$btl->service_list_loop(function($svc, $shm) use(&$lines, &$per_server, &$oks, &$crits, &$warns, &$hide_warns, &$hide_infos, &$alerts_only, &$show_downtimes, &$running_only, &$a, &$f, &$a, &$selected_svc, &$selected_pos, &$selected_index, &$hide_handled) {
+
 				
-				$per_server[$servs[$x][server_name]][$servs[$x][current_state]]++;
+				$per_server[$svc[server_name]][$svc[current_state]]++;
 				
-				switch($servs[$x][current_state]) {
+				switch($svc[current_state]) {
 					case 0:
 						$oks++;
 						
@@ -234,46 +273,57 @@ for($tt=0; $tt<$lines; $tt++) {
 					break;
 				}
 				if($hide_warns == 1) {
-					if($servs[$x][current_state] == 1) {
-                                                continue;
+					if($svc[current_state] == 1) {
+                                               return LOOP_CONTINUE;
                                         }
 				}
 				if($hide_infos == 1) {
-					if($servs[$x][current_state] == 4) {
-					        continue;
+					if($svc[current_state] == 4) {
+					        return LOOP_CONTINUE;
 					}
-        }
+        		}
+        		if($hide_handled == 1) {
+
+        			if($svc[handled] == 1) {
+        		
+        				return LOOP_CONTINUE;
+        			}
+        		}
 
 				if($alerts_only == 1) {
-					if($servs[$x][current_state] == 0) {
-						continue;	
+					if($svc[current_state] == 0) {
+						return LOOP_CONTINUE;
 					}
-					if($servs[$x][is_downtime] == 1 && $show_downtimes == 0) {
-						continue;
+					if($svc[is_downtime] == 1 && $show_downtimes == 0) {
+						return LOOP_CONTINUE;
 					}
 				}
 				if($running_only == 1) {
-					if($servs[$x][check_starttime] == 0) 
-						continue;
+					if($svc[check_starttime] == 0) 
+						return LOOP_CONTINUE;
 				}
-				//$out_str=sprintf("%s - %s", $servs[$x][service_name], );
+				//$out_str=sprintf("%s - %s", $svc[service_name], );
 				if($a == $selected_index) {
-					$selected_svc=$servs[$x];
+					$selected_svc=$svc;
 					$selected_pos=$a;
-					$servs[$x][selected] = true;
+					$svc[selected] = true;
 				} else {
-					$servs[$x][selected] = false;
+					$svc[selected] = false;
 
 				}
-				$f[$a] = $servs[$x];
+				$f[$a] = $svc;
+				
+
 				$a++;
-			}	
-		}
+				if($a >= $lines*2) return LOOP_BREAK;
+		
+			});	
+
 			$gservice_count=count($f);
 			
+			
+			
 
-			
-			
 			for($z=0; $z<count($f); $z++) {
 				
 				if($z >= $start_from && $y <= $lines - 4) {
@@ -303,7 +353,7 @@ for($tt=0; $tt<$lines; $tt++) {
 					
 					$this_row_selected = $f[$z][selected];
 					ncurses_move($y+1, 6);
-					//ncurses_addstr($servs[$x][server_name] .  str_repeat(" ", 20-strlen($servs[$x][server_name])));
+					//ncurses_addstr($svc[server_name] .  str_repeat(" ", 20-strlen($svc[server_name])));
 					ncurses_color_set(get_ncurses_color($f[$z][current_state]));
 					
 
@@ -348,7 +398,7 @@ for($tt=0; $tt<$lines; $tt++) {
 	// border the main window
 	ncurses_attron(NCURSES_A_REVERSE);
 
-	ncurses_mvaddstr(0,1,"($selected_svc[service_id]) bartlby -> " . $btl->getRelease() . "\t" . date("d.m.Y H:i:s", time()) . " /" . $start_from . "-" . $btl->info[services]);
+	ncurses_mvaddstr(0,1,"$node_name bartlby -> " . $btl->getRelease() . "\t" . date("d.m.Y H:i:s", time()) . " /" . $start_from . "-" . $btl->info[services]);
 	ncurses_attroff(NCURSES_A_REVERSE);
 
 	if($alerts_only == 1)
@@ -576,8 +626,8 @@ function window_force_check() {
         global $reopen_service,$reopen_server;
 
         $defaults=$selected_svc;
-
-        bartlby_check_force($btl->CFG, $defaults[shm_place]);
+       	$id=$btl->findSHMPlace($defaults[service_id]);
+       	bartlby_check_force($btl->RES, $id);
 
         $reopen_service=true;
 
@@ -588,9 +638,9 @@ function window_disable_check_server() {
         global $reopen_service, $reopen_server;
 
         $defaults=$selected_svc;
-	$x=bartlby_get_server_by_id($btl->CFG,$defaults[server_id]);
+	$x=bartlby_get_server_by_id($btl->RES,$defaults[server_id]);
 
-        bartlby_toggle_server_active($btl->CFG, $x[server_shm_place], 1);
+        bartlby_toggle_server_active($btl->RES, $x[server_shm_place], 1);
 
         $reopen_server=true;
 
@@ -607,9 +657,9 @@ function window_disable_notification_server() {
         global $reopen_service, $reopen_server;
 
         $defaults=$selected_svc;
-	$x=bartlby_get_server_by_id($btl->CFG,$defaults[server_id]);
+	$x=bartlby_get_server_by_id($btl->RES,$defaults[server_id]);
 
-        bartlby_toggle_server_notify($btl->CFG, $x[server_shm_place], 1);
+        bartlby_toggle_server_notify($btl->RES, $x[server_shm_place], 1);
         $reopen_server=true;
 
 
@@ -626,8 +676,8 @@ function window_disable_check() {
         global $reopen_service;
 
         $defaults=$selected_svc;
-
-        bartlby_toggle_service_active($btl->CFG, $defaults[shm_place], 1);
+        $id=$btl->findSHMPlace($defaults[service_id]);
+        bartlby_toggle_service_active($btl->RES, $id, 1);
 
         $reopen_service=true;
 
@@ -644,8 +694,8 @@ function window_disable_notification() {
 	global $reopen_service;
 
         $defaults=$selected_svc;
-	
-	bartlby_toggle_service_notify($btl->CFG, $defaults[shm_place], 1);
+	$id=$btl->findSHMPlace($defaults[service_id]);
+	bartlby_toggle_service_notify($btl->RES, $id, 1);
 	$reopen_service=true;
 
 
@@ -667,7 +717,7 @@ function btl_disp_server() {
 	global $selected_svc;
 	global $lines, $columns, $btl;
 	global $reopen_service, $reopen_server;
-	global $map;
+	
 
 	$reopen_server=false;
 	
@@ -689,16 +739,7 @@ function btl_disp_server() {
 
 	window_td($w, 1,1, "Name:", $selected_svc[server_name]);
 	
-	if($btl->isServerUp($defaults[server_id], $map)) {
-		
-
-        	ncurses_wcolor_set($w, 3);
-		$isup="UP";
-	} else {
-
-        	ncurses_wcolor_set($w, 1);
-		$isup="DOWN";
-	}
+	
 	
 	window_td($w, 2,1, "Status:" , $isup);
 
@@ -788,7 +829,7 @@ function disp_reload_window() {
 	global $selected_svc;
         global $lines, $columns, $btl;
         global $reopen_service, $reopen_server;
-        global $map;
+        
         global $help;
         
        	switch($ticker) {
@@ -860,7 +901,7 @@ function disp_help() {
 	global $selected_svc;
 	global $lines, $columns, $btl;
 	global $reopen_service, $reopen_server;
-	global $map;
+	
 	global $help;
 
 	$help = array(
@@ -876,6 +917,8 @@ function disp_help() {
 		array(1, "w", "hide services wich are in state:warning"),
 		array(1, "i", "hide services wich are in state:info"),
 		array(1, "g", "toggle grouping of similar error messages per server"),
+		array(1, "H", "hide services wich are handled"),
+		array(1, "<TAB>", "Switch between monitored nodes"),
 		array(1, "R", "Reset filter's"),
 		array(0, "Service Detail:"),
 		array(1, "f", "Force Check"),
@@ -936,10 +979,302 @@ function disp_help() {
 	
 }
 
+//FROM github.com/tmacwill/php-cli-input
+class CLInput {
+    // ncurses window object
+    private $window;
+    // current line
+    private $offset;
 
-// the following are two helper functions for
-// this ncurses example.
+    /**
+     * Initialize a new input object
+     *
+     * @param $title Text to be displayed on first line 
+     * @param $subtitle Text to be displayed on second line 
+     *
+     */
+    public function __construct($title = '', $subtitle = '') {
+        // initialize ncurses
+        ncurses_init();
+        ncurses_noecho();
+        $this->window = ncurses_newwin(0, 0, 0, 0);
+        $this->offset = 0;
 
+
+
+        // display title and subtitle
+        if ($title)
+            ncurses_mvaddstr($this->offset++, 0, $title);
+        if ($subtitle)
+            ncurses_mvaddstr($this->offset++, 0, $subtitle);
+
+        // display newline
+        ncurses_mvaddstr($this->offset, 0, '');
+        ncurses_refresh();
+    }
+
+    /**
+     * Make sure that a given number of lines will fit on the screen and claer if not
+     *
+     * @param $required_lines Number of lines that will be displayed
+     *
+     */
+    private function check_bounds($required_lines = 1) {
+        ncurses_getmaxyx($this->window, $y, $x);
+        if ($this->offset >= $y - $required_lines) {
+            $this->offset = 0;
+            ncurses_clear();
+        }
+    }
+
+    /**
+     * Finish getting input from the user
+     * THIS ABSOLUTELY MUST BE CALLED AT SOME POINT BEFORE YOUR PROGRAM TERMINATES
+     * SERIOUSLY
+     *
+     */
+    public function done() {
+        ncurses_refresh();
+        ncurses_end();
+        usleep(300000);
+    }
+
+    /**
+     * Prompt for an email address
+     *
+     * @param $prompt Text to display before user input
+     * @param $message Message to display on invalid input
+     *
+     */
+    public function email($prompt = 'Email', $message = 'Please enter a valid email address.') {
+        return $this->text($prompt, function($result) { 
+            return filter_var($result, FILTER_VALIDATE_EMAIL); 
+        }, $message);
+    }
+
+    /**
+     * Prompt for a floating-point decimal
+     *
+     * @param $prompt Text to display before user input
+     * @param $message Message to display on invalid input
+     *
+     */
+    public function float($prompt = 'Float', $message = 'Please enter a floating-point decimal.') {
+        return $this->text($prompt, function($result) { 
+            return filter_var($result, FILTER_VALIDATE_FLOAT); 
+        }, $message);
+    }
+
+    /**
+     * Prompt for an integer
+     *
+     * @param $prompt Text to display before user input
+     * @param $message Message to display on invalid input
+     *
+     */
+    public function integer($prompt = 'Integer', $message = 'Please enter an integer.') {
+        return $this->text($prompt, function($result) { 
+            return filter_var($result, FILTER_VALIDATE_INT); 
+        }, $message);
+    }
+
+    /**
+     * Prompt for a password
+     *
+     * @param $prompt Text to display before user input
+     * @param $message Message to display on invalid input
+     *
+     */
+    public function password($prompt = 'Password', $validate = null, $message = '') {
+        return $this->text($prompt, $validate, $message, '*');
+    }
+
+    /**
+     * Print a line of text 
+     *
+     */
+    public function println($text) {
+        $this->check_bounds();
+        ncurses_mvaddstr($this->offset++, 0, $text);
+    }
+
+    /**
+     * Render the selection menu, highlighting the current choice
+     *
+     * @param $options Array of options to be displayed in the menu
+     * @param $selected_index Index of selected option
+     *
+     */
+    private function render_menu($options, $selected_index = 0) {
+        // determine how many options to display
+        $n = count($options);
+        $start = 0;
+
+        // if menu is too large for the screen, then only display items that will fit
+        ncurses_getmaxyx($this->window, $y, $x);
+        if ($y < ($n + 2)) {
+            // number of choices to be displayed is the screen hight minus the title offset
+            $n = $y - 2;
+
+            // start is a screen height away from the selection plus 3 for 1-indexing and height of selection prompt
+            $start = $selected_index - $y + 3;
+            if ($start < 0)
+                $start = 0;
+        }
+
+        // display menu options
+        for ($i = 0; $i < $n; $i++) {
+            // index into options array depends on the current scroll position
+            $index = $i + $start;
+
+            // determine difference between length of option and terminal width
+            $display_string = $options[$index];
+            $padding = $x - strlen($options[$index]);
+
+            // string is smaller than terminal, so pad with spaces
+            if ($padding > 0)
+                for ($j = 0; $j < $padding; $j++)
+                    $display_string .= ' ';
+
+            // string is larger than terminal, so cut off with ellipsis
+            else if ($padding < 0)
+                $display_string = substr($display_string, 0, $x - 3) . '...';
+
+            // highlight current option
+            if ($index == $selected_index) {
+                ncurses_attron(NCURSES_A_REVERSE);
+                ncurses_mvaddstr($i + $this->offset, 0, $display_string);
+                ncurses_attroff(NCURSES_A_REVERSE);
+            }
+
+            // if not highlighted, display normally
+            else
+                ncurses_mvaddstr($i + $this->offset, 0, $display_string);
+        }
+
+        ncurses_refresh();
+    }
+
+    /**
+     * Render a menu from which a user can select one option
+     *
+     * @param $options Array of options user can choose from
+     * @param $prompt Text to display above the menu
+     *
+     */
+    public function select($options, $prompt = 'Select an option') {
+        // start on a new line and hide cursor
+        $n = count($options);
+        $this->offset += 2;
+        ncurses_curs_set(0);
+        $this->check_bounds($n + 2);
+
+        // display prompt
+        if ($prompt) {
+            $prompt .= ': ';
+            ncurses_mvaddstr($this->offset++, 0, $prompt);
+            ncurses_mvaddstr($this->offset, 0, '---');
+        }
+
+        // render initial selection menu
+        $this->offset++;
+        $this->render_menu($options);
+
+        // loop until user presses enter or space
+        $selected_index = 0;
+        while (!in_array($key = ncurses_getch(), array(13, 32))) {
+            // move selection
+            if ($key == NCURSES_KEY_UP)
+                $selected_index--;
+            else if ($key == NCURSES_KEY_DOWN)
+                $selected_index++;
+
+            // wrap around selection
+            if ($selected_index < 0)
+                $selected_index = $n - 1;
+            else if ($selected_index > $n - 1)
+                $selected_index = 0;
+
+            // re-render menu with new item selected
+            $this->render_menu($options, $selected_index);
+        }
+
+        // return cursor to normal visibility
+        ncurses_curs_set(1);
+
+        // take into account size of menu
+        $this->offset += $n;
+
+        return $selected_index;
+    }
+
+    /**
+     * Prompt the user for a line of text
+     * 
+     * @param $prompt Text to display before user input
+     * @param $validate Function that takes as an argument the user input and returns if it is valid
+     * @param $message Message to display on invalid input
+     * @param $display_character If not false, then character to display in place of user's input (e.g., for passwords)
+     *
+     */
+    public function text($prompt = '', $validate = null, $message = 'Invalid input.', $display_character = false) {
+        // append colon to prompt
+        if ($prompt)
+            $prompt .= ': ';
+
+        // make sure to only display the error message if we have already tried
+        $attempted = false;
+
+        // loop until inputted text passes validation
+        do {
+            // start on a new line
+            $result = '';
+            $this->offset++;
+            $this->check_bounds();
+
+            // display error message if user's input failed to validate
+            if ($attempted)
+                ncurses_mvaddstr($this->offset++, 0, $message);
+
+            // display prompt
+            if ($prompt)
+                ncurses_mvaddstr($this->offset, 0, $prompt);
+
+            // loop until user presses enter
+            $index = strlen($prompt);
+            $prompt_length = $index;
+            while (!in_array($key = ncurses_getch(), array(13, 10))) {
+                // backspace, so remove last character from result and display
+                if ($key == NCURSES_KEY_BACKSPACE) {
+                    if ($index <= $prompt_length) 
+                        ncurses_mvaddstr($this->offset, $index, '');
+
+                    else {
+                        $result = substr($result, 0, -1);
+                        ncurses_mvaddstr($this->offset, --$index, ' ');
+                        ncurses_mvaddstr($this->offset, $index, '');
+                    }
+                }
+
+                // character, so display and add to result
+                else if (!in_array($key, array(NCURSES_KEY_LEFT, NCURSES_KEY_UP, 
+                        NCURSES_KEY_RIGHT, NCURSES_KEY_DOWN))) {
+                    $result .= chr($key);
+                    ncurses_mvaddstr($this->offset, $index++, ($display_character) ? 
+                        $display_character : chr($key));
+                }
+
+                ncurses_refresh();
+            } 
+
+            // if this input fails to validate, display error message
+            $attempted = true;
+        } 
+        while ($validate !== null && !call_user_func_array($validate, array($result)));
+
+        return $result;
+    }
+}
 
 
 ?>

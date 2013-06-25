@@ -29,13 +29,54 @@ class Layout {
 	var $OUT;
 	var $template_file;
 	var $box_count;
-	
 
+
+
+function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
+    $url = 'http://www.gravatar.com/avatar/';
+    $url .= md5( strtolower( trim( $email ) ) );
+    $url .= "?s=$s&d=$d&r=$r";
+    if ( $img ) {
+        $url = '<img src="' . $url . '"';
+        foreach ( $atts as $key => $val )
+            $url .= ' ' . $key . '="' . $val . '"';
+        $url .= ' />';
+    }
+    return $url;
+}
+
+
+	function stackTrace() {
+    $stack = debug_backtrace();
+    $output = '';
+
+    $stackLen = count($stack);
+    for ($i = 1; $i < $stackLen; $i++) {
+        $entry = $stack[$i];
+
+        $func = $entry['function'] . '(';
+        $argsLen = count($entry['args']);
+        for ($j = 0; $j < $argsLen; $j++) {
+            $func .= $entry['args'][$j];
+            if ($j < $argsLen - 1) $fxunc .= ', ';
+        }
+        $func .= ')';
+
+        $output .= $entry['file'] . ':' . $entry['line'] . ' - ' . $func . PHP_EOL;
+    }
+    return $output;
+	}
+
+	function deprecated($str) {
+		$this->deprecated[] = $str . "<pre>" . $this->stackTrace() . "</pre>";		
+	}
 	function setTheme($name="classic") {
 		if($name=="") $name="classic";
 		$this->theme=$name;	
 	}
-	
+	function setRefreshableVariable($k, $v) {
+		$this->refreshable_objects[$k] = $v;
+	}
 	function set_menu($men) {
 		$this->OUT .= "<script>doToggle('" . $men . "');</script>";	
 		$this->menu_set=true;
@@ -48,7 +89,16 @@ class Layout {
 	function setTemplate($file) {
 		$this->template_file=$file;
 	}
+	function setJSONOutput() {
+		$this->OUTPUT_JSON=true;
+	}
+	function setMainTabName($n) {
+		$this->mainTabName=$n;
+	}
 	function Layout($scr='') {
+		global $_GET;
+		global $_SESSION;
+		global $Bartlby_CONF_used_instance;
 		$this->box_count=1;
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
 			$this->theme=bartlby_config(getcwd() . "/ui-extra.conf", "theme");
@@ -56,14 +106,35 @@ class Layout {
 			$this->theme="classic";
 		}
 		
-		
-	
-
+		$this->instance_id=$Bartlby_CONF_used_instance;
+		$this->do_auto_reload=false;
+		$this->OUTPUT_JSON=false;
 		$this->template_file="template.html";
 		$this->start_time=$this->microtime_float();
 		$this->menu_set=false;
-	}
+			
+		$this->tab_count=0;
+		$this->tabs=array();
 
+
+		if($_GET[json]) {
+			$this->setJSONOutput();
+		}
+
+		//
+
+
+
+		
+	}
+	function addScript($sc) {
+		$this->BTUI_SCRIPTS .= $sc;
+	}
+	function Tab($name, $cnt, $tab_name="") {
+		$this->tab_count++;
+		
+		$this->tabs[]=array(name=>$name, cnt=>$cnt, tab_name=>$tab_name);
+	}
 	function Table($proz="100%", $border=0) {
 		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
 	}
@@ -138,7 +209,7 @@ class Layout {
 			$this->OUT .= $rr;	
 		}
 	}
-	
+	 
 	function TextArea($name, $def, $height=7, $width=100) {
 		return "<textarea name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
 	}
@@ -157,15 +228,65 @@ class Layout {
 		}
 		
 	}
-	function DropDown($name,$options=array(), $type='', $style='', $addserver=true) {
-		$r = "<select name='$name' id='$name' $type $style data-rel='chosen'>\n";
+	function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen', $default_preset = false) {
+		global $_GET;
+		
+		
+		
+		if(strstr($custom_name, "ajax")) {
+			if($_GET[dropdown_search] == 1 && $_GET[dropdown_name] == $name) {
+				//Return JSON Objects :)
+				$obj_idx=-1;
+				
+				for($x=0; $x<count($options); $x++) {
+					if($options[$x][is_group]==1) {
+						//if(!@preg_match("/" . $_GET[dropdown_term] . "/i", $options[$x+1][k])) continue;
+						
+						$obj_idx++;
+						$obj[$obj_idx]->group=true;
+						$obj[$obj_idx]->text=$options[$x][k];
+						$options[$x][k]="Server: " . $options[$x][k];
+						if(!$addserver) continue;
+						
+						
+					}
+					if(!is_array($obj[$obj_idx]->items)) $obj[$obj_idx]->items=array();
+					
+					if($obj_idx < 0) $obj_idx=0;
+					if(!@preg_match("/" . $_GET[dropdown_term] . "/i", $options[$x][k])) continue;
+					
+					$obj[$obj_idx]->items[]=array("value"=> "" . $options[$x][v], "text" => "" . $options[$x][k]);
+					
+					
+					
+				}
+		
+				for($x=0; $x<count($obj); $x++) {
+					if(count($obj[$x]->items) > 0) {
+						$obj_cleaned[]=$obj[$x];
+					}
+				}
+				echo json_encode($obj_cleaned);
+				exit;
+				
+				
+				
+			}
+		}
+		
+		$r = "<select name='$name' id='$name' $type $style data-rel='" . $custom_name . "'>\n";
 		for ($x=0;$x<count($options); $x++) {
 			$sel="";
 			if ($options[$x][s] == 1) $sel="selected";
 			if($options[$x][is_group] == 1) {
+					if(strstr($custom_name, "ajax") && $options[$x][s] != 1) continue; 
 					$r .= '</optgroup><optgroup label="' .  $options[$x][k] . '">';
-					if($addserver) 	$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>Server: " . $options[$x][k] . "\n";	
+					if($addserver)  {
+							if(strstr($custom_name, "ajax") && $options[$x][s] != 1) continue; 
+							$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>Server: " . $options[$x][k] . "\n";	
+					}
 			} else{
+							if(strstr($custom_name, "ajax") && $options[$x][s] != 1) continue; 
 							$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>" . $options[$x][k] . "\n";	
 			}
 		}		
@@ -176,7 +297,7 @@ class Layout {
 		$this->BoxTitle=$str;
 	}
 	
-					
+					 
 					
 					
 				
@@ -191,7 +312,7 @@ class Layout {
 		return '<a style="width:190px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 						<i class="" ></i><span style="width: 100%" xclass="hidden-phone" >' . $name . '</span>
 						<span class="caret" ></span>
-					</a><ul class="dropdown-menu" id="' . $root . '" style="width: 300px">';
+					</a><ul class="dropdown-menu" id="' . $root . '" style="width: 210px">';
 
 		$r = "<table class=\"nopad\">	<tr><td class=\"nav_main\" onClick=\"doToggle('$name')\"><img id='" . $name . "_plus' src='themes/" . $this->theme . "/images/plus.gif' border=0> $name</td></tr><tr><td class=\"nav_place\">&nbsp;</td></tr></table><table class=\"nopad\" id='" . $name . "_sub' style='display:none;'>";
 		$r = '<li class="nav-header hidden-tablet">' . $name . '</li>';
@@ -232,7 +353,7 @@ class Layout {
 		$diff=$this->end_time-$this->start_time;
 			
 		if(count($confs) > 0) {
-			$this->BTL_INSTANCES .= "<select name='btl_instance_id' onChange='btl_change(this)'>";
+			$this->BTL_INSTANCES .= "<select name='btl_instance_id' onChange='btl_change(this)' data-rel='chosen'>";
 			for($x=0; $x<count($confs); $x++) {
 				$sel = " ";
 				if($_SESSION[instance_id] == $x) {
@@ -242,11 +363,12 @@ class Layout {
 				
 				$r = "(LOCAL)";
 				$read_only = "";
-				$rw="green";
+				$rw="grey";
+				if($x == 0) $rw="#AEC6CF";
 				if($confs[$x][remote]) {
 					 $r = "(REMOTE)";
 					if($confs[$x][db_sync] == false) {
-						 $rw = "grey";
+						 $rw = "lightgrey";
 					}
 				}
 				$this->BTL_INSTANCES .= "<option style='background-color: $rw' value=" . $x ." $sel>" . $confs[$x][display_name] . " $r</option>";
@@ -285,7 +407,7 @@ class Layout {
                 $this->ext_menu .= $this->addSub("Service/s", "Add","add_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Modify","service_list.php?script=modify_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Delete","service_list.php?script=delete_service.php");
-                $this->ext_menu .= $this->addSub("Service/s", "Bulk","bulk_actions.php");
+                
 		$this->ext_menu .= $this->endMenu();
 
 
@@ -370,14 +492,25 @@ class Layout {
 		$this->BTUIOUTSIDE=$this->OUTSIDE;
 		$this->BTUIBOXTITLE=$this->BoxTitle;
 		$this->BTUITIME=round($diff,2);
+		$this->BTMEMUSAGE=round(memory_get_peak_usage(true)/1024/1024,2);
 		$this->BTLEXTMENU=$this->ext_menu;
 		$this->SERVERTIME=date("d.m.Y H:i:s");
 		$this->XAJAX=$xajax->getJavascript("xajax");			
 		$this->UIVERSION=BARTLBY_UI_VERSION;
 		$this->RELNOT=BARTLBY_RELNOT;
 		
-		$this->create_box($this->BoxTitle, $this->OUT, "MAIN");
+		$this->create_box($this->BoxTitle, $this->OUT, "MAIN", "", "", false, true);
 
+		
+	
+		
+		
+		for($z=0; $z<count($this->deprecated); $z++) {
+			$depre .= '<div class="alert alert-error">
+							<button type="button" class="close" data-dismiss="alert">×</button>
+							Deprecated INFO: <strong>' .  $this->deprecated[$z] . '</strong>
+						</div>';
+		}
 
 		//Default LineUp
 		if($lineup_file == "") {
@@ -389,19 +522,54 @@ class Layout {
 			$lineup_path="themes/classic/lineups/default.php";
 		}
 		ob_start();
-			include($lineup_path);
+		include($lineup_path);
 		
-		$this->BTUIOUTSIDE = ob_get_contents();		
+		$this->BTUIOUTSIDE = $depre . ob_get_contents();		
 		ob_end_clean();
 		
 
+		if($this->tab_count > 0) {
+			if($this->mainTabName == "") $this->mainTabName="use setMainTabName";
+			$this->tabs[-1][name]=$this->mainTabName;
+			$this->tabs[-1][cnt]=$this->BTUIOUTSIDE;
+			$this->tabs[-1][tab_name]="ROOT";
+
+			$this->BTUIOUTSIDE='<div id="myTabContent" class="tab-content">';
+			$this->BTTABBAR='<ul class="nav nav-tabs" id="coreTabs">';
+			for($x=-1; $x<$this->tab_count; $x++) {
+				if($this->tabs[$x][tab_name] != "") {
+					$ttname=$this->tabs[$x][tab_name];
+				} else {
+					$ttname="coretab" . $x;
+				}
+				$this->BTTABBAR .='<li><a href="#' . $ttname . '">' . $this->tabs[$x][name] . '</a></li>';
+				$this->BTUIOUTSIDE .= '<div class="tab-pane" id="' . $ttname . '">' . $this->tabs[$x][cnt] . '</div>';
+			}
+			$this->BTUIOUTSIDE .= "</div>";
+			$this->BTTABBAR .="</ul>";
+			//If we have tabs do em :)
+
+
+		}
+		
+
+
 		ob_start();
-			include($this->template_file);
+		include($this->template_file);
 		
 		$o = ob_get_contents();
 		ob_end_clean();
 
+		if($this->OUTPUT_JSON) {
+			echo json_encode($this);
+			exit;
+		}
+		
 		echo $o;
+
+		if($this->do_auto_reload) {
+			echo "<script>btl_start_auto_reload()</script>";
+		}
 
 
 			
@@ -440,7 +608,7 @@ class Layout {
 			return $r;
 		}
 	}
-	function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false) {
+	function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false, $auto_reload=false) {
 		global $btl;
 		
 		$layout=$this;
@@ -476,13 +644,31 @@ class Layout {
 		
 		$o = ob_get_contents();	
 			
-		ob_end_clean();		
+		ob_end_clean();	
+		
+	
 		$this->boxes[$oid]=$o;
+		$this->boxes_content[$oid]=$content;
+
+		
+		
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
-			$this->create_box($title, $o, $oid, "","", $collapsed);
+		
+			$this->create_box($title, $o, $oid, "","", $collapsed, false);
 		}
-
-
+		
+		//$this->boxes_wo_reload[$oid] = $this->boxes[$oid];
+		if($auto_reload) {
+		
+		$this->boxes[$oid] .= "<script>
+		btl_add_refreshable_object(function(data) {
+				
+				$('#content_" . $oid . "').html(data.boxes_content." . $oid . ");
+		});
+		</script>";
+		
+		
+		}
 		return $oid;
 	}
 	function push_outside($content) {

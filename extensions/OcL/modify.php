@@ -10,7 +10,7 @@
 	
 	$btl=new BartlbyUi($Bartlby_CONF);
 	$btl->hasRight("ocl_edit");
-	$sg = new OcL();
+	$ocl = new OcL();
 	
 	
 	$layout= new Layout();
@@ -28,17 +28,13 @@
 	
 	
 	//load defaults
-	$v=unserialize($sg->storage->load_key($_GET[identifier]));
-		
-		
-	$new_x=0;
-	for($x=0; $x<count($v); $x++) {
-		if($v[$x][ocl_id] == $_GET[ocl_id]) {
-			$default=$v[$x];
-			break;
-			
-		}
+	$sql = "select * from logbook where id=" . $_GET[id];
+	$r = $ocl->db_logbook->query($sql);
+	foreach($r as $row) {
+		$default=$row;
 	}
+
+
 	$typos[0][s]=0;
 	$typos[0][k]="phone";
 	$typos[0][v]="phone";
@@ -128,7 +124,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Detailed description:",
-				$layout->TextArea("ocl_error_long",  $default[ocl_error_long] ,10,70) . $layout->Field("script", "hidden", "OcL/save.php") . $layout->Field("identifier", "hidden", $_GET[identifier]) . $layout->Field("ocl_id", "hidden", $_GET[ocl_id])
+				$layout->TextArea("ocl_error_long",  $default[ocl_error_long] ,10,70) . $layout->Field("script", "hidden", "OcL/save.php") . $layout->Field("identifier", "hidden", $_GET[identifier]) . $layout->Field("id", "hidden", $_GET[id])
 			)
 		)
 
@@ -139,7 +135,7 @@ $layout->Tr(
 		array(
 			0=>"Group definition",
 			
-			1=>$layout->Field("service_var", "hidden", "") . "<a href='javascript:GrpChk();'>Open Service selector</A>"
+			1=>$layout->Field("service_var", "hidden", $default[ocl_service_var]) . "<a href='javascript:GrpChk();'>Open Service selector</A>"
 			
 		)
 	)

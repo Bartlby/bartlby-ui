@@ -17,17 +17,18 @@ if($_GET[pkey] && $_GET[pval]) {
 	$passthrough = $layout->Field($_GET[pkey], "hidden", $_GET[pval]);
 }
 
-if($dropdownded != "true")  {
-	$servs=$btl->GetServerGroups();
-	$optind=0;
-	//$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
-	
-	for($x=0; $x<count($servs); $x++ ) {
-		$servergroups[$optind][c]="";
-		$servergroups[$optind][k]=$servs[$x][servergroup_name];	
-		$servergroups[$optind][v]=$servs[$x][servergroup_id];
-		$optind++;
-	}
+$optind = 0;
+$servergroups=array();
+$btl->servergroup_list_loop(function($grp, $shm) use(&$servergroups, &$optind) {
+	global $_GET;
+		if($_GET[dropdown_term] && preg_match("/" . $_GET[dropdown_term] . "/i", $grp[servergroup_name])) {
+			$servergroups[$optind][c]="";
+			$servergroups[$optind][k]=$grp[servergroup_name];	
+			$servergroups[$optind][v]=$grp[servergroup_id];
+			$optind++;
+		}
+	});
+
 	
 	
 	
@@ -35,7 +36,7 @@ if($dropdownded != "true")  {
 		$layout->Td(
 				Array(
 					0=>"Servergroup:",
-					1=>$layout->DropDown("servergroup_id", $servergroups) . $passthrough
+					1=>$layout->DropDown("servergroup_id", $servergroups,"", "", false, "ajax_servergroup_list")
 				)
 			)
 	
@@ -53,20 +54,7 @@ if($dropdownded != "true")  {
 			)
 	
 	);
-} else {
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"left",
-						'show'=>"Dropdown searches disabled in ui-extra config"
-						)
-				)
-			)
-	
-	);	
-}
+
 
 
 $layout->TableEnd();

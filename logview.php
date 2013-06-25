@@ -19,7 +19,7 @@
 								  
 							  </tr>
 						  </thead>   ';
-	$map=$btl->GetSVCMap();
+	
 	
 	$ch_time=time();
 	if($_GET[l]) {
@@ -37,7 +37,7 @@
 	$shm_id=$btl->findSHMPlace($svcid);
 	
 	if($shm_id >= 0) {
-		$def=bartlby_get_service($btl->CFG, $shm_id);
+		$def=bartlby_get_service($btl->RES, $shm_id);
 		$svcM=$btl->getServiceOptions($def, $layout) . "<a href='service_detail.php?service_place=" . $shm_id . "'>Detail</A>";
 	}
 	if($_GET[bartlby_filter]) {
@@ -350,41 +350,39 @@
 	
 	
 function cmpServiceIDisInServiceGroup($svc_id, $servicegroup_id) {
-		global $map;
-		reset($map);
-		while(list($k, $v) = @each($map)) {
-		for($x=0; $x<count($v); $x++) {
-			if($v[$x][service_id] == $svc_id) {
-				for($y=0; $y<count($v[$x][servicegroups]); $y++) {
+			global $btl;
+			$r = false;
+$btl->service_list_loop(function($svc, $shm) use(&$r) {
+			if($svc[service_id] == $svc_id) {
+				for($y=0; $y<count($svc[servicegroups]); $y++) {
 				
-						if($v[$x][servicegroups][$y][servicegroup_id] == $servicegroup_id) {
-						
-							return true;
+						if($svc[servicegroups][$y][servicegroup_id] == $servicegroup_id) {
+							$r=true;
+							return LOOP_BREAK;
 						}
 				}
 			}
-			
-		}
-	}
-
-	return false;	
+});
+		
+	return $r;	
 }
 
 function cmpServiceIDisInServerGroup($svc_id, $servergroup_id) {
-		global $map;
-		reset($map);
-		while(list($k, $v) = @each($map)) {
-		for($x=0; $x<count($v); $x++) {
-			if($v[$x][service_id] == $svc_id) {
-				for($y=0; $y<count($v[$x][servergroups]); $y++) {
-						if($v[$x][servergroups][$y][servergroup_id] == $servergroup_id) {
-							return true;
+			global $btl;
+			$r = false;
+$btl->service_list_loop(function($svc, $shm) use(&$r) {
+			if($svc[service_id] == $svc_id) {
+				for($y=0; $y<count($svc[servergroups]); $y++) {
+				
+						if($svc[servergroups][$y][servergroup_id] == $servicegroup_id) {
+							$r=true;
+							return LOOP_BREAK;
 						}
 				}
-			}	
-		}
-	}
-
+			}
+});
+		
+	return $r;	
 }
 
 function cmpServiceIDHasServer($svc_id, $server_id) {

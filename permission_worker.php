@@ -7,24 +7,54 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $layout= new Layout();
 $layout->set_menu("worker");
 $layout->setTitle("");
-$defaults=@bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
+
+$layout->OUT .= "<script>global_worker_id=" . $_GET[worker_id] . ";</script>";
+
+
+$defaults=@bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 
 $fm_action="save_permissions";
 $btl->hasRight("super_user");
+
 
 if($defaults == false) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
 
-$map = $btl->GetSVCMap();
+
+
 $worker_rights = $btl->loadForeignRights($defaults[worker_id]);
+$optind=0;
+$servers_out=array();
+$services_x=0;
+
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$worker_rights, &$defaults) {
+	
+	if($svc[is_gone] != 0) {
+	 return LOOP_CONTINUE;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || strstr($defaults[services], "|" . $svc[service_id]  . "|") || @in_array( $svc[server_id], $worker_rights[servers]) || @in_array( $svc[service_id], $worker_rights[services])) {
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+		$services_x++;
+	}	//if($services_x > 50) return LOOP_BREAK;
+	
+});			
+ksort($servers_out);
+
+
+$optind=0;
+$map = $servers_out;
+
 $optind=0;
 
 while(list($k, $servs) = @each($map)) {
 
 	for($x=0; $x<count($servs); $x++) {
-		//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+		//$v1=bartlby_get_service_by_id($btl->RES, $servs[$x][service_id]);
 		
 		if($x == 0 ) {
 			//$isup=$btl->isServerUp($v1[server_id]);
@@ -45,7 +75,9 @@ while(list($k, $servs) = @each($map)) {
 		$servers[$optind][c]="";
 		$servers[$optind][v]=$servs[$x][service_id];	
 		$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+
 		if(@in_array($servs[$x][service_id], $worker_rights[services])) {
+
 			$servers[$optind][s]=1;	
 		}
 		
@@ -73,7 +105,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Visible services:",
-			1=>$layout->DropDown("worker_services[]", $servers, "multiple")
+			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services_permission")
 		)
 	)
 ,true);

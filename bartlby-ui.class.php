@@ -1,4 +1,6 @@
 <?
+ini_set("memory_limit","999999999M");
+ob_start("ob_gzhandler");
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
  *
@@ -19,7 +21,7 @@ $Revision: 16 $
 $HeadURL: http://bartlby.svn.sourceforge.net/svnroot/bartlby/trunk/bartlby-core/src/ack.c $
 $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
-*/
+*/ 
 
 include_once("bartlbystorage.class.php");
 
@@ -27,8 +29,10 @@ session_start();
 
 set_time_limit(0);
 if(function_exists("set_magic_quotes")) set_magic_quotes_runtime(0);
-define("BARTLBY_UI_VERSION", "2.2-1.5.0");
+define("BARTLBY_UI_VERSION", "2.5-1.6.0");
 define("BARTLBY_RELNOT", "");
+define("LOOP_CONTINUE", -2);
+define("LOOP_BREAK", -1);
 $wdays[0]="Sunday";
 $wdays[1]="Monday";
 $wdays[2]="Tuesday";
@@ -43,33 +47,94 @@ if(!version_compare(phpversion(), "5.0.0", ">=")) {
 	echo "you should have at least a php5 series";
 	exit;	
 }
+/*
+REMOVED UI FUNCTIONS deprectaion layer
+*/
+
+function bartlby_svc_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_get_svc_map is removed");
+		return;
+}
+function bartlby_worker_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_worker_map is removed");
+		return;
+
+}
+function bartlby_servergroup_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_servergroup_map is removed");
+		return;
+
+}
+function bartlby_servicegroup_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_servicegroup_map is removed");
+		return;
+
+}
+function bartlby_downtime_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_downtime_map is removed");
+		return;
+
+}
+function bartlby_server_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_server_map is removed");
+		return;
+
+}
+
+
+
+		
+
 
 class BartlbyUi {
 	
-	function send_custom_report($emails, $service_id, $from, $to) {
+	function html_report_footer() {
+		return "</body></html>";
+	}
+	function html_report_header() {
+		return "<html><head><style>" . 
+		file_get_contents("themes/classic/css/bootstrap-simplex.css") 
+		 . "</style></head><body>";
+	}
+	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report") {
 		include_once "Mail.php";
 		include_once "Mail/mime.php";
 		
-		$storage = new BartlbyStorage("ArS");
-		$defaults=bartlby_get_service_by_id($this->CFG, $service_id);
-		$rap = "Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
-		$btl_subj = "Bartlby Custom report";
+		$storage = new BartlbyStorage("AutoReports");
+
+
+		$btl_subj = $subj;
+		$rap = $this->html_report_header();
+		for($x=0; $x<count($service_ids); $x++) {
+			$service_id=$service_ids[$x];			
+			$defaults=bartlby_get_service_by_id($this->RES, $service_id);
+
+			
+			
+			$rep = $this->do_report($from, $to, 0, $service_id);
+			$rap .=  $this->format_report($rep, "html", "Report for: " . $defaults[server_name] . "/" . $defaults[service_name], true);
+			
 		
-		$rap .= "DAILY REPORT:\n\n";
-		$rep = $this->do_report($from, $to, 0, $service_id);
-		
-		$rap .= "FROM: " . $from . " TO: " . $to . "\n";
-		$file =  $this->format_report($rep, "html", $rap);
+		}
+		$rap .= $this->html_report_footer();
 		
 		
-		
-		
-		
-		
-		$tmpfname = tempnam ("/tmp", "ArS");
+		$tmpfname = tempnam ("/tmp", "AutoReports");
 		
 		$fp = fopen($tmpfname, "w");
-		fwrite($fp, $file);
+		fwrite($fp, $rap);
 		fclose($fp);
 		
 		copy($tmpfname, $tmpfname . ".html");
@@ -77,19 +142,8 @@ class BartlbyUi {
 		
 		$mime = new Mail_Mime();
 		$mime->setTxtBody("see the attachment for details");
-		
 		$mime->addAttachment($tmpfname . ".html", "text/html", "report.html");
-		
-		
-		//update perf handler ;)
-		$this->updatePerfHandler($defaults[server_id], $defaults[service_id]);
-		$path=bartlby_config($this->CFG, "performance_rrd_htdocs");
-		foreach(glob($path . "/" . $service_id . "_*.png") as $fn) {
-		     	//$mime->addAttachment($fn, "image/png", basename($fn), true, 'base64', 'inline');
-		     	$mime->addHTMLImage($fn, "image/png", basename($fn), true);
-		     	$file .= "<img src='" . basename($fn) . "'><br>";
-		}
-		$mime->setHTMLBody($file);
+		$mime->setHTMLBody($rap);
 		$body=$mime->get();
 		
 		
@@ -100,11 +154,11 @@ class BartlbyUi {
 		$dd = explode(";", $emails);
 		for($x=0; $x<count($dd); $x++) {
 	
-			$headers = array('From' =>  $storage->load_key("ars_smtp_from") , 'To' => $dd[$x],
+			$headers = array('From' =>  $storage->load_key("local_mail_from") , 'To' => $dd[$x],
 				   'Subject' => $btl_subj);
 		
 			$smtp = Mail::factory('smtp',
-				array ('host' =>  $storage->load_key("ars_smtp_host"),
+				array ('host' =>  $storage->load_key("local_smtp_host"),
 		  			'auth' => false,
 			   		'timeout' => 10,
 					'debug' => false
@@ -122,7 +176,66 @@ class BartlbyUi {
 		
 		
 	}
-	
+	function bartlby_service_matches_string($svc, $string) {
+		if(!$string) return true;
+		
+		$rt = true;
+		
+		if(strstr($string, " ")) {
+			$els = explode(" and ", $string);
+			
+			for($x=0; $x<count($els); $x++) {
+				$criteria = explode(" ", $els[$x]);
+				
+				if($criteria[1] == "=") {
+					if($svc[$criteria[0]] != $criteria[2]) {
+						$rt = false;
+					}
+				}				
+				if($criteria[1] == "!") {
+					if($svc[$criteria[0]] == $criteria[2]) {
+						$rt = false;
+					}
+				}		
+				if($criteria[1] == "~") {
+					
+					if(!@preg_match("/" . $criteria[2] . "/i", $svc[$criteria[0]]) ) {
+						//echo "set false " . $criteria[0] . " does not match " . $criteria[2] . " (" . $svc[$criteria[0]] . ")<br>";
+						$rt = false;
+					}
+				}		
+				if($criteria[1] == "!~") {
+					if(@preg_match("/" . $criteria[2] . "/i", $svc[$criteria[0]]) ) {
+						$rt = false;
+					}
+				}
+				if($criteria[1] == ">") {
+					if($svc[$criteria[0]] < $criteria[2] ) {
+						$rt = false;
+					}
+				
+				}
+				if($criteria[1] == "<") {
+					if($svc[$criteria[0]] > $criteria[2] ) {
+						$rt = false;
+					}
+				
+				}
+					
+				
+			}
+			return $rt;
+				
+		} else {
+			//Classic search
+			if(!@preg_match("/" . $string . "/i", $svc[server_name] . "/" . $svc[service_name])) {
+				return false;
+			}
+		}
+		
+		
+		return true;
+	}
 	function doReload() {
 		global $Bartlby_CONF_Remote;
 		
@@ -130,10 +243,10 @@ class BartlbyUi {
 				$this->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
 		}
 		
-		bartlby_reload($this->CFG);
+		bartlby_reload($this->RES);
 		while(1 ) {
 			$x++;
-			$i = @bartlby_get_info($this->CFG);
+			$i = @bartlby_get_info($this->RES);
 			flush();
 			
 			if($i[do_reload] == 0) {
@@ -141,6 +254,8 @@ class BartlbyUi {
 				//$layout->OUT .= "<script>doReloadButton();</script>";
 				break;	
 			}
+			bartlby_close($this->RES);
+			bartlby_new($this->CFG);
 		}
 	}
 	function resolveDeadMarker($start_id, $map) {
@@ -150,74 +265,53 @@ class BartlbyUi {
 		
 		$cur_id=$start_id;
 		$l = 0;
-		
-		
-		
+		$r = "";
+
 		while($cur_id != 0) {
 			if($l != 0 && $l == $cur_id) {
 				return $r;	
 			}
-			@reset($map);
-			
-			$f = false;
-			while(@list($k, $v) = @each($map)) {
+			$f = false;				
+			$btl=$this;
+			$this->service_list_loop(function($svc, $shm_place) use (&$cur_id, &$l, &$rr, &$r, &$f, &$btl)  {
 				
-				
-				for($x=0; $x<count($v); $x++) {
+
+				if($svc[service_id] == $cur_id) {
+					$f = true;					
+					$r .= str_repeat("&nbsp;&nbsp;&nbsp;", $rr) .  "<a href='service_detail.php?service_place=" . $shm_place . "'>" . $svc[server_name] . "/" . $svc[service_name] . "</A> (<font color='" .  $btl->getColor($svc[current_state])  . "'>" . $btl->getState($svc[current_state]) . "</font>) active: " . $svc[service_active] . "<br>";
 					
-					if($v[$x][service_id] == $cur_id) {
-						$f = true;					
-						$r .= str_repeat("&nbsp;&nbsp;&nbsp;", $rr) .  "<a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A> (<font color='" .  $this->getColor($v[$x][current_state])  . "'>" . $this->getState($v[$x][current_state]) . "</font>) active: " . $v[$x][service_active] . "<br>";
 						
-						
-						$l = $cur_id;	
-						$cur_id = $v[$x][server_dead];
-						
-						if($v[$x][current_state] == 2) {
-							
-							return $r;	
-						}
-						
-						if($cur_id <= 0) {
-							
-							return $r;	
-						}
-						if($cur_id == $start_id ) {
-							
-							return $r;	
-						}
-						
-						$rr++;
-						
-						
+					$l = $cur_id;	
+					$cur_id = $svc[server_dead];
+					if($svc[current_state] == 2) {
+						return LOOP_BREAK;	
 					}
-					
-					
-				}	
-				
-			
-				
-				
-			}
+					if($cur_id <= 0) {
+						return LOOP_BREAK;
+					}
+					if($cur_id == $start_id ) {
+						
+						return LOOP_BREAK;
+					}
+						
+					$rr++;
+					return LOOP_CONTINUE;
+						
+						
+				}
+
+			});
 			if($f == false) {
-			
 				return $r . "<br>INDICATOR: " . $cur_id .  " not found";	
 			}
-			if($cur_id == $start_id ) {
-				echo "b";
-				return $r;	
-			}
+			
 			
 		}
+	
 		return $r;
-		
 				
 	}
-	function service_selector($f, $v, $d, $d1) {
-		$mydiv="<div style='background-color:#ffffff; position:absolute' id='" . $d . "'></div>";
-		$r = "<input type=hidden id='text_" . $d . "'  name='text_" . $d . "' value='" . $d1 . "'><input autocomplete=off type=text id='search_" . $d . "' name='search_" .  $d . "' value='" . $v . "' onkeyup=\"buffer_suggest.modified('search_" . $d . "', 'xajax_service_noaction', '" . $d . "');\"> <a href='javascript:document.getElementById(\"text_" . $d . "\").value=\"0\";document.getElementById(\"search_" . $d . "\").value=\"removed\";'>remove</A>" . $mydiv;
-		return $r;	
-	}
+	
 	function format_report($rep, $type='html', $hdr, $do_perf=false) {
 		global $btl;
 		
@@ -237,13 +331,13 @@ class BartlbyUi {
 		
 		switch($type) {
 			case 'html':
-				$rap ="<html><head><style>td{font-size:12px; font-family:tahoma}</style></head><body>";
-				$rap .= "<table width=100% border=3>";
+				$rap ="";
+				$rap .= "<table width=100% class='table table-bordered table-striped table-condensed'>";
 			break;	
 		}
 		switch($type) {
 			case 'html':
-				$rap .= "<tr><td colspan=3>" . $hdr . "</td></tr>";
+				$rap .= "<tr><td colspan=3><h1>" . $hdr . "</h1></td></tr>";
 			break;	
 		}
 		
@@ -280,17 +374,9 @@ class BartlbyUi {
 			
 			
 		}
-		
-	if($do_perf == true) {
-		$this->updatePerfHandler($srv_id, $svc_id);
-		$path=bartlby_config($this->CFG, "performance_rrd_htdocs");
-
-		foreach(glob($path . "/" . $svc_id  . "_*.png") as $fn) {
-    	    //$mime->addAttachment($fn, "image/png", basename($fn), true, 'base64', 'inline');
 	
-				$rap .= "<tr><td colspan=3><img src='rrd/" . basename($fn) . "'><td></tr>";
-		}
-	}
+
+
 		
 		switch($type) {
 			case 'html':
@@ -312,7 +398,7 @@ class BartlbyUi {
 					
 					switch($type) {
 						case 'html':
-							$rap .= "<li>" . date("d.m.Y H:i:s", $ts[0]) . " (" . $btl->getState($ts[1]) . ")<br>";
+							$rap .= "<li>" . date("d.m.Y H:i:s", $ts[0]) . " (<font color=" . $btl->getColor($ts[1]) . ">" . $btl->getState($ts[1]) . "</font>)<br>";
 						break;	
 					}
 				}
@@ -351,23 +437,16 @@ class BartlbyUi {
 						if(!$_GET[sec_filter] ||  $stay_sec > $_GET[sec_filter]) {
 						
 							$o1 .= "<tr>";
-							$o1 .= "<td bgcolor='$cl'>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
-							$o1 .= "<td bgcolor='$cl'>" .  $btl->getState($state_array[$xy][lstate]) . " </td>";
-							$o1 .= "<td bgcolor='$cl'>" . $state_array[$xy][msg] . " </td>";
+							$o1 .= "<td >" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
+							$o1 .= "<td><font color=" . $btl->getColor($state_array[$xy][lstate]) . ">" .  $btl->getState($state_array[$xy][lstate]) . " </font></td>";
+							$o1 .= "<td >" . $state_array[$xy][msg] . " </td>";
 							$o1 .= "</tr>";
 						
 							
 						
 							$z++;
 							$z++;
-							if($z == 2) {
-								if($cl == $c1 ){
-									$cl = $c2;
-								} else {
-									$cl = $c1;	
-								}	
-								$z=0;
-							}
+							
 						}
 					break;	
 				}
@@ -376,9 +455,48 @@ class BartlbyUi {
 		
 		$rap .= $o1;
 		
+
+	if($do_perf == true) {
+		$this->updatePerfHandler($srv_id, $svc_id);
+		$path=bartlby_config($this->CFG, "performance_rrd_htdocs");
+		$rap .= "<tr><td colspan=3><b>Graphs of " . $hdr . "</b></td></tr>";
+		$rap .= "<tr><td colspan=3>";
+		foreach(glob($path . "/" . $svc_id  . "_*.png") as $fn) {
+    	    //$mime->addAttachment($fn, "image/png", basename($fn), true, 'base64', 'inline');
+				$b64=base64_encode(file_get_contents($fn));
+				$rap .= "<img src='data:image/gif;base64," . $b64 . "'>";
+		}
+
+		//PNP4nagios support // needs to be web accessable set pnp4nagios_web to http://PNPHOST/pnp4nagios/image
+		$pnp_url=bartlby_config("ui-extra.conf", "pnp4nagios_web");
+		if($pnp_url) {
+			$defaults = bartlby_get_service_by_id($this->RES, $svc_id);
+			if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
+				$pnp4_hostname = urlencode($defaults[server_id] . "-" . $defaults[server_name]);
+				$pnp4_servicename = urlencode($defaults[service_id] . "-" .  $defaults[service_name]);
+
+				$i_start = $rep[time_start];
+				$i_end = $rep[time_end];
+				for($z=0; $z<8;$z++) {
+					$u = $pnp_url . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $z . "&cb=" . $t;
+					$b64 = base64_encode(file_get_contents($u));
+					if(strlen($b64) > 2) {
+						$rap .= "<img src='data:image/gif;base64," . $b64 . "'>";
+					}
+				}
+
+			}
+
+		}
+
+		$rap .= "</td></tr>";
+	}
+
+
+
 		switch($type) {
 			case 'html':
-				$rap .= "</table></body></html>";
+				$rap .= "</table><br><br>";
 			break;	
 		}
 		
@@ -472,7 +590,12 @@ class BartlbyUi {
 		$time_start=mktime(0,0,0, $date_start[1], $date_start[0], $date_start[2]);
 		$time_end=mktime(0,0,0, $date_end[1], $date_end[0], $date_end[2]);
 		
-		
+
+
+
+		$r[time_start] = $time_start;
+		$r[time_end] = $time_end;
+
 		$daycnt = $time_end-$time_start+86400;
 		
 		$day_x=$daycnt/86400;
@@ -570,6 +693,7 @@ class BartlbyUi {
 		$r[state_array]=$state_array;
 		$r[notify]=$notify;
 		$r[files_scanned]=$files_scanned;
+	
 		
 		return $r;
 		
@@ -579,7 +703,7 @@ class BartlbyUi {
 	function setUIRight($k, $v, $user) {
 		$base="rights/";
 		if($Bartlby_CONF_IDX>0) {
-			$base="rights-" . $Bartlby_CONF_IDX . "/";
+			$base="nodes/"  . $Bartlby_CONF_IDX . "/rights/";
 		}
 		if(!file_exists($base . $user . ".dat")) {
 			copy($base . "/template.dat", $base . $user . ".dat");
@@ -629,7 +753,7 @@ class BartlbyUi {
 			$bb = explode("=", $aa[$aax]);
 			if($aa[$aax]) {
 				$idx=$this->findSHMPlace($aa[$aax]);
-                                $svc=bartlby_get_service($this->CFG, $idx);
+                                $svc=bartlby_get_service($this->RES, $idx);
                                 $dtemp="";
                                 if($svc[is_downtime] == 1) {
                                         $dtemp="<i>DOWNTIME</i>";
@@ -651,6 +775,17 @@ class BartlbyUi {
 	function dnl($i) {
 		return sprintf("%02d", $i);
 	}
+
+	function addToUserActivityFeed($msg) {
+		$sto=new BartlbyStorage("UserActivityFeed");
+		$db=$sto->SQLDB($this->UserActivityFeedDB);
+		if($db != false) {
+
+			$r = $db->exec("INSERT INTO UserActivityFeed (user_id, user_name, txt, insert_date) VALUES(" . $this->user_id . ", '" . SQLite3::escapeString($this->username) . "',  '" . SQLite3::escapeString($msg) . "',datetime())");
+			//echo "INSERT INTO UserActivityFeed (" . $this->user_id . ", '" . SQLite3::escapeString($msg) . "',NOW)";
+		}
+	}
+
 	function BartlbyUi($cfg, $auth=true, $shm_check=true) {
 			global $Bartlby_CONF_Remote;
 		if(!function_exists("bartlby_version")) {
@@ -661,6 +796,8 @@ class BartlbyUi {
 			}
 		}	
 	
+		$this->UserActivityFeedDB="CREATE TABLE UserActivityFeed (user_id integer, txt TEXT, user_name TEXT ,insert_date DATE) ";
+
 		
 
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
@@ -673,8 +810,9 @@ class BartlbyUi {
 		$this->BASE_URL=substr($_SERVER[SCRIPT_URI], 0, strrpos($_SERVER[SCRIPT_URI], "/")+1);				
 		
 		$this->CFG=$cfg;
+		$this->RES=bartlby_new($cfg);
 		//Check if bartlby is running :-)
-		$this->info=@bartlby_get_info($this->CFG);
+		$this->info=@bartlby_get_info($this->RES);
 		
 		/*
 			Check if process is still here
@@ -691,7 +829,7 @@ class BartlbyUi {
 				exit(1);
 			} 
 		}
-		if($auth == true && bartlby_check_shm_size($cfg) == false) {
+		if($auth == true && bartlby_check_shm_size($this->RES) == false) {
 			if($_SESSION[instance_id] > 0) {
 				$_SESSION[instance_id] = 0;
 				Header("Location: overview.php");
@@ -715,12 +853,20 @@ class BartlbyUi {
 				exit(1);
 			}
 		}
-		
-		$this->perform_auth($auth);
+		$this->auth_error=false;	
+		$ar = $this->perform_auth($auth);
+		if(!$ar) {
+
+			$this->auth_error=true;			
+		}
 		$this->release=$this->info[version];
 		$this->loadRights();
 		$this->BASEDIR=@bartlby_config($this->CFG, "basedir");
 		$this->PERFDIR=@bartlby_config($this->CFG, "performance_dir");
+		$this->rrd_web_path=@bartlby_config($this->CFG, "rrd_web_path");
+		if(strlen($this->rrd_web_path) < 2) {
+			$this->rrd_web_path="rrd/";
+		}
 		
 		
 		
@@ -773,7 +919,7 @@ class BartlbyUi {
 		}
 		
 		$rt=false;
-		$svc=bartlby_get_service_by_id($this->CFG, $svcid);
+		$svc=bartlby_get_service_by_id($this->RES, $svcid);
 		if(!$svc) {
 			$rt = false;
 		}
@@ -852,11 +998,18 @@ class BartlbyUi {
 		}	
 	}
 	function loadForeignRights($user) {
-		if(!file_exists("rights/" . $user . ".dat")) {
-			copy("rights/template.dat", "rights/" . $user . ".dat");
+		global $Bartlby_CONF_IDX;
+		$base="rights/";
+		if($Bartlby_CONF_IDX>0) {
+			$base="nodes/" . $Bartlby_CONF_IDX . "/rights/";
+			//$ui_extra_file = "nodes/" . $Bartlby_CONF_IDX . "/ui-extra.conf";
 		}
-		if(file_exists("rights/" . $user . ".dat")) {
-			$fa=file("rights/" . $user . ".dat");
+		
+		if(!file_exists($base . $user . ".dat")) {
+			copy($base . "/template.dat", $base . "/" . $user . ".dat");
+		}
+		if(file_exists($base . "/" . $user . ".dat")) {
+			$fa=file($base . "/" . $user . ".dat");
 			while(list($k, $v) = each($fa)) {
 				$s1=explode("=", $v);
 				$r[$s1[0]]=explode(",", trim($s1[1]));
@@ -923,11 +1076,11 @@ class BartlbyUi {
 		
 		$ui_extra_file = getcwd() . "/ui-extra.conf";
 		if($Bartlby_CONF_IDX>0) {
-			$base="rights-" . $Bartlby_CONF_IDX . "/";
-			$ui_extra_file = "ui-extra-" . $Bartlby_CONF_IDX . ".conf";
+			$base="nodes/" . $Bartlby_CONF_IDX . "/rights/";
+			//$ui_extra_file = "nodes/" . $Bartlby_CONF_IDX . "/ui-extra.conf";
 		}
 		if(!file_exists($base . "/" . $this->user_id . ".dat")) {
-			copy($base . "/template.dat", "rights/" . $this->user_id . ".dat");
+			copy($base . "/template.dat", $base . "/" . $this->user_id . ".dat");
 		}
 		
 		if(file_exists($base . "/" . $this->user_id . ".dat")) {
@@ -937,12 +1090,15 @@ class BartlbyUi {
 				$this->rights[$s1[0]]=explode(",", trim($s1[1]));
 				
 			}
+
 			for($x=0; $x<count($this->rights[services]); $x++) {
 					if($this->rights[services][$x] == "") {
 						$this->rights[services][$x]=-4;
 						continue;
 					}
+					
 					settype($this->rights[services][$x], "integer");
+					
 			}
 			for($x=0; $x<count($this->rights[servers]); $x++) {
 					if($this->rights[servers][$x] == "") {
@@ -965,6 +1121,7 @@ class BartlbyUi {
 					}
 					settype($this->rights[selected_services][$x], "integer");
 			}
+
 		} else {
 			if(!preg_match("/error.php/" , $_SERVER[SCRIPT_NAME])) {
 		
@@ -1002,38 +1159,68 @@ class BartlbyUi {
 		return $this->release;	
 	}
 	function getInfo() {
-		return @bartlby_get_info($this->CFG);	
+		return @bartlby_get_info($this->RES);	
 	}
 	
 	function perform_auth($a=true) {
-		$wrks=$this->GetWorker(false);
+		global $Bartlby_CONF_IDX;
+		global $Bartlby_CONF_single_sign_on;
+		global $confs;
 		$auted=0;
 		if($a==false) {
 			$auted=1;
 		} else {
-			
-			while(list($k, $v) = each($wrks)) {
-				if($_SESSION[username] != "" && $_SESSION[password] != "") {
+			$btl_to_use=$this;
+			if($Bartlby_CONF_single_sign_on == 1 ) {
+				if($Bartlby_CONF_IDX > 0) {
+
+					$btl_to_use=new BartlbyUi($confs[0][file], false);
 					
+				}
+			}
+			$btl=$this;
+			$btl_to_use->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
+				global $_SERVER;
+				if($_SESSION[username] != "" && $_SESSION[password] != "") {
 					$_SERVER[PHP_AUTH_USER]=$_SESSION[username];
 					$_SERVER[PHP_AUTH_PW]=$_SESSION[password];
 				}
+				
 				if($_SERVER[PHP_AUTH_USER] == $v[name] && (md5($_SERVER[PHP_AUTH_PW]) == $v[password] || $_SERVER[PHP_AUTH_PW] == $v[password])) {
+					
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
-					$this->user_id=$v[worker_id];
+					$btl->user_id=$v[worker_id];
+					return LOOP_BREAK;
+
 				}
-			}
+				
+				
+				
+			});
+			
+			
 		}
+	
+
+
 		if($auted == 0 && $_SESSION[username] != "") {
 			$this->redirectError("BARTLBY::LOGIN");
+			if(php_sapi_name() == "cli") {
+
+				return false;
+			}
 		}
 		if ($auted==0) { 
 			
 			 session_destroy();
-	      		 @header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
-	      		 @Header("HTTP/1.0 401 Unauthorized");
-	      		 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
+	      	@header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
+	      	@Header("HTTP/1.0 401 Unauthorized");
+	      	 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
+	      	 if(php_sapi_name() == "cli") {
+
+				return false;
+			 }
 			 $this->redirectError("BARTLBY::LOGIN");
 			 exit;
 		} else {
@@ -1043,6 +1230,7 @@ class BartlbyUi {
 			
 			
 		}
+		return true;
 	}
 	function _log($str) {
 		$logfile=bartlby_config($this->CFG, "logfile");
@@ -1071,24 +1259,27 @@ class BartlbyUi {
 		//header("Location: error.php?msg=" . $msg);	
 		
 		if(!preg_match("/error.php/" , $_SERVER[SCRIPT_NAME])) {
-			echo "<script>parent.location.href='error.php?msg=$msg" . $qs . "';</script>";
-			exit;
+			if(php_sapi_name() == 'cli') {
+				return false;
+			} else {
+				echo "<script>parent.location.href='error.php?msg=$msg" . $qs . "';</script>";	
+				exit;
+			}
+			
+			
 		}
 		
 	}
 	function findSHMPlace($svcid) {
-		$map=bartlby_svc_map($this->CFG, $this->rights[services], $this->rights[servers]);
-		
-		
-		
-		for($x=0; $x<count($map); $x++) {
-			if($map[$x][service_id] == $svcid) {
-				
-				return 	$map[$x][shm_place];
-				
+		$r = -1;
+		$this->service_list_loop(function($svc, $shm) use(&$r, &$svcid) {
+			if($svc[service_id] == $svcid) {
+				$r = $shm;
+				return LOOP_BREAK;				
 			}
-		}
-		return -1;	
+		});
+		return $r;
+
 	}
 	function isServerUp($server_id, $map) {
 		
@@ -1110,7 +1301,7 @@ class BartlbyUi {
 		
 		$r=array();
 		for($x=0; $x<$this->info[workers]; $x++) {
-			$wrk=bartlby_get_worker($this->CFG, $x);
+			$wrk=bartlby_get_worker($this->RES, $x);
 			if($wrk[name] == "") {
 				$x=0;
 				continue;	
@@ -1128,17 +1319,17 @@ class BartlbyUi {
 	}
 	
 	function GetServerGroups() {
-		$map=bartlby_servergroup_map($this->CFG);
+		$map=bartlby_servergroup_map($this->RES);
 		return $map;
 	}
 	
 	function GetServiceGroups() {
-		$map=bartlby_servicegroup_map($this->CFG);
+		$map=bartlby_servicegroup_map($this->RES);
 		return $map;
 	}
 	function GetServers() {
 		
-		$map=bartlby_svc_map($this->CFG,$this->rights[services], $this->rights[servers]);
+		$map=bartlby_svc_map($this->RES,$this->rights[services], $this->rights[servers]);
 		
 		
 		
@@ -1156,12 +1347,12 @@ class BartlbyUi {
 		/*
 		$ar=array();
 		for($x=0; $x<$this->info[services]; $x++) {	
-			$svc=bartlby_get_service($this->CFG, $x);
+			$svc=bartlby_get_service($this->RES, $x);
 			array_push($ar, $svc);
 		}
 		return $ar;
 		*/
-		$map=bartlby_svc_map($this->CFG, $this->rights[services], $this->rights[servers]);
+		$map=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);
 		
 		
 		
@@ -1183,12 +1374,87 @@ class BartlbyUi {
 				return "";
 		}
 	}	
+	
+	function servergroup_list_loop($fcn) {
+
+		for($x=0; $x<$this->info[servergroups]; $x++) {
+			$srvcgrp = bartlby_get_servergroup($this->RES, $x	);
+
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function servicegroup_list_loop($fcn) {
+		for($x=0; $x<$this->info[servicegroups]; $x++) {
+			$srvcgrp = bartlby_get_servicegroup($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function server_list_loop($fcn) {
+		for($x=0; $x<$this->info[server]; $x++) {
+
+			$srvcgrp = bartlby_get_server($this->RES, $x);
+			if($this->btl_is_array($this->rights[servers], $srvcgrp[server_id]) == -1) continue;
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function worker_list_loop($fcn) {
+		for($x=0; $x<$this->info[workers]; $x++) {
+			$srvcgrp = bartlby_get_worker($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+
+	function downtime_list_loop($fcn) {
+		for($x=0; $x<$this->info[downtimes]; $x++) {
+			$srvcgrp = bartlby_get_downtime($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function service_list_loop($fcn) {
+
+		for($x=0; $x<$this->info[services]; $x++) {
+			$svc = bartlby_get_service($this->RES, $x);
+			if($this->btl_is_array($this->rights[services], $svc[service_id]) == -1 && $this->btl_is_array($this->rights[servers], $svc[server_id]) == -1) continue;
+			$rtc=$fcn($svc, $x);			
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+
+		}		
+	}
+
+
+	function btl_is_array($arr = array(), $svc_id) {
+		
+		if(!is_array($arr)) return 1;
+
+		if(in_array($svc_id, $arr)) return 1;
+
+		return -1;
+
+
+	}
+
 	function GetSVCMap($state=false) {
 		//array(2555, 3191,2558)
 		#view_service_output
+		global $layout;
+
+		$layout->deprecated("GetSVCMap is removed");
+		return;
+
 		$has_right = $this->hasRight("view_service_output", false);
 		
-		$r=bartlby_svc_map($this->CFG, $this->rights[services], $this->rights[servers]);
+		$r=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);
         
         	
         	//Re order map ;-)
@@ -1280,6 +1546,10 @@ class BartlbyUi {
 						$ex[ex_name]=$file;
 						$ex[out] = $o;
 						
+						if($method == "_About") { 
+								$ex[methods] = get_class_methods($clh);
+						}
+						
 						if($o != "") {
 							array_push($r, $ex);
 							
@@ -1321,7 +1591,7 @@ class BartlbyUi {
 	function wikiLink($page_name, $display) {
 		return "<a target='_blank' href='http://wiki.bartlby.org/dokuwiki/doku.php?id=" . $page_name . "'>" . $display . "</A>";	
 	}
-	function installPackage($pkg, $server, $force_plugin, $force_perf, $my_path="") {
+	function installPackage($pkg, $server, $force_plugin, $force_perf, $my_path="", $force_service_type=0) {
 		$basedir=bartlby_config($this->CFG, "basedir");
 		
 		
@@ -1340,6 +1610,7 @@ class BartlbyUi {
 		} else {
 			$fp=@fopen($my_path . $pkg, "r");	
 		}
+
 		if($fp) {
 			while(!feof($fp)) {
 				$bf .= fgets($fp, 1024);	
@@ -1350,12 +1621,54 @@ class BartlbyUi {
 				$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
 				
 				
+				$svc_type = $re[$x][service_type];
+				if($force_service_type != 0) {
+					$svc_type = $force_service_type;
+					
+				}
 				
 				$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
 				$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
-				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $re[$x][service_type] . "<br>";
+				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $svc_type . "<br>";
 				
-				$ads=bartlby_add_service($this->CFG, $server, $re[$x][plugin],$re[$x][service_name],$re[$x][plugin_arguments],$re[$x][notify_enabled],$re[$x][exec_plan],$re[$x][check_interval],$re[$x][service_type],$re[$x][service_var], $re[$x][service_passive_timeout], $re[$x][service_check_timeout], $re[$x][service_ack_enabled], $re[$x][service_retain],$re[$x][service_snmp_community], $re[$x][service_snmp_objid],$re[$x][service_snmp_version],$re[$x][service_snmp_warning],$re[$x][service_snmp_critical],$re[$x][service_snmp_type],$re[$x][service_snmp_textmatch], $re[$x][service_active], $re[$x][flap_seconds],$re[$x][renotify_interval],$re[$x][escalate_divisor],$re[$x][fires_events], $re[$x][enabled_triggers]);
+				
+
+				$svc_obj = array(
+					"plugin"=>$re[$x][plugin],
+					"service_name"=>$re[$x][service_name],
+					"notify_enabled"=>$re[$x][notify_enabled],					
+					"plugin_arguments"=>$re[$x][plugin_arguments],
+					"check_interval"=>$re[$x][check_interval],
+					"service_type"=>$svc_type,
+					"service_passive_timeout" => $re[$x][service_passive_timeout],
+					"server_id" => $server,
+					"service_check_timeout" => $re[$x][service_check_timeout],
+					"service_var" => $re[$x][service_var],
+					"exec_plan" => $re[$x][exec_plan],
+					"service_ack_enabled" => $re[$x][service_ack_enabled],
+					"service_retain" => $re[$x][service_retain],
+					"snmp_community" => $re[$x][service_snmp_community],
+					"snmp_version" => $re[$x][service_snmp_version],
+					"snmp_objid" => $re[$x][service_snmp_objid],
+					"snmp_warning" => $re[$x][service_snmp_warning],
+					"snmp_critical" => $re[$x][service_snmp_critical],
+					"snmp_type" => $re[$x][service_snmp_type],
+					"service_active" => $re[$x][service_active],
+					"snmp_textmatch" => $re[$x][service_snmp_textmatch],
+					"flap_seconds" => $re[$x][flap_seconds],
+					"escalate_divisor" => $re[$x][escalate_divisor],
+					"fires_events" => $re[$x][fires_events],
+					"renotify_interval" => $re[$x][renotify_interval],
+					"enabled_triggers" => $re[$x][enabled_triggers],
+					"handled" => 0
+				);
+			
+
+				
+				$ads=bartlby_add_service($this->RES, $svc_obj);
+				
+				
+
 				$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
 				
 				if($re[$x][__install_plugin]) {
@@ -1414,7 +1727,7 @@ class BartlbyUi {
 				
 
 			}
-			$layout->OUT .= "<script>doReloadButton();</script>";
+//			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {
 			$msg = "fopen failed()!!<br>";	
 		}
@@ -1474,8 +1787,8 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			
 			//$msg = "Creating package: " . $_GET[package_name] . "<br>";
 			for($x=0; $x<$this->info[services]; $x++) {
-				$svc=bartlby_get_service($this->CFG, $x);
-				$svc=bartlby_get_service_by_id($this->CFG, $svc[service_id]);
+				$svc=bartlby_get_service($this->RES, $x);
+				$svc=bartlby_get_service_by_id($this->RES, $svc[service_id]);
 				
 				if(@in_array($svc[service_id], $in_services)) {
 					
@@ -1641,7 +1954,15 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview . " " .  $downtime;
 		
 	}
-	
+	function getWorkerOptionsBTN($defaults, $layout) {
+		$defaults[service_id]="";
+		$modify = "<a href='modify_worker.php?worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this  Worker' border=0></A>";
+		$copy = "<a href='modify_worker.php?copy=true&worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Worker' border=0></A>";
+		$is_gone=$this->is_gone($defaults[server_gone]);
+		
+		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
+
+	}
 	function getserveroptions($defaults, $layout) {
 		$defaults[service_id]="";
 		$modify = "<a href='modify_server.php?server_id=" . $defaults[server_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this server' border=0></A>";
@@ -1679,7 +2000,13 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		} else {
 			$downtime="&nbsp;";
 		}
-				
+		if($defaults[current_state] != 0) {
+			if($defaults[handled] == 1) {
+				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/handled.png' id='handled_" . $defaults[service_id] . "' title='Unhandle this Service' border=0 data-rel='tooltip'></A>";
+			} else {
+				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='handled_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/unhandled.png' title='Handle this Service' border=0 data-rel='tooltip'></A>";
+			}
+		}			
 		
 		$modify = "<a href='modify_service.php?service_id=" . $defaults[service_id] . "'><img data-rel='tooltip' src='themes/" . $this->theme . "/images/modify.gif' title='Modify this Service' border=0 data-rel='tooltip'></A>";
 		$force = "<a href='javascript:void(0);' onClick=\"xajax_forceCheck('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img title='Force an immediate Check' src='themes/" . $this->theme . "/images/force.gif' border=0 data-rel='tooltip'></A>";
@@ -1695,9 +2022,9 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 
 		$is_gone=$this->is_gone($defaults[is_gone]);
 				
-		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat";
+		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat $handled";
 		
-		
+	
 		return $ret;
 	}
 	function updatePerfHandler($srvId, $svcId) {
@@ -1710,7 +2037,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			
 			$idx=$this->findSHMPlace($svcId);
 			$r=$idx;
-			$svc=bartlby_get_service($this->CFG, $idx);
+			$svc=bartlby_get_service($this->RES, $idx);
 			$cmd=$perf_dir . "/" . $svc[plugin];
 			if(!file_exists($cmd)) {
 				$r="Perfhandler '$cmd' does not exists";
@@ -1718,6 +2045,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 				
 				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->CFG . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
 				
+
 				$fp=popen($exec, "r");
 				$output="<hr><pre>";
 				while(!feof($fp)) {

@@ -1,5 +1,9 @@
 @import url(http://fonts.googleapis.com/css?family=Shojumaru);
 
+
+
+
+
 select{
 background-color:#fff;
 }
@@ -128,8 +132,8 @@ border: 1px solid #DEDEDE;
 border-radius:3px;
 -webkit-border-radius:3px;
 -moz-border-radius:3px;
-margin-top: 10px; 
-margin-bottom: 10px ;
+margin-top: 2px; 
+margin-bottom: 2px ;
 box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
 -webkit-box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
 -moz-box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);

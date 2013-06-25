@@ -24,6 +24,7 @@ $xajax->registerFunction("toggle_servergroup_notify_check");
 $xajax->registerFunction("toggle_servicegroup_check");
 $xajax->registerFunction("toggle_servicegroup_notify_check");
 
+$xajax->registerFunction("toggle_service_handled");
 
 $xajax->registerFunction("toggle_server_check");
 $xajax->registerFunction("toggle_extension");
@@ -55,4 +56,11 @@ $xajax->registerFunction("IphoneOverView");
 
 $xajax->registerFunction("setWorkerState");
 $xajax->registerFunction("updateServiceDetail");
+
+$xajax->registerFunction("bulkForce");
+$xajax->registerFunction("bulkEnableChecks");
+$xajax->registerFunction("bulkEnableNotifys");
+$xajax->registerFunction("bulkDisableChecks");
+$xajax->registerFunction("bulkDisableNotifys");
+
 ?>

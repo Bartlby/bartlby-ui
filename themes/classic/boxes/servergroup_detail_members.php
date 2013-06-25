@@ -12,6 +12,7 @@ for($x=0; $x<count($plcs[server_groups]); $x++) {
 	echo "<b>" . $plcs[server_groups][$x][servergroup_name] . ",</b>";
 	
 }
+
 echo "</td></tr>";
 echo "</table>";
 ?>

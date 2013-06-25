@@ -16,20 +16,52 @@ if($_GET[all_servers] == 1) {
 $layout->setTitle("Server List");	
 }
 
-$servergroups=$btl->GetServerGroups();
-for($x=0; $x<count($servergroups); $x++) {
-	if($servergroups[$x][servergroup_id] == $_GET[servergroup_id]) {
-		$defaults=$servergroups[$x];
-		break;	
+$defaults=array();
+$btl->servergroup_list_loop(function($grp, $shm) use (&$defaults) {
+		global $_GET;
+		if($grp[servergroup_id] == $_GET[servergroup_id]) {
+			$defaults=$grp;
+			return LOOP_BREAK;
+		}
+});
+
+$qck = array();
+$btl->service_list_loop(function($svc, $shm) use (&$qck){
+	global $defaults, $_GET;
+	
+	
+	if(strstr($defaults[servergroup_members], "|" . $svc[server_id] . "|") || $_GET[all_servers] == 1) {
+
+		$qck[$svc[server_id]][$svc[current_state]]++;        
+        $qck[$svc[server_id]][10]=$svc[server_id];
+        $qck[$svc[server_id]][server_icon]=$svc[server_icon];
+        $qck[$svc[server_id]][server_name]=$svc[server_name];
+        if($svc[is_downtime] == 1) {
+            $qck[$svc[server_id]][$svc[current_state]]--;
+        	$qck[$svc[server_id]][downtime]++;
+                                
+    	}
+    	if($svc[handled] == 1) {
+            $qck[$svc[server_id]][$svc[current_state]]--;
+        	$qck[$svc[server_id]][handled]++;
+                                
+    	}
+
+    	if($svc[service_ack_current] == 2) {
+    		$qck[$svc[server_id]][acks]++;        
+	   		
+                            
+    	}
 	}
-}
+});
+
 
 if(!$defaults && !$_GET[all_servers]) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
 
-$servers=$btl->getSVCMap($btl->CFG, NULL, NULL);
+//$servers=$btl->getSVCMap($btl->RES, NULL, NULL);
 
 
 if($defaults["servergroup_notify"]==1) {
@@ -44,61 +76,6 @@ if($defaults["servergroup_active"]==1) {
 }
 
 $services_found = array();
-while(list($k,$v)=@each($servers)) {
-		$x=$k;
-		
-		
-		for($y=0; $y<count($v); $y++) {
-			
-			if(strstr($defaults[servergroup_members], "|" . $v[$y][server_id] . "|") || $_GET[all_servers] == 1) {
-				
-				$qck[$v[$y][server_id]][$v[$y][current_state]]++;	
-				$qck[$v[$y][server_id]][10]=$v[$y][server_id];
-				$qck[$v[$y][server_id]][server_icon]=$v[$y][server_icon];
-				$qck[$v[$y][server_id]][server_name]=$v[$y][server_name];
-				if($v[$y][is_downtime] == 1) {
-					$qck[$v[$y][server_id]][$v[$y][current_state]]--;
-					$qck[$v[$y][server_id]][downtime]++;
-					
-				}
-				
-				$svc_color=$btl->getColor($v[$y][current_state]);
-				$svc_state=$btl->getState($v[$y][current_state]);
-				
-				if($v[$y][is_downtime] == 1) {
-					$svc_state="Downtime";
-					$svc_color="silver";	
-				}
-				
-				$v[$y][color]=$svc_color;
-				$v[$y][state_readable]=$svc_state;
-				
-				array_push($services_found, $v[$y]);
-			
-			}
-		
-			
-			$abc=$v[$y][server_id];
-		
-		
-		}
-			
-		
-		
-		
-	}
-	
-
-	$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
-											array(
-												"services" => $services_found,
-												"state" => $svc_state,
-												"color" => $svc_color,
-												
-												
-											)
-				
-				,"service_list_element");
 				
 	
 if($defaults[is_downtime] == 1) {
@@ -132,7 +109,7 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 										"notify_enabled" => $noti_en,
 										"servergroup_enabled" => $server_en,
 										"servergroup_dead" => $defaults[servergroup_dead],
-										"map" => $servers,
+										
 										"triggers" => $triggers
 										),
 			"servergroup_detail_servergroup_info");
@@ -146,7 +123,10 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 				'quick_view' => $qck
 			), "quick_view");
 	
-
+$layout->create_box("Mass Actions", "", "mass_actions",
+											array("a"=>"b")				
+				,"service_list_mass_actions", false);
+	
 
 $r=$btl->getExtensionsReturn("_servergroupDetails", $layout);
 

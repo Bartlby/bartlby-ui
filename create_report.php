@@ -16,38 +16,30 @@ $ibox[2][c]="red";
 $ibox[2][v]=2;	  
 $ibox[2][k]="Critical";
 
-$map = $btl->GetSVCMap();
+//if(!$_GET[dropdown_term]) $_GET[dropdown_term] = "YOUNOWFIN";
+//$map = $btl->GetSVCMap();
 $optind=0;
 //$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
+$servers=array();
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out) {
+	global $_GET;
+	if($svc[is_gone] != 0) {
+	 continue;
+	}
 
-while(list($k, $servs) = @each($map)) {
-	$displayed_servers++;
-	
-	for($x=0; $x<count($servs); $x++) {
-		//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+	if(($_GET[dropdown_term] && @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $_GET[service_id]) {
+
 		
-		if($x == 0) {
-			//$isup=$btl->isServerUp($v1[server_id]);
-			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
-			$servers[$optind][c]="";
-			$servers[$optind][v]="";	
-			$servers[$optind][k]=$servs[$x][server_name];
-			$servers[$optind][is_group]=1;
-			$optind++;
-		} else {
-			
-		}
-		$state=$btl->getState($servs[$x][current_state]);
+
+
+		$state=$btl->getState($svc[current_state]);
 		$servers[$optind][c]="";
-		$servers[$optind][v]=$servs[$x][service_id];	
-		$servers[$optind][k]=$servs[$x][server_name] . "/" . $servs[$x][service_name];
-		if($servs[$x][service_id] == $_GET[service_id]) {
-			$servers[$optind][s]=1;
-		}
-		
+		$servers[$optind][v]=$svc[service_id];	
+		$servers[$optind][k]=$svc[server_name] . "/" .  $svc[service_name];
+		$servers[$optind][s]=1;
 		$optind++;
 	}
-}
+});		
 
 
 $layout= new Layout();
@@ -96,7 +88,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Service:",
-				1=>$layout->DropDown("report_service", $servers)
+				1=>$layout->DropDown("report_service", $servers, "","",false, "ajax_report_service")
 			)
 		)
 

@@ -12,7 +12,7 @@ flush();
 
 sleep(1);
 
-$cfg=$btl->CFG;
+$cfg=$btl->RES;
 
 
 $servers=$btl->GetSVCMap();

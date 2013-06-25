@@ -8,7 +8,7 @@
 	
 	$btl=new BartlbyUi($Bartlby_CONF);
 	
-	$servers=$btl->GetSVCMap();
+	//$servers=$btl->GetSVCMap();
 	
 	$layout= new Layout();
 	$layout->setTitle("Version");

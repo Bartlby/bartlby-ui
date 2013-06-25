@@ -43,7 +43,7 @@ if($_GET[service_id]) {
 }
 $btl->hasRight("action.delete_service");
 
-$global_msg=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+$global_msg=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 if($global_msg == false) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	

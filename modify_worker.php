@@ -17,8 +17,9 @@ $layout= new Layout();
 
 $layout->set_menu("worker");
 $layout->setTitle("Modify Worker");
-$defaults=@bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
+$defaults=@bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 
+$layout->OUT .= "<script>global_worker_id=" . $_GET[worker_id] . ";</script>";
 
 $fm_action="modify_worker";
 if($_GET["copy"] == "true") {
@@ -41,7 +42,7 @@ if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 	$btl->hasRight("modify_all_workers");
 }
 
-if($defaults == false && $_GET["new"] != "true") {
+if($defaults == false && $_GET["new"] != "true" && !$_GET[dropdown_search]) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
@@ -51,24 +52,58 @@ if(!$defaults) {
 	$defaults["notify_plan"] = "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59";
 }
 
-$map = $btl->GetSVCMap();
+//$map = $btl->GetSVCMap();
+
 $worker_rights=@$btl->loadForeignRights($defaults[worker_id]);
 
+$optind=0;
+$servers_out=array();
+$services_x=0;
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$worker_rights, &$defaults) {
+	if(!$worker_rights[super_user]) {
+		if(!@in_array($svc[server_id], $worker_rights[servers]) && !@in_array($svc[service_id], $worker_rights[services])) {
+			return LOOP_CONTINUE;	
+		}
+	}
+	if($svc[is_gone] != 0) {
+	 return LOOP_CONTINUE;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name]))
+		|| 	(@in_array($svc[service_id], $worker_rights[services]))
+		|| 	(@in_array($svc[server_id], $worker_rights[servers]))
+		|| 	(@in_array($svc[service_id], $worker_rights[selected_services]))
+		|| 	(@in_array($svc[server_id], $worker_rights[selected_servers]))
+	 ) {
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+		
+		$services_x++;
+	}	//if($services_x > 50) return LOOP_BREAK;
+	
+});			
+ksort($servers_out);
 
 $optind=0;
+
+$map = $servers_out;
+reset($map);
+
+
+
 while(list($k, $servs) = @each($map)) {
 
 	for($x=0; $x<count($servs); $x++) {
 		
-		if(!$worker_rights[super_user]) {
-			if(!@in_array($servs[$x][server_id], $worker_rights[servers]) && !@in_array($servs[$x][service_id], $worker_rights[services])) {
-				continue;	
-			}
-		}
-				
 		if($x == 0) {
 			//$isup=$btl->isServerUp($v1[server_id]);
 			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+
+			
+
+			
+
 			$servers[$optind][c]="";
 			$servers[$optind][v]="s" . $servs[$x][server_id];	
 			$servers[$optind][k]="" . $servs[$x][server_name] . "";
@@ -77,20 +112,24 @@ while(list($k, $servs) = @each($map)) {
 			if(@in_array( $servs[$x][server_id], $worker_rights[selected_servers])) {
 				
 				$servers[$optind][s]=1;
+
 			}
 			$optind++;
 
 
 			$state=$btl->getState($servs[$x][current_state]);
-                        $servers[$optind][c]="";
+                $servers[$optind][c]="";
                         $servers[$optind][v]=$servs[$x][service_id];
                         $servers[$optind][k]=$servs[$x][server_name]  . "/" .  $servs[$x][service_name];
 
 
-                        //if(@in_array($servs[$x][service_id], $worker_rights[selected_services])) {
-                        if(strstr($defaults[services], "|" . $servs[$x][service_id]  . "|")) {
-                                $servers[$optind][s]=1;
+             
+
+                       
+                        if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))  || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
+                        	$servers[$optind][s]=1;
                         }
+
                         $optind++;
 		} else {
 			
@@ -102,7 +141,8 @@ while(list($k, $servs) = @each($map)) {
 		
 		
 			//if(@in_array($servs[$x][service_id], $worker_rights[selected_services])) {
-			if(strstr($defaults[services], "|" . $servs[$x][service_id]  . "|")) {
+			if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))  || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
+
 				$servers[$optind][s]=1;
 			}
 			$optind++;
@@ -240,7 +280,7 @@ $ov .= $layout->Tr(
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
-			0=>"Escalation",
+			0=>"Notification Limit",
 			1=>"<font size=1>" . $layout->Field("escalation_limit", "text", $defaults[escalation_limit]) . "notify's  per <br>" . $layout->Field("escalation_minutes", "text", $defaults[escalation_minutes]) .  " minutes</font>"
 		)
 	)
@@ -293,7 +333,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Services:",
-			1=>$layout->DropDown("worker_services[]", $servers, "multiple")
+			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services")
 		)
 	)
 , true);
@@ -342,7 +382,7 @@ $ov .= $layout->Tr(
 				0=>Array(
 					'colspan'=> 2,
 					"align"=>"left",
-					'show'=>"<a href='modify_worker.php?copy=true&worker_id=" . $_GET[worker_id] . "'><img src='images/edit-copy.gif' title='Copy (Create a similar) this worker' border=0></A>"
+					'show'=>"<a href='modify_worker.php?copy=true&worker_id=" . $_GET[worker_id] . "'><img src='themes/classic/images/edit-copy.gif' title='Copy (Create a similar) this worker' border=0></A>"
 					)
 			)
 		)

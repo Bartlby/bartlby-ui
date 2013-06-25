@@ -16,7 +16,7 @@ $layout->Table("100%");
 
 
 
-$map = $btl->GetSVCMap();
+
 $optind=0;
 //$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
 

@@ -1,7 +1,11 @@
 <?php
+
 session_start();
-$_SESSION[username]=$_POST[login_name];
-$_SESSION[password]=$_POST[login_password];
-sleep(1);
+
+$_SESSION[username]=$_POST[login_username];
+$_SESSION[password]=$_POST[password];
+$_SESSION[instance_id] = $_POST[btl_instance_id];
+
+
 header("Location: overview.php");
 ?>

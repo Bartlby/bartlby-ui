@@ -632,6 +632,7 @@ textarea {
 label {
   display: block;
   margin-bottom: 5px;
+  
 }
 select,
 textarea,
@@ -2468,7 +2469,7 @@ input[type="submit"].btn.btn-mini {
   clear: both;
 }
 .btn-group:first-child {
-  *margin-left: 0;
+  margin-left:5px;
 }
 .btn-group + .btn-group {
   margin-left: 5px;
@@ -3801,6 +3802,7 @@ a.thumbnail:hover {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+
 .badge {
   padding: 1px 9px 2px;
   -webkit-border-radius: 9px;

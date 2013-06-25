@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
  *
@@ -23,68 +24,74 @@ $Author: hjanuschka $
 session_start();
 
 
-if($_SERVER[SERVER_NAME] == "www.bartlby.org") {
-$confs[0][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
-$confs[0][remote] = false;
-$confs[0][db_sync] = true;
-$confs[0][display_name] = "2ka-primary";
-$confs[0][uniq_id] = 0;
+	$Bartlby_SOFT_selected_instance=-1;
+	$Bartlby_CONF_single_sign_on=1; //Auth agains instance 0
 
 
-$confs[1][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local.second";
-$confs[1][remote] = true;
-$confs[1][db_sync] = true;
-$confs[1][display_name] = "Old-Hetzner";
-$confs[1][uniq_id] = 1;
+		$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
+		$confs[0][remote] = false;
+		$confs[0][db_sync] = true;
+		$confs[0][display_name] = "Primary";
+		$confs[0][is_master]=true;
+		$confs[0][uniq_id]=0;
+		
 
-
-
-
-
-} else {
-	$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
-	$confs[0][remote] = false;
-	$confs[0][db_sync] = true;
-	$confs[0][display_name] = "Primary";
-	
-	
-	
-}
-
-
-
-
-if(!$_SESSION[instance_id]) {
-	$Bartlby_CONF=$confs[0][file];
-	$Bartlby_CONF_Remote=$confs[0][remote];
-	$Bartlby_CONF_DBSYNC=$confs[0][db_sync];
-	$Bartlby_CONF_IDX=$confs[0][uniq_id];
-} else {
-	$Bartlby_CONF=$confs[$_SESSION[instance_id]][file];
-	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
-	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
-	$Bartlby_CONF_DBSYNC=$confs[$_SESSION[instance_id]][db_sync];
-	$Bartlby_CONF_IDX=$confs[$_SESSION[instance_id]][uniq_id];
-}
-if($_SESSION[instance_id] > count($confs)) {
-	$Bartlby_CONF=$confs[0][file];
-	$Bartlby_CONF_Remote=$confs[0][remote];
-	$Bartlby_CONF_IDX=$confs[0][uniq_id];
-	$Bartlby_CONF_DBSYNC=true;
-	
-}
-
-
-
-	if($do_not_merge_post_get != true) {
-		$_GET=array_merge($_GET, $_POST);
+		
+		
+	if(file_exists("nodes/uinodes.php")) {
+		include_once "nodes/uinodes.php";
 	}
-	if($_SERVER[SERVER_NAME] != "www.bartlby.org") {
-		if(file_exists("setup.php")) {
-			include("setup.php");
-			exit(1);	
+
+	$Bartlby_CONF_used_instance=$_SESSION[instance_id];
+	if($_GET[instance_id]) {
+		//user supplied one
+		$Bartlby_SOFT_selected_instance=$Bartlby_CONF_used_instance;
+		$Bartlby_CONF_used_instance = $_GET[instance_id];
+
+	}
+
+
+	if(!$Bartlby_CONF_used_instance) {
+		$Bartlby_CONF=$confs[0][file];
+		$Bartlby_CONF_Remote=$confs[0][remote];
+		$Bartlby_CONF_DBSYNC=$confs[0][db_sync];
+		$Bartlby_CONF_IDX=$confs[0][uniq_id];
+		$Bartlby_CONF_DisplayName=$confs[0][display_name];
+		$Bartlby_CONF_isMaster=$confs[0][is_master];
+
+	} else {
+		$Bartlby_CONF=$confs[$Bartlby_CONF_used_instance][file];
+		$Bartlby_CONF_Remote=$confs[$Bartlby_CONF_used_instance][remote];
+		$Bartlby_CONF_Remote=$confs[$Bartlby_CONF_used_instance][remote];
+		$Bartlby_CONF_DBSYNC=$confs[$Bartlby_CONF_used_instance][db_sync];
+		$Bartlby_CONF_IDX=$confs[$Bartlby_CONF_used_instance][uniq_id];
+		$Bartlby_CONF_DisplayName=$confs[$Bartlby_CONF_used_instance][display_name];
+		$Bartlby_CONF_isMaster=$confs[$Bartlby_CONF_used_instance][is_master];
+	}
+	if($Bartlby_CONF_used_instance > count($confs)) {
+		$Bartlby_CONF=$confs[0][file];
+		$Bartlby_CONF_Remote=$confs[0][remote];
+		$Bartlby_CONF_IDX=$confs[0][uniq_id];
+		$Bartlby_CONF_DBSYNC=true;
+		$Bartlby_CONF_DisplayName=$confs[0][display_name];
+		$Bartlby_CONF_isMaster=$confs[0][is_master];
+		
+	}
+
+
+
+		
+
+if($do_not_merge_post_get != true) {
+			$_GET=array_merge($_GET, $_POST);
+}
+		if($_SERVER[SERVER_NAME] != "www.bartlby.org") {
+			if(file_exists("setup.php")) {
+				include("setup.php");
+				exit(1);	
+			}
 		}
-	}
+
 /*
 
 	$Bartlby_CONF="/opt/bartlby/etc/bartlby.cfg";

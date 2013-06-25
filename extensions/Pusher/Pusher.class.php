@@ -58,6 +58,17 @@ class Pusher {
 		$this->storage->save_key($k, $_GET["PusherAPIKey"]);
 		return "APIKey: <b>" . $_GET["PusherAPIKey"] . "</b> stored";		
 	}
+
+	function _workerDetails() {
+		global $layout, $_GET, $defaults, $btl;
+		$k = $defaults[name] . "_PusherAPIKey";
+		$v = $this->storage->load_key($k);
+		if(!$v) $v = "unset";
+				return "Api Key:" . $v;	
+		
+		
+	}
+
 	function _PRE_modify_worker() {
 		global $layout, $_GET, $defaults, $btl;
 		$k = $defaults[name] . "_PusherAPIKey";

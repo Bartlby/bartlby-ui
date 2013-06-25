@@ -24,7 +24,64 @@ if($_GET[server_id]) {
 }
 
 
-$defaults=@bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+
+	
+
+$defaults=@bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
+
+
+$servers_out=array();
+$services_x=0;
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
+	if($svc[is_gone] != 0) {
+	 continue;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[server_dead]) {
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+		$services_x++;
+		if($services_x > 50) return LOOP_BREAK;
+	}
+});			
+ksort($servers_out);
+
+
+$map=&$servers_out;
+$optind=0;
+while(list($k, $servs) = @each($map)) {
+		$displayed_servers++;
+		
+		for($x=0; $x<count($servs); $x++) {
+			//$v1=bartlby_get_service_by_id($btl->RES, $servs[$x][service_id]);
+			
+			if($x == 0) {
+				//$isup=$btl->isServerUp($v1[server_id]);
+				//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+				$servers[$optind][c]="";
+				$servers[$optind][v]="s" . $servs[$x][server_id];	
+				$servers[$optind][k]="" . $servs[$x][server_name] . "";
+				$servers[$optind][is_group]=1;
+				$optind++;
+			} else {
+				
+			}
+			if($servs[$x][is_gone] != 0) {
+			 continue;
+			}
+			
+			$state=$btl->getState($servs[$x][current_state]);
+			if($servs[$x][service_id] == $defaults[server_dead]) {
+				$servers[$optind][s]=1;
+			}
+			$servers[$optind][c]="";
+			$servers[$optind][v]=$servs[$x][service_id];	
+			$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+			
+			$optind++;
+		}
+	}
 
 $optind=0;
 if(!is_dir("pkgs")) {
@@ -37,7 +94,7 @@ $packages[$optind][v]="";
 $packages[$optind][k]="--None--";
 $optind++;
 while($file = readdir($dhl)) {
-	//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+	//$sr=bartlby_get_server_by_id($btl->RES, $k);
 	
 	//$isup=$btl->isServerUp($k);
 	//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
@@ -154,7 +211,7 @@ if($defaults == false && $_GET["new"] != "true") {
 $optind=0;
 $dhl=opendir("server_icons");
 while($file = readdir($dhl)) {
-	//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+	//$sr=bartlby_get_server_by_id($btl->RES, $k);
 	
 	//$isup=$btl->isServerUp($k);
 	//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
@@ -233,13 +290,13 @@ $ov .= $layout->Tr(
 if(!$_GET["copy"] && !$_GET["new"]) {
 
 	if($defaults[server_dead]) {
-		$svc = bartlby_get_service_by_id($btl->CFG, $defaults[server_dead]);	
+		$svc = bartlby_get_service_by_id($btl->RES, $defaults[server_dead]);	
 	}
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$btl->service_selector("dead_marker", $svc[server_name] . "/" . $svc[service_name] , "service_search1", $defaults[server_dead])
+			1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_id\").find(\"option\").remove();$(\"#service_id\").trigger(\"liszt:updated\");'>Remove</A></div>"
 		)
 	)
 ,true);

@@ -19,13 +19,15 @@ $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
 $layout->Table("100%");
 
 $default=false;
-$r=bartlby_downtime_map($btl->CFG);
 $optind=0;
-for($x=0; $x<count($r); $x++) {
-	if($r[$x][downtime_id] == $_GET[downtime_id]) {
-		$default=$r[$x];	
+$btl->downtime_list_loop(function($dt, $shm) use(&$default) {
+	global $_GET;
+	if($dt[downtime_id] == $_GET[downtime_id]) {
+		$default=$dt;	
 	}
-}
+
+});
+
 
 if($default == false) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");

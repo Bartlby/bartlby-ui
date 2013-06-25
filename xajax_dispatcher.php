@@ -9,30 +9,26 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $layout = new Layout();
 $layout->setTheme(bartlby_config(getcwd() . "/ui-extra.conf", "theme"));
 
+for($z=0; $z<count($layout->deprecated); $z++) {
+			$depre .= '<div class="alert alert-error">
+							<button type="button" class="close" data-dismiss="alert">×</button>
+							Deprecated INFO: <strong>' .  $layout->deprecated[$z] . '</strong>
 
+						</div>';
+
+}
+				
+echo $depre;		
 $xajax->processRequests();
 
 
-function IphoneOverView() {
-	global $btl;
-	$res=new xajaxResponse();
-	$map = $btl->GetSVCMap();
-	
-	
-	$oks=10;
-	
-	$res->AddScript("loadIcon=document.getElementById('activityIndicator'); loadIcon.style.display='none';");
-	
-	$res->AddScript("OKs=10;");
-	$res->AddAssign("text1", "innerHTML", "Welcome: " . $btl->user);
-	
-	return $res;
-}
+
+
 function updateServiceDetail($svc_idx) {
 	global $layout, $btl;
 	$res=new xajaxResponse();
 	
-	$defaults=bartlby_get_service($btl->CFG, $svc_idx);
+	$defaults=bartlby_get_service($btl->RES, $svc_idx);
 	$svc_color=$btl->getColor($defaults[current_state]);
 	$svc_state=$btl->getState($defaults[current_state]);
 
@@ -53,6 +49,125 @@ function updateServiceDetail($svc_idx) {
 	return $res;
 	
 }
+
+$xajax->registerFunction("bulkForce");
+$xajax->registerFunction("bulkEnableChecks");
+$xajax->registerFunction("bulkEnableNotifys");
+$xajax->registerFunction("bulkDisableChecks");
+$xajax->registerFunction("bulkDisableNotifys");
+
+function idToInt($ids) {
+	
+	for($x=0; $x<count($ids); $x++) {
+		$ids[$x]=(int)$ids[$x];
+	}
+	return $ids;
+}
+function bulkEnableChecks($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_active")) {
+		$counter = bartlby_bulk_service_active($btl->RES,$ids, 1,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	for($x=0; $x<count($ids); $x++) {
+			$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/enabled.gif");
+	}
+	
+	return $res;
+	
+	
+	
+
+}
+function bulkDisableChecks($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_active")) {
+		$counter=bartlby_bulk_service_active($btl->RES,$ids, 0,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	for($x=0; $x<count($ids); $x++) {
+			$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/diabled.gif");
+	}
+	
+	return $res;	
+}
+function bulkEnableNotifys($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_notify")) {
+		$counter=bartlby_bulk_service_notify($btl->RES,$ids, 1,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	for($x=0; $x<count($ids); $x++) {
+		$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/trigger.gif");
+	}
+	
+	
+	return $res;	
+}
+function bulkDisableNotifys($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_notify")) {
+		$counter = bartlby_bulk_service_notify($btl->RES, $ids, 0,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	
+	for($x=0; $x<count($ids); $x++) {
+		$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+	}
+	
+	
+	return $res;	
+}
+function bulkForce($ids) {
+	global $btl;
+	$ids=idToInt($ids);
+	
+	$res = new xajaxresponse();
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_force_services")) {
+		$counter=bartlby_bulk_force_services($btl->RES, $ids);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	return $res;	
+}
+
 function setWorkerState($worker_id, $worker_state) {
 	//Set worker ID to state -> STATE
 		global $layout, $btl;
@@ -61,17 +176,13 @@ function setWorkerState($worker_id, $worker_state) {
 		//get shm id
 		$servs=$btl->GetWorker();
 		$optind=0;
-
-
-
-
 		while(list($k, $v) = @each($servs)) {
 				if($v[worker_id] == $worker_id) {
 						$shm_place=$v[shm_place];
 				}
 		}
 		
-		bartlby_set_worker_state($btl->CFG, $shm_place, $worker_state);
+		bartlby_set_worker_state($btl->RES, $shm_place, $worker_state);
 		
 		
 		
@@ -97,16 +208,23 @@ function setWorkerState($worker_id, $worker_state) {
 
 function toggle_extension($ext) {
 	global $layout;
+	//FIXME Change to Button :)
 	$res=new xajaxResponse();
 	$fn = "extensions/" . $ext . ".disabled";
 	if(!file_exists($fn)) {
 		@touch($fn);
 		//enable	
 		$res->AddAssign("extension_img_" . $ext, "src", "themes/" . $layout->theme . "/images/extension_disable.gif");
+		
+		$res->AddAssign("extension_button_" . $ext, "className", "btn btn-mini btn-danger");
+		$res->AddAssign("extension_button_" . $ext, "innerHTML", "Disabled");
 		//$res->AddAssign("extension_img_" . $ext, "title", "enable extension");
 	} else {
 		@unlink($fn);
 		$res->AddAssign("extension_img_" . $ext, "src", "themes/" . $layout->theme . "/images/extension_enable.gif");
+		
+		$res->AddAssign("extension_button_" . $ext, "className", "btn btn-mini btn-success");
+		$res->AddAssign("extension_button_" . $ext, "innerHTML", "Enabled");
 		//$res->AddAssign("extension_img_" . $ext, "title", "disable extension");
 		//disable extension_disable.gif
 	}
@@ -120,15 +238,15 @@ function toggle_servicegroup_notify_check($service_id, $service_id1) {
 	$res = new xajaxresponse();
 	
 		
-			$servicegroups=$btl->GetServiceGroups();
-			for($x=0; $x<count($servicegroups); $x++) {
-				if($servicegroups[$x][servicegroup_id] == $service_id) {
-					$defaults=$servicegroups[$x];
-					break;	
+			$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$service_id) {
+				if($srvgrp[servicegroup_id] == $service_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
+			});
 			
-			$cur=bartlby_toggle_servicegroup_notify($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servicegroup_notify($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -156,15 +274,15 @@ function toggle_servicegroup_check($service_id, $service_id1) {
 	$res = new xajaxresponse();
 	
 		
-			$servicegroups=$btl->GetServiceGroups();
-			for($x=0; $x<count($servicegroups); $x++) {
-				if($servicegroups[$x][servicegroup_id] == $service_id) {
-					$defaults=$servicegroups[$x];
-					break;	
+			$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$service_id) {
+				if($srvgrp[servicegroup_id] == $service_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
+		});
 			
-			$cur=bartlby_toggle_servicegroup_active($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servicegroup_active($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -191,16 +309,15 @@ function toggle_servergroup_notify_check($server_id, $service_id) {
 	global $layout;
 	$res = new xajaxresponse();
 	
-		
-			$servergroups=$btl->GetServerGroups();
-			for($x=0; $x<count($servergroups); $x++) {
-				if($servergroups[$x][servergroup_id] == $server_id) {
-					$defaults=$servergroups[$x];
-					break;	
+		$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$server_id) {
+				if($srvgrp[servergroup_id] == $server_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
-			
-			$cur=bartlby_toggle_servergroup_notify($btl->CFG, $defaults[shm_place], 1);
+		});
+					
+			$cur=bartlby_toggle_servergroup_notify($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -228,15 +345,15 @@ function toggle_servergroup_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	
 		
-			$servergroups=$btl->GetServerGroups();
-			for($x=0; $x<count($servergroups); $x++) {
-				if($servergroups[$x][servergroup_id] == $server_id) {
-					$defaults=$servergroups[$x];
-					break;	
+			$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$server_id) {
+				if($srvgrp[servergroup_id] == $server_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
+		});
 			
-			$cur=bartlby_toggle_servergroup_active($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servergroup_active($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -264,9 +381,9 @@ function toggle_server_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $server_id)) {
 		if($btl->hasServerorServiceRight($server_id, false)) {
-			$gsm=bartlby_get_server_by_id($btl->CFG, $server_id);
+			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
 			
-			$cur=bartlby_toggle_server_active($btl->CFG, $gsm[server_shm_place], 1);
+			$cur=bartlby_toggle_server_active($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -301,9 +418,9 @@ function toggle_server_notify_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $server_id)) {
 		if($btl->hasServerorServiceRight($server_id, false)) {
-			$gsm=bartlby_get_server_by_id($btl->CFG, $server_id);
+			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
 			
-			$cur=bartlby_toggle_server_notify($btl->CFG, $gsm[server_shm_place], 1);
+			$cur=bartlby_toggle_server_notify($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -327,14 +444,44 @@ function toggle_server_notify_check($server_id, $service_id) {
 	}	
 	return $res;
 }
+function toggle_service_handled($server_id, $service_id) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	if($btl->hasServerorServiceRight($service_id, false)) {
+			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
+			$idx=$btl->findSHMPlace($service_id);
+			$cur=bartlby_toggle_service_handled($btl->RES, $idx, 1);
+			
+			if($cur == 1) { //Active
+				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
+				
+				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
+			} else { 
+				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
+				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/unhandled.png");
+				
+				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
+			}
+			
+			
+			
+			
+		} else{
+			$res->addAlert("permission denied");
+		}
+	
+	return $res;
+}
+
 function toggle_service_notify_check($server_id, $service_id) {
 	global $btl, $layout;
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $service_id)) {
 		if($btl->hasServerorServiceRight($service_id, false)) {
-			$gsm=bartlby_get_service_by_id($btl->CFG, $service_id);
+			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
 			$idx=$btl->findSHMPlace($service_id);
-			$cur=bartlby_toggle_service_notify($btl->CFG, $idx, 1);
+			$cur=bartlby_toggle_service_notify($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -364,9 +511,9 @@ function toggle_service_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $service_id)) {
 		if($btl->hasServerorServiceRight($service_id, false)) {
-			$gsm=bartlby_get_service_by_id($btl->CFG, $service_id);
+			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
 			$idx=$btl->findSHMPlace($service_id);
-			$cur=bartlby_toggle_service_active($btl->CFG, $idx, 1);
+			$cur=bartlby_toggle_service_active($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -420,15 +567,17 @@ function removeDIV($div) {
 }
 
 
+
+	
 function forceCheck($server, $service) {
 	global $btl;
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $service)) {
 		if($service) {
 			if($btl->hasServerorServiceRight($service, false)) {
-				$gsm=bartlby_get_service_by_id($btl->CFG, $service);
+				$gsm=bartlby_get_service_by_id($btl->RES, $service);
 				$idx=$btl->findSHMPlace($service);
-				$cur=bartlby_check_force($btl->CFG, $idx);
+				$cur=bartlby_check_force($btl->RES, $idx);
 				//$res->addAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 				$res->AddScript('noty({"text":"Check has been forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 			} else {
@@ -443,42 +592,7 @@ function forceCheck($server, $service) {
 	return $res;
 }
 
-function group_search($g) {
-	$res = new xajaxresponse();
-	$optind=0;
-	$y=0;
-	
-	
-	$optind=0;
-	$dh=opendir("extensions/ServerGroups/data/");
-	while ($file = readdir ($dh)) { 
-	   if ($file != "." && $file != "..") { 
-	   	clearstatcache();
-	   	$ta = explode(".",$file);
-	   	$unser = base64_decode($ta[0]);
-	   	
-	   	
-	   	if(preg_match("/" . $g . "/i", $unser)) {
-	     	$output .= "<a href=\"javascript:void(0);\" onClick=\"document.location.href='extensions_wrap.php?script=ServerGroups/edit.php&group_name=" . $file . "'\">$unser</a><br>";
-	     	$y++;
-	     }
-	       	
-	   }
-	   if($y>20) {
-			break 2;	
-		} 
-	}
-	closedir($dh); 
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('group_search_suggest');\">close</A><br><br>" . $output;
-	$res->AddAssign("group_search_suggest", "innerHTML", $output);
-	
-	return $res;
-}
-function jumpToUserId($id, $script) {
-	$res = new xajaxResponse();
-	$res->addScript("document.location.href='$script?worker_id="  . $id . "'");
-	return $res;
-}
+
 function AddDowntime($av) {
 	$res = new xajaxResponse();
 	$al = "";
@@ -539,120 +653,8 @@ function CreatePackage($av) {
 	return $res;	
 }
 
-function UserSearch($what, $script='modify_worker.php') {
-	global $btl;
-	$res = new xajaxResponse();
-	
-	$servs=$btl->GetWorker();
-	$optind=0;
-	$y=0;
-	while(list($k, $v) = @each($servs)) {
-		
-		if(preg_match("/" . $what . "/i", $v[name])) {
-			
-			$output .= "<a  href=\"javascript:void(0);\" onClick=\"xajax_jumpToUserId('" . $v[worker_id] . "', '$script');\">$v[name]</a><br>";
-			$y++;
-		}
-		if($y>20) {
-			break 2;	
-		}
-	}
-	
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('user_search_suggest');\">close</A><br><br>" . $output;
-	$res->addAssign("user_search_suggest", "innerHTML", $output);
-	return $res;	
-}
 
 
-function jumpToServiceId($id, $script) {
-	$res = new xajaxResponse();
-	$res->addScript("document.location.href='$script?service_id="  . $id . "'");
-	return $res;
-}
-function set_service_search_noact($d, $v) {
-	global $btl;
-	
-	$res = new xajaxResponse();
-		
-	$res->addAssign("text_" . $d, "value", $v);
-	
-	$svc = @bartlby_get_service_by_id($btl->CFG, $v);
-	
-	$res->addAssign("search_" . $d, "value", $svc[server_name] . "/" .  $svc[service_name]);
-	$res->addAssign($d, "innerHTML", "");
-	
-	return $res;
-	
-}
-function service_noaction($what, $d) {
-	global $btl;
-	$res = new xajaxResponse();
-	
-	
-	
-	$map = $btl->GetSVCMap();
-	$optind=0;
-	$y=0;
-	
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-		for($x=0; $x<count($servs); $x++) {
-			$ostr=$servs[$x][server_name] . "/" . $servs[$x][service_name];
-			if(@preg_match("/" . $what . "/i", $ostr)) {
-				$output .= "<a href=\"javascript:void(0);\" onClick=\"xajax_set_service_search_noact('" . $d . "', '" . $servs[$x][service_id] . "');\">$ostr</a><br>";
-				$y++;
-			}		
-			if($y>20) {
-				break 2;	
-			}
-		}
-	}
-	
-	
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('" . $d . "');\">close</A><br><br>" . $output;
-	$res->addAssign($d, "innerHTML", $output);
-	return $res;	
-}
-
-
-function ServiceSearch($what, $script='modify_service.php') {
-	global $btl;
-	$res = new xajaxResponse();
-	
-	$map = $btl->GetSVCMap();
-	$optind=0;
-	$y=0;
-	
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-		for($x=0; $x<count($servs); $x++) {
-			$ostr=$servs[$x][server_name] . "/" . $servs[$x][service_name];
-			if(preg_match("/" . $what . "/i", $ostr)) {
-				$is_gone=$btl->is_gone($servs[$x][is_gone]);
-		
-				$output .= "<a href=\"javascript:void(0);\" onClick=\"xajax_jumpToServiceId('" . $servs[$x][service_id] . "', '$script');\">$ostr</a> $is_gone <br>";
-				$y++;
-			}		
-			if($y>20) {
-				break 2;	
-			}
-		}
-	}
-	
-	
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('service_search_suggest');\">close</A><br><br>" . $output;
-	$res->addAssign("service_search_suggest", "innerHTML", $output);
-	return $res;	
-}
-
-
-function jumpToServerId($id, $script) {
-	$res = new xajaxResponse();
-	$res->addScript("document.location.href='$script?server_id="  . $id . "'");
-	return $res;
-}
 
 
 function PluginSearch($what) {
@@ -687,180 +689,107 @@ function PluginSearch($what) {
 	return $res;	
 }
 
-function ServerSearch($what, $script='modify_server.php') {
-	global $btl;
-	$res = new xajaxResponse();
-	$servs=$btl->GetServers();
-	$optind=0;
-	//$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
-	$y=0;
-	while(list($k, $v) = @each($servs)) {
-		
-		if(preg_match("/" . $what . "/i", $v)) {
-			
-			$output .= "<a href=\"javascript:void(0);\" onClick=\"xajax_jumpToServerId('" . $k . "', '$script');\">$v</a><br>";
-			$y++;
-		}
-		if($y>20) {
-			break;	
-		}
-	}
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('server_search_suggest');\">close</A><br><br>" . $output;
-	$res->addAssign("server_search_suggest", "innerHTML", $output);
-	return $res;	
-}
 
-function BulkServiceSearch($what) {
-	global $btl, $layout, $rq;
-	//compat for extensions
-	$_GET[search] = $what;
-	$servers=$btl->GetSVCMap();	
-	$_GET["servers"]=$servers;
-	$res = new xajaxResponse();
-	$found = 0;
-	while(list($k, $v) = @each($servers)) {
-		
-		
-		
-		for($x=0; $x<count($v); $x++) {
-			if(@preg_match("/" . $what . "/i", $v[$x][server_name] . "/" . $v[$x][service_name])) {
-						
-				$rq .= "<input type=checkbox  name=bulk_services value='" . $v[$x][service_id] . ";" .  $v[$x][server_name] . "/" . $v[$x][service_name] . "'><a href=\"javascript:bulk_service_add(" . $v[$x][service_id] . ", '" . $v[$x][server_name] . "/" . $v[$x][service_name] . "')\"><font size=1>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A></font><br>";	
-				$svcfound=true;
-				$found++;
-			}
-		}
-		if($found > 10) break;
-		
-	}	
-	if($svcfound != true) $rq = "No Services found";
 
-	$res->addAssign("service_result", "innerHTML", $rq);
-
-	return $res;
-	
-}
 
 function QuickLook($what) {
 	global $btl, $layout, $rq;
 	//compat for extensions
 	$_GET[search] = $what;
+	$ss = $what;
+
 	$res = new xajaxResponse();
 	
-	$servers=$btl->GetSVCMap();	
+	//$servers=$btl->GetSVCMap();	
 	$_GET["servers"]=$servers;
 	
 	//Search Servers
-	$rq .= "<table width=100%>";
-	$rq .= "<tr>";
-	$rq .= "<td colspan=2>";
-	$rq .= "<center><b>Servers</b></center>";
-	$rq .= "</td></tr>";
-	$sfound=false;
-	while(list($k, $v) = @each($servers)) {
+	$rq = '<table class="table table-bordered table-striped table-condensed" id=quick_look_table>
+							  <thead>
+								  <tr>
+									  <th>Group</th>
+									  <th>Element</th>
+									  <th>Options</th>
+									  
+									  
+								  </tr>
+							  </thead>   ';
+
+
+	$svcgrpfound=false;
+	$btl->worker_list_loop(function($wrk, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $wrk[name])) {
+			
+				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'><font size=1>" . $wrk[name] . "</A></font></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
+				$wrkfound=true;
+		}
+
+	});
+
+
+    $svcfound_counter=0;
+    $btl->server_list_loop(function($srv, $shm)  {
+		global $rq, $sfound, $svcfound, $btl, $_GET, $svcfound_counter;
+
+
 		
-		if(@preg_match("/" . $what . "/i", $v[0][server_name])) {
-	
-			
-			
-			
-			$rq .= "<tr><td><a href='server_detail.php?server_id=" . $v[0][server_id] . "'><font size=1>" . $v[0][server_name] . "</font></A>(<a href='services.php?server_id=" . $v[0][server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($v[0], $layout) . "</td></tr>";	
-			$sfound=true;
+		if(@preg_match("/" . $_GET[search] . "/i", $srv[server_name] )) {
+			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'><font size=1>" . $srv[server_name] . "</font></A>(<a href='services.php?server_id=" . $srv[server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
+            $svcfound=true;
+			$svcfound_counter++;
+			if($svcfound_counter >= 25) return -1;
 		}
 		
-		
-		
-	}	
-	if($sfound == false) {
-		$rq .= "<tr><td colspan=2><i>no server matched</i></td></tr>";	
-	}
-	
-	$rq .= "</table>";
-	$output .= $layout->create_box("Server", $rq, "search_servers");
-	$rq = "<table width=100%>";
-	
-	$rq .= "<tr>";
-	$rq .= "<td colspan=2>";
-	$rq .= "<center><b>Services</b></center>";
-	$rq .= "</td></tr>";
-	
-	reset($servers);
+
+	});
+	$sfound=false;	
 	$svcfound=false;
-	while(list($k, $v) = @each($servers)) {
+	$svcfound_counter=0;
+	$btl->service_list_loop(function($svc, $shm)  {
+		global $rq, $sfound, $svcfound, $btl, $_GET, $svcfound_counter;
+
+
 		
-		
-		
-		for($x=0; $x<count($v); $x++) {
-			if(@preg_match("/" . $what . "/i", $v[$x][server_name] . "/" . $v[$x][service_name])) {
-						
-				$rq .= "<tr><td><a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'><font size=1>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A></font></td><td>" . $btl->getServiceOptions($v[$x], $layout) . "</td>";	
-				$svcfound=true;
-			}
+		if(@preg_match("/" . $_GET[search] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
+			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'><font size=1>" . $svc[server_name] . "/" . $svc[service_name] . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
+			$svcfound=true;
+			$svcfound_counter++;
+			if($svcfound_counter >= 25) return -1;
 		}
 		
-		
-	}	
-	if($svcfound == false) {
-		$rq .= "<tr><td colspan=2><i>no service matched</i></td></tr>";
-	}
-	
-	
-	$rq .= "</table>";
-	$output .= $layout->create_box("Services", $rq, "search_services");
-	$rq = "";
-	
-	//Search threw ServerGroups
-	$rq = "<table width=100%>";
-	
-	$rq .= "<tr>";
-	$rq .= "<td colspan=2>";
-	$rq .= "<center><b>ServerGroups</b></center>";
-	$rq .= "</td></tr>";
+
+	});
 	
 	
 	$srvgrpfound=false;
-	$servergroups  = $btl->getServerGroups();
-	for($x=0; $x<count($servergroups); $x++) {
-		if(@preg_match("/" . $what . "/i", $servergroups[$x][servergroup_name])) {
+	$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$srvgrpfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $srvgrp[servergroup_name])) {
 			
-				$rq .= "<tr><td><a href='servergroup_detail.php?servergroup_id=" . $servergroups[$x][servergroup_id] . "'><font size=1>" . $servergroups[$x][servergroup_name] . "</A></font></td><td>" . $btl->getServerGroupOptions($servergroups[$x], $layout) . "</td>";	
+				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'><font size=1>" . $srvgrp[servergroup_name] . "</A></font></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
 				$srvgrpfound=true;
 		}
-	}
-	if($srvgrpfound == false) {
-		$rq .= "<tr><td colspan=2><i>no servergroup matched</i></td></tr>";
-	}
-	$rq .= "</table>";
-	
-	
-	$output .= $layout->create_box("ServerGroups", $rq, "search_servergroups");
-	$rq = "";
 
-	$rq = "<table width=100%>";
+	});
 	
-	$rq .= "<tr>";
-	$rq .= "<td colspan=2>";
-	$rq .= "<center><b>ServiceGroups</b></center>";
-	$rq .= "</td></tr>";
 	$svcgrpfound=false;
-	$servicegroups  = $btl->getServiceGroups();
-	for($x=0; $x<count($servicegroups); $x++) {
-		if(@preg_match("/" . $what . "/i", $servicegroups[$x][servicegroup_name])) {
-				$rq .= "<tr><td><a href='servicegroup_detail.php?servicegroup_id=" . $servicegroups[$x][servicegroup_id] . "'><font size=1>" . $servicegroups[$x][servicegroup_name] . "</A></font></td><td>" . $btl->getServiceGroupOptions($servicegroups[$x], $layout) . "</td>";	
+	$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $srvgrp[servicegroup_name])) {
+			
+				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'><font size=1>" . $srvgrp[servicegroup_name] . "</A></font></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
 				$svcgrpfound=true;
 		}
-	}
-	if($svcgrpfound == false) {
-		$rq .= "<tr><td colspan=2><i>no servicegroup matched</i></td></tr>";
-	}
-	$rq .= "</table>";
-	$output .= $layout->create_box("ServiceGroups", $rq, "search_servicegroups");
-	$rq = "";
+
+	});
 
 	
 	
+
+
+	$rq .= "</table>";
+	$qckb = $rq;
 	
 	@reset($servers);
+	$rq = "";
 	$btl->getExtensionsReturn("_quickLook", false);
 	if($rq == "") {
 		$rq = "<tr><td colspan=2><i>no extension returned results</i></td></tr>";	
@@ -875,9 +804,11 @@ function QuickLook($what) {
 	$output .=  $layout->create_box("Extensions", $rq, "search_extensions");
 	$cl_button = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('quick_suggest');\">close</A><br>";
 	
-	$output = $cl_button . $layout->boxes[search_services] . $layout->boxes[search_servers] . $layout->boxes[search_servicegroups] . $layout->boxes[search_servergroups] . $layout->boxes[search_extensions];
+	$output = $cl_button . $qckb . $layout->boxes[search_extensions];
 	
 	$res->addAssign("quick_suggest", "innerHTML", $output);
+	$res->AddScript("quick_look_group()");
+				
 	return $res;	
 }
 function CreateReport($aFormValues) {

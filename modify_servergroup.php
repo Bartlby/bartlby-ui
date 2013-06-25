@@ -23,40 +23,101 @@ $layout->Table("100%");
 
 
 
-//$defaults=bartlby_get_servergroup_by_id($btl->CFG, $_GET[server_id]);
+//$defaults=bartlby_get_servergroup_by_id($btl->RES, $_GET[server_id]);
+$defaults = array();
+$btl->servergroup_list_loop(function($grp, $shm) use(&$defaults) {
+	global $_GET;
+	
+	if($grp[servergroup_id] == $_GET[servergroup_id]) {
 
-$servergroups=$btl->GetServerGroups();
-for($x=0; $x<count($servergroups); $x++) {
-	if($servergroups[$x][servergroup_id] == $_GET[servergroup_id]) {
-		$defaults=$servergroups[$x];
-		break;	
+		$defaults=$grp;
+
+		return LOOP_BREAK;	
 	}
-}
+});
 if($defaults[servergroup_dead] != 0) {
-	$svc_dead_marker = bartlby_get_service_by_id($btl->CFG, $defaults[servergroup_dead]);
+	$svc_dead_marker = bartlby_get_service_by_id($btl->RES, $defaults[servergroup_dead]);
 }
 
+
 $optind=0;
-
-
-	$servs=$btl->GetServers();
-	$optind=0;
-	
-	while(list($k, $v) = @each($servs)) {
-		$servers[$optind][c]="";
-		$servers[$optind][v]=$k;	
-		$servers[$optind][k]="" . $v;
+$servers=array();
+$btl->server_list_loop(function($srv, $shm) use(&$servers, &$defaults, &$optind) {
+		if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $srv[server_name])) || strstr($defaults[servergroup_members], "|" . $srv[server_id] . "|")) {
 		
-		if(strstr($defaults[servergroup_members], "|" . $k . "|")) {
-			$servers[$optind][s]=1;
+			$servers[$optind][c]="";
+			$servers[$optind][v]=$srv[server_id];	
+			$servers[$optind][k]="" . $srv[server_name];
+		
+			if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $srv[server_name])) || strstr($defaults[servergroup_members], "|" . $srv[server_id] . "|")) {
+				$servers[$optind][s]=1;
+			}
+		
+			$optind++;
 		}
-		
-		$optind++;
-	}
+	});
 	
 	
 
+$servers_out=array();
+$services_x=0;
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
+	if($svc[is_gone] != 0) {
+	 continue;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[servergroup_dead]) {
+
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+
+		$services_x++;
+		//if($services_x > 50) return LOOP_BREAK;
+	}
+});			
+ksort($servers_out);
+
+
+$map=&$servers_out;
 $optind=0;
+while(list($k, $servs) = @each($map)) {
+		$displayed_servers++;
+		
+		for($x=0; $x<count($servs); $x++) {
+			//$v1=bartlby_get_service_by_id($btl->RES, $servs[$x][service_id]);
+			
+			if($x == 0) {
+				//$isup=$btl->isServerUp($v1[server_id]);
+				//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+				$alive_indicator[$optind][c]="";
+				$alive_indicator[$optind][v]="s" . $servs[$x][server_id];	
+				$alive_indicator[$optind][k]="" . $servs[$x][server_name] . "";
+				$alive_indicator[$optind][is_group]=1;
+				$optind++;
+			} else {
+				
+			}
+			if($servs[$x][is_gone] != 0) {
+			 continue;
+			}
+			
+			$state=$btl->getState($servs[$x][current_state]);
+			if($servs[$x][service_id] == $defaults[servergroup_dead]) {
+				$alive_indicator[$optind][s]=1;
+			}
+			$alive_indicator[$optind][c]="";
+			$alive_indicator[$optind][v]=$servs[$x][service_id];	
+			$alive_indicator[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+			
+			$optind++;
+		}
+	}
+
+
+
+$optind=0;
+
 
 
 
@@ -171,7 +232,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Servergroup Members",
-			1=>$layout->DropDown("servergroup_members[]", $servers,"multiple")
+			1=>$layout->DropDown("servergroup_members[]", $servers,"multiple","",false, "ajax_server_list_php")
 		)
 	)
 ,true);
@@ -200,7 +261,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$btl->service_selector("dead_marker", $svc_dead_marker[server_name] . "/" . $svc_dead_marker[service_name] , "service_search1", $defaults[servergroup_dead])
+			1=>$layout->DropDown("service_dead", $alive_indicator,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_dead\").find(\"option\").remove();$(\"#service_dead\").trigger(\"liszt:updated\");'>Remove</A></div>"
 		)
 	)
 ,true);

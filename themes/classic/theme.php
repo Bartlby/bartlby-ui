@@ -22,20 +22,23 @@ $Author: hjanuschka $
 */
 ?>
 
-
+<?
+global $Bartlby_CONF_DisplayName;
+global $Bartlby_CONF_IDX;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
 	<meta charset="utf-8">
-	<title>Bartlby</title>
+	<title>(<?=$Bartlby_CONF_DisplayName?>) - Bartlby</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Bartlby">
 	<meta name="author" content="Helmut Januschka">
 
 	<!-- The styles -->
 	<link id="bs-css" href="themes/classic/css/bootstrap-simplex.css" rel="stylesheet">
-	<script type="text/javascript" src="js/btl.js"></script>
+	
 	<?=$this->XAJAX?>
 	<script>
 		js_theme_name='classic';
@@ -115,9 +118,15 @@ $Author: hjanuschka $
 	<script src="themes/classic/js/jquery.flot.selection.js"></script>
 	<script src="themes/classic/js/jquery.flot.tooltip.js"></script>
 	<!-- chart libraries end -->
-
+  
 	<!-- select or dropdown enhancer -->
 	<script src="themes/classic/js/jquery.chosen.min.js"></script>
+	<script src="themes/classic/js/ajaxchosen.js"></script>
+	
+	<!--GAUGE-->
+	<script src="themes/classic/js/raphael-min.js"></script>
+	<script src="themes/classic/js/justgauge.js"></script>
+	
 	<!-- checkbox, radio, and file input styler -->
 	<script src="themes/classic/js/jquery.uniform.min.js"></script>
 	<!-- plugin for gallery image view -->
@@ -141,6 +150,8 @@ $Author: hjanuschka $
 	<!-- application script for Charisma demo -->
 	<script src="themes/classic/js/charisma.js"></script>
 	
+	
+	
 
 
     <script type="text/javascript" src="./jsrrd/binaryXHR.js"></script>
@@ -150,7 +161,7 @@ $Author: hjanuschka $
     <script type="text/javascript" src="./jsrrd/rrdFlotSupport.js"></script>
     <script type="text/javascript" src="./jsrrd/rrdFlot.js"></script>
 
-	
+	<script type="text/javascript" src="js/btl.js"></script>
 
 
 	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -161,9 +172,22 @@ $Author: hjanuschka $
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="themes/classic/img/favicon.ico">
 		
+	<?
+		echo $this->BTUI_SCRIPTS;
+	?>
 </head>
 
 <body>
+	<?
+		if($Bartlby_CONF_IDX > 0) {
+	?>
+	<div class="alert alert-warning" style='margin-bottom: 0px;'>
+							<button type="button" class="close" data-dismiss="alert">Ã—</button>
+							You are on a remote Node (<?=$Bartlby_CONF_DisplayName?>)!!
+						</div>
+	<?
+		}
+	?>
 		<!-- topbar starts -->
 	<div class="navbar">
 	
@@ -176,14 +200,15 @@ $Author: hjanuschka $
 					<span class="icon-bar"></span>
 				</a>
 				<a  href="overview.php"> <img src="themes/classic/images/btl-logo.gif" /> </a>
-				
+				<div class="pull-right" style='display:inline-block; padding-top: 8px;'><?=$this->BTL_INSTANCES?></div>
 				<div class="pull-right">
 					<button class="btn btn-small" onClick="document.location.href='bartlby_action.php?action=reload';"><i class="icon-refresh"></i> Reload</button>
 					<button class="btn btn-small" onClick="document.location.href='logout.php';"><i class="icon-remove"></i> Logout</button>
-					<?=$this->BTL_INSTANCES?>
+					
 				</div>
+
 				<div class="pull-right" style="padding-top: 8px;">
-					<div  id="quick_look" style="z-index:100"><font size=1>Auto Reload<input type='checkbox' checked onClick='toggleReload()' style='height:10px'>   Quick look<input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>
+					<div  id="quick_look" style="z-index:100"><font size=1>Auto Refresh<input type='checkbox' id=toggle_reload checked  style='height:10px'>   Quick look<input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>
 				</div>
 				
 			
@@ -205,12 +230,13 @@ $Author: hjanuschka $
 	</div>
 	<!-- topbar ends -->
 		<div class="container-fluid">
+
 		<div class="row-fluid">
 				
 			<!-- left menu starts -->
-			<div class="span2 main-menu-span">
+			<div class="span2 main-menu-span" style='width: 218px;'>
 				
-				<div class="well nav-collapse sidebar-nav">
+				<div class="well nav-collapse sidebar-nav" style='width: 218px; padding-bottom:10px;'>
 					
 				<?=$this->BTLEXTMENU?>
 				
@@ -226,15 +252,15 @@ $Author: hjanuschka $
 				</div>
 			</noscript>
 			
-			<div id="content" class="span10">
+			<div id="content" class="span10" style='margin-left: 5px !important;'>
 			<!-- content starts -->
 			
 			
 			
-			<div class="ui_performance" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp;&nbsp;&nbsp;&nbsp;</div>
 			
+			<?=$this->BTTABBAR?>
 			<?=$this->BTUIOUTSIDE?>
-       
+			    
 					<!-- content ends -->
 			</div><!--/#content.span10-->
 				</div><!--/fluid-row-->
@@ -243,7 +269,7 @@ $Author: hjanuschka $
 
 		<div class="modal hide fade" id="myModal">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">×</button>
+				<button type="button" class="close" data-dismiss="modal">ï¿½</button>
 				<h3>Settings</h3>
 			</div>
 			<div class="modal-body">
@@ -265,6 +291,7 @@ $Author: hjanuschka $
 												</td>
 											</tr>
 										</table>
+										<div class="ui_performance1" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp; Memory Used: <?=$this->BTMEMUSAGE?>MB &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp; &nbsp;&nbsp;&nbsp;</div>
 										</center>		
 		</footer>
 		
@@ -282,95 +309,3 @@ $Author: hjanuschka $
 </html>
 
 
-
-<?
-/*
-<html>
-<head>
-<title>bartlby</title>
-<link rel="shortcut icon" href="favicon.ico" > 
-<link rel="stylesheet" id="themes/classic/css" type="text/css" href="themes/<?=$this->theme?>/btl.css"></link>
-<script type="text/javascript" src="js/btl.js"></script>
-<script>
-	js_theme_name="classic";
-</script>
-<?=$this->XAJAX?>
-
-
-<script>
-	
-	
-
-</script>
-</head>
-
-<body leftmargin=0 topmargin=0>
-	<table width="100%" class="nopad">
-		<tr>
-			<td  class="bg_header"><a href='overview.php'><img border=0 src='themes/<?=$this->theme?>/images/btl-logo.gif'></A>
-			<div class="reload" id="reload"><input type=button style='width:155px' name="reload_button" value="reload" onClick="document.location.href='bartlby_action.php?action=reload';"></div>
-			<div class="ui_performance" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp;&nbsp;&nbsp;&nbsp;</div>
-			<div style='position: absolute; left:1050Px;top:80px;'><input type=button value=Logout  style='width:50px; font-size:10px; padding-top:0px; height:18px' onClick='themes/classic/jsLogout()'></div>
-			<div class="quick_look" id="quick_look" style="z-index:100"><font size=1>Auto Reload<input type='checkbox' checked onClick='toggleReload()' style='height:10px'>   Quick look<input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest'></div></div>
-						
-			</td>
-			
-		</tr>
-		<tr>
-			<td class="bg_body">
-				<table class="nopad">
-					<tr>
-						<td class="navi">
-							
-							
-							<?=$this->BTLEXTMENU?>
-							
-							
-							
-							
-							<table class="nopad">
-								<tr>
-									<td><a target='_blank' href='http://wiki.bartlby.org/dokuwiki/doku.php'><img border=0 src='themes/<?=$this->theme?>/images/bartlby1-first-aid.gif'></A></td>
-								</tr>
-								<tr>
-									<td><a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=85"><img border="0" alt="Get Firefox!" title="Get Firefox!" src="http://sfx-images.mozilla.org/affiliates/Buttons/80x15/firefox_80x15.png"/></a></td>
-								</tr>
-								
-							</table>
-						</td>
-						<td class="content">
-							<table class="nopad">
-								<tr>
-									<td><?=$this->BTUIOUTSIDE?>
-										<center>
-										<table>
-											<tr>
-												<td>
-													
-													<font style='font-family:tahoma; font-size:8pt; color:#ffffff'><a href='http://www.bartlby.org/' target='_blank'>bartlby</A> is a GPLv2 product of <a href='http://www.januschka.com/' target='_blank'>januschka.com</A><?=$this->RELNOT?></font>
-												</td>
-											</tr>
-										</table>
-										</center>									
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>			
-			</td>
-			
-		</tr>
-	</table>
-
-
-
-
-<div id='bartlby_basket' style="position:absolute; left: 1010px; top:110px;"></div>
-
-
-
-</body>
-</html>
-*/
-?>

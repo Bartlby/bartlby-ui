@@ -539,8 +539,38 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+				$svc_obj = array(
+					
+					"plugin"=>$_GET[service_plugin],
+					"service_name"=>$_GET[service_name],
+					"notify_enabled"=>$_GET[notify_enabled],					
+					"plugin_arguments"=>$_GET[service_args],
+					"check_interval"=>$_GET[service_interval],
+					"service_type"=>$_GET[service_type],
+					"service_passive_timeout" => $_GET[service_passive_timeout],
+					"server_id" => $_GET[service_server],
+					"service_check_timeout" => $_GET[service_check_timeout],
+					"service_var" => $_GET[service_var],
+					"exec_plan" => $exec_plan,
+					"service_ack_enabled" => $_GET[service_ack_enabled],
+					"service_retain" => $_GET[service_retain],
+					"snmp_community" => $_GET[service_snmp_community],
+					"snmp_version" => $_GET[service_snmp_version],
+					"snmp_objid" => $_GET[service_snmp_objid],
+					"snmp_warning" => $_GET[service_snmp_warning],
+					"snmp_critical" => $_GET[service_snmp_critical],
+					"snmp_type" => $_GET[service_snmp_type],
+					"service_active" => $_GET[service_active],
+					"snmp_textmatch" => $_GET[service_snmp_textmatch],
+					"flap_seconds" => $_GET[flap_seconds],
+					"escalate_divisor" => $_GET[escalate_divisor],
+					"fires_events" => $_GET[fires_events],
+					"renotify_interval" => $_GET[renotify_interval],
+					"enabled_triggers" => $triggerstr
+				);
+
 			
-			$ads=bartlby_modify_service($btl->CFG, $_GET[service_id] , $_GET[service_server], $_GET[service_plugin],$_GET[service_name],$_GET[service_args],$_GET[notify_enabled], $exec_plan,$_GET[service_interval],$_GET[service_type],$_GET[service_var], $_GET[service_passive_timeout], $_GET[service_check_timeout], $_GET[service_ack_enabled], $_GET[service_retain], $_GET[service_snmp_community], $_GET[service_snmp_objid], $_GET[service_snmp_version], $_GET[service_snmp_warning], $_GET[service_snmp_critical], $_GET[service_snmp_type],$_GET[service_snmp_textmatch], $_GET[service_active], $_GET[flap_seconds], $_GET[renotify_interval], $_GET[escalate_divisor], $_GET[fires_events], $triggerstr);
+			$ads=bartlby_modify_service($btl->CFG, $_GET[service_id] , $svc_obj);
 			$global_msg=bartlby_get_server_by_id($btl->CFG, $_GET[service_server]);
 			$global_msg[exec_plan]=$btl->resolveServicePlan($exec_plan);
 			
@@ -596,7 +626,39 @@ switch($act) {
 			
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
-				$ads=bartlby_add_service($btl->CFG, $server_id, $_GET[service_plugin],$_GET[service_name],$_GET[service_args],$_GET[notify_enabled], $exec_plan,$_GET[service_interval],$_GET[service_type],$_GET[service_var], $_GET[service_passive_timeout], $_GET[service_check_timeout], $_GET[service_ack_enabled], $_GET[service_retain], $_GET[service_snmp_community], $_GET[service_snmp_objid], $_GET[service_snmp_version], $_GET[service_snmp_warning], $_GET[service_snmp_critical], $_GET[service_snmp_type],$_GET[service_snmp_textmatch], $_GET[service_active], $_GET[flap_seconds],$_GET[renotify_interval], $_GET[escalate_divisor], $_GET[fires_events], $triggerstr);
+				
+				$svc_obj = array(
+					
+					"plugin"=>$_GET[service_plugin],
+					"service_name"=>$_GET[service_name],
+					"notify_enabled"=>$_GET[notify_enabled],					
+					"plugin_arguments"=>$_GET[service_args],
+					"check_interval"=>$_GET[service_interval],
+					"service_type"=>$_GET[service_type],
+					"service_passive_timeout" => $_GET[service_passive_timeout],
+					"server_id" => $server_id,
+					"service_check_timeout" => $_GET[service_check_timeout],
+					"service_var" => $_GET[service_var],
+					"exec_plan" => $exec_plan,
+					"service_ack_enabled" => $_GET[service_ack_enabled],
+					"service_retain" => $_GET[service_retain],
+					"snmp_community" => $_GET[service_snmp_community],
+					"snmp_version" => $_GET[service_snmp_version],
+					"snmp_objid" => $_GET[service_snmp_objid],
+					"snmp_warning" => $_GET[service_snmp_warning],
+					"snmp_critical" => $_GET[service_snmp_critical],
+					"snmp_type" => $_GET[service_snmp_type],
+					"service_active" => $_GET[service_active],
+					"snmp_textmatch" => $_GET[service_snmp_textmatch],
+					"flap_seconds" => $_GET[flap_seconds],
+					"escalate_divisor" => $_GET[escalate_divisor],
+					"fires_events" => $_GET[fires_events],
+					"renotify_interval" => $_GET[renotify_interval],
+					"enabled_triggers" => $triggerstr
+				);
+				
+				
+				$ads=bartlby_add_service($btl->CFG, $svc_obj);
 				$tmp=bartlby_get_server_by_id($btl->CFG, $server_id);
 
 				$global_msg[server_name] .= $tmp[server_name] . ",";
@@ -804,7 +866,39 @@ switch($act) {
 				if($_GET[package_name] != "") {
 					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL);	
 				} else {
-					$add_service=bartlby_add_service($btl->CFG, $add_server, "INIT", "Initial Check", "-h", 0, "" ,2000,1,"",200, 20, 0, 3, "", "","", "", "", "", "", 1, 120,0,0,0, "");
+					
+					$svc_obj = array(
+					
+						"plugin"=>"INIT",
+						"service_name"=>"Initial Check-New",
+						"notify_enabled"=>0,					
+						"plugin_arguments"=>"",
+						"check_interval"=>3600,
+						"service_type"=>1,
+						"service_passive_timeout" => 240,
+						"server_id" => $add_server,
+						"service_check_timeout" => 240,
+						"service_var" => "",
+						"exec_plan" => "",
+						"service_ack_enabled" => 0,
+						"service_retain" => 10,
+						"snmp_community" => "",
+						"snmp_version" => "",
+						"snmp_objid" => "",
+						"snmp_warning" => "",
+						"snmp_critical" => "",
+						"snmp_type" => "",
+						"service_active" => 1,
+						"snmp_textmatch" => "",
+						"flap_seconds" => 120,
+						"escalate_divisor" => 0,
+						"fires_events" => 0,
+						"renotify_interval" => 0,
+						"enabled_triggers" => ""
+				);
+									
+					
+					$add_service=bartlby_add_service($btl->CFG, $svc_obj);
 					$global_msg["init_service"]="<li>Init";
 				}
 				

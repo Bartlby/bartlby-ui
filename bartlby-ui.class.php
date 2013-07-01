@@ -1355,7 +1355,42 @@ class BartlbyUi {
 				$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
 				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $re[$x][service_type] . "<br>";
 				
-				$ads=bartlby_add_service($this->CFG, $server, $re[$x][plugin],$re[$x][service_name],$re[$x][plugin_arguments],$re[$x][notify_enabled],$re[$x][exec_plan],$re[$x][check_interval],$re[$x][service_type],$re[$x][service_var], $re[$x][service_passive_timeout], $re[$x][service_check_timeout], $re[$x][service_ack_enabled], $re[$x][service_retain],$re[$x][service_snmp_community], $re[$x][service_snmp_objid],$re[$x][service_snmp_version],$re[$x][service_snmp_warning],$re[$x][service_snmp_critical],$re[$x][service_snmp_type],$re[$x][service_snmp_textmatch], $re[$x][service_active], $re[$x][flap_seconds],$re[$x][renotify_interval],$re[$x][escalate_divisor],$re[$x][fires_events], $re[$x][enabled_triggers]);
+
+				$svc_obj = array(
+					"plugin"=>$re[$x][plugin],
+					"service_name"=>$re[$x][service_name],
+					"notify_enabled"=>$re[$x][notify_enabled],					
+					"plugin_arguments"=>$re[$x][plugin_arguments],
+					"check_interval"=>$re[$x][check_interval],
+					"service_type"=>$re[$x][service_type],
+					"service_passive_timeout" => $re[$x][service_passive_timeout],
+					"server_id" => $server,
+					"service_check_timeout" => $re[$x][service_check_timeout],
+					"service_var" => $re[$x][service_var],
+					"exec_plan" => $re[$x][exec_plan],
+					"service_ack_enabled" => $re[$x][service_ack_enabled],
+					"service_retain" => $re[$x][service_retain],
+					"snmp_community" => $re[$x][service_snmp_community],
+					"snmp_version" => $re[$x][service_snmp_version],
+					"snmp_objid" => $re[$x][service_snmp_objid],
+					"snmp_warning" => $re[$x][service_snmp_warning],
+					"snmp_critical" => $re[$x][service_snmp_critical],
+					"snmp_type" => $re[$x][service_snmp_type],
+					"service_active" => $re[$x][service_active],
+					"snmp_textmatch" => $re[$x][service_snmp_textmatch],
+					"flap_seconds" => $re[$x][flap_seconds],
+					"escalate_divisor" => $re[$x][escalate_divisor],
+					"fires_events" => $re[$x][fires_events],
+					"renotify_interval" => $re[$x][renotify_interval],
+					"enabled_triggers" => $re[$x][enabled_triggers]
+				);
+			
+
+				
+				$ads=bartlby_add_service($this->CFG, $svc_obj);
+				
+				
+
 				$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
 				
 				if($re[$x][__install_plugin]) {
@@ -1414,7 +1449,7 @@ class BartlbyUi {
 				
 
 			}
-			$layout->OUT .= "<script>doReloadButton();</script>";
+//			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {
 			$msg = "fopen failed()!!<br>";	
 		}

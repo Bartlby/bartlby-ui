@@ -53,6 +53,125 @@ function updateServiceDetail($svc_idx) {
 	return $res;
 	
 }
+
+$xajax->registerFunction("bulkForce");
+$xajax->registerFunction("bulkEnableChecks");
+$xajax->registerFunction("bulkEnableNotifys");
+$xajax->registerFunction("bulkDisableChecks");
+$xajax->registerFunction("bulkDisableNotifys");
+
+function idToInt($ids) {
+	
+	for($x=0; $x<count($ids); $x++) {
+		$ids[$x]=(int)$ids[$x];
+	}
+	return $ids;
+}
+function bulkEnableChecks($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_active")) {
+		$counter = bartlby_bulk_service_active($btl->CFG,$ids, 1,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	for($x=0; $x<count($ids); $x++) {
+			$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/enabled.gif");
+	}
+	
+	return $res;
+	
+	
+	
+
+}
+function bulkDisableChecks($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_active")) {
+		$counter=bartlby_bulk_service_active($btl->CFG,$ids, 0,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	for($x=0; $x<count($ids); $x++) {
+			$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/diabled.gif");
+	}
+	
+	return $res;	
+}
+function bulkEnableNotifys($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_notify")) {
+		$counter=bartlby_bulk_service_notify($btl->CFG,$ids, 1,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	for($x=0; $x<count($ids); $x++) {
+		$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/trigger.gif");
+	}
+	
+	
+	return $res;	
+}
+function bulkDisableNotifys($ids) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	$ids=idToInt($ids);
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_service_notify")) {
+		$counter = bartlby_bulk_service_notify($btl->CFG, $ids, 0,1);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	
+	for($x=0; $x<count($ids); $x++) {
+		$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+	}
+	
+	
+	return $res;	
+}
+function bulkForce($ids) {
+	global $btl;
+	$ids=idToInt($ids);
+	
+	$res = new xajaxresponse();
+	
+	if(count($ids) == 0) {
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		return $res;
+	}
+	if(function_exists("bartlby_bulk_force_services")) {
+		$counter=bartlby_bulk_force_services($btl->CFG, $ids);
+	}
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	return $res;	
+}
+
 function setWorkerState($worker_id, $worker_state) {
 	//Set worker ID to state -> STATE
 		global $layout, $btl;
@@ -420,6 +539,8 @@ function removeDIV($div) {
 }
 
 
+
+	
 function forceCheck($server, $service) {
 	global $btl;
 	$res = new xajaxresponse();

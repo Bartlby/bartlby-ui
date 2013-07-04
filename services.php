@@ -139,6 +139,10 @@
 	
 	$legend_content="";
 	
+	$layout->create_box("Mass Actions", "", "mass_actions",
+											array("a"=>"b")				
+				,"service_list_mass_actions", false);
+	
 	$layout->create_box("Legend", $legend_content, "legend", array("a"=>"b"), "legend", true);
 	
 	
@@ -148,7 +152,8 @@
 				0=>Array(
 					'colspan'=> 6,
 					'class'=>'header1',
-					'show'=>"Matching Servers: $displayed_servers Matching Services: $displayed_services"
+					'show'=>"Matching Servers: $displayed_servers Matching Services: $displayed_services" 
+					
 					)
 			)
 		)

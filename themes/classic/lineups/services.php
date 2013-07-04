@@ -1,5 +1,6 @@
 
 <?=$this->disp_box("MAIN")?>
+<?=$this->disp_box("mass_actions")?>
 <?=$this->disp_box("legend")?>
 
 <table class="table table-striped table-bordered " id='services_table'>
@@ -12,6 +13,7 @@
 								  <th>Service</th>
 								  <th>Output</th>
 								  <th>Options</th>
+								  <th><input type=checkbox id=service_checkbox_select_all></th>
 							  </tr>
 						  </thead>
 						    <tbody id=server_boxes_ajax>

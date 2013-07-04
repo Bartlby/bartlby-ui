@@ -99,6 +99,76 @@ function docReady(){
 		e.preventDefault();
 	});
 	
+	$("#services_bulk_force").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkForce(force_services);
+		
+	});
+	
+	
+	$("#services_bulk_enable_checks").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkEnableChecks(force_services);
+		
+	});
+	
+	$("#services_bulk_disable_checks").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkDisableChecks(force_services);
+		
+	});
+	
+	
+	$("#services_bulk_enable_notifys").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkEnableNotifys(force_services);
+		
+	});
+	
+	$("#services_bulk_disable_notifys").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkDisableNotifys(force_services);
+		
+	});
+	
+	
+	
+	
+	
+	$("#service_checkbox_select_all").click(function() {
+		if($(this).is(':checked')) {
+			console.log("check all");
+			$('.service_checkbox').attr("checked", "checked");
+		} else {
+			$('.service_checkbox').removeAttr("checked", "checked");
+		}
+	});
+	
 	//rich text editor
 	$('.cleditor').cleditor();
 	

@@ -135,6 +135,48 @@ if($defaults[is_downtime] == 1) {
 	
 }
 
+$services_found=array();
+while(list($k, $servs) = @each($map)) {
+
+	for($x=0; $x<count($servs); $x++) {
+			if($servs[$x][server_id] == $_GET[server_id]) {
+				$svc_color=$btl->getColor($servs[$x][current_state]);
+				$svc_state=$btl->getState($servs[$x][current_state]);
+				$abc=$servs[$x][server_id];
+				
+				
+				if($servs[$x][is_downtime] == 1) {
+					$svc_state="Downtime";
+					$svc_color="silver";	
+				}
+				
+				$servs[$x][color]=$svc_color;
+				$servs[$x][state_readable]=$svc_state;
+				
+				array_push($services_found, $servs[$x]);	
+			}
+	}
+
+	
+	
+
+}
+$layout->create_box("Mass Actions", "", "mass_actions",
+											array("a"=>"b")				
+				,"service_list_mass_actions", false);
+	
+
+$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
+											array(
+												"services" => $services_found,
+												"state" => $svc_state,
+												"color" => $svc_color,
+												
+												
+											)
+				
+				,"service_list_element");
+
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);
 
 $layout->OUT .= $btl->getServerOptions($defaults, $layout);

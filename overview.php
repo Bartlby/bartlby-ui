@@ -71,6 +71,7 @@ $Author: hjanuschka $
 	$hosts_up=0;
 	$hosts_down=0;
 	$services_critical=0;
+	$services_info=0;
 	$services_ok=0;
 	$services_warning=0;
 	$services_unkown=0;
@@ -272,6 +273,7 @@ $Author: hjanuschka $
 		'services_critical' => $services_critical,
 		'services_downtime' => $services_downtime,
 		'acks_outstanding' => $acks_outstanding,
+		'services_info' => $services_info,
 		'services_sum' => $info[services]
 	
 	), "tactical_overview");

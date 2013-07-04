@@ -118,7 +118,10 @@ if($defaults[is_downtime] == 1) {
 				
 				,"service_list_element");
 					
-
+$layout->create_box("Mass Actions", "", "mass_actions",
+											array("a"=>"b")				
+				,"service_list_mass_actions", false);
+	
 
 $r=$btl->getExtensionsReturn("_servicegroupDetails", $layout);
 

@@ -49,6 +49,9 @@ for($s_element=0; $s_element<count($plcs[services]); $s_element++) {
 			
 			<?=$btl->getserviceOptions($plcs[services][$s_element], $layout)?>
 		</td>
+		<td width=1>
+			<input type=checkbox class='service_checkbox' data-service_id="<?=$plcs[services][$s_element][service_id]?>">
+		</td>
 	</tr>
 
 <?

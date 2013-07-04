@@ -3,7 +3,7 @@
 <?=$this->disp_box("service_detail_downtime_notice")?>
 <?=$this->disp_box("servergroup_detail_members")?>
 
-
+<?=$this->disp_box("mass_actions")?>
 <table class="table table-striped table-bordered " id='services_table'>
 						  <thead>
 							  <tr>
@@ -14,6 +14,7 @@
 								  <th>Service</th>
 								  <th>Output</th>
 								  <th>Options</th>
+								   <th><input type=checkbox id=service_checkbox_select_all></th>
 							  </tr>
 						  </thead>
 						    <tbody>

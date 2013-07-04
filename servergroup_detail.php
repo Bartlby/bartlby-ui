@@ -146,7 +146,10 @@ $layout->create_box($info_box_title, $core_content, "servergroup_detail_servergr
 				'quick_view' => $qck
 			), "quick_view");
 	
-
+$layout->create_box("Mass Actions", "", "mass_actions",
+											array("a"=>"b")				
+				,"service_list_mass_actions", false);
+	
 
 $r=$btl->getExtensionsReturn("_servergroupDetails", $layout);
 

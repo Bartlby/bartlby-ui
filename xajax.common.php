@@ -55,4 +55,11 @@ $xajax->registerFunction("IphoneOverView");
 
 $xajax->registerFunction("setWorkerState");
 $xajax->registerFunction("updateServiceDetail");
+
+$xajax->registerFunction("bulkForce");
+$xajax->registerFunction("bulkEnableChecks");
+$xajax->registerFunction("bulkEnableNotifys");
+$xajax->registerFunction("bulkDisableChecks");
+$xajax->registerFunction("bulkDisableNotifys");
+
 ?>

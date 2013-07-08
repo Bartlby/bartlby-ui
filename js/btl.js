@@ -1,6 +1,156 @@
 function btl_change(t) {
 		document.location.href='bartlby_action.php?instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }
+$(document).ready(function() {
+		
+		$("#services_bulk_force").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkForce(force_services);
+		
+	});
+	
+	
+	$("#services_bulk_enable_checks").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkEnableChecks(force_services);
+		
+	});
+	
+	$("#services_bulk_disable_checks").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkDisableChecks(force_services);
+		
+	});
+	
+	
+	$("#services_bulk_enable_notifys").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkEnableNotifys(force_services);
+		
+	});
+	
+	$("#services_bulk_disable_notifys").click(function() {
+		var force_services = new Array();
+			$('.service_checkbox').each(function() {
+				if($(this).is(':checked')) {
+						force_services.push($(this).data("service_id"));
+				}
+			});
+			xajax_bulkDisableNotifys(force_services);
+		
+	});
+	
+	
+	
+	
+	
+	$("#service_checkbox_select_all").click(function() {
+		if($(this).is(':checked')) {
+			console.log("check all");
+			$('.service_checkbox').attr("checked", "checked");
+		} else {
+			$('.service_checkbox').removeAttr("checked", "checked");
+		}
+	});
+	
+	
+	
+	//Service-DataTable
+		s_url = document.location.href.replace(/s.*\.php/, "services.php");
+		s_char = "?";
+		if(s_url.match(/\?/)) {
+			s_char = "&";
+		}
+		
+				
+	//$("#services_table").hide();
+	oTable = $('#services_table').dataTable({
+					"fnInitComplete": function() {
+						
+					},
+					"fnDrawCallback": function ( oSettings ) {
+						
+						if ( oSettings.aiDisplay.length == 0 )
+						{
+							return;
+						}
+						
+						var nTrs = $('tbody tr', oSettings.nTable);
+						var iColspan = nTrs[0].getElementsByTagName('td').length;
+						var sLastGroup = "";
+						for ( var i=0 ; i<nTrs.length ; i++ )
+						{
+							var iDisplayIndex = oSettings._iDisplayStart + i;
+							//var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
+							var sGroup = oSettings.aoData[ oSettings.aiDisplay[i] ]._aData[1];
+							if ( sGroup != sLastGroup )
+							{
+								var nGroup = document.createElement( 'tr' );
+								var nCell = document.createElement( 'td' );
+								nCell.colSpan = iColspan;
+								nCell.className = "group";
+								nCell.innerHTML = sGroup;
+								nGroup.appendChild( nCell );
+								nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+								sLastGroup = sGroup;
+							}
+						}
+						//$("#services_table").show();
+					},
+					"aoColumnDefs": [
+						{ "bVisible": false, "aTargets": [ 1 ] }
+					],
+					"aoColumns": [
+						{ "sWidth": "1" },
+						{ "sWidth": "1" },
+						{ "sWidth": "50" },
+						{ "sWidth": "100" },
+						{ "sWidth": "100" },
+						{ "sWidth": "150" },
+						{ "sWidth": "450" },
+						{ "sWidth": "320" },
+					],
+					"aaSortingFixed": [[ 0, 'asc' ]],
+					"bSort": false,
+					"aaSorting": [[ 1, 'asc' ]],
+					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+			    "sPaginationType": "bootstrap",
+			    "sAjaxSource": s_url + s_char + "datatables_output=1",
+			    "bServerSide": true,
+			    "bProcessing": true,
+			    "oLanguage": {
+            "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
+        	}
+			    
+        
+				});
+
+
+		
+		
+	});
+	
+	
 	global_reload=1;
 	function toggleReload() {
 		if(global_reload == 1) {

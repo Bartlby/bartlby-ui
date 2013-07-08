@@ -35,7 +35,7 @@ $Author: hjanuschka $
 
 	<!-- The styles -->
 	<link id="bs-css" href="themes/classic/css/bootstrap-simplex.css" rel="stylesheet">
-	<script type="text/javascript" src="js/btl.js"></script>
+	
 	<?=$this->XAJAX?>
 	<script>
 		js_theme_name='classic';
@@ -141,6 +141,8 @@ $Author: hjanuschka $
 	<!-- application script for Charisma demo -->
 	<script src="themes/classic/js/charisma.js"></script>
 	
+	<script type="text/javascript" src="js/btl.js"></script>
+	
 
 
     <script type="text/javascript" src="./jsrrd/binaryXHR.js"></script>
@@ -231,7 +233,7 @@ $Author: hjanuschka $
 			
 			
 			
-			<div class="ui_performance" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp;&nbsp;&nbsp;&nbsp;</div>
+			<div class="ui_performance" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp; Memory Used: <?=$this->BTMEMUSAGE?>MB &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp; &nbsp;&nbsp;&nbsp;</div>
 			
 			<?=$this->BTUIOUTSIDE?>
        

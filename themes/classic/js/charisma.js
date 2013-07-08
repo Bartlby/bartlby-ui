@@ -132,6 +132,9 @@ function docReady(){
 	$('[data-rel="chosen"],[rel="chosen"]').css("min-width", "200px");
 	$('[data-rel="chosen"],[rel="chosen"]').chosen({ search_contains: true });
 	
+	
+	
+	
 
 	//tabs
 	$('#myTab a:first').tab('show');

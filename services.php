@@ -113,6 +113,7 @@
 					$svc_state="Downtime";
 					$svc_color="silver";	
 				}
+				$servs[$x][x] = $x;
 				$servs[$x][color]=$svc_color;
 				$servs[$x][state_readable]=$svc_state;
 				$servs[$x]["class"]=$class;
@@ -122,7 +123,7 @@
 				$abc=$servs[$x][server_id];
 
 				if($_GET[datatables_output]) {
-				
+					include_once "sql4array.class.php";
 					$ajax_lbl = "label-default";
 					if($servs[$x][color] == "green") {
 							$ajax_lbl = "label-success";
@@ -135,7 +136,9 @@
 							$ajax_lbl = "label-important";
 					}
 					
-					if(preg_match("/" . $_GET[sSearch] . "/i" , $servs[$x][service_name]) || preg_match("/" . $_GET[sSearch] . "/i" , $servs[$x][server_name])) {
+				
+					
+					if(@preg_match("/" . $_GET[sSearch] . "/i", $servs[$x][server_name] . "/" . $servs[$x][service_name])) {
 						$server_ajax="<a href='server_detail.php?server_id=" . $servs[$x][server_id] . "'><b>" . $servs[$x][server_name]  . "</A> " . $btl->getServerOPtions($servs[$x], $layout);
 						$ajax_checkbox='<div><input type=checkbox class="service_checkbox" data-service_id="' . $servs[$x][service_id] .  '"></div>';
 						$ajax_state='<span class="label ' . $ajax_lbl . '"><a href="services.php?expect_state=' . $servs[$x][current_state] . '">' . $servs[$x][state_readable] . '</A></span>';

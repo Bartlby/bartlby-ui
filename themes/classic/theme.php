@@ -141,7 +141,7 @@ $Author: hjanuschka $
 	<!-- application script for Charisma demo -->
 	<script src="themes/classic/js/charisma.js"></script>
 	
-	<script type="text/javascript" src="js/btl.js"></script>
+	
 	
 
 
@@ -152,7 +152,7 @@ $Author: hjanuschka $
     <script type="text/javascript" src="./jsrrd/rrdFlotSupport.js"></script>
     <script type="text/javascript" src="./jsrrd/rrdFlot.js"></script>
 
-	
+	<script type="text/javascript" src="js/btl.js"></script>
 
 
 	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->

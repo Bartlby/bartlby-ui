@@ -3,7 +3,11 @@
 -->
 <?=$this->disp_box("mass_actions")?>
 
-
+<script>
+	$(document).ready(function() {
+		var newtimer = setInterval('window.oTable.fnDraw()', 20000);
+	});
+	</script>
 <table class="table table-striped table-bordered " id='services_table'>
 						  <thead>
 							  <tr>

@@ -30,6 +30,10 @@
 			}
 			
 			
+		
+	
+			
+			
 			$curp = $_GET[$k ."site"] > 0 ? $_GET[$k ."site"] : 1;
 			$perp=bartlby_config(getcwd() . "/ui-extra.conf", "services_per_page");
 			$perp=1000000000000000000;
@@ -44,6 +48,10 @@
 			$f=false;
 			$services_found=array();
 			for($x=$skip_em; $x<count($servs); $x++) {
+				
+				
+			
+				
 				//echo $servs[$x][service_id] . "->" . $_GET[service_id] . "<br>";
 
 				if($_GET[servergroup_id] && !isInServerGroup($servs[$x], $_GET[servergroup_id])) {
@@ -113,6 +121,36 @@
 				$f=true;
 				$abc=$servs[$x][server_id];
 
+				if($_GET[datatables_output]) {
+				
+					$ajax_lbl = "label-default";
+					if($servs[$x][color] == "green") {
+							$ajax_lbl = "label-success";
+					}
+				
+					if($servs[$x][color] == "orange") {
+							$ajax_lbl = "label-warning";
+					}
+					if($servs[$x][color] == "red") {
+							$ajax_lbl = "label-important";
+					}
+					
+					if(preg_match("/" . $_GET[sSearch] . "/i" , $servs[$x][service_name]) || preg_match("/" . $_GET[sSearch] . "/i" , $servs[$x][server_name])) {
+						$server_ajax="<a href='server_detail.php?server_id=" . $servs[$x][server_id] . "'><b>" . $servs[$x][server_name]  . "</A> " . $btl->getServerOPtions($servs[$x], $layout);
+						$ajax_checkbox='<div><input type=checkbox class="service_checkbox" data-service_id="' . $servs[$x][service_id] .  '"></div>';
+						$ajax_state='<span class="label ' . $ajax_lbl . '"><a href="services.php?expect_state=' . $servs[$x][current_state] . '">' . $servs[$x][state_readable] . '</A></span>';
+						$ajax_last_check=date("d.m.y H:i:s", $servs[$x][last_check]);
+						$ajax_next_check=date("d.m.y H:i:s", $servs[$x][last_check]+$servs[$x][check_interval]);
+						$ajax_service_name='<a href="service_detail.php?service_place=' . $servs[$x][shm_place] . '"><b>' . $servs[$x][service_name] . '</A>';
+						$ajax_service_output=str_replace( "\\dbr","<br>", nl2br($servs[$x][new_server_text]));												
+						$ajax_service_options=$btl->getserviceOptions($servs[$x], $layout);
+						$ajax_search["aaData"][] = array($ajax_checkbox, $server_ajax,$ajax_state , $ajax_last_check, $ajax_next_check, $ajax_service_name, $ajax_service_output, $ajax_service_options);		
+					}
+				}
+				
+				
+
+
 			}
 
 			
@@ -135,6 +173,7 @@
 				
 				
 			}
+			
 	}
 	
 	$legend_content="";
@@ -163,6 +202,25 @@
 	
 
 	$r=$btl->getExtensionsReturn("_services", $layout);
+	
+	if($_GET[datatables_output]) {
+			$json_ret["iTotalRecords"] = count($ajax_search["aaData"]);
+			$json_ret["iTotalDisplayRecords"] = count($ajax_search["aaData"]);
+			$json_ret["sEcho"] = (int)$_GET[sEcho];
+			
+			//$json_ret["iTotalDisplayRecords"]=0;
+			for($x=$_GET[iDisplayStart]; $x<$_GET[iDisplayStart]+$_GET[iDisplayLength]; $x++) {
+				if( $ajax_search["aaData"][$x]) {
+					$json_ret["aaData"][] = $ajax_search["aaData"][$x];
+					//$json_ret["iTotalDisplayRecords"]++;
+				}
+			}
+			if(!is_array($json_ret["aaData"])) {
+				$json_ret["aaData"]=array();
+			}
+			echo json_encode($json_ret);
+			exit;
+	}
 	
 	if($_GET[json_output] == 1) {
 	

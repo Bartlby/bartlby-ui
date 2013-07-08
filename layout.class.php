@@ -370,6 +370,7 @@ class Layout {
 		$this->BTUIOUTSIDE=$this->OUTSIDE;
 		$this->BTUIBOXTITLE=$this->BoxTitle;
 		$this->BTUITIME=round($diff,2);
+		$this->BTMEMUSAGE=round(memory_get_peak_usage(true)/1024/1024,2);
 		$this->BTLEXTMENU=$this->ext_menu;
 		$this->SERVERTIME=date("d.m.Y H:i:s");
 		$this->XAJAX=$xajax->getJavascript("xajax");			

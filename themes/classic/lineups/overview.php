@@ -47,9 +47,9 @@
 <div id="service_groups_ajax">
 <?=$this->disp_box("service_groups")?>
 </div>
-<!--
+
 <div id="UNPLACED_ajax">
 <?=$this->disp_box("UNPLACED")?>
 </div>
--->
+
 

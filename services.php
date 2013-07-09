@@ -123,7 +123,7 @@
 				$abc=$servs[$x][server_id];
 
 				if($_GET[datatables_output]) {
-					include_once "sql4array.class.php";
+					
 					$ajax_lbl = "label-default";
 					if($servs[$x][color] == "green") {
 							$ajax_lbl = "label-success";

@@ -20,7 +20,7 @@
 ?>
 
 
-<div style='min-height:190px'>
+<div style='xmin-height:190px'>
 						
 						<table class='nopad' width='100%'  border=0>
 		<tr>

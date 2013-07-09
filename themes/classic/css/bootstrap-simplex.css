@@ -2468,7 +2468,7 @@ input[type="submit"].btn.btn-mini {
   clear: both;
 }
 .btn-group:first-child {
-  *margin-left: 0;
+  margin-left:5px;
 }
 .btn-group + .btn-group {
   margin-left: 5px;

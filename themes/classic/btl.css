@@ -10,6 +10,10 @@
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 input,td,select { font-size:12px; font-family:tahoma; }
 
+.fifty_float_left {
+	width: 50%;
+	float: left;
+}
 .suggest_link {
 				background-color: #FFFFFF;
 				padding: 2px 6px 2px 6px;

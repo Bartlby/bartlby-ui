@@ -1,7 +1,25 @@
-<?=$this->disp_box("MAIN")?>
+
+<div id=servergroup_detail_servergroup_info_ajax class='fifty_float_left'>
+
 <?=$this->disp_box("servergroup_detail_servergroup_info")?>
-<?=$this->disp_box("service_detail_downtime_notice")?>
+</div>
+<div id=MAIN_ajaxs class='fifty_float_left' >
+<?=$this->disp_box("MAIN")?>
+</div>
+
+<div id=servergroup_detail_members_ajax class='fifty_float_left' >
+
 <?=$this->disp_box("servergroup_detail_members")?>
+</div>
+
+
+<div id=service_detail_downtime_notice_ajax class='fifty_float_left'>
+
+<?=$this->disp_box("service_detail_downtime_notice")?>
+</div>
+
+
+<div style='clear:both;'/>
 
 <?=$this->disp_box("mass_actions")?>
 <table class="table table-striped table-bordered " id='services_table'>

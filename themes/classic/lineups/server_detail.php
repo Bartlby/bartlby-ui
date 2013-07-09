@@ -1,13 +1,29 @@
-<?=$this->disp_box("MAIN")?>
+<div id=server_detail_server_info_ajax class='fifty_float_left'>
 <?=$this->disp_box("server_detail_server_info")?>
+</div>
+<div id=MAIN_ajaxs  class='fifty_float_left'>
+<?=$this->disp_box("MAIN")?>
+</div>
+<div id=service_detail_ssh_info_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_ssh_info")?>
+</div>
+
+<div id=service_detail_downtime_notice_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_downtime_notice")?>
+</div>
+
+<div id=server_detail_services_ajax class='fifty_float_left'>
 <?=$this->disp_box("server_detail_services")?>
+</div>
+<div id=server_detail_server_group_info_ajax class='fifty_float_left'>
 <?=$this->disp_box("server_detail_server_group_info")?>
+</div>
 
 
+<div style='clear: both;'/>
 
 <?=$this->disp_box("mass_actions")?>
+
 <table class="table table-striped table-bordered " id='services_table'>
 						  <thead>
 							  <tr>
@@ -28,6 +44,7 @@
 
 </tbody>
 </table>
+
 
 
 <?=$this->disp_box("UNPLACED")?>

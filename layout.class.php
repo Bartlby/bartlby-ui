@@ -176,7 +176,7 @@ class Layout {
 		$this->BoxTitle=$str;
 	}
 	
-					
+					 
 					
 					
 				
@@ -191,7 +191,7 @@ class Layout {
 		return '<a style="width:190px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 						<i class="" ></i><span style="width: 100%" xclass="hidden-phone" >' . $name . '</span>
 						<span class="caret" ></span>
-					</a><ul class="dropdown-menu" id="' . $root . '" style="width: 300px">';
+					</a><ul class="dropdown-menu" id="' . $root . '" style="width: 210px">';
 
 		$r = "<table class=\"nopad\">	<tr><td class=\"nav_main\" onClick=\"doToggle('$name')\"><img id='" . $name . "_plus' src='themes/" . $this->theme . "/images/plus.gif' border=0> $name</td></tr><tr><td class=\"nav_place\">&nbsp;</td></tr></table><table class=\"nopad\" id='" . $name . "_sub' style='display:none;'>";
 		$r = '<li class="nav-header hidden-tablet">' . $name . '</li>';

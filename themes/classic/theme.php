@@ -210,9 +210,9 @@ $Author: hjanuschka $
 		<div class="row-fluid">
 				
 			<!-- left menu starts -->
-			<div class="span2 main-menu-span">
+			<div class="span2 main-menu-span" style='width: 218px;'>
 				
-				<div class="well nav-collapse sidebar-nav">
+				<div class="well nav-collapse sidebar-nav" style='width: 218px; padding-bottom:10px;'>
 					
 				<?=$this->BTLEXTMENU?>
 				
@@ -228,7 +228,7 @@ $Author: hjanuschka $
 				</div>
 			</noscript>
 			
-			<div id="content" class="span10">
+			<div id="content" class="span10" style='margin-left: 5px !important;'>
 			<!-- content starts -->
 			
 			
@@ -245,7 +245,7 @@ $Author: hjanuschka $
 
 		<div class="modal hide fade" id="myModal">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">×</button>
+				<button type="button" class="close" data-dismiss="modal">ï¿½</button>
 				<h3>Settings</h3>
 			</div>
 			<div class="modal-body">

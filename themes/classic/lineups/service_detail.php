@@ -2,6 +2,7 @@
 function reload_service_detail_json(id) {
 		window.clearTimeout();
 		//alert(1);
+		
 		$.getJSON('service_detail.php?json=1&service_place=' + id, function(data) {
  			console.log(data);
  			$("#MAIN_ajax").html(data.boxes.UNPLACED);

@@ -35,9 +35,12 @@
 			<td class='font1' colspan=1>
 			Running: <?=$plcs[running]?>
 			</td>
-			<td align=right class='font1'>Avg Round Time:<font class='font2'><?=$plcs[round_ms_time]?> ms / avg service delay: <?=$plcs[average_delay]?> sec.</font></td>
+			<td align=right class='font1'>Avg Round Time:<font class='font2'><?=$plcs[round_ms_time]?> ms / <font class=font1>avg service delay:<font class=font2> <?=$plcs[average_delay]?> sec.</font></td>
 		</tr>
-		
+		<tr>
+			
+			<td align=right class='font1' colspan=2 rowspan=1>Checks Performed:<font class='font2'><?=$plcs[checks_performed]?> <font class=font1> Checks/s: <font class=font2><?=$plcs[checks_performed_per_sec]?></font></td>
+		</tr>
 		<tr>
 			<td colspan=2 class='font1'>Version: <font class='font2'><?=$plcs[release_name]?></font></td>
 			

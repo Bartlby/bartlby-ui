@@ -18,14 +18,14 @@ $c=0;
 			
 			
 			echo  "</td>";
-			if($c == 4) {
+			if($c == 5) {
 				echo "</tr><tr>";
 				$c=0;	
 			}
 		
 	}
 	
-		while($c < 4) {
+		while($c < 5) {
 			echo "<td>&nbsp;</td>";
 			$c++;	
 		}

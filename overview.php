@@ -255,7 +255,7 @@ $Author: hjanuschka $
 		'reload_state' => $reload_status,
 		'sirene'  => $sir,
 		'last_sync' => $fin_last_sync,
-		'checks_performed' => $info[checks_performed],
+		'checks_performed' => number_format($info[checks_performed], 0, ',', '.'),
 		'checks_performed_per_sec' => round($info[checks_performed] / (time()-$btl->info[checks_performed_time]),2)
 		
 		), "core_info");

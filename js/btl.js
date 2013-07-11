@@ -1,3 +1,4 @@
+window.gauges=new Array();
 function btl_change(t) {
 		document.location.href='bartlby_action.php?instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }

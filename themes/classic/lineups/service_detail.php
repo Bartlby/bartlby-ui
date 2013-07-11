@@ -17,7 +17,10 @@ function reload_service_detail_json(id) {
  			$("#service_detail_group_check_ajax").html(data.boxes.service_detail_group_check);
  			$("#UNPLACED_ajax").html(data.boxes.UNPLACED);
  			
- 			
+ 			for(x=0; x<data.gauges.length; x++) {
+ 				window.gauges[x].maxValue=parseInt(data.gauges[x].max_val);
+ 				window.gauges[x].set(data.gauges[x].current_val); 				
+ 			}
  			
 		});
 		window.setTimeout("reload_service_detail_json(<?=$_GET[service_place]?>)", 2000);
@@ -61,7 +64,9 @@ function reload_service_detail_json(id) {
 <div id=service_detail_status_text_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_status_text")?>
 </div>
-
+<div id=service_detail_gauglets class='fifty_float_left'>
+<?=$this->disp_box("service_detail_gauglets")?>
+</div>
 
 <div style='clear: both;'/>
 

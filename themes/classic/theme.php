@@ -119,6 +119,7 @@ $Author: hjanuschka $
 	<!-- select or dropdown enhancer -->
 	<script src="themes/classic/js/jquery.chosen.min.js"></script>
 	<script src="themes/classic/js/ajaxchosen.js"></script>
+	<script src="themes/classic/js/gauge.js"></script>
 	<!-- checkbox, radio, and file input styler -->
 	<script src="themes/classic/js/jquery.uniform.min.js"></script>
 	<!-- plugin for gallery image view -->

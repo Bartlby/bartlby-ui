@@ -18,7 +18,6 @@ function reload_service_detail_json(id) {
  			$("#UNPLACED_ajax").html(data.boxes.UNPLACED);
  			
  			for(x=0; x<data.gauges.length; x++) {
- 				
  				window.gauges[x].refresh(data.gauges[x].current_val,data.gauges[x].max_val);
  				//window.gauges[x].set(parseInt(data.gauges[x].current_val)); 				
  			}
@@ -74,6 +73,6 @@ function reload_service_detail_json(id) {
 
 
 <div id=UNPLACED_ajax>
-
+<?=$this->disp_box("UNPLACED")?>
 </div>
 

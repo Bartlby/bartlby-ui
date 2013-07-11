@@ -40,16 +40,12 @@ function reload_service_detail_json(id) {
 <div id=service_detail_downtime_notice_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_downtime_notice")?>
 </div>
-<div id=service_detail_group_info_ajax style='width:25%; float:left;'>
+<div id=service_detail_group_info_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_group_info")?>
-</div>
-<div id=service_detail_gauglets style='width:25%; float:left;'>
-<?=$this->disp_box("service_detail_gauglets")?>
 </div>
 <div id=service_detail_plugin_info_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_plugin_info")?>
 </div>
-
 <div id=service_detail_manual_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_manual")?>
 </div>
@@ -68,7 +64,9 @@ function reload_service_detail_json(id) {
 <div id=service_detail_status_text_ajax class='fifty_float_left'>
 <?=$this->disp_box("service_detail_status_text")?>
 </div>
-
+<div id=service_detail_gauglets class='fifty_float_left'>
+<?=$this->disp_box("service_detail_gauglets")?>
+</div>
 
 <div style='clear: both;'/>
 

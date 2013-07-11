@@ -21,7 +21,8 @@
 
 ?>
 
-<table  width='100%'>
+<table  width='100%' style='min-height:627px;'>
+
 	<tr>
 		<td width=150 class='font2'>Server:</td>
 		<td align=left ><a href='server_detail.php?server_id=<?=$plcs[service][server_id] ?>'><?=$plcs[service][server_name]?></A> ( IP: <?=gethostbyname($plcs[service][client_ip])?> Port: <?=$plcs[service][client_port]?> )</font> <?=$plcs[server_enabled]?> </td> 

@@ -227,14 +227,14 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											
 		, "service_detail_service_info");
 		
-if(is_array($defaults[groups])) {
+
 	$info_box_title='Group Info';  
 	$layout->create_box($info_box_title, $core_content, "service_detail_group_info", array(
 												"service_groups" => $defaults[groups]
 				)
 												
 			, "service_detail_group_info");
-}
+
 if(file_exists("gauglets/" . $defaults[plugin]  . ".php")) {
 	
 	

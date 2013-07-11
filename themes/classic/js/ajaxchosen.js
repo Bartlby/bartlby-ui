@@ -10,7 +10,7 @@
       chosenOptions = {};
     }
     defaultOptions = {
-      minTermLength: 3,
+      minTermLength: 2,
       afterTypeDelay: 500,
       jsonTermKey: "term",
       keepTypingMsg: "Keep typing  ...",
@@ -24,7 +24,7 @@
       return $(this).next('.chzn-container').find(".search-field > input, .chzn-search > input").bind('keyup', function() {
         var field, msg, success, untrimmed_val, val;
         untrimmed_val = $(this).val();
-        val = $.trim($(this).val());
+        val = $(this).val();
         msg = val.length < options.minTermLength ? options.keepTypingMsg : options.lookingForMsg + (" '" + val + "'");
         select.next('.chzn-container').find('.no-results').text(msg);
         if (val === $(this).data('prevVal')) {

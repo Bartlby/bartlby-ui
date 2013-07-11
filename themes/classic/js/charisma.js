@@ -139,7 +139,7 @@ function docReady(){
 	$('[data-rel="ajax_servicegroup_list"]').ajaxChosen(
 	{
     type: 'GET',
-    afterTypeDelay: 10,
+    afterTypeDelay: 500,
     jsonTermKey: "dropdown_term",
     url: 'modify_servicegroup.php?dropdown_search=1&dropdown_name=servicegroup_members[]',
     dataType: 'json'
@@ -167,7 +167,7 @@ function docReady(){
 	$('[data-rel="ajax_package_services"]').ajaxChosen(
 	{
     type: 'GET',
-    afterTypeDelay: 10,
+    afterTypeDelay: 500,
     jsonTermKey: "dropdown_term",
     url: 'package_create.php?dropdown_search=1&dropdown_name=services[]',
     dataType: 'json'
@@ -197,7 +197,7 @@ function docReady(){
 	$('[data-rel="ajax_service_list_php"]').ajaxChosen(
 	{
     type: 'GET',
-    afterTypeDelay: 10,
+    afterTypeDelay: 500,
     jsonTermKey: "dropdown_term",
     url: 'service_list.php?dropdown_search=1&dropdown_name=service_id',
     dataType: 'json'
@@ -227,7 +227,7 @@ if(typeof(global_worker_id) == "undefined") global_worker_id=0;
 $('[data-rel="ajax_modify_worker_services"]').ajaxChosen(
 	{
     type: 'GET',
-    afterTypeDelay: 10,
+    afterTypeDelay: 500,
     jsonTermKey: "dropdown_term",
     url: 'modify_worker.php?dropdown_search=1&dropdown_name=worker_services[]&worker_id=' + global_worker_id,
     dataType: 'json'
@@ -256,7 +256,7 @@ $('[data-rel="ajax_modify_worker_services"]').ajaxChosen(
 $('[data-rel="ajax_report_service"]').ajaxChosen(
 	{
     type: 'GET',
-    afterTypeDelay: 10,
+    afterTypeDelay: 500,
     jsonTermKey: "dropdown_term",
     url: 'create_report.php?dropdown_search=1&dropdown_name=report_service',
     dataType: 'json'

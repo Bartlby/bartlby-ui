@@ -235,6 +235,20 @@ if(is_array($defaults[groups])) {
 												
 			, "service_detail_group_info");
 }
+if(file_exists("gauglets/" . $defaults[plugin]  . ".php")) {
+	
+	
+	
+	
+	$info_box_title='Gauglets';  
+	$layout->create_box($info_box_title, $core_content, "service_detail_gauglets", array(
+												"gauglets_path" => "gauglets/" . $defaults[plugin]  . ".php",
+												"service" => $defaults
+				)
+												
+			, "service_gauglets");
+}
+
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  
 	$core_content = "";

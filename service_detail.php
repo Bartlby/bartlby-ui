@@ -235,7 +235,7 @@ if(is_array($defaults[groups])) {
 												
 			, "service_detail_group_info");
 }
-if(file_exists("gauglets/" . $defaults[plugin]  . ".php")) {
+if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9)) {
 	
 	
 	

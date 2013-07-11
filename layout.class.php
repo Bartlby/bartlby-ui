@@ -138,7 +138,7 @@ class Layout {
 			$this->OUT .= $rr;	
 		}
 	}
-	
+	 
 	function TextArea($name, $def, $height=7, $width=100) {
 		return "<textarea name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
 	}
@@ -157,15 +157,63 @@ class Layout {
 		}
 		
 	}
-	function DropDown($name,$options=array(), $type='', $style='', $addserver=true) {
-		$r = "<select name='$name' id='$name' $type $style data-rel='chosen'>\n";
+	function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen') {
+		global $_GET;
+		
+		if(strstr($custom_name, "ajax")) {
+			if($_GET[dropdown_search] == 1 && $_GET[dropdown_name] == $name) {
+				//Return JSON Objects :)
+				$obj_idx=-1;
+				
+				for($x=0; $x<count($options); $x++) {
+					if($options[$x][is_group]==1) {
+						//if(!@preg_match("/" . $_GET[dropdown_term] . "/i", $options[$x+1][k])) continue;
+						
+						$obj_idx++;
+						$obj[$obj_idx]->group=true;
+						$obj[$obj_idx]->text=$options[$x][k];
+						$options[$x][k]="Server: " . $options[$x][k];
+						if(!$addserver) continue;
+						
+						
+					}
+					if(!is_array($obj[$obj_idx]->items)) $obj[$obj_idx]->items=array();
+					
+					if($obj_idx < 0) $obj_idx=0;
+					if(!@preg_match("/" . $_GET[dropdown_term] . "/i", $options[$x][k])) continue;
+					
+					$obj[$obj_idx]->items[]=array("value"=> "" . $options[$x][v], "text" => "" . $options[$x][k]);
+					
+					
+					
+				}
+		
+				for($x=0; $x<count($obj); $x++) {
+					if(count($obj[$x]->items) > 0) {
+						$obj_cleaned[]=$obj[$x];
+					}
+				}
+				echo json_encode($obj_cleaned);
+				exit;
+				
+				
+				
+			}
+		}
+		
+		$r = "<select name='$name' id='$name' $type $style data-rel='" . $custom_name . "'>\n";
 		for ($x=0;$x<count($options); $x++) {
 			$sel="";
 			if ($options[$x][s] == 1) $sel="selected";
 			if($options[$x][is_group] == 1) {
+					if(strstr($custom_name, "ajax") && $options[$x][s] != 1) continue; 
 					$r .= '</optgroup><optgroup label="' .  $options[$x][k] . '">';
-					if($addserver) 	$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>Server: " . $options[$x][k] . "\n";	
+					if($addserver)  {
+							if(strstr($custom_name, "ajax") && $options[$x][s] != 1) continue; 
+							$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>Server: " . $options[$x][k] . "\n";	
+					}
 			} else{
+							if(strstr($custom_name, "ajax") && $options[$x][s] != 1) continue; 
 							$r .= "<option style='background-color: " .  $options[$x][c] . "' value='" . $options[$x][v] . "' $sel>" . $options[$x][k] . "\n";	
 			}
 		}		

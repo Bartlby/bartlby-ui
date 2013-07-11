@@ -19,6 +19,7 @@ $layout->set_menu("worker");
 $layout->setTitle("Modify Worker");
 $defaults=@bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
 
+$layout->OUT .= "<script>global_worker_id=" . $_GET[worker_id] . ";</script>";
 
 $fm_action="modify_worker";
 if($_GET["copy"] == "true") {
@@ -41,7 +42,7 @@ if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 	$btl->hasRight("modify_all_workers");
 }
 
-if($defaults == false && $_GET["new"] != "true") {
+if($defaults == false && $_GET["new"] != "true" && !$_GET[dropdown_search]) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
@@ -293,7 +294,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Services:",
-			1=>$layout->DropDown("worker_services[]", $servers, "multiple")
+			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services")
 		)
 	)
 , true);

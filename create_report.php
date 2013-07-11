@@ -96,7 +96,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Service:",
-				1=>$layout->DropDown("report_service", $servers)
+				1=>$layout->DropDown("report_service", $servers, "","",false, "ajax_report_service")
 			)
 		)
 

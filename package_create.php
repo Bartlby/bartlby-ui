@@ -58,7 +58,7 @@ $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Services:",
-			1=>$layout->DropDown("services[]", $servers, "multiple")
+			1=>$layout->DropDown("services[]", $servers, "multiple","",false,"ajax_package_services")
 		)
 	)
 );

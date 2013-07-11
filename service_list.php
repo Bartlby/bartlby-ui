@@ -54,8 +54,8 @@ if($dropdownded != "true")  {
 	$layout->Tr(
 		$layout->Td(
 				Array(
-					0=>"Server:",
-					1=>$layout->DropDown("service_id", $servers,"","",false) . $passthrough
+					0=>"Service:",
+					1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . $passthrough
 				)
 			)
 	

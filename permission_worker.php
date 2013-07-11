@@ -7,10 +7,15 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $layout= new Layout();
 $layout->set_menu("worker");
 $layout->setTitle("");
+
+$layout->OUT .= "<script>global_worker_id=" . $_GET[worker_id] . ";</script>";
+
+
 $defaults=@bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
 
 $fm_action="save_permissions";
 $btl->hasRight("super_user");
+
 
 if($defaults == false) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
@@ -73,7 +78,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Visible services:",
-			1=>$layout->DropDown("worker_services[]", $servers, "multiple")
+			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services")
 		)
 	)
 ,true);

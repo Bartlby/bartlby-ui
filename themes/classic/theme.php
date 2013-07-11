@@ -115,9 +115,10 @@ $Author: hjanuschka $
 	<script src="themes/classic/js/jquery.flot.selection.js"></script>
 	<script src="themes/classic/js/jquery.flot.tooltip.js"></script>
 	<!-- chart libraries end -->
-
+  
 	<!-- select or dropdown enhancer -->
 	<script src="themes/classic/js/jquery.chosen.min.js"></script>
+	<script src="themes/classic/js/ajaxchosen.js"></script>
 	<!-- checkbox, radio, and file input styler -->
 	<script src="themes/classic/js/jquery.uniform.min.js"></script>
 	<!-- plugin for gallery image view -->

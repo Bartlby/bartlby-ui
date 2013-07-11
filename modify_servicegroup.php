@@ -8,7 +8,7 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 
 
-if($Bartlby_CONF_Remote == true && $Bartlby_CONF_DBSYNC == false) {
+if($Bartlby_CONF_Remote == true && $Bartlby_CONF_DBSYNC == false ) {
 	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
 }
 
@@ -181,7 +181,7 @@ if($fm_action == "modify_servicegroup") {
 }
 
 
-if($defaults == false && $_GET["new"] != "true") {
+if($defaults == false && $_GET["new"] != "true" && !$_GET[dropdown_search]) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
@@ -199,7 +199,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Servicegroup Members",
-			1=>$layout->DropDown("servicegroup_members[]", $servers,"multiple", "", false)
+			1=>$layout->DropDown("servicegroup_members[]", $servers,"multiple", "", false, "ajax_servicegroup_list")
 		)
 	)
 ,true);

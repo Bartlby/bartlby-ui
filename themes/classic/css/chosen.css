@@ -121,12 +121,12 @@
   border-radius        : 0 0 4px 4px;
   -moz-background-clip   : padding;
   -webkit-background-clip: padding-box;
-  background-clip        : padding-box;
+  background-clip        : padding-box;  
 }
 /* @end */
 
 .chzn-container-single-nosearch .chzn-search input {
-  position: absolute;
+  xposition: absolute;
   left: -9000px;
 }
 
@@ -272,6 +272,7 @@
 .chzn-container .chzn-results .group-result {
   cursor: default;
   color: #999;
+  display: list-item;
   font-weight: bold;
 }
 .chzn-container .chzn-results .group-option {

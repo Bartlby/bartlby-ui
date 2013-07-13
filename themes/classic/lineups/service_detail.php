@@ -17,10 +17,8 @@ function reload_service_detail_json(id) {
  			$("#service_detail_group_check_ajax").html(data.boxes.service_detail_group_check);
  			$("#UNPLACED_ajax").html(data.boxes.UNPLACED);
  			
- 			for(x=0; x<data.gauges.length; x++) {
- 				window.gauges[x].refresh(data.gauges[x].current_val,data.gauges[x].max_val);
- 				//window.gauges[x].set(parseInt(data.gauges[x].current_val)); 				
- 			}
+ 			btl_call_refreshable_objects(data);
+ 			
  			
 		});
 		window.setTimeout("reload_service_detail_json(<?=$_GET[service_place]?>)", 2000);

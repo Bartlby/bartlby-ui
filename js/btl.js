@@ -1,4 +1,29 @@
-window.gauges=new Array();
+window.refreshable_objects=new Array();
+
+function btl_get_refreshable_value(data, key) {
+	rv=data.refreshable_objects[key];
+
+	return rv;
+}
+
+function btl_add_refreshable_object(fcn_callback) {
+		o = {
+			callback: fcn_callback			
+		}	
+		window.refreshable_objects.push(o);
+		
+}
+function btl_call_refreshable_objects(data) {
+	if(typeof(window.refreshable_objects.length) == "undefined") {
+		return;
+	}
+	for(x=0; x<window.refreshable_objects.length; x++) {
+		tw = 	window.refreshable_objects[x];
+		tw.callback(data);
+	}
+}
+	
+
 function btl_change(t) {
 		document.location.href='bartlby_action.php?instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }

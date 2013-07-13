@@ -13,7 +13,7 @@ preg_match("/, ([0-9\.]+) ([0-9\.]+) ([0-9\.]+)/", $plcs[service][new_server_tex
 
 $cur_val[0]=$m[1];
 $cur_val[1]=$m[2];
-$cur_val[2]=$m[2];
+$cur_val[2]=$m[3];
 
 
 
@@ -24,40 +24,56 @@ $cur_val[2]=$m[2];
 	
 	$(document).ready(function() {
 	
-			 g1 = new JustGage({
+			 window.g1 = new JustGage({
 		    id: "g1",
 		    value : <?=$cur_val[0]?>,
 		    min: 0,
-		    max: <?=$max_value?>,
-		    decimals: 0,
+		    max: <?=$max_value*2?>,
+		    decimals: 2,
 		    gaugeWidthScale: 0.6,
 		    label: "1m",
 		    title: "Load"
 		  });
-		   g2 = new JustGage({
+		   window.g2 = new JustGage({
 		    id: "g2",
 		    value : <?=$cur_val[1]?>,
 		    min: 0,
-		    max: <?=$max_value?>,
-		    decimals: 0,
+		    max: <?=$max_value*1.5?>,
+		    decimals: 2,
 		    gaugeWidthScale: 0.6,
 		    label: "5m",
 		    title: "Load"
 		  });
-		  g3 = new JustGage({
+		 window.g3 = new JustGage({
 		    id: "g3",
 		    value : <?=$cur_val[2]?>,
 		    min: 0,
 		    max: <?=$max_value?>,
-		    decimals: 0,
+		    decimals: 2,
 		    gaugeWidthScale: 0.6,
 		    label: "15m",
 		    title: "Load"
 		  });
 		  
-		  window.gauges.push(g1);
-		  window.gauges.push(g2);
-		  window.gauges.push(g3);
+		  btl_add_refreshable_object(
+		 	function(data) {
+		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_1_cur");
+		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_1_max");
+		 			window.g1.refresh(cur, max);
+		 	});
+		 	 btl_add_refreshable_object(
+		 	function(data) {
+		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_2_cur");
+		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_2_max");
+		 			window.g2.refresh(cur, max);
+		 	});
+		 	 btl_add_refreshable_object(
+		 	function(data) {
+		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_3_cur");
+		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_3_max");
+		 			window.g3.refresh(cur, max);
+		 	});
+		 	
 			
 	});
 	</script>      
@@ -69,16 +85,15 @@ $cur_val[2]=$m[2];
 	
   
 <?
-$gauge_idx=count($layout->gauges);
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_1_cur"]=$cur_val[0];
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_1_max"]=$max_value*2;
 
-$layout->gauges[$gauge_idx]->current_val=$cur_val[0];
-$layout->gauges[$gauge_idx]->max_val=$max_value;
-$gauge_idx++;
-$layout->gauges[$gauge_idx]->current_val=$cur_val[1];
-$layout->gauges[$gauge_idx]->max_val=$max_value;
-$gauge_idx++;
-$layout->gauges[$gauge_idx]->current_val=$cur_val[2];
-$layout->gauges[$gauge_idx]->max_val=$max_value;
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_2_cur"]=$cur_val[1];
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_2_max"]=$max_value*1.5;
+
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_cur"]=$cur_val[2];
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_max"]=$max_value*2;
+
 
 
 

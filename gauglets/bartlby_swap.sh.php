@@ -23,7 +23,7 @@ $cur_val = 100-$m[1];
 	
 	$(document).ready(function() {
 	
-			 g1 = new JustGage({
+			 window.g1 = new JustGage({
 		    id: "g1",
 		    value : <?=$cur_val?>,
 		    min: 0,
@@ -35,7 +35,12 @@ $cur_val = 100-$m[1];
 		  });
 		  
 		  
-		  window.gauges.push(g1);
+		  btl_add_refreshable_object(
+		 	function(data) {
+		 			cur = btl_get_refreshable_value(data,"bartlby_swap.sh_<?=$plcs[service][service_id]?>_1_cur");
+		 			max = btl_get_refreshable_value(data,"bartlby_swap.sh_<?=$plcs[service][service_id]?>_1_max");
+		 			window.g1.refresh(cur, max);
+		 	});
 
 			
 	});
@@ -48,11 +53,9 @@ $cur_val = 100-$m[1];
 	
   
 <?
-$gauge_idx=count($layout->gauges);
 
-$layout->gauges[$gauge_idx]->current_val=$cur_val;
-$layout->gauges[$gauge_idx]->max_val=$max_value;
-
+$layout->refreshable_objects["bartlby_swap.sh_" . $plcs[service][service_id] . "_1_cur"]=$cur_val;
+$layout->refreshable_objects["bartlby_swap.sh_" . $plcs[service][service_id] . "_1_max"]=$max_value;
 
 
 

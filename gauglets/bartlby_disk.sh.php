@@ -46,7 +46,7 @@ for($x=0; $x<count($ar); $x++) {
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_disk.sh_<?=$plcs[service][service_id]?>_<?=$x?>_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_disk.sh_<?=$plcs[service][service_id]?>_<?=$x?>_max");
-		 			window.g<?=$x?>.refresh(cur, max);
+		 			window.g<?=$x?>.refresh(parseInt(cur), parseInt(max));
 		 	});
 		 
 			

@@ -59,19 +59,19 @@ $cur_val[2]=$m[3];
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_1_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_1_max");
-		 			window.g1.refresh(cur, max);
+		 			window.g1.refresh(parseInt(cur), parseInt(max));
 		 	});
 		 	 btl_add_refreshable_object(
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_2_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_2_max");
-		 			window.g2.refresh(cur, max);
+		 			window.g2.refresh(parseInt(cur), parseInt(max));
 		 	});
 		 	 btl_add_refreshable_object(
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_3_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_3_max");
-		 			window.g3.refresh(cur, max);
+		 			window.g3.refresh(parseInt(cur), parseInt(max));
 		 	});
 		 	
 			

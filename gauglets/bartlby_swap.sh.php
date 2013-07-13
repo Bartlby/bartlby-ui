@@ -30,7 +30,7 @@ $cur_val = 100-$m[1];
 		    max: <?=$max_value?>,
 		    decimals: 0,
 		    gaugeWidthScale: 0.6,
-		    label: "used MB",
+		    label: "used %",
 		    title: "Swap"
 		  });
 		  
@@ -39,7 +39,7 @@ $cur_val = 100-$m[1];
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_swap.sh_<?=$plcs[service][service_id]?>_1_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_swap.sh_<?=$plcs[service][service_id]?>_1_max");
-		 			window.g1.refresh(cur, max);
+		 			window.g1.refresh(parseInt(cur), parseInt(max));
 		 	});
 
 			

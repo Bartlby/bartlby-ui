@@ -92,7 +92,7 @@ $layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "
 $layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_2_max"]=$max_value*1.5;
 
 $layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_cur"]=$cur_val[2];
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_max"]=$max_value*2;
+$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_max"]=$max_value;
 
 
 

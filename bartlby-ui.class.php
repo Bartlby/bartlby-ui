@@ -1732,7 +1732,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 				
 		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat";
 		
-		
+	
 		return $ret;
 	}
 	function updatePerfHandler($srvId, $svcId) {

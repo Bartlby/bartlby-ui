@@ -21,8 +21,8 @@ if($plcs[color] == "yellow") {
 	$progress_css = "progress-warning";
 }
 
-$layout->refreshable_objects["system_health_perc"]=$plcs[prozent_float];
-$layout->refreshable_objects["system_health_progress_css"]=$progress_css;
+$layout->setRefreshableVariable("system_health_perc", $plcs[prozent_float]);
+$layout->setRefreshableVariable("system_health_progress_css", $progress_css);
 
 ?>
 	

@@ -85,14 +85,17 @@ $cur_val[2]=$m[3];
 	
   
 <?
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_1_cur"]=$cur_val[0];
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_1_max"]=$max_value*2;
 
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_2_cur"]=$cur_val[1];
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_2_max"]=$max_value*1.5;
+	$layout->setRefreshableVariable("bartlby_load.sh_" . $plcs[service][service_id] . "_1_cur", $cur_val[0]);
+	$layout->setRefreshableVariable("bartlby_load.sh_" . $plcs[service][service_id] . "_1_max", $max_value*2);
+	
+	$layout->setRefreshableVariable("bartlby_load.sh_" . $plcs[service][service_id] . "_2_cur", $cur_val[1]);
+	$layout->setRefreshableVariable("bartlby_load.sh_" . $plcs[service][service_id] . "_2_cur_max", $max_value*1.5);
+	
+	$layout->setRefreshableVariable("bartlby_load.sh_" . $plcs[service][service_id] . "_3_cur", $cur_val[2]);
+	$layout->setRefreshableVariable("bartlby_load.sh_" . $plcs[service][service_id] . "_3_max", $max_value);
+	
 
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_cur"]=$cur_val[2];
-$layout->refreshable_objects["bartlby_load.sh_" . $plcs[service][service_id] . "_3_max"]=$max_value;
 
 
 

@@ -2,15 +2,35 @@ window.global_reload=1;
 window.refreshable_objects=new Array();
 window.auto_reloader=-1;
 
-	function btl_start_auto_reload() {
-		
-		window.auto_reloader= window.setInterval(function() {
+$(window).blur(function() 
+{
+	if(window.auto_reloader != -1) {
+		console.log("DISABLE AUTO RELOAD INVISIBLE");
+		window.clearInterval(window.auto_reloader);
+	}
+});
+$(window).focus(function() {
+	if(window.auto_reloader != -1) {
+		console.log("ENABLE AUTORELOAD VISIBLE");
+		btl_force_reload_ui();
+		btl_start_auto_reload();
+	}
+});
+
+function btl_force_reload_ui() {
+			console.log("FORCE LOAD");
 			u = document.location.href;
 			u += (u.match(/\?/) ? '&' : '?') + "json=1";
 		
 			$.getJSON(u, function(data) {
 				btl_call_refreshable_objects(data);
 			});
+}
+function btl_start_auto_reload() {
+		
+		window.auto_reloader= window.setInterval(function() {
+	
+		btl_force_reload_ui();
 			
 		},5000);
 		

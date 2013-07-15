@@ -332,7 +332,7 @@ $ibox[$defaults[current_state]][s]=1;
 
 $state_dropdown=$layout->DropDown("passive_state", $ibox);
 $info_box_title='Manual state change';  
-$layout->create_box($info_box_title, $core_content, "service_detail_manual", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_manual",false,true);
+$layout->create_box($info_box_title, $core_content, "service_detail_manual", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_manual",false,false);
 
 
 $odefaults=$defaults;

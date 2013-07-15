@@ -100,7 +100,7 @@
 				$svc_state=$btl->getState($servs[$x][current_state]);
 				if($servs[$x][service_ack_current] == 2) {
 					
-					$svc_state .= "<br>(ACKW)";	
+					$svc_state .= "<br>(Ack Outstanding)";	
 				}
 				$server_color="black";
 				$SERVER="&nbsp;";

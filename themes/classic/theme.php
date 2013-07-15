@@ -191,7 +191,7 @@ $Author: hjanuschka $
 					<?=$this->BTL_INSTANCES?>
 				</div>
 				<div class="pull-right" style="padding-top: 8px;">
-					<div  id="quick_look" style="z-index:100"><font size=1>Auto Reload<input type='checkbox' checked onClick='toggleReload()' style='height:10px'>   Quick look<input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>
+					<div  id="quick_look" style="z-index:100"><font size=1>Auto Refresh<input type='checkbox' id=toggle_reload checked  style='height:10px'>   Quick look<input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>
 				</div>
 				
 			

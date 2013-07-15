@@ -48,7 +48,11 @@ class Layout {
 	function setTemplate($file) {
 		$this->template_file=$file;
 	}
+	function setJSONOutput() {
+		$this->OUTPUT_JSON=true;
+	}
 	function Layout($scr='') {
+		global $_GET;
 		$this->box_count=1;
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
 			$this->theme=bartlby_config(getcwd() . "/ui-extra.conf", "theme");
@@ -57,11 +61,16 @@ class Layout {
 		}
 		
 		
-	
-
+		$this->do_auto_reload=false;
+		$this->OUTPUT_JSON=false;
 		$this->template_file="template.html";
 		$this->start_time=$this->microtime_float();
 		$this->menu_set=false;
+		
+		if($_GET[json]) {
+			$this->setJSONOutput();
+		}
+		
 	}
 
 	function Table($proz="100%", $border=0) {
@@ -425,7 +434,7 @@ class Layout {
 		$this->UIVERSION=BARTLBY_UI_VERSION;
 		$this->RELNOT=BARTLBY_RELNOT;
 		
-		$this->create_box($this->BoxTitle, $this->OUT, "MAIN");
+		$this->create_box($this->BoxTitle, $this->OUT, "MAIN", "", "", false, true);
 
 
 		//Default LineUp
@@ -450,7 +459,16 @@ class Layout {
 		$o = ob_get_contents();
 		ob_end_clean();
 
+		if($this->OUTPUT_JSON) {
+			echo json_encode($this);
+			exit;
+		}
+		
 		echo $o;
+		
+		if($this->do_auto_reload) {
+			echo "<script>btl_start_auto_reload()</script>";
+		}
 
 
 			
@@ -489,7 +507,7 @@ class Layout {
 			return $r;
 		}
 	}
-	function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false) {
+	function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false, $auto_reload=false) {
 		global $btl;
 		
 		$layout=$this;
@@ -527,10 +545,18 @@ class Layout {
 			
 		ob_end_clean();		
 		$this->boxes[$oid]=$o;
+		$this->boxes_content[$oid]=$content;
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
 			$this->create_box($title, $o, $oid, "","", $collapsed);
 		}
 
+		if($auto_reload)
+		$this->OUT .= "<script>
+		btl_add_refreshable_object(function(data) {
+				
+				$('#content_" . $id . "').html(data.boxes_content." . $id . ");
+		});
+		</script>";
 
 		return $oid;
 	}

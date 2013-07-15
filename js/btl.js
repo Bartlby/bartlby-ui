@@ -1,4 +1,21 @@
+window.global_reload=1;
 window.refreshable_objects=new Array();
+window.auto_reloader=-1;
+
+	function btl_start_auto_reload() {
+		
+		window.auto_reloader= window.setInterval(function() {
+			u = document.location.href;
+			u += (u.match(/\?/) ? '&' : '?') + "json=1";
+		
+			$.getJSON(u, function(data) {
+				btl_call_refreshable_objects(data);
+			});
+			
+		},5000);
+		
+	}
+	
 
 function btl_get_refreshable_value(data, key) {
 	rv=data.refreshable_objects[key];
@@ -176,20 +193,19 @@ $(document).ready(function() {
 				});
 				
 
-
 		 
-		
-	});
-	
-	
-	global_reload=1;
-	function toggleReload() {
-		if(global_reload == 1) {
-				global_reload=0;
-		} else {
+		$("#toggle_reload").click(function() {
+			if(global_reload == 1) {
+					global_reload=0;
+					window.clearInterval(window.auto_reloader);
+			} else {
 				global_reload=1;
-		}
-	}
+				btl_start_auto_reload();
+			}
+		});	
+	});
+
+	
 	function downtime_type_selected() {
 		drop = document.getElementsByName("downtime_type")[0];
 		url ="";

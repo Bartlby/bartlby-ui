@@ -22,6 +22,7 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("main.server_detail");
 $layout= new Layout();
+	$layout->do_auto_reload=true;
 $layout->set_menu("main");
 $layout->setTitle("Services");
 
@@ -100,7 +101,7 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 										"map" => $map,
 										"triggers" => $triggers
 										),
-			"server_detail_server_info");
+			"server_detail_server_info", false,true);
 
 
 
@@ -108,7 +109,7 @@ if($defaults[server_ssh_keyfile] != " ") {
 	$info_box_title='SSH Options';  
 	$layout->create_box($info_box_title, $core_content, "service_detail_ssh_info", array(
 											"service" => $defaults),
-				"service_detail_ssh_info");
+				"service_detail_ssh_info",false,true);
 }			
 			
 $info_box_title='Services';  
@@ -116,7 +117,7 @@ $layout->create_box($info_box_title, $core_content, "server_detail_services", ar
 									"services_assigned" => $services_assigned,
 									"server_map" => $server_map
 									)
-			, "server_detail_services");
+			, "server_detail_services", false,true);
 	
 
 if(is_array($defaults[groups])) {
@@ -125,13 +126,13 @@ if(is_array($defaults[groups])) {
 											"server_groups" => $defaults[groups]
 											
 											),
-				"server_detail_server_group_info");
+				"server_detail_server_group_info", false,true);
 	
 }
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  
 	$core_content = "";
-	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice");
+	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice", false,true);
 	
 }
 

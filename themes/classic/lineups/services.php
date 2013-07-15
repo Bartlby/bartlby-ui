@@ -5,7 +5,7 @@
 
 <script>
 	$(document).ready(function() {
-		var newtimer = setInterval('window.oTable.fnDraw()', 20000);
+		var newtimer = setInterval('window.oTable.fnDraw(false)', 20000);
 	});
 	</script>
 <table class="table table-striped table-bordered " id='services_table'>

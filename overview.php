@@ -28,7 +28,7 @@ $Author: hjanuschka $
 	
 	$btl=new BartlbyUi($Bartlby_CONF);
 	$layout= new Layout();
-
+	$layout->do_auto_reload=true;
 
 	$btl->hasRight("main.overview");
 
@@ -201,7 +201,7 @@ $Author: hjanuschka $
 	$layout->create_box($health_title, $health_content,"system_health", array(
 			'prozent_float' => $prozent_float,
 			'color' => $color
-		), "system_health");
+		), "system_health", false, false);
 	
 	
 	$max_running = bartlby_config($btl->CFG, "max_concurent_checks");
@@ -258,7 +258,7 @@ $Author: hjanuschka $
 		'checks_performed' => number_format($info[checks_performed], 0, ',', '.'),
 		'checks_performed_per_sec' => round($info[checks_performed] / (time()-$btl->info[checks_performed_time]),2)
 		
-		), "core_info");
+		), "core_info", false, true);
 	
 	
 	
@@ -278,7 +278,7 @@ $Author: hjanuschka $
 		'services_info' => $services_info,
 		'services_sum' => $info[services]
 	
-	), "tactical_overview");
+	), "tactical_overview", false, true);
 	
 	
 	
@@ -366,7 +366,7 @@ $Author: hjanuschka $
 		$health_title='Server Groups';  
 		$layout->create_box($health_title, $health_content,"server_groups", array(
 				'groups' => $grp_map
-			), "server_groups");
+			), "server_groups", false, true);
 	
 	
 	
@@ -451,7 +451,7 @@ $Author: hjanuschka $
 			$health_title='Service Groups';  
 			$layout->create_box($health_title, $health_content,"service_groups", array(
 					'groups' => $grp_map
-				), "service_groups");
+				), "service_groups", false, true);
 				
 		}
 	
@@ -466,20 +466,15 @@ $Author: hjanuschka $
 		$qv_title='Quick View';  
 		$layout->create_box($qv_title, $qv_content,"quick_view", array(
 				'quick_view' => $qck
-			), "quick_view");
+			), "quick_view", false,true);
 		
 	} 
 	
 	
 	$layout->boxes_placed[MAIN]=false;
 	$layout->TableEnd();
+	$layout->display("overview");
 	
-	
-	if($_GET[json] == 1) {
-		echo json_encode($layout);
-	} else {
-		$layout->display("overview");
-	}
 	
 	
 function my_sys_getloadavg() {

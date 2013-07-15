@@ -5,7 +5,7 @@
 							<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-<?=$updown?>"></i></a>
 						</div>
 					</div>
-					<div class="box-content" style='display:<?=$hidden?>; ' >
+					<div class="box-content" id=content_<?=$oid?> style='display:<?=$hidden?>; ' >
 						
 <?=$content?>
 

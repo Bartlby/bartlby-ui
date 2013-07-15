@@ -8,6 +8,7 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("main.service_detail");
 $layout= new Layout();
+$layout->do_auto_reload=true;
 $layout->set_menu("main");
 $layout->setTitle("Actions");
 
@@ -225,7 +226,7 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											"triggers" => $triggers
 											)
 											
-		, "service_detail_service_info");
+		, "service_detail_service_info", false, true);
 		
 if(is_array($defaults[groups])) {
 	$info_box_title='Group Info';  
@@ -233,7 +234,7 @@ if(is_array($defaults[groups])) {
 												"service_groups" => $defaults[groups]
 				)
 												
-			, "service_detail_group_info");
+			, "service_detail_group_info", false, true);
 }
 if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9)) {
 	
@@ -252,18 +253,18 @@ if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  
 	$core_content = "";
-	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice");
+	$layout->create_box($info_box_title, $core_content, "service_detail_downtime_notice", array("service" => $defaults), "service_detail_downtime_notice", false,true);
 	
 }
 
 $info_box_title='Last Output';  
-$layout->create_box($info_box_title, $core_content, "service_detail_status_text", array("service" => $defaults), "service_detail_status_text");
+$layout->create_box($info_box_title, $core_content, "service_detail_status_text", array("service" => $defaults), "service_detail_status_text", false, true);
 
 if($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9){
 	$info_box_title='Plugin settings';  
 	$core_content = "";
 	
-	$layout->create_box($info_box_title, $core_content, "service_detail_plugin_info", array("service" => $defaults), "service_detail_plugin_info");
+	$layout->create_box($info_box_title, $core_content, "service_detail_plugin_info", array("service" => $defaults), "service_detail_plugin_info", false,true);
 }
 
 
@@ -284,7 +285,7 @@ if($defaults[service_type] == 5){
 		$snmp_type = "Contains";
 	}
 	$info_box_title='SNMP Service';  
-	$layout->create_box($info_box_title, $core_content, "service_detail_snmp", array("service"=>$defaults, "snmp_type"=>$snmp_type), "service_detail_snmp");
+	$layout->create_box($info_box_title, $core_content, "service_detail_snmp", array("service"=>$defaults, "snmp_type"=>$snmp_type), "service_detail_snmp", false,true);
 }
 
 
@@ -304,11 +305,11 @@ if($defaults[service_type] == 2){
 		$ibox[$defaults[current_state]][s]=1;
 		$state_dropdown=$layout->DropDown("passive_state", $ibox);
 		$info_box_title='Passive Service';  
-		$layout->create_box($info_box_title, $core_content, "service_detail_passive", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_passive");
+		$layout->create_box($info_box_title, $core_content, "service_detail_passive", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_passive", false,true);
 }
 if($defaults[service_type] == 3){
 	$info_box_title='Group Service';  
-	$layout->create_box($info_box_title, $core_content, "service_detail_group_check", array("service" => $defaults), "service_detail_group_check");
+	$layout->create_box($info_box_title, $core_content, "service_detail_group_check", array("service" => $defaults), "service_detail_group_check", false,true);
 }
 
 $ibox[0][c]="green";
@@ -331,7 +332,7 @@ $ibox[$defaults[current_state]][s]=1;
 
 $state_dropdown=$layout->DropDown("passive_state", $ibox);
 $info_box_title='Manual state change';  
-$layout->create_box($info_box_title, $core_content, "service_detail_manual", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_manual");
+$layout->create_box($info_box_title, $core_content, "service_detail_manual", array("service" => $defaults, "state_dropdown" => $state_dropdown), "service_detail_manual",false,true);
 
 
 $odefaults=$defaults;
@@ -341,14 +342,11 @@ $defaults=$odefaults;
 
 $layout->OUT .= $btl->getserviceOptions($defaults, $layout);
 
-if($_GET[json] == 1) {
-		
-		$defaults[svc_options]=$btl->getserviceOptions($defaults, $layout);
-		$defaults[svc_state]=$svc_state;
-		$defaults[svc_color]=$svc_color;
-		$layout->SVC_DETAIL=$defaults;
-		
-		echo json_encode($layout);
-	} else {
-		$layout->display("service_detail");
-}
+
+$defaults[svc_options]=$btl->getserviceOptions($defaults, $layout);
+$defaults[svc_state]=$svc_state;
+$defaults[svc_color]=$svc_color;
+$layout->SVC_DETAIL=$defaults;
+
+
+$layout->display("service_detail");

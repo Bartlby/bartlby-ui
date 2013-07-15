@@ -141,7 +141,7 @@
 					if(@preg_match("/" . $_GET[sSearch] . "/i", $servs[$x][server_name] . "/" . $servs[$x][service_name])) {
 						$server_ajax="<a href='server_detail.php?server_id=" . $servs[$x][server_id] . "'><b>" . $servs[$x][server_name]  . "</A> " . $btl->getServerOPtions($servs[$x], $layout);
 						$ajax_checkbox='<div><input type=checkbox class="service_checkbox" data-service_id="' . $servs[$x][service_id] .  '"></div>';
-						$ajax_state='<span class="label ' . $ajax_lbl . '"><a href="services.php?expect_state=' . $servs[$x][current_state] . '">' . $servs[$x][state_readable] . '</A></span>';
+						$ajax_state='<a href="services.php?expect_state=' . $servs[$x][current_state] . '"><span class="label ' . $ajax_lbl . '">' . $servs[$x][state_readable] . '</span></A>';
 						$ajax_last_check=date("d.m.y H:i:s", $servs[$x][last_check]);
 						$ajax_next_check=date("d.m.y H:i:s", $servs[$x][last_check]+$servs[$x][check_interval]);
 						$ajax_service_name='<a href="service_detail.php?service_place=' . $servs[$x][shm_place] . '"><b>' . $servs[$x][service_name] . '</A>';

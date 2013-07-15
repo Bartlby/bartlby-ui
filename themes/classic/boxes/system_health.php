@@ -21,12 +21,26 @@ if($plcs[color] == "yellow") {
 	$progress_css = "progress-warning";
 }
 
-
+$layout->refreshable_objects["system_health_perc"]=$plcs[prozent_float];
+$layout->refreshable_objects["system_health_progress_css"]=$progress_css;
 
 ?>
 	
+<script>
 
+btl_add_refreshable_object(function(data) {
+	perc = btl_get_refreshable_value(data, "system_health_perc");
+	cl = btl_get_refreshable_value(data, "system_health_progress_css");
+	$("#sys_health_progress").css("width", parseFloat(perc) + "%");
+	$("#sys_health_progress").html(parseFloat(perc) + "%");
+	$("#sys_health_base").removeClass("progress-success");
+	$("#sys_health_base").removeClass("progress-danger");
+	$("#sys_health_base").removeClass("progress-warning");
+	$("#sys_health_base").addClass(cl);
+	
+});
+	</script>
 		
-		<div class="progress <?=$progress_css?>" >
-							<div class="bar" style="width: <?=$plcs[prozent_float]?>%;"><?=$plcs[prozent_float]?>%</div>
+		<div id="sys_health_base"  class="progress <?=$progress_css?>" >
+							<div id=sys_health_progress class="bar" style="width: <?=$plcs[prozent_float]?>%;"><?=$plcs[prozent_float]?>%</div>
 						</div>

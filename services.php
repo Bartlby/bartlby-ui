@@ -138,7 +138,7 @@
 					
 				
 					
-					if(@preg_match("/" . $_GET[sSearch] . "/i", $servs[$x][server_name] . "/" . $servs[$x][service_name])) {
+					if($btl->bartlby_service_matches_string($servs[$x], $_GET[sSearch])) {
 						$server_ajax="<a href='server_detail.php?server_id=" . $servs[$x][server_id] . "'><b>" . $servs[$x][server_name]  . "</A> " . $btl->getServerOPtions($servs[$x], $layout);
 						$ajax_checkbox='<div><input type=checkbox class="service_checkbox" data-service_id="' . $servs[$x][service_id] .  '"></div>';
 						$ajax_state='<a href="services.php?expect_state=' . $servs[$x][current_state] . '"><span class="label ' . $ajax_lbl . '">' . $servs[$x][state_readable] . '</span></A>';
@@ -225,12 +225,7 @@
 			exit;
 	}
 	
-	if($_GET[json_output] == 1) {
-	
-		echo json_encode($search_result);
-		exit;
-		
-	}
+
 	
 	
 	$layout->boxes_placed[MAIN]=true;

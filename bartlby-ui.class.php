@@ -122,7 +122,240 @@ class BartlbyUi {
 		
 		
 	}
-	
+	function bartlby_service_matches_string($svc, $string) {
+		if(!$string) return true;
+		/*
+		 ["service_id"]=>
+  int(26011)
+  ["server_id"]=>
+  int(4)
+  ["last_state"]=>
+  int(0)
+  ["current_state"]=>
+  int(0)
+  ["client_port"]=>
+  int(9040)
+  ["new_server_text"]=>
+  string(52) "[bartlby_load.sh::OK]\dbr load: 30 , 0.34 0.30 0.29
+"
+  ["service_name"]=>
+  string(12) "123testMASS2"
+  ["server_name"]=>
+  string(8) "ACKHOST2"
+  ["client_ip"]=>
+  string(9) "localhost"
+  ["server_ssh_keyfile"]=>
+  string(1) " "
+  ["server_ssh_passphrase"]=>
+  string(1) " "
+  ["server_ssh_username"]=>
+  string(1) " "
+  ["server_enabled_triggers"]=>
+  string(0) ""
+  ["plugin"]=>
+  string(12) "bartlby_load"
+  ["plugin_arguments"]=>
+  string(5) "-c 30"
+  ["check_interval"]=>
+  int(60)
+  ["check_interval_original"]=>
+  int(60415)
+  ["last_check"]=>
+  int(1373897858)
+  ["exec_plan"]=>
+  string(98) "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59|"
+  ["notify_enabled"]=>
+  int(1)
+  ["last_notify_send"]=>
+  int(1373888853)
+  ["last_state_change"]=>
+  int(1373888853)
+  ["flap_count"]=>
+  int(1)
+  ["service_active"]=>
+  int(1)
+  ["service_type"]=>
+  int(8)
+  ["service_passive_timeout"]=>
+  int(120)
+  ["service_var"]=>
+  string(0) ""
+  ["server_icon"]=>
+  string(9) "linux.gif"
+  ["service_check_timeout"]=>
+  int(20)
+  ["service_ack_enabled"]=>
+  int(0)
+  ["service_ack_current"]=>
+  int(0)
+  ["service_retain"]=>
+  int(0)
+  ["service_retain_current"]=>
+  int(150)
+  ["check_is_running"]=>
+  int(0)
+  ["check_starttime"]=>
+  int(0)
+  ["shm_place"]=>
+  int(2)
+  ["service_time_sum"]=>
+  int(212515)
+  ["service_time_count"]=>
+  int(7043)
+  ["service_delay_sum"]=>
+  int(3408)
+  ["service_delay_count"]=>
+  int(7043)
+  ["service_snmp_community"]=>
+  string(0) ""
+  ["service_snmp_textmatch"]=>
+  string(0) ""
+  ["service_snmp_objid"]=>
+  string(0) ""
+  ["service_snmp_warning"]=>
+  int(0)
+  ["service_snmp_critical"]=>
+  int(0)
+  ["service_snmp_version"]=>
+  int(1)
+  ["service_snmp_type"]=>
+  int(1)
+  ["flap_seconds"]=>
+  int(120)
+  ["server_flap_seconds"]=>
+  int(120)
+  ["server_last_notify_send"]=>
+  int(1373888853)
+  ["server_notify"]=>
+  int(1)
+  ["server_enabled"]=>
+  int(1)
+  ["server_dead"]=>
+  int(0)
+  ["renotify_interval"]=>
+  int(0)
+  ["escalate_divisor"]=>
+  int(0)
+  ["fires_events"]=>
+  int(0)
+  ["enabled_triggers"]=>
+  string(0) ""
+  ["server_gone"]=>
+  int(0)
+  ["is_gone"]=>
+  int(0)
+  ["is_downtime"]=>
+  int(0)
+  ["servergroups"]=>
+  array(1) {
+    [0]=>
+    array(8) {
+      ["servergroup_place"]=>
+      int(0)
+      ["servergroup_name"]=>
+      string(3) "sad"
+      ["servergroup_members"]=>
+      string(9) "|4|15|13|"
+      ["servergroup_active"]=>
+      int(1)
+      ["servergroup_notify"]=>
+      int(1)
+      ["servergroup_id"]=>
+      int(17)
+      ["servergroup_dead"]=>
+      int(0)
+      ["enabled_triggers"]=>
+      string(0) ""
+    }
+  }
+  ["servicegroups"]=>
+  array(1) {
+    [0]=>
+    array(8) {
+      ["servicegroup_place"]=>
+      int(0)
+      ["servicegroup_name"]=>
+      string(7) "DEFAULT"
+      ["servicegroup_member"]=>
+      string(355) "|104||26005||26011||116||11||26046||26040||26003||26032||26041||105||26073||25999||26035||26037||26047||26012||26007||109||26169||26010||26002||26051||26044||26067||26038||106||26004||26013||26008||26166||26042||26049||26168||15||26023||13||26015||26070||117||26034||26069||26050||26167||115||26045||26036||26080||26048||26068||26031||26072||26066||26043|"
+      ["servicegroup_active"]=>
+      int(1)
+      ["servicegroup_notify"]=>
+      int(1)
+      ["servicegroup_id"]=>
+      int(7)
+      ["servicegroup_dead"]=>
+      int(0)
+      ["enabled_triggers"]=>
+      string(0) ""
+    }
+  }
+  ["x"]=>
+  int(0)
+  ["color"]=>
+  string(5) "green"
+  ["state_readable"]=>
+  string(2) "OK"
+  ["class"]=>
+  string(7) "header1"
+		*/
+		$rt = true;
+		
+		if(strstr($string, " ")) {
+			$els = explode(" and ", $string);
+			
+			for($x=0; $x<count($els); $x++) {
+				$criteria = explode(" ", $els[$x]);
+				
+				if($criteria[1] == "=") {
+					if($svc[$criteria[0]] != $criteria[2]) {
+						$rt = false;
+					}
+				}				
+				if($criteria[1] == "!") {
+					if($svc[$criteria[0]] == $criteria[2]) {
+						$rt = false;
+					}
+				}		
+				if($criteria[1] == "~") {
+					
+					if(!@preg_match("/" . $criteria[2] . "/i", $svc[$criteria[0]]) ) {
+						//echo "set false " . $criteria[0] . " does not match " . $criteria[2] . " (" . $svc[$criteria[0]] . ")<br>";
+						$rt = false;
+					}
+				}		
+				if($criteria[1] == "!~") {
+					if(@preg_match("/" . $criteria[2] . "/i", $svc[$criteria[0]]) ) {
+						$rt = false;
+					}
+				}
+				if($criteria[1] == ">") {
+					if($svc[$criteria[0]] < $criteria[2] ) {
+						$rt = false;
+					}
+				
+				}
+				if($criteria[1] == "<") {
+					if($svc[$criteria[0]] > $criteria[2] ) {
+						$rt = false;
+					}
+				
+				}
+					
+				
+			}
+			return $rt;
+				
+		} else {
+			//Classic search
+			if(@preg_match("/" . $string . "/i", $svc[server_name] . "/" . $svc[service_name])) {
+				return true;
+			}
+		}
+		
+		
+		return true;
+	}
 	function doReload() {
 		global $Bartlby_CONF_Remote;
 		

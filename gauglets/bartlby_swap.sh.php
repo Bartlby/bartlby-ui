@@ -54,10 +54,8 @@ $cur_val = 100-$m[1];
   
 <?
 
-$layout->refreshable_objects["bartlby_swap.sh_" . $plcs[service][service_id] . "_1_cur"]=$cur_val;
-$layout->refreshable_objects["bartlby_swap.sh_" . $plcs[service][service_id] . "_1_max"]=$max_value;
-
-
-
+	$layout->setRefreshableVariable("bartlby_swap.sh_" . $plcs[service][service_id] . "_1_cur", $cur_val);
+	$layout->setRefreshableVariable("bartlby_swap.sh_" . $plcs[service][service_id] . "_1_max", $max_value);
+	
 
 ?>

@@ -73,9 +73,10 @@ for($x=0; $x<count($ar); $x++) {
 $gauge_idx=count($layout->gauges);
 
 for($x=0; $x<count($cur_val); $x++) {
-	$layout->refreshable_objects["bartlby_disk.sh_" . $plcs[service][service_id] . "_" . $x . "_cur"]=$cur_val[$x];
-	$layout->refreshable_objects["bartlby_disk.sh_" . $plcs[service][service_id] . "_" . $x . "_max"]=$max_value;
+	$layout->setRefreshableVariable("bartlby_disk.sh_" . $plcs[service][service_id] . "_" . $x . "_cur", $cur_val[$x]);
+	$layout->setRefreshableVariable("bartlby_disk.sh_" . $plcs[service][service_id] . "_" . $x . "_max", $max_value);
 	
+
 }
 
 

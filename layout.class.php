@@ -35,7 +35,9 @@ class Layout {
 		if($name=="") $name="classic";
 		$this->theme=$name;	
 	}
-	
+	function setRefreshableVariable($k, $v) {
+		$this->refreshable_objects[$k] = $v;
+	}
 	function set_menu($men) {
 		$this->OUT .= "<script>doToggle('" . $men . "');</script>";	
 		$this->menu_set=true;
@@ -436,6 +438,11 @@ class Layout {
 		
 		$this->create_box($this->BoxTitle, $this->OUT, "MAIN", "", "", false, true);
 
+		
+	
+		
+		
+
 
 		//Default LineUp
 		if($lineup_file == "") {
@@ -543,21 +550,29 @@ class Layout {
 		
 		$o = ob_get_contents();	
 			
-		ob_end_clean();		
+		ob_end_clean();	
+		
+	
+			
 		$this->boxes[$oid]=$o;
 		$this->boxes_content[$oid]=$content;
+		
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
-			$this->create_box($title, $o, $oid, "","", $collapsed);
+		
+			$this->create_box($title, $o, $oid, "","", $collapsed, false);
 		}
-
-		if($auto_reload)
-		$this->OUT .= "<script>
+		
+		
+		if($auto_reload) {
+			
+		$this->boxes[$oid] .= "<script>
 		btl_add_refreshable_object(function(data) {
 				
-				$('#content_" . $id . "').html(data.boxes_content." . $id . ");
+				$('#content_" . $oid . "').html(data.boxes_content." . $oid . ");
 		});
 		</script>";
-
+		
+		}
 		return $oid;
 	}
 	function push_outside($content) {

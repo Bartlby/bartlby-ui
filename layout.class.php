@@ -168,8 +168,10 @@ class Layout {
 		}
 		
 	}
-	function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen') {
+	function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen', $default_preset = false) {
 		global $_GET;
+		
+		
 		
 		if(strstr($custom_name, "ajax")) {
 			if($_GET[dropdown_search] == 1 && $_GET[dropdown_name] == $name) {

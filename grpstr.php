@@ -138,13 +138,13 @@ $map = $btl->GetSVCMap();
 
 
 
-
+//function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen') {
 $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Select Service",
 				1=>array(
-					"show"=>$layout->DropDown("grp_service_id", $servers,"",false,  ""),
+					"show"=>$layout->DropDown("grp_service_id", $servers,"","",false,  "ajax_grp_service_id"),
 					'colspan'=> 2
 					
 					)

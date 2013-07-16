@@ -125,15 +125,41 @@ function docReady(){
 
 	//uniform - styler for checkbox, radio and file input
 	//$("input:radio, input:file").not('[data-no-uniform="true"],#uniform-is-ajax').uniform();
-
+//
 	//chosen - improves select
-	$('[data-rel="ajax_servicegroup_list"],[data-rel="ajax_package_services"],[data-rel="ajax_report_service"],[data-rel="ajax_modify_worker_services"],[data-rel="ajax_service_list_php"],[data-rel="chosen"],[rel="chosen"]').css("width", "100%");
-	$('[data-rel="ajax_servicegroup_list"],[data-rel="ajax_package_services"],[data-rel="ajax_report_service"],[data-rel="ajax_modify_worker_services"],[data-rel="ajax_service_list_php"],[data-rel="chosen"],[rel="chosen"]').css("max-width", "300px");
-	$('[data-rel="ajax_servicegroup_list"],[data-rel="ajax_package_services"],[data-rel="ajax_report_service"],[data-rel="ajax_modify_worker_services"],[data-rel="ajax_service_list_php"],[data-rel="chosen"],[rel="chosen"]').css("min-width", "200px");
+	$('[data-rel="ajax_grp_service_id"],[data-rel="ajax_servicegroup_list"],[data-rel="ajax_package_services"],[data-rel="ajax_report_service"],[data-rel="ajax_modify_worker_services"],[data-rel="ajax_service_list_php"],[data-rel="chosen"],[rel="chosen"]').css("width", "100%");
+	$('[data-rel="ajax_grp_service_id"],[data-rel="ajax_servicegroup_list"],[data-rel="ajax_package_services"],[data-rel="ajax_report_service"],[data-rel="ajax_modify_worker_services"],[data-rel="ajax_service_list_php"],[data-rel="chosen"],[rel="chosen"]').css("max-width", "300px");
+	$('[data-rel="ajax_grp_service_id"],[data-rel="ajax_servicegroup_list"],[data-rel="ajax_package_services"],[data-rel="ajax_report_service"],[data-rel="ajax_modify_worker_services"],[data-rel="ajax_service_list_php"],[data-rel="chosen"],[rel="chosen"]').css("min-width", "200px");
 	$('[data-rel="chosen"],[rel="chosen"]').chosen({ search_contains: true });
 	
 	
-	
+	$('[data-rel="ajax_grp_service_id"]').ajaxChosen(
+	{
+    type: 'GET',
+    afterTypeDelay: 500,
+    jsonTermKey: "dropdown_term",
+    url: 'grpstr.php?dropdown_search=1&dropdown_name=grp_service_id',
+    dataType: 'json'
+}, function (data) {
+    var results = [];
+		
+    $.each(data, function (i, val) {
+    	console.log(val);
+        var group = { // here's a group object:
+            group: true,
+            text: val.text, // label for the group
+            items: [] // individual options within the group
+        };
+
+        $.each(val.items, function (i1, val1) {
+            group.items.push({value: val1.value, text: val1.text});
+        });
+				
+        results.push(group);
+    });
+
+    return results;
+});
 	
 	
 	$('[data-rel="ajax_servicegroup_list"]').ajaxChosen(

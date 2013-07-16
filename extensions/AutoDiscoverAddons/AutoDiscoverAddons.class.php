@@ -120,9 +120,31 @@ class AutoDiscoverAddons {
         	$rrd_dir=bartlby_config($btl->CFG, "performance_rrd_htdocs");
         	$svc_counter=bartlby_config(getcwd() . "/ui-extra.conf", "special_addon_ui_" . $svcid . "_cnt");
 					if(!$svc_counter) {
-						$r = $this->_globExt($_GET[xajaxargs][2], $rrd_dir);
-						$re->addAssign("autodiscoveraddons_layer", "innerHTML", $r);
-						$re->addAssign("AutoDiscoverAddonsHide", "style.display", "none");
+						$this->images[] = '<div id="mygraph"></div><div id="mygraphPNP"></div>
+															<a href="#" onClick="glb_fname_update()">Load RRD widget</A>
+															';
+						$this->images_labels[]="RRD Browser";
+						
+						
+						$this->_globExt($_GET[xajaxargs][2], $rrd_dir);
+						
+						
+						if(count($this->images) > 0)  {
+							$r = $this->adaTabs();
+						}
+						
+					
+						
+						$re->addAssign("ada_autorefresh", "innerHTML", $r);
+							$re->addScript("$('#myTab a:first').tab('show');
+														$('#myTab a').click(function (e) {
+														  e.preventDefault();
+														  $(this).tab('show');
+														});
+														$('#AutoDiscoverAddonsHide').css('display', 'none');");
+														
+														
+					
 					}
         	
         	
@@ -141,11 +163,20 @@ class AutoDiscoverAddons {
 				xajax_updatePerfHandler(\"xajax_ExtensionAjax('AutoDiscoverAddons', 'xajax_update', '" . $defaults[service_id] . "')\", '" . $defaults[server_id] . "','" . $defaults[service_id] . "');
         	  		
         	  	}
+        	  	function glb_fname_update() {
+        	  		if(typeof(fname_update) == 'function') {
+        	  			fname_update();
+        	  		}
+        	  		if(typeof(fname_updatePNP) == 'function') {
+        	  			fname_updatePNP();
+        	  		}
+        	  		
+        	  	}
         	  	
         	  	
         	  </script>
-        	  <div id=AutoDiscoverAddonsHide style='display:none'><font color='red'><img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> reload in progress....</font></div><a href='javascript:updatePerfhandlerExt();'>Update Perfhandler data</A><br>
-        	  <a href='#' onClick=\"$('#autodiscoveraddons_layer').toggle()\">Display generated Graphs</A><div id='autodiscoveraddons_layer' style='display:" . $this->disp .  ";'>";
+        	  <div id=AutoDiscoverAddonsHide style='display:none'><font color='red'><img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> reload in progress....</font></div><br>
+        	  <div id='autodiscoveraddons_layer' style='display:" . $this->disp .  ";'>";
         	  return $r;
        }
        function endScripts() {
@@ -158,6 +189,7 @@ class AutoDiscoverAddons {
         function _globExt($svcid, $path, $width="", $all=true) {
         	  global $defaults, $xajax, $btl;
         	  $x = 0;        	  
+        	  $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
                 foreach(glob($path . "/" . $svcid . "_*.png") as $fn) {
                 				if($all == false) {
                 					
@@ -168,11 +200,23 @@ class AutoDiscoverAddons {
                 							break;
                 						}
                 				}
-                        $r .= "<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
+                				$s_image ="<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
+                        $r .=  $s_image;
+                        $this->images[] = $s_image;
+                        $bn = basename($fn);
+                        if(preg_match("/" . $defaults[plugin] . ".png$/i", basename($fn))) $bn = "1 hour";
+                        if(preg_match("/24h.png$/i", basename($fn))) $bn = "24 hour";
+                        if(preg_match("/31.png$/i", basename($fn))) $bn = "30 days";
+                        if(preg_match("/365.png$/i", basename($fn))) $bn = "356 days";
+                        if(preg_match("/7.png$/i", basename($fn))) $bn = "1 week";
+                        	
+                        $mt = date("d.m.Y H:i:s", filemtime($fn));
+                        	
+                        $this->images_labels[] = $bn;
                         $x++;
                 } 
                 
-                 $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
+                 
                  $pnp4_nagios=bartlby_config(getcwd() . "/ui-extra.conf", "pnp4nagios");
 									if($pnp4_nagios) {
 														if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
@@ -182,8 +226,12 @@ class AutoDiscoverAddons {
 															$i_start = time()-(60*60);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
 															
+															
+															$s_image = "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
+															$re .= $s_image;
+															$this->images[] = $s_image;
+															$this->images_labels[] = "1h";
 															
 															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
 															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
@@ -192,7 +240,11 @@ class AutoDiscoverAddons {
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
 																						
 															
-															$tre .= "<img  $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
+															$s_image = "<img  $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
+
+															$tre .= $s_image;
+															$this->images[] = $s_image;
+															$this->images_labels[] = "24h";
 															
 															if($all == false) {
 																	return $tre;
@@ -214,15 +266,22 @@ class AutoDiscoverAddons {
 															$i_start = time()-(86400*30);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img $width  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															$s_image = "<img $width  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															
+															$re .= $s_image;
+															$this->images[] = $s_image;
+															$this->images_labels[] = "30 days";
 															
 															$pnp4_hostname = $defaults[server_id] . "-" . $defaults[server_name];
 															$pnp4_servicename = $defaults[service_id] . "-" .  $defaults[service_name];
 															$i_start = time()-(86400*365);
 															$i_end = time();
 															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
-															$re .= "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
+															$s_image = "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 															
+															$re .= $s_image;
+															$this->images[] = $s_image;
+															$this->images_labels[] = "365 days";
 													}
 														
 												}	
@@ -273,12 +332,16 @@ class AutoDiscoverAddons {
 																	        var f=new rrdFlot("mygraph",rrd_data,null, null, dopts);
 																	      }
 																	      
-																	      fname_update();
+																	      
 																	      
 																		
 																	
 																	</script>
-																	<div id="mygraph"></div>';
+																	';
+																	$this->images[] = '<div id="mygraph"></div><div id="mygraphPNP"></div>
+															<a href="#" onClick="glb_fname_update()">Load RRD widget</A>
+															';
+																	$this->images_labels[]="RRD Browser";
 															}
                         			$pnp4_nagios=bartlby_config(getcwd() . "/ui-extra.conf", "pnp4nagios");
                         			if($pnp4_nagios) {
@@ -317,16 +380,39 @@ class AutoDiscoverAddons {
 																				        var f=new rrdFlot("mygraphPNP",rrd_data,null, null, dopts);
 																				      }
 																				      
-																				      fname_updatePNP();
+																				      
 																				      
 																					
 																				
 																				</script>
-																				<div id="mygraphPNP"></div>';
+																			';
+																		
+																		$this->images[] = '<div id="mygraph"></div><div id="mygraphPNP"></div>
+															<a href="#" onClick="glb_fname_update()">Load RRD widget</A>
+															';
+																	$this->images_labels[]="RRD Browser";
 																		}
+																		
                         				
                         			}
                         			return $re;
+				}
+				function adaTabs() {
+					$re = "";
+																$re .= '<ul class="nav nav-tabs" id="myTab">';
+                        		    for($x=0; $x<count($this->images); $x++) {
+                        		    	$re .= '<li><a href="#tab' . $x . '">' . $this->images_labels[$x] . '</a></li>';
+                        		    }
+                         		    $re .= '</ul>';
+                         		    $re .= '<div id="myTabContent" class="tab-content">';
+                         		    for($x=0; $x<count($this->images); $x++) {
+                         		    	$re .= '<div class="tab-pane" id="tab' . $x . '">';
+                         		    	$re .= $this->images[$x];
+                         		    	$re .= '</div>';
+                         		    }
+                         		    $re .= '</div>';
+				return $re;                         		    
+                         		    
 				}
         function _serviceDetail() {
                 global $defaults, $btl;
@@ -340,12 +426,27 @@ class AutoDiscoverAddons {
                         		
                         				$re .= $this->getRRDWidget();
                         		    $re .= $this->getJavascripts();
-                        		    $re .= $this->_globExt($svcid, $rrd_dir);
+                        		    $this->_globExt($svcid, $rrd_dir);
+                        		    
+                        		    
+                        		    
+                        		    
                         		    $re .= $this->endScripts();
-                            	    
+                        		    
+                        		    $re .= "<div id=ada_autorefresh>";
+                        		    if(count($this->images) > 0) {
+                        		    	$re .= $this->adaTabs();
+                        		  	}
+                        		  	$re .= "</div>";
+                        		  	
+                            	  if(count($this->images) <= 1) {
+																			$re .= "<a href='#' onClick='updatePerfhandlerExt();'>Rescan for Perfhandler Data</A>";
+																}
                         	}
                        
+                       		
 													return $re;
+													
 	                } else {
        	                 return "";
               	  }

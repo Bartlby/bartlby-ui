@@ -768,7 +768,7 @@ switch($act) {
 					"server_ssh_keyfile" => $_GET[server_ssh_keyfile],
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
-					"server_dead" => $_GET["text_service_search1"],
+					"server_dead" => $_GET[service_id],
 					"enabled_triggers" => $triggerstr
 					
 				);
@@ -804,7 +804,7 @@ switch($act) {
 				"servergroup_notify" => $_GET[servergroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servergroup_members" => $group_members,
-				"servergroup_dead" => (int)$_GET["text_service_search1"]
+				"servergroup_dead" => (int)$_GET["service_dead"]
 						
 			);
 			
@@ -843,7 +843,7 @@ switch($act) {
 				"servicegroup_notify" => $_GET[servicegroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servicegroup_members" => $group_members,
-				"servicegroup_dead" => (int)$_GET["text_service_search1"]
+				"servicegroup_dead" => (int)$_GET["service_dead"]
 						
 			);
 			$add_servergroup = bartlby_modify_servicegroup($btl->CFG, $_GET[servicegroup_id], $svcgrp_obj);
@@ -880,7 +880,7 @@ switch($act) {
 				"servicegroup_notify" => $_GET[servicegroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servicegroup_members" => $group_members,
-				"servicegroup_dead" => (int)$_GET["text_service_search1"]
+				"servicegroup_dead" => (int)$_GET["service_dead"]
 						
 			);
 			
@@ -920,7 +920,7 @@ switch($act) {
 				"servergroup_notify" => $_GET[servergroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servergroup_members" => $group_members,
-				"servergroup_dead" => (int)$_GET["text_service_search1"]
+				"servergroup_dead" => (int)$_GET["service_dead"]
 				
 			
 				

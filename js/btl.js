@@ -151,6 +151,7 @@ $(document).ready(function() {
 					"fnInitComplete": function() {
 						
 					},
+					"iDisplayLength": 50,
 					"fnDrawCallback": function ( oSettings ) {
 						
 						if ( oSettings.aiDisplay.length == 0 )

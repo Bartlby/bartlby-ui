@@ -56,7 +56,44 @@ $optind=0;
 	
 	
 
+$map = $btl->GetSVCMap();
+
 $optind=0;
+	while(list($k, $servs) = @each($map)) {
+		$displayed_servers++;
+		
+		for($x=0; $x<count($servs); $x++) {
+			//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+			
+			if($x == 0) {
+				//$isup=$btl->isServerUp($v1[server_id]);
+				//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+				$alive_indicator[$optind][c]="";
+				$alive_indicator[$optind][v]="s" . $servs[$x][server_id];	
+				$alive_indicator[$optind][k]="" . $servs[$x][server_name] . "";
+				$alive_indicator[$optind][is_group]=1;
+				$optind++;
+			} else {
+				
+			}
+			if($servs[$x][is_gone] != 0) {
+			 continue;
+			}
+			
+			$state=$btl->getState($servs[$x][current_state]);
+			if($servs[$x][service_id] == $defaults[servergroup_dead]) {
+				$alive_indicator[$optind][s]=1;
+			}
+			$alive_indicator[$optind][c]="";
+			$alive_indicator[$optind][v]=$servs[$x][service_id];	
+			$alive_indicator[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+			
+			$optind++;
+		}
+	}
+
+$optind=0;
+
 
 
 
@@ -200,7 +237,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$btl->service_selector("dead_marker", $svc_dead_marker[server_name] . "/" . $svc_dead_marker[service_name] , "service_search1", $defaults[servergroup_dead])
+			1=>$layout->DropDown("service_dead", $alive_indicator,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_dead\").find(\"option\").remove();$(\"#service_dead\").trigger(\"liszt:updated\");'>Remove</A></div>"
 		)
 	)
 ,true);

@@ -348,8 +348,8 @@ class BartlbyUi {
 				
 		} else {
 			//Classic search
-			if(@preg_match("/" . $string . "/i", $svc[server_name] . "/" . $svc[service_name])) {
-				return true;
+			if(!@preg_match("/" . $string . "/i", $svc[server_name] . "/" . $svc[service_name])) {
+				return false;
 			}
 		}
 		

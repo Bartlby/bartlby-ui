@@ -24,7 +24,45 @@ if($_GET[server_id]) {
 }
 
 
+
+	
+
 $defaults=@bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+
+$map = $btl->GetSVCMap();
+$optind=0;
+	while(list($k, $servs) = @each($map)) {
+		$displayed_servers++;
+		
+		for($x=0; $x<count($servs); $x++) {
+			//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+			
+			if($x == 0) {
+				//$isup=$btl->isServerUp($v1[server_id]);
+				//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+				$servers[$optind][c]="";
+				$servers[$optind][v]="s" . $servs[$x][server_id];	
+				$servers[$optind][k]="" . $servs[$x][server_name] . "";
+				$servers[$optind][is_group]=1;
+				$optind++;
+			} else {
+				
+			}
+			if($servs[$x][is_gone] != 0) {
+			 continue;
+			}
+			
+			$state=$btl->getState($servs[$x][current_state]);
+			if($servs[$x][service_id] == $defaults[server_dead]) {
+				$servers[$optind][s]=1;
+			}
+			$servers[$optind][c]="";
+			$servers[$optind][v]=$servs[$x][service_id];	
+			$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+			
+			$optind++;
+		}
+	}
 
 $optind=0;
 if(!is_dir("pkgs")) {
@@ -239,7 +277,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$btl->service_selector("dead_marker", $svc[server_name] . "/" . $svc[service_name] , "service_search1", $defaults[server_dead])
+			1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_id\").find(\"option\").remove();$(\"#service_id\").trigger(\"liszt:updated\");'>Remove</A></div>"
 		)
 	)
 ,true);

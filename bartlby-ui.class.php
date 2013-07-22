@@ -1513,6 +1513,10 @@ class BartlbyUi {
 						$ex[ex_name]=$file;
 						$ex[out] = $o;
 						
+						if($method == "_About") { 
+								$ex[methods] = get_class_methods($clh);
+						}
+						
 						if($o != "") {
 							array_push($r, $ex);
 							

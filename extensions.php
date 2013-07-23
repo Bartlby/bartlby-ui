@@ -1,15 +1,6 @@
 <?php
 
 
-$msg->type="Trigger-Pushed";
-$msg->service_id=26167;
-$msg->server_and_service_name="localhost new:9030/Disk";
-$msg->current_state=0;
-$msg->current_output="[bartlby_disk::OK]\dbr [disk: / reached 13% 869239 free OK ]\dbr [disk: /dev reached 0% 10 free OK ]\dbr [disk: /run reached 1% 1577 free OK ]\dbr [disk: / reached 13% 869239 free OK ]\dbr [disk: /run/lock reached 0% 5 free OK ]\dbr [disk: /run/shm reached 0% 3975 free OK ]\dbr [disk: /boot reached 12% 417 free OK ]\dbr [disk: /home reached 1% 1698594 free OK ]\dbr";
-
-echo json_encode($msg);
-exit;
-
 function dnl($i) {
 	return sprintf("%02d", $i);
 }

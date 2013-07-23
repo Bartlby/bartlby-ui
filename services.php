@@ -75,10 +75,15 @@
 				
 					continue;	
 				}
-				if($_GET[downtime] == "" &&  $_GET[invert] && $_GET[expect_state] != "" && $servs[$x][current_state] == $_GET[expect_state]) {
+				if($_GET[downtime] == "" &&  $_GET[invert] && $_GET[expect_state] != "" && $servs[$x][current_state] == $_GET[expect_state] ) {
 					
 					continue;
 				}
+				
+				if($_GET[invert] && $_GET[expect_state] != "" && $servs[$x][current_state] == 4) {
+					continue; //Skip out info on all failures
+				}
+				
 				if($_GET[downtime] && $servs[$x][is_downtime] != 1) {
 					
 					continue;	

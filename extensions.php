@@ -1,4 +1,15 @@
 <?php
+
+
+$msg->type="Trigger-Pushed";
+$msg->service_id=26167;
+$msg->server_and_service_name="localhost new:9030/Disk";
+$msg->current_state=0;
+$msg->current_output="[bartlby_disk::OK]\dbr [disk: / reached 13% 869239 free OK ]\dbr [disk: /dev reached 0% 10 free OK ]\dbr [disk: /run reached 1% 1577 free OK ]\dbr [disk: / reached 13% 869239 free OK ]\dbr [disk: /run/lock reached 0% 5 free OK ]\dbr [disk: /run/shm reached 0% 3975 free OK ]\dbr [disk: /boot reached 12% 417 free OK ]\dbr [disk: /home reached 1% 1698594 free OK ]\dbr";
+
+echo json_encode($msg);
+exit;
+
 function dnl($i) {
 	return sprintf("%02d", $i);
 }
@@ -87,7 +98,7 @@ for($x=0; $x<count($r); $x++) {
 		for($y=0; $y<count($r[$x][methods]); $y++) {
 			if(preg_match("/^(_|widget_).*/", $r[$x][methods][$y])) {
 				
-				$provides .= $r[$x][methods][$y] . "\r\n";
+				$provides .= $r[$x][methods][$y] . "<br>";
 				if(preg_match("/^widget/", $r[$x][methods][$y])) {
 					$provides_widgets = true;
 				}
@@ -97,7 +108,7 @@ for($x=0; $x<count($r); $x++) {
 		$basic_provides="Functions";
 		if($provides_widgets) $basic_provides .= ",Widgets";
 		
-		$ext_table .= ' <td><div data-rel="tooltip" title="' . $provides . '">' . $basic_provides . '</div></td>';
+		$ext_table .= ' <td><a href="#" data-rel="popover" title="Provides" data-content="' . $provides . '">' . $basic_provides . '</a></td>';
 		
 		$enabled = "Enabled";
 		$btn_class="btn-success";

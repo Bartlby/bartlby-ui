@@ -449,6 +449,7 @@ $('[data-rel="ajax_report_service"]').ajaxChosen(
 		tour.restart();
 	}
 
+	
 
 	//datatable
 	$('.datatable').dataTable({

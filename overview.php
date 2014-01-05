@@ -35,7 +35,7 @@ $Author: hjanuschka $
 	$layout->set_menu("main");
 	//$layout->MetaRefresh(30);
 	$layout->Table("100%");
-	$lib=bartlby_lib_info($btl->CFG);
+	$lib=bartlby_lib_info($btl->RES);
 	$info=$btl->info;
 	
 	$reload_status="data is up-to-date";

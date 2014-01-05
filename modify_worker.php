@@ -17,7 +17,7 @@ $layout= new Layout();
 
 $layout->set_menu("worker");
 $layout->setTitle("Modify Worker");
-$defaults=@bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
+$defaults=@bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 
 $layout->OUT .= "<script>global_worker_id=" . $_GET[worker_id] . ";</script>";
 

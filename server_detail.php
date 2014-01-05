@@ -26,7 +26,7 @@ $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("Services");
 
-$defaults=bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+$defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 $btl->hasServerRight($_GET[server_id]);
 
 if(!$defaults) {
@@ -34,7 +34,7 @@ if(!$defaults) {
 	exit(1);	
 }
 
-$map=$btl->getSVCMap($btl->CFG, NULL, NULL);
+$map=$btl->getSVCMap($btl->RES, NULL, NULL);
 $server_map=$map[$_GET[server_id]];
 
 

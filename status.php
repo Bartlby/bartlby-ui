@@ -7,7 +7,7 @@
 	$layout= new Layout();
 	$layout->MetaRefresh(10);
 	$layout->Table("100%");
-	$lib=bartlby_lib_info($btl->CFG);
+	$lib=bartlby_lib_info($btl->RES);
 	
 	$base_dir=bartlby_config($btl->CFG, "basedir");
 	$mode=bartlby_config($btl->CFG, "i_am_a_slave");

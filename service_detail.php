@@ -16,7 +16,7 @@ if($_GET[service_id]) {
 	$_GET[service_place] = $btl->findSHMPlace($_GET[service_id]);	
 }
 
-$defaults=bartlby_get_service($btl->CFG, $_GET[service_place]);
+$defaults=bartlby_get_service($btl->RES, $_GET[service_place]);
 
 
 $btl->hasServerorServiceRight($defaults[service_id]);
@@ -30,7 +30,7 @@ if(!$btl->hasRight("view_service_output", false)) {
 	$defaults[new_server_text] = "you are missing: view_service_output right";	
 } 
 
-$map=$btl->getSVCMap($btl->CFG, NULL, NULL);
+$map=$btl->getSVCMap($btl->RES, NULL, NULL);
 
 
 $svc_color=$btl->getColor($defaults[current_state]);

@@ -18,7 +18,7 @@ $optind=0;
 	while(list($k, $v) = @each($servs)) {
 		
 		
-		$v1=bartlby_get_worker_by_id($btl->CFG, $v[worker_id]);
+		$v1=bartlby_get_worker_by_id($btl->RES, $v[worker_id]);
 
 		$workers[$optind][c]="";
 		$workers[$optind][v]=$v[worker_id];	

@@ -39,12 +39,12 @@
 	
 	for($x=0; $x<count($stored2[$current_hour]); $x++) {
 		$shm_id=$l[$stored2[$current_hour][$x]];
-		bartlby_set_worker_state($btl->CFG, $shm_id, 2);
+		bartlby_set_worker_state($btl->RES, $shm_id, 2);
 		$output .= "set on standby: " . $lo[$stored2[$current_hour][$x]][name] . "<br>\n";
 	}
 	for($x=0; $x<count($stored1[$current_hour]); $x++) {
 		$shm_id=$l[$stored1[$current_hour][$x]];
-		bartlby_set_worker_state($btl->CFG, $shm_id, 1);
+		bartlby_set_worker_state($btl->RES, $shm_id, 1);
 		$output .= "set on active: " . $lo[$stored1[$current_hour][$x]][name] . "<br>\n";
 	}
 	

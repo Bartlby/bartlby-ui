@@ -29,7 +29,7 @@ if(!$defaults && !$_GET[all_servers]) {
 	exit(1);	
 }
 
-$servers=$btl->getSVCMap($btl->CFG, NULL, NULL);
+$servers=$btl->getSVCMap($btl->RES, NULL, NULL);
 
 
 if($defaults["servergroup_notify"]==1) {

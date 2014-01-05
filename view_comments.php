@@ -7,7 +7,7 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $layout= new Layout();
 $layout->set_menu("main");
 
-$svc=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+$svc=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 
 if($svc[current_state] == 0) {
 	$chk0="checked";	

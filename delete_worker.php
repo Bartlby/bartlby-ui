@@ -25,7 +25,7 @@ if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 }
 
 
-$global_msg=bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
+$global_msg=bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 
 $dlmsg=$btl->finScreen("delete_worker1");
 

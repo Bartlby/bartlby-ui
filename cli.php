@@ -30,7 +30,7 @@ error_reporting(0);
 	$layout->DisplayHelp(array(0=>"WARN|Welcome to BartlbyUI",1=>"INFO|This is the help screen"));
 	$layout->MetaRefresh(30);
 	$layout->Table("100%");
-	$lib=@bartlby_lib_info($btl->CFG);
+	$lib=@bartlby_lib_info($btl->RES);
 	
 // define some key constants.
 define("ESCAPE_KEY", 27);
@@ -70,12 +70,12 @@ while(1){
 	ncurses_getmaxyx($main, $lines, $columns);
 	ncurses_timeout(2);
 	$k = ncurses_getch();
-	$info = @bartlby_get_info($btl->CFG);
+	$info = @bartlby_get_info($btl->RES);
 	$ztx=0;
 	if($info[do_reload] == 1) {
 		while(1) {
 			disp_reload_window();
-			$info = @bartlby_get_info($btl->CFG);
+			$info = @bartlby_get_info($btl->RES);
 			if($info[do_reload] == 0) {
 				break;
 			}
@@ -577,7 +577,7 @@ function window_force_check() {
 
         $defaults=$selected_svc;
 
-        bartlby_check_force($btl->CFG, $defaults[shm_place]);
+        bartlby_check_force($btl->RES, $defaults[shm_place]);
 
         $reopen_service=true;
 
@@ -588,9 +588,9 @@ function window_disable_check_server() {
         global $reopen_service, $reopen_server;
 
         $defaults=$selected_svc;
-	$x=bartlby_get_server_by_id($btl->CFG,$defaults[server_id]);
+	$x=bartlby_get_server_by_id($btl->RES,$defaults[server_id]);
 
-        bartlby_toggle_server_active($btl->CFG, $x[server_shm_place], 1);
+        bartlby_toggle_server_active($btl->RES, $x[server_shm_place], 1);
 
         $reopen_server=true;
 
@@ -607,9 +607,9 @@ function window_disable_notification_server() {
         global $reopen_service, $reopen_server;
 
         $defaults=$selected_svc;
-	$x=bartlby_get_server_by_id($btl->CFG,$defaults[server_id]);
+	$x=bartlby_get_server_by_id($btl->RES,$defaults[server_id]);
 
-        bartlby_toggle_server_notify($btl->CFG, $x[server_shm_place], 1);
+        bartlby_toggle_server_notify($btl->RES, $x[server_shm_place], 1);
         $reopen_server=true;
 
 
@@ -627,7 +627,7 @@ function window_disable_check() {
 
         $defaults=$selected_svc;
 
-        bartlby_toggle_service_active($btl->CFG, $defaults[shm_place], 1);
+        bartlby_toggle_service_active($btl->RES, $defaults[shm_place], 1);
 
         $reopen_service=true;
 
@@ -645,7 +645,7 @@ function window_disable_notification() {
 
         $defaults=$selected_svc;
 	
-	bartlby_toggle_service_notify($btl->CFG, $defaults[shm_place], 1);
+	bartlby_toggle_service_notify($btl->RES, $defaults[shm_place], 1);
 	$reopen_service=true;
 
 

@@ -20,7 +20,7 @@
 	$layout->Form("fm1", "extensions_wrap.php");
 	$layout->Table("100%");
 	
-	$defaults=bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+	$defaults=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 
 $layout->Tr(
 	$layout->Td(

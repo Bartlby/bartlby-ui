@@ -44,7 +44,7 @@ if($_GET[service_id]{0} == 's') {
 if($_GET[service_id]) {
 	$btl->hasServerorServiceRight($_GET[service_id]);
 }
-$defaults=@bartlby_get_service_by_id($btl->CFG, $_GET[service_id]);
+$defaults=@bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
 
 $fm_action="modify_service";
 $server_list_type="";
@@ -300,7 +300,7 @@ $layout->set_menu("services");
 $servs=$btl->GetServers();
 $optind=0;
 while(list($k, $v) = each($servs)) {
-	//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+	//$sr=bartlby_get_server_by_id($btl->RES, $k);
 	
 	$servers[$optind][c]="";
 	$servers[$optind][v]=$k;	
@@ -761,10 +761,10 @@ $layout->push_outside($layout->create_box("SNMP Settings<form id='fm1' name='fm1
 if(!$_GET["copy"] && !$_GET["new"]) {
 	$idx=$btl->findSHMPlace($_GET[service_id]);
 	
-	$ssvc=bartlby_get_service($btl->CFG, $idx);
+	$ssvc=bartlby_get_service($btl->RES, $idx);
 	
 	if($ssvc[service_active] == 1) {
-		bartlby_toggle_service_active($btl->CFG, $idx, 0);
+		bartlby_toggle_service_active($btl->RES, $idx, 0);
 		$dounlock=$idx;
 			
 	

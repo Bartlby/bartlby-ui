@@ -22,7 +22,7 @@ if($_GET[server_id]) {
 $btl->hasRight("action.delete_server");
 
 
-$global_msg=bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+$global_msg=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 if($global_msg == false) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	

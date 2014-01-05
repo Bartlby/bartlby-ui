@@ -27,7 +27,7 @@ if($_GET[server_id]) {
 
 	
 
-$defaults=@bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+$defaults=@bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 
 $map = $btl->GetSVCMap();
 $optind=0;
@@ -35,7 +35,7 @@ $optind=0;
 		$displayed_servers++;
 		
 		for($x=0; $x<count($servs); $x++) {
-			//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+			//$v1=bartlby_get_service_by_id($btl->RES, $servs[$x][service_id]);
 			
 			if($x == 0) {
 				//$isup=$btl->isServerUp($v1[server_id]);
@@ -75,7 +75,7 @@ $packages[$optind][v]="";
 $packages[$optind][k]="--None--";
 $optind++;
 while($file = readdir($dhl)) {
-	//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+	//$sr=bartlby_get_server_by_id($btl->RES, $k);
 	
 	//$isup=$btl->isServerUp($k);
 	//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
@@ -192,7 +192,7 @@ if($defaults == false && $_GET["new"] != "true") {
 $optind=0;
 $dhl=opendir("server_icons");
 while($file = readdir($dhl)) {
-	//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+	//$sr=bartlby_get_server_by_id($btl->RES, $k);
 	
 	//$isup=$btl->isServerUp($k);
 	//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
@@ -271,7 +271,7 @@ $ov .= $layout->Tr(
 if(!$_GET["copy"] && !$_GET["new"]) {
 
 	if($defaults[server_dead]) {
-		$svc = bartlby_get_service_by_id($btl->CFG, $defaults[server_dead]);	
+		$svc = bartlby_get_service_by_id($btl->RES, $defaults[server_dead]);	
 	}
 $ov .= $layout->Tr(
 	$layout->Td(

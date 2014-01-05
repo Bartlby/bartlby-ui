@@ -54,7 +54,7 @@ class AutoDiscoverAddons {
             	return $re;            	
             }
             
-            $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
+            $defaults = bartlby_get_service_by_id($btl->RES, $svcid);
             
             
             $l = new Layout();
@@ -189,7 +189,7 @@ class AutoDiscoverAddons {
         function _globExt($svcid, $path, $width="", $all=true) {
         	  global $defaults, $xajax, $btl;
         	  $x = 0;        	  
-        	  $defaults = bartlby_get_service_by_id($btl->CFG, $svcid);
+        	  $defaults = bartlby_get_service_by_id($btl->RES, $svcid);
                 foreach(glob($path . "/" . $svcid . "_*.png") as $fn) {
                 				if($all == false) {
                 					

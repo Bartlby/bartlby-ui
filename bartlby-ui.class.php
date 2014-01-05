@@ -51,7 +51,7 @@ class BartlbyUi {
 		include_once "Mail/mime.php";
 		
 		$storage = new BartlbyStorage("ArS");
-		$defaults=bartlby_get_service_by_id($this->CFG, $service_id);
+		$defaults=bartlby_get_service_by_id($this->RES, $service_id);
 		$rap = "Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
 		$btl_subj = "Bartlby Custom report";
 		
@@ -363,10 +363,10 @@ class BartlbyUi {
 				$this->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
 		}
 		
-		bartlby_reload($this->CFG);
+		bartlby_reload($this->RES);
 		while(1 ) {
 			$x++;
-			$i = @bartlby_get_info($this->CFG);
+			$i = @bartlby_get_info($this->RES);
 			flush();
 			
 			if($i[do_reload] == 0) {
@@ -862,7 +862,7 @@ class BartlbyUi {
 			$bb = explode("=", $aa[$aax]);
 			if($aa[$aax]) {
 				$idx=$this->findSHMPlace($aa[$aax]);
-                                $svc=bartlby_get_service($this->CFG, $idx);
+                                $svc=bartlby_get_service($this->RES, $idx);
                                 $dtemp="";
                                 if($svc[is_downtime] == 1) {
                                         $dtemp="<i>DOWNTIME</i>";
@@ -906,8 +906,9 @@ class BartlbyUi {
 		$this->BASE_URL=substr($_SERVER[SCRIPT_URI], 0, strrpos($_SERVER[SCRIPT_URI], "/")+1);				
 		
 		$this->CFG=$cfg;
+		$this->RES=bartlby_new($cfg);
 		//Check if bartlby is running :-)
-		$this->info=@bartlby_get_info($this->CFG);
+		$this->info=@bartlby_get_info($this->RES);
 		
 		/*
 			Check if process is still here
@@ -924,7 +925,7 @@ class BartlbyUi {
 				exit(1);
 			} 
 		}
-		if($auth == true && bartlby_check_shm_size($cfg) == false) {
+		if($auth == true && bartlby_check_shm_size($this->RES) == false) {
 			if($_SESSION[instance_id] > 0) {
 				$_SESSION[instance_id] = 0;
 				Header("Location: overview.php");
@@ -1006,7 +1007,7 @@ class BartlbyUi {
 		}
 		
 		$rt=false;
-		$svc=bartlby_get_service_by_id($this->CFG, $svcid);
+		$svc=bartlby_get_service_by_id($this->RES, $svcid);
 		if(!$svc) {
 			$rt = false;
 		}
@@ -1235,7 +1236,7 @@ class BartlbyUi {
 		return $this->release;	
 	}
 	function getInfo() {
-		return @bartlby_get_info($this->CFG);	
+		return @bartlby_get_info($this->RES);	
 	}
 	
 	function perform_auth($a=true) {
@@ -1310,7 +1311,7 @@ class BartlbyUi {
 		
 	}
 	function findSHMPlace($svcid) {
-		$map=bartlby_svc_map($this->CFG, $this->rights[services], $this->rights[servers]);
+		$map=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);
 		
 		
 		
@@ -1343,7 +1344,7 @@ class BartlbyUi {
 		
 		$r=array();
 		for($x=0; $x<$this->info[workers]; $x++) {
-			$wrk=bartlby_get_worker($this->CFG, $x);
+			$wrk=bartlby_get_worker($this->RES, $x);
 			if($wrk[name] == "") {
 				$x=0;
 				continue;	
@@ -1361,17 +1362,17 @@ class BartlbyUi {
 	}
 	
 	function GetServerGroups() {
-		$map=bartlby_servergroup_map($this->CFG);
+		$map=bartlby_servergroup_map($this->RES);
 		return $map;
 	}
 	
 	function GetServiceGroups() {
-		$map=bartlby_servicegroup_map($this->CFG);
+		$map=bartlby_servicegroup_map($this->RES);
 		return $map;
 	}
 	function GetServers() {
 		
-		$map=bartlby_svc_map($this->CFG,$this->rights[services], $this->rights[servers]);
+		$map=bartlby_svc_map($this->RES,$this->rights[services], $this->rights[servers]);
 		
 		
 		
@@ -1389,12 +1390,12 @@ class BartlbyUi {
 		/*
 		$ar=array();
 		for($x=0; $x<$this->info[services]; $x++) {	
-			$svc=bartlby_get_service($this->CFG, $x);
+			$svc=bartlby_get_service($this->RES, $x);
 			array_push($ar, $svc);
 		}
 		return $ar;
 		*/
-		$map=bartlby_svc_map($this->CFG, $this->rights[services], $this->rights[servers]);
+		$map=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);
 		
 		
 		
@@ -1421,7 +1422,7 @@ class BartlbyUi {
 		#view_service_output
 		$has_right = $this->hasRight("view_service_output", false);
 		
-		$r=bartlby_svc_map($this->CFG, $this->rights[services], $this->rights[servers]);
+		$r=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);
         
         	
         	//Re order map ;-)
@@ -1624,7 +1625,7 @@ class BartlbyUi {
 			
 
 				
-				$ads=bartlby_add_service($this->CFG, $svc_obj);
+				$ads=bartlby_add_service($this->RES, $svc_obj);
 				
 				
 
@@ -1746,8 +1747,8 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			
 			//$msg = "Creating package: " . $_GET[package_name] . "<br>";
 			for($x=0; $x<$this->info[services]; $x++) {
-				$svc=bartlby_get_service($this->CFG, $x);
-				$svc=bartlby_get_service_by_id($this->CFG, $svc[service_id]);
+				$svc=bartlby_get_service($this->RES, $x);
+				$svc=bartlby_get_service_by_id($this->RES, $svc[service_id]);
 				
 				if(@in_array($svc[service_id], $in_services)) {
 					
@@ -1982,13 +1983,13 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			
 			$idx=$this->findSHMPlace($svcId);
 			$r=$idx;
-			$svc=bartlby_get_service($this->CFG, $idx);
+			$svc=bartlby_get_service($this->RES, $idx);
 			$cmd=$perf_dir . "/" . $svc[plugin];
 			if(!file_exists($cmd)) {
 				$r="Perfhandler '$cmd' does not exists";
 			} else {
 				
-				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->CFG . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
+				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->RES . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
 				
 				$fp=popen($exec, "r");
 				$output="<hr><pre>";

@@ -47,7 +47,7 @@ class Basket {
 		while(@list($k, $v) = @each($sto[services])) {
 			$idx=$btl->findSHMPlace($k);
 			if($idx < 0) continue;
-			$svc = bartlby_get_service($btl->CFG, $idx);
+			$svc = bartlby_get_service($btl->RES, $idx);
 			$beauty_state = $btl->getState($svc[current_state]);
 			$label=$svc[server_name] . "/" . $svc[service_name];
 			$label=substr($label, 0,20);

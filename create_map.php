@@ -264,7 +264,7 @@ visibility: hidden;
 	$server_ico="<select name='icon'>";
 	$dhl=opendir("server_icons");
 	while($file = readdir($dhl)) {
-		//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+		//$sr=bartlby_get_server_by_id($btl->RES, $k);
 		
 		//$isup=$btl->isServerUp($k);
 		//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }

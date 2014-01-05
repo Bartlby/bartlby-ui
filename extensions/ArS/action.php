@@ -71,7 +71,7 @@
 		
 		for($x=0; $x<count($reports); $x++) {
 			$rf=false;
-			$defaults=bartlby_get_service_by_id($btl->CFG, $reports[$x][ars_service_id]);
+			$defaults=bartlby_get_service_by_id($btl->RES, $reports[$x][ars_service_id]);
 			$rap = "Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
 			$btl_subj = "Bartlby report";
 			

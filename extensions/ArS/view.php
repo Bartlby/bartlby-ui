@@ -36,7 +36,7 @@ $layout->Tr(
 	
 	for($x=0; $x<count($reports); $x++) {
 	
-		$defaults=bartlby_get_service_by_id($btl->CFG, $reports[$x][ars_service_id]);
+		$defaults=bartlby_get_service_by_id($btl->RES, $reports[$x][ars_service_id]);
 		if($reports[$x][ars_daily])
 			$day="daily";
 		else

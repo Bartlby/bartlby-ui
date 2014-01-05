@@ -37,7 +37,7 @@
 	$shm_id=$btl->findSHMPlace($svcid);
 	
 	if($shm_id >= 0) {
-		$def=bartlby_get_service($btl->CFG, $shm_id);
+		$def=bartlby_get_service($btl->RES, $shm_id);
 		$svcM=$btl->getServiceOptions($def, $layout) . "<a href='service_detail.php?service_place=" . $shm_id . "'>Detail</A>";
 	}
 	if($_GET[bartlby_filter]) {

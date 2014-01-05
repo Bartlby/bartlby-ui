@@ -28,7 +28,7 @@ $layout->setTitle("Bartlby Last Event's");
 							  </thead>   ';
 	
 	for($x=128; $x>=0; $x--) {
-		$msg=bartlby_event_fetch($btl->CFG, $x);
+		$msg=bartlby_event_fetch($btl->RES, $x);
 		
 		if($msg[id] == 0) {
 			continue;	

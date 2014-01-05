@@ -8,16 +8,16 @@
 	$layout->DisplayHelp(array(0=>"WARN|Welcome to BartlbyUI",1=>"INFO|This is the help screen"));
 	$layout->MetaRefresh(30);
 	$layout->Table("100%");
-	$lib=bartlby_lib_info($btl->CFG);
+	$lib=bartlby_lib_info($btl->RES);
 	
 	
 	$is_repl_on=bartlby_config($btl->CFG, "replication");
 	$repl = "<hr noshade>Replication enabled: <b>$is_repl_on</b><br>";
 	if($is_repl_on == "true") {
 			$repl_cnt=bartlby_config($btl->CFG, "replicate_cnt");
-			$repl .="Replicating to $repl_cnt Servers every " . bartlby_config($btl->CFG, "replication_intervall") . "<br>";
+			$repl .="Replicating to $repl_cnt Servers every " . bartlby_config($btl->RES, "replication_intervall") . "<br>";
 			for($x=1; $x<=$repl_cnt; $x++) {
-				$repl .= str_repeat("&nbsp;", 20) . " Server:" . bartlby_config($btl->CFG, "replicate[" . $x . "]") . "<br>";	
+				$repl .= str_repeat("&nbsp;", 20) . " Server:" . bartlby_config($btl->RES, "replicate[" . $x . "]") . "<br>";	
 			}
 			$repl .= "Last Replication was on:" . date("d.m.Y H:i:s", $btl->info[last_replication]) . "<br>";
 	}
@@ -43,7 +43,7 @@
 	$services_warning=0;
 	
 	for($x=0; $x<$service_sum; $x++) {
-		$svc=bartlby_get_service($btl->CFG, $x);
+		$svc=bartlby_get_service($btl->RES, $x);
 		switch($svc[last_state]) {
 			case 0:
 				$services_ok++;

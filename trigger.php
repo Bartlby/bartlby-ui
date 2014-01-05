@@ -7,7 +7,7 @@
 	$layout= new Layout();
 	
 	$layout->Table("100%");
-	$lib=bartlby_lib_info($btl->CFG);
+	$lib=bartlby_lib_info($btl->RES);
 	$exi=-1;
 	$trigger_dir=bartlby_config($btl->CFG, "trigger_dir");
 	if(!$trigger_dir) {

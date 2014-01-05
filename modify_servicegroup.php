@@ -22,7 +22,7 @@ $layout->Table("100%");
 
 
 
-//$defaults=bartlby_get_servergroup_by_id($btl->CFG, $_GET[server_id]);
+//$defaults=bartlby_get_servergroup_by_id($btl->RES, $_GET[server_id]);
 
 $servicegroups=$btl->GetServiceGroups();
 for($x=0; $x<count($servicegroups); $x++) {
@@ -32,7 +32,7 @@ for($x=0; $x<count($servicegroups); $x++) {
 	}
 }
 if($defaults[servicegroup_dead] != 0) {
-	$svc_dead_marker = bartlby_get_service_by_id($btl->CFG, $defaults[servicegroup_dead]);
+	$svc_dead_marker = bartlby_get_service_by_id($btl->RES, $defaults[servicegroup_dead]);
 }
 
 
@@ -43,7 +43,7 @@ $optind=0;
 		$displayed_servers++;
 		
 		for($x=0; $x<count($servs); $x++) {
-			//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+			//$v1=bartlby_get_service_by_id($btl->RES, $servs[$x][service_id]);
 			
 			if($x == 0) {
 				//$isup=$btl->isServerUp($v1[server_id]);

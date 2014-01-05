@@ -8,7 +8,7 @@
 	$layout->setTemplate("nonav.html");
 	$layout->MetaRefresh(10);
 	$layout->Table("100%");
-	$lib=bartlby_lib_info($btl->CFG);
+	$lib=bartlby_lib_info($btl->RES);
 	$exi=-1;
 	$plugin_dir=bartlby_config($btl->CFG, "agent_plugin_dir");
 	if(!$plugin_dir) {

@@ -16,7 +16,7 @@ class OcL {
 			if($aa[$aax]) {
 				//$svc = @bartlby_get_service_by_id($this->CFG, $aa[$aax]);
 				$idx=$btl->findSHMPlace($aa[$aax]);
-				$svc=bartlby_get_service($btl->CFG, $idx);
+				$svc=bartlby_get_service($btl->RES, $idx);
 				$dtemp="";
 				if($svc[is_downtime] == 1) {
 					$dtemp="<i>DOWNTIME</i>";
@@ -69,7 +69,7 @@ class OcL {
 		
 		for($x=0; $x<count($values[wrk]); $x++) {
 			
-			$cw = @bartlby_get_worker_by_id($btl->CFG, $values[wrk][$x]);
+			$cw = @bartlby_get_worker_by_id($btl->RES, $values[wrk][$x]);
 			$worker_string  .= "<li class=bsp>" . $cw[name];
 			
 		}
@@ -109,7 +109,7 @@ class OcL {
 		
 		for($x=0; $x<count($values[wrk]); $x++) {
 			
-			$cw = @bartlby_get_worker_by_id($btl->CFG, $values[wrk][$x]);
+			$cw = @bartlby_get_worker_by_id($btl->RES, $values[wrk][$x]);
 			$worker_string  .= "<li class=bsp>" . $cw[name];
 			
 		}

@@ -10,7 +10,7 @@ $layout->set_menu("downtimes");
 $layout->Form("fm1", $_GET[script]);
 
 
-$r=bartlby_downtime_map($btl->CFG);
+$r=bartlby_downtime_map($btl->RES);
 $optind=0;
 for($x=0; $x<count($r); $x++) {
 	if($r[$x][downtime_type] == 1) {

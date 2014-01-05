@@ -11,7 +11,7 @@ $layout->setTitle("");
 $layout->OUT .= "<script>global_worker_id=" . $_GET[worker_id] . ";</script>";
 
 
-$defaults=@bartlby_get_worker_by_id($btl->CFG, $_GET[worker_id]);
+$defaults=@bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 
 $fm_action="save_permissions";
 $btl->hasRight("super_user");
@@ -29,7 +29,7 @@ $optind=0;
 while(list($k, $servs) = @each($map)) {
 
 	for($x=0; $x<count($servs); $x++) {
-		//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
+		//$v1=bartlby_get_service_by_id($btl->RES, $servs[$x][service_id]);
 		
 		if($x == 0 ) {
 			//$isup=$btl->isServerUp($v1[server_id]);

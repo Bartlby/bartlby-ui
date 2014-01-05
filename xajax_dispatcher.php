@@ -32,7 +32,7 @@ function updateServiceDetail($svc_idx) {
 	global $layout, $btl;
 	$res=new xajaxResponse();
 	
-	$defaults=bartlby_get_service($btl->CFG, $svc_idx);
+	$defaults=bartlby_get_service($btl->RES, $svc_idx);
 	$svc_color=$btl->getColor($defaults[current_state]);
 	$svc_state=$btl->getState($defaults[current_state]);
 
@@ -77,7 +77,7 @@ function bulkEnableChecks($ids) {
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_active")) {
-		$counter = bartlby_bulk_service_active($btl->CFG,$ids, 1,1);
+		$counter = bartlby_bulk_service_active($btl->RES,$ids, 1,1);
 	}
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
@@ -101,7 +101,7 @@ function bulkDisableChecks($ids) {
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_active")) {
-		$counter=bartlby_bulk_service_active($btl->CFG,$ids, 0,1);
+		$counter=bartlby_bulk_service_active($btl->RES,$ids, 0,1);
 	}
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
@@ -121,7 +121,7 @@ function bulkEnableNotifys($ids) {
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_notify")) {
-		$counter=bartlby_bulk_service_notify($btl->CFG,$ids, 1,1);
+		$counter=bartlby_bulk_service_notify($btl->RES,$ids, 1,1);
 	}
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
@@ -142,7 +142,7 @@ function bulkDisableNotifys($ids) {
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_notify")) {
-		$counter = bartlby_bulk_service_notify($btl->CFG, $ids, 0,1);
+		$counter = bartlby_bulk_service_notify($btl->RES, $ids, 0,1);
 	}
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
@@ -165,7 +165,7 @@ function bulkForce($ids) {
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_force_services")) {
-		$counter=bartlby_bulk_force_services($btl->CFG, $ids);
+		$counter=bartlby_bulk_force_services($btl->RES, $ids);
 	}
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
@@ -190,7 +190,7 @@ function setWorkerState($worker_id, $worker_state) {
 				}
 		}
 		
-		bartlby_set_worker_state($btl->CFG, $shm_place, $worker_state);
+		bartlby_set_worker_state($btl->RES, $shm_place, $worker_state);
 		
 		
 		
@@ -254,7 +254,7 @@ function toggle_servicegroup_notify_check($service_id, $service_id1) {
 				}
 			}
 			
-			$cur=bartlby_toggle_servicegroup_notify($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servicegroup_notify($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -290,7 +290,7 @@ function toggle_servicegroup_check($service_id, $service_id1) {
 				}
 			}
 			
-			$cur=bartlby_toggle_servicegroup_active($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servicegroup_active($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -326,7 +326,7 @@ function toggle_servergroup_notify_check($server_id, $service_id) {
 				}
 			}
 			
-			$cur=bartlby_toggle_servergroup_notify($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servergroup_notify($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -362,7 +362,7 @@ function toggle_servergroup_check($server_id, $service_id) {
 				}
 			}
 			
-			$cur=bartlby_toggle_servergroup_active($btl->CFG, $defaults[shm_place], 1);
+			$cur=bartlby_toggle_servergroup_active($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -390,9 +390,9 @@ function toggle_server_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $server_id)) {
 		if($btl->hasServerorServiceRight($server_id, false)) {
-			$gsm=bartlby_get_server_by_id($btl->CFG, $server_id);
+			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
 			
-			$cur=bartlby_toggle_server_active($btl->CFG, $gsm[server_shm_place], 1);
+			$cur=bartlby_toggle_server_active($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -427,9 +427,9 @@ function toggle_server_notify_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $server_id)) {
 		if($btl->hasServerorServiceRight($server_id, false)) {
-			$gsm=bartlby_get_server_by_id($btl->CFG, $server_id);
+			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
 			
-			$cur=bartlby_toggle_server_notify($btl->CFG, $gsm[server_shm_place], 1);
+			$cur=bartlby_toggle_server_notify($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -458,9 +458,9 @@ function toggle_service_notify_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $service_id)) {
 		if($btl->hasServerorServiceRight($service_id, false)) {
-			$gsm=bartlby_get_service_by_id($btl->CFG, $service_id);
+			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
 			$idx=$btl->findSHMPlace($service_id);
-			$cur=bartlby_toggle_service_notify($btl->CFG, $idx, 1);
+			$cur=bartlby_toggle_service_notify($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -490,9 +490,9 @@ function toggle_service_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	if(!preg_match("/^XML.*$/i", $service_id)) {
 		if($btl->hasServerorServiceRight($service_id, false)) {
-			$gsm=bartlby_get_service_by_id($btl->CFG, $service_id);
+			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
 			$idx=$btl->findSHMPlace($service_id);
-			$cur=bartlby_toggle_service_active($btl->CFG, $idx, 1);
+			$cur=bartlby_toggle_service_active($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
@@ -554,9 +554,9 @@ function forceCheck($server, $service) {
 	if(!preg_match("/^XML.*$/i", $service)) {
 		if($service) {
 			if($btl->hasServerorServiceRight($service, false)) {
-				$gsm=bartlby_get_service_by_id($btl->CFG, $service);
+				$gsm=bartlby_get_service_by_id($btl->RES, $service);
 				$idx=$btl->findSHMPlace($service);
-				$cur=bartlby_check_force($btl->CFG, $idx);
+				$cur=bartlby_check_force($btl->RES, $idx);
 				//$res->addAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 				$res->AddScript('noty({"text":"Check has been forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 			} else {
@@ -704,7 +704,7 @@ function set_service_search_noact($d, $v) {
 		
 	$res->addAssign("text_" . $d, "value", $v);
 	
-	$svc = @bartlby_get_service_by_id($btl->CFG, $v);
+	$svc = @bartlby_get_service_by_id($btl->RES, $v);
 	
 	$res->addAssign("search_" . $d, "value", $svc[server_name] . "/" .  $svc[service_name]);
 	$res->addAssign($d, "innerHTML", "");

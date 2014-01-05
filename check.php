@@ -8,7 +8,7 @@
 	$layout->setTemplate("nonav.html");
 	
 	$layout->Table("100%");
-	$lib=bartlby_lib_info($btl->CFG);
+	$lib=bartlby_lib_info($btl->RES);
 	$exi=-1;
 	$plugin_dir=bartlby_config($btl->CFG, "agent_plugin_dir");
 	
@@ -16,7 +16,7 @@
 	$arges=str_replace("\\\\", "\\", $arges);
 	$arges=str_replace("\n", "\\n", $arges);
 	$arges=str_replace("\r", "\\r", $arges);
-	$server=bartlby_get_server_by_id($btl->CFG, $_GET[server]);
+	$server=bartlby_get_server_by_id($btl->RES, $_GET[server]);
 		
 	@$fp=fsockopen($server[server_ip], $server[server_port], $errno, $errstr, 10);
 	if(!$fp) {

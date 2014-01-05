@@ -8,7 +8,7 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasright("log.report");
 $btl->hasServerorServiceRight($_GET[report_service]);
 
-$defaults=bartlby_get_service_by_id($btl->CFG, $_GET[report_service]);
+$defaults=bartlby_get_service_by_id($btl->RES, $_GET[report_service]);
 
 $ibox[0][c]="green";
 $ibox[0][v]=0;

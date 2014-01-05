@@ -26,7 +26,7 @@ include "config.php";
 		}
 		function _serverDetail() {
 			global $btl;
-			$srv=@bartlby_get_server_by_id($btl->CFG, $_GET[server_id]);
+			$srv=@bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 			$fn = "extensions/AgentSyncer/store/" . md5($srv[server_name]);
 			//return $fn;
 			if(file_exists($fn)) {

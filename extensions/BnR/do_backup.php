@@ -54,7 +54,7 @@ fclose($fp);
 
 $o .= "Workers saved<br>";
 
-$dtmap = bartlby_downtime_map($btl->CFG);
+$dtmap = bartlby_downtime_map($btl->RES);
 $fp=fopen($bdir . "/downtime.ser", "w");
 fwrite($fp, serialize($dtmap));
 fclose($fp);
@@ -63,7 +63,7 @@ $o .= "Downtimes saved<br>";
 
 
 
-$srvgrpmap = bartlby_servergroup_map($btl->CFG);
+$srvgrpmap = bartlby_servergroup_map($btl->RES);
 $fp=fopen($bdir . "/servergroup.ser", "w");
 fwrite($fp, serialize($srvgrpmap));
 fclose($fp);
@@ -71,7 +71,7 @@ fclose($fp);
 $o .= "ServerGroups saved<br>";
 
 
-$svcgrpmap = bartlby_servicegroup_map($btl->CFG);
+$svcgrpmap = bartlby_servicegroup_map($btl->RES);
 $fp=fopen($bdir . "/servicegroup.ser", "w");
 fwrite($fp, serialize($svcgrpmap));
 fclose($fp);
@@ -82,7 +82,7 @@ $o .= "ServiceGroups saved<br>";
 
 if($_GET[package_with_config]) {
 	@copy("ui-extra.conf", $bdir . "/ui-extra.conf");
-	@copy($btl->CFG, $bdir . "/bartlby.cfg");
+	@copy($btl->RES, $bdir . "/bartlby.cfg");
 	$o .= "ui-extra.conf, bartlby.cfg saved<br>";
 }
 

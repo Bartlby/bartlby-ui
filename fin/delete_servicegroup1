@@ -1,9 +1,0 @@
-<p>&nbsp;</p>
-
-<p><font size="2"><span style="font-family: Tahoma; font-weight: bold;">Delete Servicegroup?</span><br />
-<span style="font-family: Tahoma;">Are you sure you want to delete the server &quot;<span style="font-weight: bold;">$global_msg[servergroup_name]</span>&quot;&nbsp; and all it services?<br />
-<br />
-<span style="color: rgb(255, 0, 0); font-style: italic;">This maybe not what you want to do</span></span></font></p>
-
-<p>&nbsp;</p>
-

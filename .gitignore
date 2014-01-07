@@ -6,5 +6,5 @@ last_sync-1
 !/templates/cache/README.md
 .DS_STORE
 composer.lock
-/rrd/
-/rights-1/
+/public/rrd/
+/public/rights-1/

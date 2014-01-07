@@ -22,7 +22,7 @@ if($dropdownded != "true")  {
 	while(list($k, $v) = @each($servs)) {
 		
 		
-		$v1=bartlby_get_worker_by_id($btl->CFG, $v[worker_id]);
+		$v1=bartlby_get_worker_by_id($btl->RES, $v[worker_id]);
 		
 		$servers[$optind][c]="";
 		$servers[$optind][v]=$v1[worker_id];	

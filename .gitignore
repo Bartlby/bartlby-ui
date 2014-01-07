@@ -1,3 +1,4 @@
+last_sync-1
 /vendor/
 /logs/*
 !/logs/README.md
@@ -5,5 +6,5 @@
 !/templates/cache/README.md
 .DS_STORE
 composer.lock
-./rrd/
-./rights-1/
+/rrd/
+/rights-1/

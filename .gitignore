@@ -1,6 +1,9 @@
-extensions/Dashboards.disabled
-*.disabled
-rrd
-config.php
-rigths/1.dat
-rights
+/vendor/
+/logs/*
+!/logs/README.md
+/templates/cache/*
+!/templates/cache/README.md
+.DS_STORE
+composer.lock
+./rrd/
+./rights-1/

@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.4.0
+ * @version     2.3.5
  *
  * MIT LICENSE
  *
@@ -135,7 +135,6 @@ class SessionCookieTest extends PHPUnit_Framework_TestCase
 
         $logWriter->expects($this->once())
             ->method('write');
-        $oldLevel = error_reporting(E_ALL);
 
         $app = new \Slim\Slim(array(
             'log.writer' => $logWriter
@@ -150,8 +149,6 @@ class SessionCookieTest extends PHPUnit_Framework_TestCase
         $mw->setNextMiddleware($app);
         $mw->call();
         $this->assertEquals(array(), $_SESSION);
-
-        error_reporting($oldLevel);
     }
 
     /**

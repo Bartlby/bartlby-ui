@@ -1,6 +1,12 @@
+slim-demo
+=========
+
+Simple demo using Slim framework
+
+=========
 # Slim Framework Skeleton Application
 
-Use this skeleton application to quickly setup and start working on a new Slim Framework application. This application uses the latest Slim and Slim-Views repositories. It also uses Sensio Labs' [Twig](http://twig.sensiolabs.org) template library.
+Use this skeleton application to quickly setup and start working on a new Slim Framework application. This application uses the latest Slim and Slim-Extras repositories. It also uses Sensio Labs' [Twig](http://twig.sensiolabs.org) template library.
 
 This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
 
@@ -16,23 +22,6 @@ After you install Composer, run this command from the directory in which you wan
 
     php composer.phar create-project slim/slim-skeleton [my-app-name]
 
-Replace <code>[my-app-name]</code> with the desired directory name for your new application. You'll want to:
-* Point your virtual host document root to your new application's `public/` directory.
-* Ensure `logs/` and `templates/cache` are web writeable.
+Replace <code>[my-app-name]</code> with the desired directory name for your new application. You'll want to point your virtual host document root to your new application's `public/` directory.
 
 That's it! Now go build something cool.
-
-## How to Contribute
-
-### Pull Requests
-
-1. Fork the Slim Skeleton repository
-2. Create a new branch for each feature or improvement
-3. Send a pull request from each feature branch to the **develop** branch
-
-It is very important to separate new features or improvements into separate feature branches, and to send a
-pull request for each branch. This allows us to review and pull in new features or improvements individually.
-
-### Style Guide
-
-All pull requests must adhere to the [PSR-2 standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md).

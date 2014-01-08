@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.4.0
+ * @version     2.3.5
  * @package     Slim
  *
  * MIT LICENSE
@@ -236,23 +236,20 @@ class View
      * This method echoes the rendered template to the current output buffer
      *
      * @param  string   $template   Pathname of template file relative to templates directory
-     * @param  array    $data       Any additonal data to be passed to the template.
      */
-    public function display($template, $data = null)
+    public function display($template)
     {
-        echo $this->fetch($template, $data);
+        echo $this->fetch($template);
     }
 
     /**
      * Return the contents of a rendered template file
-     *
-     * @param    string $template   The template pathname, relative to the template base directory
-     * @param    array  $data       Any additonal data to be passed to the template.
-     * @return string               The rendered template
+     * @var    string $template The template pathname, relative to the template base directory
+     * @return string           The rendered template
      */
-    public function fetch($template, $data = null)
+    public function fetch($template)
     {
-        return $this->render($template, $data);
+        return $this->render($template);
     }
 
     /**
@@ -260,20 +257,17 @@ class View
      *
      * NOTE: This method should be overridden by custom view subclasses
      *
-     * @param  string $template     The template pathname, relative to the template base directory
-     * @param  array  $data         Any additonal data to be passed to the template.
+     * @var    string $template     The template pathname, relative to the template base directory
      * @return string               The rendered template
      * @throws \RuntimeException    If resolved template pathname is not a valid file
      */
-    protected function render($template, $data = null)
+    protected function render($template)
     {
         $templatePathname = $this->getTemplatePathname($template);
         if (!is_file($templatePathname)) {
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
-
-        $data = array_merge($this->data->all(), (array) $data);
-        extract($data);
+        extract($this->data->all());
         ob_start();
         require $templatePathname;
 

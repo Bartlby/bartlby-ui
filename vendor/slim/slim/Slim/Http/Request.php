@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.4.0
+ * @version     2.3.5
  * @package     Slim
  *
  * MIT LICENSE
@@ -209,10 +209,9 @@ class Request
      * the value of the array key if requested; if the array key does not exist, NULL is returned.
      *
      * @param  string           $key
-     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function get($key = null, $default = null)
+    public function get($key = null)
     {
         if (!isset($this->env['slim.request.query_hash'])) {
             $output = array();
@@ -227,7 +226,7 @@ class Request
             if (isset($this->env['slim.request.query_hash'][$key])) {
                 return $this->env['slim.request.query_hash'][$key];
             } else {
-                return $default;
+                return null;
             }
         } else {
             return $this->env['slim.request.query_hash'];
@@ -241,11 +240,10 @@ class Request
      * the value of a hash key if requested; if the array key does not exist, NULL is returned.
      *
      * @param  string           $key
-     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      * @throws \RuntimeException If environment input is not available
      */
-    public function post($key = null, $default = null)
+    public function post($key = null)
     {
         if (!isset($this->env['slim.input'])) {
             throw new \RuntimeException('Missing slim.input in environment variables');
@@ -268,7 +266,7 @@ class Request
             if (isset($this->env['slim.request.form_hash'][$key])) {
                 return $this->env['slim.request.form_hash'][$key];
             } else {
-                return $default;
+                return null;
             }
         } else {
             return $this->env['slim.request.form_hash'];
@@ -278,34 +276,31 @@ class Request
     /**
      * Fetch PUT data (alias for \Slim\Http\Request::post)
      * @param  string           $key
-     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function put($key = null, $default = null)
+    public function put($key = null)
     {
-        return $this->post($key, $default);
+        return $this->post($key);
     }
 
     /**
      * Fetch PATCH data (alias for \Slim\Http\Request::post)
      * @param  string           $key
-     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function patch($key = null, $default = null)
+    public function patch($key = null)
     {
-        return $this->post($key, $default);
+        return $this->post($key);
     }
 
     /**
      * Fetch DELETE data (alias for \Slim\Http\Request::post)
      * @param  string           $key
-     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function delete($key = null, $default = null)
+    public function delete($key = null)
     {
-        return $this->post($key, $default);
+        return $this->post($key);
     }
 
     /**

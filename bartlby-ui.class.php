@@ -374,6 +374,8 @@ class BartlbyUi {
 				//$layout->OUT .= "<script>doReloadButton();</script>";
 				break;	
 			}
+			bartlby_close($this->RES);
+			bartlby_new($this->CFG);
 		}
 	}
 	function resolveDeadMarker($start_id, $map) {

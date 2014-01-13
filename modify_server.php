@@ -29,9 +29,28 @@ if($_GET[server_id]) {
 
 $defaults=@bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 
-$map = $btl->GetSVCMap();
+
+$servers_out=array();
+$services_x=0;
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
+	if($svc[is_gone] != 0) {
+	 continue;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[server_dead]) {
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+		$services_x++;
+		if($services_x > 50) return LOOP_BREAK;
+	}
+});			
+ksort($servers_out);
+
+
+$map=&$servers_out;
 $optind=0;
-	while(list($k, $servs) = @each($map)) {
+while(list($k, $servs) = @each($map)) {
 		$displayed_servers++;
 		
 		for($x=0; $x<count($servs); $x++) {

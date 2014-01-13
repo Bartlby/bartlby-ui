@@ -11,7 +11,7 @@
 	$btl=new BartlbyUi($Bartlby_CONF);
 	
 	
-	$map = $btl->GetSVCMap();
+	
 $optind=0;
 
 
@@ -60,36 +60,28 @@ $optind=0;
 			$optind++;
 
 $displayed_servers=0;
-while(list($k, $servs) = @each($map)) {
-	
-	$real_servers[$displayed_servers][c]="";
-	$real_servers[$displayed_servers][k]=$servs[0][server_name];
-	$real_servers[$displayed_servers][v]="serverbox_" . $servs[0][server_id];
-	
-	for($x=0; $x<count($servs); $x++) {
-				
-		$state=$btl->getState($servs[$x][current_state]);
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl) {
+		$state=$btl->getState($svc[current_state]);
 		$servers[$optind][c]="";
-		$servers[$optind][v]="servicebox_" . $servs[$x][service_id];	
-		$servers[$optind][k]=$servs[$x][server_name] . "/" . $servs[$x][service_name];
-		
-		$optind++;
-	}
-	$displayed_servers++;
-}
+		$servers[$optind][v]="servicebox_" . $svc[service_id];	
+		$servers[$optind][k]=$svc[server_name] . "/" . $svc[service_name];
+		$optind++;	
+});				
+	
 			$servers[$optind][c]="";
 			$servers[$optind][v]="";	
 			$servers[$optind][k]="Servers";
 			$servers[$optind][is_group]=1;
 			$optind++;
-			
-			for($x=0; $x<count($real_servers); $x++) {
-				$servers[$optind][c]=$real_servers[$x][c];
-				$servers[$optind][v]=$real_servers[$x][v];	
-				$servers[$optind][k]=$real_servers[$x][k];
-				$optind++;
-				
-			}
+
+$btl->server_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl) {
+		$servers[$optind][c]="";
+		$servers[$optind][v]="serverbox_" . $svc[server_id];	
+		$servers[$optind][k]=$svc[server_name] ;
+		
+		$optind++;	
+});				
+
 			
 			$servers[$optind][c]="";
 			$servers[$optind][v]="";	
@@ -97,16 +89,13 @@ while(list($k, $servs) = @each($map)) {
 			$servers[$optind][is_group]=1;
 			$optind++;
 	
-			$servs=$btl->GetServerGroups();
-			
-	
-	
-			for($x=0; $x<count($servs); $x++ ) {
-				$servers[$optind][c]="";
-				$servers[$optind][k]=$servs[$x][servergroup_name];	
-				$servers[$optind][v]="servergroupbox_" . $servs[$x][servergroup_id];
-				$optind++;
-			}
+$btl->servergroup_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl) {
+		$servers[$optind][c]="";
+		$servers[$optind][v]="servergroupbox_" . $svc[servergroup_id];	
+		$servers[$optind][k]=$svc[servergroup_name] ;
+		
+		$optind++;	
+});		
 			
 	
 	
@@ -116,16 +105,14 @@ while(list($k, $servs) = @each($map)) {
 			$servers[$optind][is_group]=1;
 			$optind++;
 			
-			$servs=$btl->GetServiceGroups();
-			
-	
-	
-			for($x=0; $x<count($servs); $x++ ) {
-				$servers[$optind][c]="";
-				$servers[$optind][k]=$servs[$x][servicegroup_name];	
-				$servers[$optind][v]="servicegroupbox_" . $servs[$x][servicegroup_id];
-				$optind++;
-			}
+				
+$btl->servicegroup_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl) {
+		$servers[$optind][c]="";
+		$servers[$optind][v]="servergroupbox_" . $svc[servicegroup_id];	
+		$servers[$optind][k]=$svc[servicegroup_name] ;
+		
+		$optind++;	
+});	
 			
 	//Widget Pipes
 	$el = new Layout();

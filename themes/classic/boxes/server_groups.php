@@ -7,6 +7,7 @@
 $c=0;
 	for($x=0; $x<count($plcs[groups]); $x++) {
 		$grp = $plcs[groups][$x];
+
 		if($grp[service_sum] == 0) {
 				continue;
 		}

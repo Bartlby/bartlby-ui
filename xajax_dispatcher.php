@@ -9,25 +9,21 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $layout = new Layout();
 $layout->setTheme(bartlby_config(getcwd() . "/ui-extra.conf", "theme"));
 
+for($z=0; $z<count($layout->deprecated); $z++) {
+			$depre .= '<div class="alert alert-error">
+							<button type="button" class="close" data-dismiss="alert">×</button>
+							Deprecated INFO: <strong>' .  $layout->deprecated[$z] . '</strong>
 
+						</div>';
+
+}
+				
+echo $depre;		
 $xajax->processRequests();
 
 
-function IphoneOverView() {
-	global $btl;
-	$res=new xajaxResponse();
-	$map = $btl->GetSVCMap();
-	
-	
-	$oks=10;
-	
-	$res->AddScript("loadIcon=document.getElementById('activityIndicator'); loadIcon.style.display='none';");
-	
-	$res->AddScript("OKs=10;");
-	$res->AddAssign("text1", "innerHTML", "Welcome: " . $btl->user);
-	
-	return $res;
-}
+
+
 function updateServiceDetail($svc_idx) {
 	global $layout, $btl;
 	$res=new xajaxResponse();
@@ -180,10 +176,6 @@ function setWorkerState($worker_id, $worker_state) {
 		//get shm id
 		$servs=$btl->GetWorker();
 		$optind=0;
-
-
-
-
 		while(list($k, $v) = @each($servs)) {
 				if($v[worker_id] == $worker_id) {
 						$shm_place=$v[shm_place];
@@ -246,13 +238,13 @@ function toggle_servicegroup_notify_check($service_id, $service_id1) {
 	$res = new xajaxresponse();
 	
 		
-			$servicegroups=$btl->GetServiceGroups();
-			for($x=0; $x<count($servicegroups); $x++) {
-				if($servicegroups[$x][servicegroup_id] == $service_id) {
-					$defaults=$servicegroups[$x];
-					break;	
+			$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$service_id) {
+				if($srvgrp[servicegroup_id] == $service_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
+			});
 			
 			$cur=bartlby_toggle_servicegroup_notify($btl->RES, $defaults[shm_place], 1);
 			
@@ -282,13 +274,13 @@ function toggle_servicegroup_check($service_id, $service_id1) {
 	$res = new xajaxresponse();
 	
 		
-			$servicegroups=$btl->GetServiceGroups();
-			for($x=0; $x<count($servicegroups); $x++) {
-				if($servicegroups[$x][servicegroup_id] == $service_id) {
-					$defaults=$servicegroups[$x];
-					break;	
+			$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$service_id) {
+				if($srvgrp[servicegroup_id] == $service_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
+		});
 			
 			$cur=bartlby_toggle_servicegroup_active($btl->RES, $defaults[shm_place], 1);
 			
@@ -317,15 +309,14 @@ function toggle_servergroup_notify_check($server_id, $service_id) {
 	global $layout;
 	$res = new xajaxresponse();
 	
-		
-			$servergroups=$btl->GetServerGroups();
-			for($x=0; $x<count($servergroups); $x++) {
-				if($servergroups[$x][servergroup_id] == $server_id) {
-					$defaults=$servergroups[$x];
-					break;	
+		$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$server_id) {
+				if($srvgrp[servergroup_id] == $server_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
-			
+		});
+					
 			$cur=bartlby_toggle_servergroup_notify($btl->RES, $defaults[shm_place], 1);
 			
 			if($cur == 1) { //Active
@@ -354,13 +345,13 @@ function toggle_servergroup_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 	
 		
-			$servergroups=$btl->GetServerGroups();
-			for($x=0; $x<count($servergroups); $x++) {
-				if($servergroups[$x][servergroup_id] == $server_id) {
-					$defaults=$servergroups[$x];
-					break;	
+			$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$defaults, &$server_id) {
+				if($srvgrp[servergroup_id] == $server_id) {
+					$defaults=$srvgrp;
+					$defaults[shm_place]=$shm;
+					return LOOP_BREAK;	
 				}
-			}
+		});
 			
 			$cur=bartlby_toggle_servergroup_active($btl->RES, $defaults[shm_place], 1);
 			
@@ -571,42 +562,7 @@ function forceCheck($server, $service) {
 	return $res;
 }
 
-function group_search($g) {
-	$res = new xajaxresponse();
-	$optind=0;
-	$y=0;
-	
-	
-	$optind=0;
-	$dh=opendir("extensions/ServerGroups/data/");
-	while ($file = readdir ($dh)) { 
-	   if ($file != "." && $file != "..") { 
-	   	clearstatcache();
-	   	$ta = explode(".",$file);
-	   	$unser = base64_decode($ta[0]);
-	   	
-	   	
-	   	if(preg_match("/" . $g . "/i", $unser)) {
-	     	$output .= "<a href=\"javascript:void(0);\" onClick=\"document.location.href='extensions_wrap.php?script=ServerGroups/edit.php&group_name=" . $file . "'\">$unser</a><br>";
-	     	$y++;
-	     }
-	       	
-	   }
-	   if($y>20) {
-			break 2;	
-		} 
-	}
-	closedir($dh); 
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('group_search_suggest');\">close</A><br><br>" . $output;
-	$res->AddAssign("group_search_suggest", "innerHTML", $output);
-	
-	return $res;
-}
-function jumpToUserId($id, $script) {
-	$res = new xajaxResponse();
-	$res->addScript("document.location.href='$script?worker_id="  . $id . "'");
-	return $res;
-}
+
 function AddDowntime($av) {
 	$res = new xajaxResponse();
 	$al = "";
@@ -667,120 +623,8 @@ function CreatePackage($av) {
 	return $res;	
 }
 
-function UserSearch($what, $script='modify_worker.php') {
-	global $btl;
-	$res = new xajaxResponse();
-	
-	$servs=$btl->GetWorker();
-	$optind=0;
-	$y=0;
-	while(list($k, $v) = @each($servs)) {
-		
-		if(preg_match("/" . $what . "/i", $v[name])) {
-			
-			$output .= "<a  href=\"javascript:void(0);\" onClick=\"xajax_jumpToUserId('" . $v[worker_id] . "', '$script');\">$v[name]</a><br>";
-			$y++;
-		}
-		if($y>20) {
-			break 2;	
-		}
-	}
-	
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('user_search_suggest');\">close</A><br><br>" . $output;
-	$res->addAssign("user_search_suggest", "innerHTML", $output);
-	return $res;	
-}
 
 
-function jumpToServiceId($id, $script) {
-	$res = new xajaxResponse();
-	$res->addScript("document.location.href='$script?service_id="  . $id . "'");
-	return $res;
-}
-function set_service_search_noact($d, $v) {
-	global $btl;
-	
-	$res = new xajaxResponse();
-		
-	$res->addAssign("text_" . $d, "value", $v);
-	
-	$svc = @bartlby_get_service_by_id($btl->RES, $v);
-	
-	$res->addAssign("search_" . $d, "value", $svc[server_name] . "/" .  $svc[service_name]);
-	$res->addAssign($d, "innerHTML", "");
-	
-	return $res;
-	
-}
-function service_noaction($what, $d) {
-	global $btl;
-	$res = new xajaxResponse();
-	
-	
-	
-	$map = $btl->GetSVCMap();
-	$optind=0;
-	$y=0;
-	
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-		for($x=0; $x<count($servs); $x++) {
-			$ostr=$servs[$x][server_name] . "/" . $servs[$x][service_name];
-			if(@preg_match("/" . $what . "/i", $ostr)) {
-				$output .= "<a href=\"javascript:void(0);\" onClick=\"xajax_set_service_search_noact('" . $d . "', '" . $servs[$x][service_id] . "');\">$ostr</a><br>";
-				$y++;
-			}		
-			if($y>20) {
-				break 2;	
-			}
-		}
-	}
-	
-	
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('" . $d . "');\">close</A><br><br>" . $output;
-	$res->addAssign($d, "innerHTML", $output);
-	return $res;	
-}
-
-
-function ServiceSearch($what, $script='modify_service.php') {
-	global $btl;
-	$res = new xajaxResponse();
-	
-	$map = $btl->GetSVCMap();
-	$optind=0;
-	$y=0;
-	
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-		for($x=0; $x<count($servs); $x++) {
-			$ostr=$servs[$x][server_name] . "/" . $servs[$x][service_name];
-			if(preg_match("/" . $what . "/i", $ostr)) {
-				$is_gone=$btl->is_gone($servs[$x][is_gone]);
-		
-				$output .= "<a href=\"javascript:void(0);\" onClick=\"xajax_jumpToServiceId('" . $servs[$x][service_id] . "', '$script');\">$ostr</a> $is_gone <br>";
-				$y++;
-			}		
-			if($y>20) {
-				break 2;	
-			}
-		}
-	}
-	
-	
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('service_search_suggest');\">close</A><br><br>" . $output;
-	$res->addAssign("service_search_suggest", "innerHTML", $output);
-	return $res;	
-}
-
-
-function jumpToServerId($id, $script) {
-	$res = new xajaxResponse();
-	$res->addScript("document.location.href='$script?server_id="  . $id . "'");
-	return $res;
-}
 
 
 function PluginSearch($what) {
@@ -815,67 +659,18 @@ function PluginSearch($what) {
 	return $res;	
 }
 
-function ServerSearch($what, $script='modify_server.php') {
-	global $btl;
-	$res = new xajaxResponse();
-	$servs=$btl->GetServers();
-	$optind=0;
-	//$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
-	$y=0;
-	while(list($k, $v) = @each($servs)) {
-		
-		if(preg_match("/" . $what . "/i", $v)) {
-			
-			$output .= "<a href=\"javascript:void(0);\" onClick=\"xajax_jumpToServerId('" . $k . "', '$script');\">$v</a><br>";
-			$y++;
-		}
-		if($y>20) {
-			break;	
-		}
-	}
-	$output = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('server_search_suggest');\">close</A><br><br>" . $output;
-	$res->addAssign("server_search_suggest", "innerHTML", $output);
-	return $res;	
-}
 
-function BulkServiceSearch($what) {
-	global $btl, $layout, $rq;
-	//compat for extensions
-	$_GET[search] = $what;
-	$servers=$btl->GetSVCMap();	
-	$_GET["servers"]=$servers;
-	$res = new xajaxResponse();
-	$found = 0;
-	while(list($k, $v) = @each($servers)) {
-		
-		
-		
-		for($x=0; $x<count($v); $x++) {
-			if(@preg_match("/" . $what . "/i", $v[$x][server_name] . "/" . $v[$x][service_name])) {
-						
-				$rq .= "<input type=checkbox  name=bulk_services value='" . $v[$x][service_id] . ";" .  $v[$x][server_name] . "/" . $v[$x][service_name] . "'><a href=\"javascript:bulk_service_add(" . $v[$x][service_id] . ", '" . $v[$x][server_name] . "/" . $v[$x][service_name] . "')\"><font size=1>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A></font><br>";	
-				$svcfound=true;
-				$found++;
-			}
-		}
-		if($found > 10) break;
-		
-	}	
-	if($svcfound != true) $rq = "No Services found";
 
-	$res->addAssign("service_result", "innerHTML", $rq);
-
-	return $res;
-	
-}
 
 function QuickLook($what) {
 	global $btl, $layout, $rq;
 	//compat for extensions
 	$_GET[search] = $what;
+	$ss = $what;
+
 	$res = new xajaxResponse();
 	
-	$servers=$btl->GetSVCMap();	
+	//$servers=$btl->GetSVCMap();	
 	$_GET["servers"]=$servers;
 	
 	//Search Servers
@@ -890,65 +685,62 @@ function QuickLook($what) {
 								  </tr>
 							  </thead>   ';
 
+    $svcfound_counter=0;
+    $btl->server_list_loop(function($srv, $shm)  {
+		global $rq, $sfound, $svcfound, $btl, $_GET, $svcfound_counter;
 
-	$sfound=false;
-	while(list($k, $v) = @each($servers)) {
+
 		
-		if(@preg_match("/" . $what . "/i", $v[0][server_name])) {
-	
-			
-			
-			
-			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $v[0][server_id] . "'><font size=1>" . $v[0][server_name] . "</font></A>(<a href='services.php?server_id=" . $v[0][server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($v[0], $layout) . "</td></tr>";	
-			$sfound=true;
+		if(@preg_match("/" . $_GET[search] . "/i", $srv[server_name] )) {
+			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'><font size=1>" . $srv[server_name] . "</font></A>(<a href='services.php?server_id=" . $srv[server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
+            $svcfound=true;
+			$svcfound_counter++;
+			if($svcfound_counter >= 25) return -1;
 		}
 		
-		
-		
-	}	
 
-	
-	
-	reset($servers);
+	});
+	$sfound=false;	
 	$svcfound=false;
-	while(list($k, $v) = @each($servers)) {
+	$svcfound_counter=0;
+	$btl->service_list_loop(function($svc, $shm)  {
+		global $rq, $sfound, $svcfound, $btl, $_GET, $svcfound_counter;
+
+
 		
-		
-		
-		for($x=0; $x<count($v); $x++) {
-			if(@preg_match("/" . $what . "/i", $v[$x][server_name] . "/" . $v[$x][service_name])) {
-						
-				$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'><font size=1>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A></font></td><td>" . $btl->getServiceOptions($v[$x], $layout) . "</td>";	
-				$svcfound=true;
-			}
+		if(@preg_match("/" . $_GET[search] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
+			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'><font size=1>" . $svc[server_name] . "/" . $svc[service_name] . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
+			$svcfound=true;
+			$svcfound_counter++;
+			if($svcfound_counter >= 25) return -1;
 		}
 		
-		
-	}	
-	
-	
+
+	});
 	
 	
 	$srvgrpfound=false;
-	$servergroups  = $btl->getServerGroups();
-	for($x=0; $x<count($servergroups); $x++) {
-		if(@preg_match("/" . $what . "/i", $servergroups[$x][servergroup_name])) {
+	$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$srvgrpfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $srvgrp[servergroup_name])) {
 			
-				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $servergroups[$x][servergroup_id] . "'><font size=1>" . $servergroups[$x][servergroup_name] . "</A></font></td><td>" . $btl->getServerGroupOptions($servergroups[$x], $layout) . "</td>";	
+				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'><font size=1>" . $srvgrp[servergroup_name] . "</A></font></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
 				$srvgrpfound=true;
 		}
-	}
 
-
-
+	});
+	
 	$svcgrpfound=false;
-	$servicegroups  = $btl->getServiceGroups();
-	for($x=0; $x<count($servicegroups); $x++) {
-		if(@preg_match("/" . $what . "/i", $servicegroups[$x][servicegroup_name])) {
-				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $servicegroups[$x][servicegroup_id] . "'><font size=1>" . $servicegroups[$x][servicegroup_name] . "</A></font></td><td>" . $btl->getServiceGroupOptions($servicegroups[$x], $layout) . "</td>";	
+	$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $srvgrp[servicegroup_name])) {
+			
+				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'><font size=1>" . $srvgrp[servicegroup_name] . "</A></font></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
 				$svcgrpfound=true;
 		}
-	}
+
+	});
+
+	
+	
 
 
 	$rq .= "</table>";

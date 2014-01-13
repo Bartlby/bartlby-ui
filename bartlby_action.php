@@ -58,6 +58,7 @@ switch($act) {
 		$fp = @fopen("rights/" . $wk[worker_id] . ".dat", "w");
 		@fwrite($fp, $new_file);
 		@fclose($fp);
+		//echo file_get_contents("rights/" . $wk[worker_id] . ".dat");
 	break;
 	
 	case 'disable_extension':
@@ -468,6 +469,7 @@ switch($act) {
 			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);
 			$btl->setUIRight("selected_services", $selected_services, $_GET[worker_id]);
+			
 			$layout->OUT .= "<script>doReloadButton();</script>";
 
 		} else {                                     
@@ -985,40 +987,8 @@ switch($act) {
 				if($_GET[package_name] != "") {
 					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL);	
 				} else {
+					//WE DO NOT NEED INIT SERVICE ANYMORE
 					
-					$svc_obj = array(
-					
-						"plugin"=>"INIT",
-						"service_name"=>"Initial Check-New",
-						"notify_enabled"=>0,					
-						"plugin_arguments"=>"",
-						"check_interval"=>3600,
-						"service_type"=>1,
-						"service_passive_timeout" => 240,
-						"server_id" => $add_server,
-						"service_check_timeout" => 240,
-						"service_var" => "",
-						"exec_plan" => "",
-						"service_ack_enabled" => 0,
-						"service_retain" => 10,
-						"snmp_community" => "",
-						"snmp_version" => "",
-						"snmp_objid" => "",
-						"snmp_warning" => "",
-						"snmp_critical" => "",
-						"snmp_type" => "",
-						"service_active" => 1,
-						"snmp_textmatch" => "",
-						"flap_seconds" => 120,
-						"escalate_divisor" => 0,
-						"fires_events" => 0,
-						"renotify_interval" => 0,
-						"enabled_triggers" => ""
-				);
-									
-					
-					$add_service=bartlby_add_service($btl->RES, $svc_obj);
-					$global_msg["init_service"]="<li>Init";
 				}
 				
 				$layout->OUT .= "<script>doReloadButton();</script>";

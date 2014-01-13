@@ -22,8 +22,34 @@ if($defaults == false) {
 	exit(1);	
 }
 
-$map = $btl->GetSVCMap();
+
+
 $worker_rights = $btl->loadForeignRights($defaults[worker_id]);
+$optind=0;
+$servers_out=array();
+$services_x=0;
+
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$worker_rights, &$defaults) {
+	
+	if($svc[is_gone] != 0) {
+	 return LOOP_CONTINUE;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || strstr($defaults[services], "|" . $svc[service_id]  . "|") || @in_array( $svc[server_id], $worker_rights[servers]) || @in_array( $svc[server_id], $worker_rights[servers])) {
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+		$services_x++;
+	}	//if($services_x > 50) return LOOP_BREAK;
+	
+});			
+ksort($servers_out);
+
+
+
+$optind=0;
+$map = $servers_out;
+
 $optind=0;
 
 while(list($k, $servs) = @each($map)) {
@@ -78,7 +104,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Visible services:",
-			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services")
+			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services_permission")
 		)
 	)
 ,true);

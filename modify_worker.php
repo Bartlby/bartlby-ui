@@ -52,24 +52,58 @@ if(!$defaults) {
 	$defaults["notify_plan"] = "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59";
 }
 
-$map = $btl->GetSVCMap();
+//$map = $btl->GetSVCMap();
+
 $worker_rights=@$btl->loadForeignRights($defaults[worker_id]);
 
+$optind=0;
+$servers_out=array();
+$services_x=0;
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$worker_rights, &$defaults) {
+	if(!$worker_rights[super_user]) {
+		if(!@in_array($svc[server_id], $worker_rights[servers]) && !@in_array($svc[service_id], $worker_rights[services])) {
+			return LOOP_CONTINUE;	
+		}
+	}
+	if($svc[is_gone] != 0) {
+	 return LOOP_CONTINUE;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name]))
+		|| 	(@in_array($svc[service_id], $worker_rights[services]))
+		|| 	(@in_array($svc[server_id], $worker_rights[servers]))
+		|| 	(@in_array($svc[service_id], $worker_rights[selected_services]))
+		|| 	(@in_array($svc[server_id], $worker_rights[selected_servers]))
+	 ) {
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+		
+		$services_x++;
+	}	//if($services_x > 50) return LOOP_BREAK;
+	
+});			
+ksort($servers_out);
 
 $optind=0;
+
+$map = $servers_out;
+reset($map);
+
+
+
 while(list($k, $servs) = @each($map)) {
 
 	for($x=0; $x<count($servs); $x++) {
 		
-		if(!$worker_rights[super_user]) {
-			if(!@in_array($servs[$x][server_id], $worker_rights[servers]) && !@in_array($servs[$x][service_id], $worker_rights[services])) {
-				continue;	
-			}
-		}
-				
 		if($x == 0) {
 			//$isup=$btl->isServerUp($v1[server_id]);
 			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
+
+			
+
+			
+
 			$servers[$optind][c]="";
 			$servers[$optind][v]="s" . $servs[$x][server_id];	
 			$servers[$optind][k]="" . $servs[$x][server_name] . "";
@@ -78,20 +112,24 @@ while(list($k, $servs) = @each($map)) {
 			if(@in_array( $servs[$x][server_id], $worker_rights[selected_servers])) {
 				
 				$servers[$optind][s]=1;
+
 			}
 			$optind++;
 
 
 			$state=$btl->getState($servs[$x][current_state]);
-                        $servers[$optind][c]="";
+                $servers[$optind][c]="";
                         $servers[$optind][v]=$servs[$x][service_id];
                         $servers[$optind][k]=$servs[$x][server_name]  . "/" .  $servs[$x][service_name];
 
 
-                        //if(@in_array($servs[$x][service_id], $worker_rights[selected_services])) {
-                        if(strstr($defaults[services], "|" . $servs[$x][service_id]  . "|")) {
-                                $servers[$optind][s]=1;
+             
+
+                       
+                        if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))  || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
+                        	$servers[$optind][s]=1;
                         }
+
                         $optind++;
 		} else {
 			
@@ -103,7 +141,8 @@ while(list($k, $servs) = @each($map)) {
 		
 		
 			//if(@in_array($servs[$x][service_id], $worker_rights[selected_services])) {
-			if(strstr($defaults[services], "|" . $servs[$x][service_id]  . "|")) {
+			if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))  || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
+
 				$servers[$optind][s]=1;
 			}
 			$optind++;

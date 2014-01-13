@@ -11,7 +11,7 @@
 	$btl=new BartlbyUi($Bartlby_CONF);
 	$btl->hasRight("super_user");
 	$sg = new ArS();
-	$servers=$btl->GetSVCMap();
+	
 	
 	$layout= new Layout();
 	$layout->setTitle("ArS: Add Report");

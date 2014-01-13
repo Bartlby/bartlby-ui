@@ -12,33 +12,29 @@ $layout->Form("fm1", $_GET[script]);
 $layout->Table("100%");
 $layout->set_menu("client");
 
+$servers=array();
+
 if($_GET[pkey] && $_GET[pval]) {
 	$passthrough = $layout->Field($_GET[pkey], "hidden", $_GET[pval]);
 }
 
-if($dropdownded != "true")  {
-	$servs=$btl->GetServers();
 	$optind=0;
-	//$res=mysql_query("select srv.server_id, srv.server_name from servers srv, rights r where r.right_value=srv.server_id and r.right_key='server' and r.right_user_id=" . $poseidon->user_id);
-	
-	while(list($k, $v) = @each($servs)) {
-		//$sr=bartlby_get_server_by_id($btl->CFG, $k);
+	$btl->server_list_loop(function($srv, $shm) use(&$servers, &$optind) {
+		global $_GET;
 		
-		//$isup=$btl->isServerUp($k);
-		//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
-		$servers[$optind][c]="";
-		$servers[$optind][v]=$k;	
-		$servers[$optind][k]="" . $v;
-		$optind++;
-	}
-	
-	
-	
+		if($_GET[dropdown_term] && @preg_match("/" . $_GET[dropdown_term] . "/i", $srv[server_name])) {
+			$servers[$optind][c]="";
+			$servers[$optind][k]=$srv[server_name];	
+			$servers[$optind][v]="" . $srv[server_id];
+			$optind++;
+		}
+	});
+
 	$layout->Tr(
 		$layout->Td(
 				Array(
 					0=>"Server:",
-					1=>$layout->DropDown("server_id", $servers) . $passthrough
+					1=>$layout->DropDown("server_id", $servers,"","",false, "ajax_server_list_php") . $passthrough
 				)
 			)
 	
@@ -56,20 +52,6 @@ if($dropdownded != "true")  {
 			)
 	
 	);
-} else {
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"left",
-						'show'=>"Dropdown searches disabled in ui-extra config"
-						)
-				)
-			)
-	
-	);	
-}
 
 
 $layout->TableEnd();

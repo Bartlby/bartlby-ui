@@ -4,7 +4,7 @@
 	include "config.php";
 	include "layout.class.php";
 	include "bartlby-ui.class.php";
-	include "Mail.php";
+	require_once "/usr/local/lib/php/Mail.php";
 	include "Mail/mime.php";
 	include "extensions/ArS/ArS.class.php";
 	
@@ -13,7 +13,7 @@
 	$btl=new BartlbyUi($Bartlby_CONF);
 	$btl->hasRight("super_user");
 	$sg = new ArS();
-	$servers=$btl->GetSVCMap();
+	
 	
 	
 	$layout= new Layout();
@@ -74,15 +74,12 @@
 			$defaults=bartlby_get_service_by_id($btl->RES, $reports[$x][ars_service_id]);
 			$rap = "Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
 			$btl_subj = "Bartlby report";
-			
-			@reset($servers);
-			while(@list($k, $v) = @each($servers)) {
-				for($z=0; $z<count($v); $z++) {
-					if($v[$z][service_id]==$reports[$x][ars_service_id]) {
-						$lstate=$v[$z][current_state];
+			$lstate="";
+			$btl->service_list_loop(function($svc, $shm) use(&$lstate) {
+					if($svc[service_id]==$reports[$x][ars_service_id]) {
+						$lstate=$svc[current_state];
 					}
-				}	
-			}
+			});
 			
 			
 			if($_GET[wich] == "daily") {
@@ -168,6 +165,9 @@
                 	
                 	
                 		$mail = $smtp->send($reports[$x][ars_to], $hdrs, $body);
+                		echo $body;
+                		echo $hdrs;
+                		echo $reports[$x][ars_to];
 
 			}
 

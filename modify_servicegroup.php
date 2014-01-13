@@ -24,22 +24,47 @@ $layout->Table("100%");
 
 //$defaults=bartlby_get_servergroup_by_id($btl->RES, $_GET[server_id]);
 
-$servicegroups=$btl->GetServiceGroups();
-for($x=0; $x<count($servicegroups); $x++) {
-	if($servicegroups[$x][servicegroup_id] == $_GET[servicegroup_id]) {
-		$defaults=$servicegroups[$x];
-		break;	
+$defaults = array();
+$btl->servicegroup_list_loop(function($grp, $shm) use(&$defaults) {
+	global $_GET;
+	
+	if($grp[servicegroup_id] == $_GET[servicegroup_id]) {
+
+		$defaults=$grp;
+
+		return LOOP_BREAK;	
 	}
-}
+});
 if($defaults[servicegroup_dead] != 0) {
 	$svc_dead_marker = bartlby_get_service_by_id($btl->RES, $defaults[servicegroup_dead]);
 }
 
 
-$map = $btl->GetSVCMap();
+$servers_out=array();
+$services_x=0;
+$btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
+	if($svc[is_gone] != 0) {
+	 continue;
+	}
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[servicegroup_dead] || strstr($defaults[servicegroup_members], "|" . $svc[service_id] . "|")) {
 
+		if(!is_array($servers_out[$svc[server_id]])) {
+			$servers_out[$svc[server_id]]=array();
+		}
+		array_push($servers_out[$svc[server_id]], $svc);
+
+		$services_x++;
+		//if($services_x > 50) return LOOP_BREAK;
+	}
+});			
+ksort($servers_out);
+
+
+$map=&$servers_out;
 $optind=0;
-	while(list($k, $servs) = @each($map)) {
+$servers=array();
+
+while(list($k, $servs) = @each($map)) {
 		$displayed_servers++;
 		
 		for($x=0; $x<count($servs); $x++) {
@@ -52,6 +77,12 @@ $optind=0;
 				$alive_indicator[$optind][v]="s" . $servs[$x][server_id];	
 				$alive_indicator[$optind][k]="" . $servs[$x][server_name] . "";
 				$alive_indicator[$optind][is_group]=1;
+
+				$servers[$optind][c]="";
+				$servers[$optind][v]="s" . $servs[$x][server_id];	
+				$servers[$optind][k]="" . $servs[$x][server_name] . "";
+				$servers[$optind][is_group]=1;
+
 				$optind++;
 			} else {
 				
@@ -64,69 +95,25 @@ $optind=0;
 			if($servs[$x][service_id] == $defaults[servicegroup_dead]) {
 				$alive_indicator[$optind][s]=1;
 			}
+			
+
 			$alive_indicator[$optind][c]="";
 			$alive_indicator[$optind][v]=$servs[$x][service_id];	
 			$alive_indicator[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+
+
+			$servers[$optind][c]="";
+			$servers[$optind][v]=$servs[$x][service_id];	
+			$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+			
+			if(strstr($defaults[servicegroup_members], "|" . $servs[$x][service_id] . "|")) {
+				$servers[$optind][s]=1;				
+			}
+
 			
 			$optind++;
 		}
 	}
-
-$optind=0;
-
-
-$optind=0;
-reset($map);
-while(list($k, $servs) = @each($map)) {
-
-	for($x=0; $x<count($servs); $x++) {
-		
-				
-		if($x == 0) {
-			//$isup=$btl->isServerUp($v1[server_id]);
-			//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
-			$servers[$optind][c]="";
-			$servers[$optind][v]="s" . $servs[$x][server_id];	
-			$servers[$optind][k]="" . $servs[$x][server_name] . "";
-			$servers[$optind][is_group]=1;
-			
-			
-			
-			$optind++;
-			
-			$servers[$optind][c]="";
- 		  $servers[$optind][v]=$servs[$x][service_id];
-      $servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
-      
-      
-       	if(strstr($defaults[servicegroup_members], "|" . $servs[$x][service_id] . "|")) {
-      		$servers[$optind][s]=1;
-      		
-      	}
-      
-      
-      $optind++;
-
-	} else {
-      $servers[$optind][c]="";
- 		  $servers[$optind][v]=$servs[$x][service_id];
-      $servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
-      
-     
-     
-      	if(strstr($defaults[servicegroup_members], "|" . $servs[$x][service_id] . "|")) {
-      		$servers[$optind][s]=1;
-      		
-      	}
-      
-      
-      
-      $optind++;
-	}	
-	
-}
-}
-
 
 
 //error_reporting(E_ALL);
@@ -237,7 +224,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Servicegroup Members",
-			1=>$layout->DropDown("servicegroup_members[]", $servers,"multiple", "", false, "ajax_servicegroup_list")
+			1=>$layout->DropDown("servicegroup_members[]", $servers,"multiple", "", false, "ajax_servicegroup_members")
 		)
 	)
 ,true);

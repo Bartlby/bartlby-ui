@@ -161,8 +161,67 @@ function docReady(){
     return results;
 });
 	
+
+	$('[data-rel="ajax_servergroup_list"]').ajaxChosen(
+	{
+    type: 'GET',
+    afterTypeDelay: 500,
+    jsonTermKey: "dropdown_term",
+    url: 'servergroup_list.php?dropdown_search=1&dropdown_name=servergroup_id',
+    dataType: 'json'
+}, function (data) {
+    var results = [];
+		
+    $.each(data, function (i, val) {
+    	console.log(val);
+        var group = { // here's a group object:
+            group: true,
+            text: val.text, // label for the group
+            items: [] // individual options within the group
+        };
+
+        $.each(val.items, function (i1, val1) {
+            group.items.push({value: val1.value, text: val1.text});
+        });
+				
+        results.push(group);
+    });
+
+    return results;
+});
+
+
+
 	
 	$('[data-rel="ajax_servicegroup_list"]').ajaxChosen(
+	{
+    type: 'GET',
+    afterTypeDelay: 500,
+    jsonTermKey: "dropdown_term",
+    url: 'servicegroup_list.php?dropdown_search=1&dropdown_name=servicegroup_id',
+    dataType: 'json'
+}, function (data) {
+    var results = [];
+		
+    $.each(data, function (i, val) {
+    	console.log(val);
+        var group = { // here's a group object:
+            group: true,
+            text: val.text, // label for the group
+            items: [] // individual options within the group
+        };
+
+        $.each(val.items, function (i1, val1) {
+            group.items.push({value: val1.value, text: val1.text});
+        });
+				
+        results.push(group);
+    });
+
+    return results;
+});
+
+	$('[data-rel="ajax_servicegroup_members"]').ajaxChosen(
 	{
     type: 'GET',
     afterTypeDelay: 500,
@@ -189,6 +248,7 @@ function docReady(){
 
     return results;
 });
+
 	
 	$('[data-rel="ajax_package_services"]').ajaxChosen(
 	{
@@ -218,7 +278,9 @@ function docReady(){
     return results;
 });
 
-	
+
+		
+
 	
 	$('[data-rel="ajax_service_list_php"]').ajaxChosen(
 	{
@@ -247,7 +309,64 @@ function docReady(){
 
     return results;
 });
+
+        $('[data-rel="ajax_server_list_php"]').ajaxChosen(
+        {
+    type: 'GET',
+    afterTypeDelay: 500,
+    jsonTermKey: "dropdown_term",
+    url: 'server_list.php?dropdown_search=1&dropdown_name=server_id',
+    dataType: 'json'
+}, function (data) {
+    var results = [];
+
+    $.each(data, function (i, val) {
+        console.log(val);
+        var group = { // here's a group object:
+            group: true,
+            text: val.text, // label for the group
+            items: [] // individual options within the group
+        };
+
+        $.each(val.items, function (i1, val1) {
+            group.items.push({value: val1.value, text: val1.text});
+        });
+
+        results.push(group);
+    });
+
+    return results;
+});
+
 if(typeof(global_worker_id) == "undefined") global_worker_id=0;
+
+$('[data-rel="ajax_modify_worker_services_permission"]').ajaxChosen(
+	{
+    type: 'GET',
+    afterTypeDelay: 500,
+    jsonTermKey: "dropdown_term",
+    url: 'permission_worker.php?dropdown_search=1&dropdown_name=worker_services[]&worker_id=' + global_worker_id,
+    dataType: 'json'
+}, function (data) {
+    var results = [];
+
+    $.each(data, function (i, val) {
+    	console.log(val);
+        var group = { // here's a group object:
+            group: true,
+            text: val.text, // label for the group
+            items: [] // individual options within the group
+        };
+
+        $.each(val.items, function (i1, val1) {
+            group.items.push({value: val1.value, text: val1.text});
+        });
+				
+        results.push(group);
+    });
+
+    return results;
+});
 
 
 $('[data-rel="ajax_modify_worker_services"]').ajaxChosen(

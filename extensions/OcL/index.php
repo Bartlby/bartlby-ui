@@ -73,8 +73,8 @@ array
 		
 		,true);
 		//images/diabled.gif
-		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $v[$x][ocl_id] .  "\" )'><img border=0 alt='delete this entry' src='images/diabled.gif'></A>";
-		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&ocl_id=" . $v[$x][ocl_id] ."'><img border=0 alt='modify this entry' src='images/modify.gif'></A>";
+		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $v[$x][ocl_id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
+		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&ocl_id=" . $v[$x][ocl_id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
 		$grp_str=$ocl->resolveGroupString($v[$x][ocl_service_var]);
 		
 		$cur_box_content .=$layout->Tr(

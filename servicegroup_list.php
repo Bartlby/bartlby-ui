@@ -15,16 +15,17 @@ if($_GET[pkey] && $_GET[pval]) {
 	$passthrough = $layout->Field($_GET[pkey], "hidden", $_GET[pval]);
 }
 
-if($dropdownded != "true")  {
-	$servs=$btl->GetServiceGroups();
-	$optind=0;
-	
-	for($x=0; $x<count($servs); $x++ ) {
-		$servicegroups[$optind][c]="";
-		$servicegroups[$optind][k]=$servs[$x][servicegroup_name];	
-		$servicegroups[$optind][v]=$servs[$x][servicegroup_id];
-		$optind++;
-	}
+$optind = 0;
+$servergroups=array();
+$btl->servicegroup_list_loop(function($grp, $shm) use(&$servergroups, &$optind) {
+	global $_GET;
+		if($_GET[dropdown_term] && preg_match("/" . $_GET[dropdown_term] . "/i", $grp[servicegroup_name])) {
+			$servergroups[$optind][c]="";
+			$servergroups[$optind][k]=$grp[servicegroup_name];	
+			$servergroups[$optind][v]=$grp[servicegroup_id];
+			$optind++;
+		}
+	});
 	
 	
 	
@@ -32,7 +33,7 @@ if($dropdownded != "true")  {
 		$layout->Td(
 				Array(
 					0=>"Servicegroup:",
-					1=>$layout->DropDown("servicegroup_id", $servicegroups) . $passthrough
+					1=>$layout->DropDown("servicegroup_id", $servergroups,"", "", false, "ajax_servicegroup_list") . $passthrough
 				)
 			)
 	
@@ -50,20 +51,7 @@ if($dropdownded != "true")  {
 			)
 	
 	);
-} else {
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"left",
-						'show'=>"Dropdown searches disabled in ui-extra config"
-						)
-				)
-			)
-	
-	);	
-}
+
 
 
 $layout->TableEnd();

@@ -297,19 +297,27 @@ if(!$defaults[service_type]) {
 //Get plugins :))
 $layout->set_menu("services");
 
-$servs=$btl->GetServers();
+
 $optind=0;
-while(list($k, $v) = each($servs)) {
-	//$sr=bartlby_get_server_by_id($btl->RES, $k);
-	
-	$servers[$optind][c]="";
-	$servers[$optind][v]=$k;	
-	$servers[$optind][k]=$v;
-	if($defaults[server_id] == $k) {
-		$servers[$optind][s]=1;	
+$servers=array();
+
+$btl->server_list_loop(function($srv, $shm) use (&$optind, &$servers, &$defaults) {
+	global $_GET;
+	if(($_GET[dropdown_term] && preg_match("/" . $_GET[dropdown_term] . "/", $srv[server_name])) || $srv[server_id] == $defaults[server_id]) {
+		$servers[$optind][c]="";
+		$servers[$optind][v]=$srv[server_id];	
+		$servers[$optind][k]=$srv[server_name];
+		if($defaults[server_id] == $srv[server_id]) {
+
+			$servers[$optind][s]=1;	
+		}
+		$optind++;
 	}
-	$optind++;
-}
+	
+
+});
+
+	
 
 $layout->OUT .= "<script>
 
@@ -391,7 +399,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Service Server",
-			1=>$layout->DropDown($server_field_name, $servers, $server_list_type)
+			1=>$layout->DropDown($server_field_name, $servers, $server_list_type,"",false, "ajax_server_list_php")
 			
 		)
 	)

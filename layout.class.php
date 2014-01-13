@@ -30,7 +30,30 @@ class Layout {
 	var $template_file;
 	var $box_count;
 	
+	function stackTrace() {
+    $stack = debug_backtrace();
+    $output = '';
 
+    $stackLen = count($stack);
+    for ($i = 1; $i < $stackLen; $i++) {
+        $entry = $stack[$i];
+
+        $func = $entry['function'] . '(';
+        $argsLen = count($entry['args']);
+        for ($j = 0; $j < $argsLen; $j++) {
+            $func .= $entry['args'][$j];
+            if ($j < $argsLen - 1) $fxunc .= ', ';
+        }
+        $func .= ')';
+
+        $output .= $entry['file'] . ':' . $entry['line'] . ' - ' . $func . PHP_EOL;
+    }
+    return $output;
+	}
+
+	function deprecated($str) {
+		$this->deprecated[] = $str . "<pre>" . $this->stackTrace() . "</pre>";		
+	}
 	function setTheme($name="classic") {
 		if($name=="") $name="classic";
 		$this->theme=$name;	
@@ -55,6 +78,7 @@ class Layout {
 	}
 	function Layout($scr='') {
 		global $_GET;
+		
 		$this->box_count=1;
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
 			$this->theme=bartlby_config(getcwd() . "/ui-extra.conf", "theme");
@@ -346,7 +370,7 @@ class Layout {
                 $this->ext_menu .= $this->addSub("Service/s", "Add","add_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Modify","service_list.php?script=modify_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Delete","service_list.php?script=delete_service.php");
-                $this->ext_menu .= $this->addSub("Service/s", "Bulk","bulk_actions.php");
+                
 		$this->ext_menu .= $this->endMenu();
 
 
@@ -444,7 +468,12 @@ class Layout {
 	
 		
 		
-
+		for($z=0; $z<count($this->deprecated); $z++) {
+			$depre .= '<div class="alert alert-error">
+							<button type="button" class="close" data-dismiss="alert">×</button>
+							Deprecated INFO: <strong>' .  $this->deprecated[$z] . '</strong>
+						</div>';
+		}
 
 		//Default LineUp
 		if($lineup_file == "") {
@@ -458,12 +487,12 @@ class Layout {
 		ob_start();
 			include($lineup_path);
 		
-		$this->BTUIOUTSIDE = ob_get_contents();		
+		$this->BTUIOUTSIDE = $depre . ob_get_contents();		
 		ob_end_clean();
 		
 
 		ob_start();
-			include($this->template_file);
+		include($this->template_file);
 		
 		$o = ob_get_contents();
 		ob_end_clean();
@@ -474,7 +503,7 @@ class Layout {
 		}
 		
 		echo $o;
-		
+
 		if($this->do_auto_reload) {
 			echo "<script>btl_start_auto_reload()</script>";
 		}

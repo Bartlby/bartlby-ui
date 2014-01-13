@@ -37,7 +37,7 @@ class OcL {
 		$r .= $this->layout->addRoot("OcL");
 		$r .= $this->layout->addSub("OcL", "Logs","extensions_wrap.php?script=OcL/index.php");
 		$r .= $this->layout->addSub("OcL", "Add","extensions_wrap.php?script=OcL/add.php");
-		$r .= $this->layout->addSub("OcL", "Schedule","extensions_wrap.php?script=OcL/bsp.php");
+		
 		
 		$r .= $this->layout->endMenu();
 		return $r;

@@ -62,8 +62,9 @@ $Author: hjanuschka $
 	
 		
 	
-	
-	$servers=$btl->GetSVCMap();
+	//if($_GET[json]) {
+//		$servers=$btl->GetSVCMap();
+	//}
 	
 	
 	
@@ -80,44 +81,41 @@ $Author: hjanuschka $
 	$acks_outstanding=0;
 	$gdelay_count = 0;
 	$gdelay_sum = 0;
-	
-	while(list($k,$v)=@each($servers)) {
-		$x=$k;
-		if($btl->isServerUp($x, $servers)) {
-			$hosts_up++;	
-		} else {
-			$hosts_down++;	
-			$hosts_a_down[$k]=1;
-			
-		}
-		
-		for($y=0; $y<count($v); $y++) {
+	$server_state_a=array();
+	//
+
+	$btl->service_list_loop(function($v)  {
 			//service_delay_sum
-			$gdelay_sum += $v[$y][service_delay_sum];
-			$gdelay_count += $v[$y][service_delay_count];
+			global $hosts_down, $hosts_up, $services_critical, $services_critical, $services_info, $services_ok, $services_warning, $services_unkown, $services_downtime, $all_services, $acks_outstanding, $gdelay_sum, $gdelay_count, $service_state_a, $server_state_a;
+
+			$gdelay_sum += $v[service_delay_sum];
+			$gdelay_count += $v[service_delay_count];
 			
-			if($v[$y][is_gone]) $reload_status="<font color=red>Reload needed</font>";		
+			if($v[is_gone]) $reload_status="<font color=red>Reload needed</font>";		
 			
-			$service_state_a[$v[$y][service_id]][$v[$y][current_state]]++;	
+			$service_state_a[$v[service_id]][$v[current_state]]++;	
+			$server_state_a[$v[server_id]][$v[current_state]]++;	
 			
-			$qck[$v[$y][server_id]][$v[$y][current_state]]++;	
-			$qck[$v[$y][server_id]][10]=$v[$y][server_id];
-			$qck[$v[$y][server_id]][server_icon]=$v[$y][server_icon];
-			$qck[$v[$y][server_id]][server_name]=$v[$y][server_name];
-			if($v[$y][is_downtime] == 1) {
-				$qck[$v[$y][server_id]][$v[$y][current_state]]--;
-				$qck[$v[$y][server_id]][downtime]++;
+
+			$qck[$v[server_id]][$v[current_state]]++;	
+			$qck[$v[server_id]][10]=$v[server_id];
+			$qck[$v[server_id]][server_icon]=$v[server_icon];
+			$qck[$v[server_id]][server_name]=$v[server_name];
+			if($v[is_downtime] == 1) {
+				$qck[$v[server_id]][$v[current_state]]--;
+				$qck[$v[server_id]][downtime]++;
 				
 			}
-			if($v[$y][service_ack_current] == 2) {
-				$qck[$v[$y][server_id]][acks]++;	
+			if($v[service_ack_current] == 2) {
+				$qck[$v[server_id]][acks]++;	
 				$acks_outstanding++;
 				
 			}
 			
 			
 			$all_services++;
-			switch($v[$y][current_state]) {
+
+			switch($v[current_state]) {
 
 				case 0:
 					$services_ok++;
@@ -142,17 +140,21 @@ $Author: hjanuschka $
 				break;
 				default:
 					$services_unkown++;
-					if($v[$y][is_downtime] == 1) {
+					if($v[is_downtime] == 1) {
 						$services_ok--;
 						$services_downtime++;	
 					}
 				
 				
 			}	
-		}
+
+	});
+
 		
 		
-	}
+		
+		
+	
 	
 	$service_sum=$all_services-$services_downtime-$services_info;
 	
@@ -288,76 +290,77 @@ $Author: hjanuschka $
 		$all[0]=0;
 		$all[1]=0;
 		$all[2]=0;
-			
-		$grp_map=$btl->GetServerGroups();
-	
-		for($z=0; $z<count($grp_map); $z++) {
-			$members=explode("|",$grp_map[$z][servergroup_members]);
-			$grp_map[$z][members]=array();
-			
+		$grp_map=array();
+		$z=0;
+		$btl->servergroup_list_loop(function($grp) use($all, &$grp_map, $z, $server_state_a) {
+
+			$members=explode("|",$grp[servergroup_members]);
 			$all[0]=0;
 			$all[1]=0;
 			$all[2]=0;
 			$zero_members=0;
 			for($x=0; $x<count($members); $x++) {
 					if(strlen($members[$x]) <= 0) {  continue; }
-					array_push($grp_map[$z][members], $members[$x]);
-					
-					$ret=$btl->getServerInfs($members[$x], $servers);	
-					$all[0] += $ret[0];
-					$all[1] += $ret[1];
-					$all[2] += $ret[2];
+			
+					$all[0] += $server_state_a[$members[$x]][0];
+					$all[1] += $server_state_a[$members[$x]][1];
+					$all[2] += $server_state_a[$members[$x]][2];
+
 					
 					
 					
 			}
 			
-				$service_sum=($all[0]+$all[1]+$all[2]);
-				if($service_sum == 0) {
-					$criticals=100;
-				} else {
-					$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
-				}
+			
+			$service_sum=($all[0]+$all[1]+$all[2]);
+
+			if($service_sum == 0) {
+				$criticals=100;
+			} else {
+				$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
+			}
      	
-				$proz=100-$criticals;
+			$proz=100-$criticals;
 			
 			
 			
 			
-				$prozent_zahl = floor($proz);
-				$prozent_float = number_format($proz, 1); 
-				$prozent_crit_zahl = floor($criticals);
-				$prozent_crit_float = number_format($criticals, 1); 
+			$prozent_zahl = floor($proz);
+			$prozent_float = number_format($proz, 1); 
+			$prozent_crit_zahl = floor($criticals);
+			$prozent_crit_float = number_format($criticals, 1); 
 			
-				$color="green";
+			$color="green";
 	
-				if($prozent_float <= 60) {
-					$color="red";	
-					$lbl = "progress-danger";
-				} else if($prozent_float <= 90) {
-					$lbl = "progress-warning";
-				} else if($prozent_float <= 80) {
-					$lbl = "progress-danger";
-				} else {
-					$lbl = "progress-success";
-				}
-				
-				$grp_map[$z][prozent_float]=$prozent_float;
-				$grp_map[$z][prozent_zahl]=$prozent_zahl;
-				$grp_map[$z][prozent_crit_zahl]=$prozent_crit_zahl;
-				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
-				$grp_map[$z][service_sum]=$service_sum;
-				$grp_map[$z][lbl]=$lbl;
-				$grp_map[$z][0]=$all[0];
-				$grp_map[$z][1]=$all[1];
-				$grp_map[$z][2]=$all[2];
-				
-				
-				
-		}
+			if($prozent_float <= 60) {
+				$color="red";	
+				$lbl = "progress-danger";
+			} else if($prozent_float <= 90) {
+				$lbl = "progress-warning";
+			} else if($prozent_float <= 80) {
+				$lbl = "progress-danger";
+			} else {
+				$lbl = "progress-success";
+			}
+			
+			$tt[prozent_float]=$prozent_float;
+			$tt[prozent_zahl]=$prozent_zahl;
+			$tt[prozent_crit_zahl]=$prozent_crit_zahl;
+			$tt[prozent_crit_float]=$prozent_crit_float;
+			$tt[service_sum]=$service_sum;
+			$tt[lbl]=$lbl;
+			$tt[0]=$all[0];
+			$tt[1]=$all[1];
+			$tt[2]=$all[2];
+			$tt[servergroup_id]=$grp[servergroup_id];
+			$tt[servergroup_name]=$grp[servergroup_name];
+			array_push($grp_map, $tt);
 
 
+			
 
+		$z++;
+	});
 	
 	if(count($grp_map) <= 0) {
 		$quickview_disabled	 = "true";
@@ -372,81 +375,82 @@ $Author: hjanuschka $
 	
 		
 	}
-	
-	
-	
-	
-	//SErvice Groups
-			$all[0]=0;
+		$all[0]=0;
 		$all[1]=0;
 		$all[2]=0;
-			
-		$grp_map=$btl->GetServiceGroups();
-		for($z=0; $z<count($grp_map); $z++) {
-			$members=explode("|",$grp_map[$z][servicegroup_members]);
+		$grp_map=array();
+		$z=0;
+		$btl->servicegroup_list_loop(function($grp) use($all, $z, &$grp_map, $service_state_a) {
+
+			$members=explode("|",$grp[servicegroup_members]);
 			$grp_map[$z][members]=array();
 			
 			$all[0]=0;
 			$all[1]=0;
 			$all[2]=0;
-			
+			$zero_members=0;
 			for($x=0; $x<count($members); $x++) {
-					if(strlen($members[$x]) <= 0) continue;
+					if(strlen($members[$x]) <= 0) {  continue; }
 					array_push($grp_map[$z][members], $members[$x]);
 					
-					
 					$all[0] += $service_state_a[$members[$x]][0];
-					$all[1] += $service_state_a[$members[$x]][1];
+                    $all[1] += $service_state_a[$members[$x]][1];
 					$all[2] += $service_state_a[$members[$x]][2];
 					
 					
 					
-					
-					
 			}
-				$service_sum=($all[0]+$all[1]+$all[2]);
-				if($service_sum == 0) {
-					$criticals=100;
-				} else {
-					$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
-				}
-     		
-				$proz=100-$criticals;
+			$service_sum=($all[0]+$all[1]+$all[2]);
+			if($service_sum == 0) {
+				$criticals=100;
+			} else {
+				$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
+			}
+     	
+			$proz=100-$criticals;
 			
 			
 			
 			
-				$prozent_zahl = floor($proz);
-				$prozent_float = number_format($proz, 1); 
-				$prozent_crit_zahl = floor($criticals);
-				$prozent_crit_float = number_format($criticals, 1); 
+			$prozent_zahl = floor($proz);
+			$prozent_float = number_format($proz, 1); 
+			$prozent_crit_zahl = floor($criticals);
+			$prozent_crit_float = number_format($criticals, 1); 
 			
-				$color="green";
+			$color="green";
 	
-				if($prozent_float <= 60) {
-					$color="red";	
-					$lbl = "progress-danger";
-				} else if($prozent_float <= 90) {
-					$lbl = "progress-warning";
-				} else if($prozent_float <= 80) {
-					$lbl = "progress-danger";
-				} else {
-					$lbl = "progress-success";
-				}
+			if($prozent_float <= 60) {
+				$color="red";	
+				$lbl = "progress-danger";
+			} else if($prozent_float <= 90) {
+				$lbl = "progress-warning";
+			} else if($prozent_float <= 80) {
+				$lbl = "progress-danger";
+			} else {
+				$lbl = "progress-success";
+			}
 			
-				$grp_map[$z][prozent_float]=$prozent_float;
-				$grp_map[$z][prozent_zahl]=$prozent_zahl;
-				$grp_map[$z][prozent_crit_zahl]=$prozent_crit_zahl;
-				$grp_map[$z][prozent_crit_float]=$prozent_crit_float;
-				$grp_map[$z][service_sum]=$service_sum;
-				$grp_map[$z][lbl]=$lbl;
-				$grp_map[$z][0]=$all[0];
-				$grp_map[$z][1]=$all[1];
-				$grp_map[$z][2]=$all[2];
-				
-		}
+			$tt[prozent_float]=$prozent_float;
+			$tt[prozent_zahl]=$prozent_zahl;
+			$tt[prozent_crit_zahl]=$prozent_crit_zahl;
+			$tt[prozent_crit_float]=$prozent_crit_float;
+			$tt[service_sum]=$service_sum;
+			$tt[lbl]=$lbl;
+			$tt[0]=$all[0];
+			$tt[1]=$all[1];
+			$tt[2]=$all[2];
+			$tt[servicegroup_name]=$grp[servicegroup_name];
+			$tt[servicegroup_id]=$grp[servicegroup_id];
+			array_push($grp_map, $tt);
+
+		$z++;
+
+	});
+
 	
-		if(count($grp_map) > 0) {
+	
+	
+	if(count($grp_map) > 0) {
 	
 			$health_title='Service Groups';  
 			$layout->create_box($health_title, $health_content,"service_groups", array(

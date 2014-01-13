@@ -12,7 +12,7 @@ $layout->OUT .= "
 			function group_str_remove(f) {
 				ar=f.target.id.split(\"_\");
 				
-				$('#grp_service_' + ar[2]).remove();
+				$('#grp_service_' + ar[2]).remove();	
 			}
 			function appl() {
 			grp_str='';
@@ -73,21 +73,21 @@ $layout->Tr(
 
 $x=0;
 $ges=0;
-$map = $btl->GetSVCMap();
-	
+$optind=0;
+$servers=array();
+$ibox=array();
+$already_sel="";
+$btl->service_list_loop(function($svc, $shm) use(&$optind, &$servers, &$btl, &$ibox, &$already_sel, &$layout) {
+		global $_GET;
 
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-		for($x=0; $x<count($servs); $x++) {
 			//$v1=bartlby_get_service_by_id($btl->CFG, $servs[$x][service_id]);
 			
 			if($x == 0) {
 				//$isup=$btl->isServerUp($v1[server_id]);
 				//if($isup == 1 ) { $isup="UP"; } else { $isup="DOWN"; }
 				$servers[$optind][c]="";
-				$servers[$optind][v]="s" . $servs[$x][server_id];	
-				$servers[$optind][k]="" . $servs[$x][server_name] . "";
+				$servers[$optind][v]="s" . $svc[server_id];	
+				$servers[$optind][k]="" . $svc[server_name] . "";
 				$servers[$optind][is_group]=1;
 				$optind++;
 			} else {
@@ -96,10 +96,7 @@ $map = $btl->GetSVCMap();
 			if($servs[$x][is_gone] != 0) {
 			 continue;
 			}
-			$state=$btl->getState($servs[$x][current_state]);
-			$servers[$optind][c]="";
-			$servers[$optind][v]=$servs[$x][service_id];	
-			$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+			$state=$btl->getState($svc[current_state]);
 			
 			
 			
@@ -123,18 +120,22 @@ $map = $btl->GetSVCMap();
 			$ibox[3][s]=0;
 			
 			
-			if(preg_match("/\|" . $servs[$x][service_id] . "=(0|1|2)\|/", $_GET[str], $m)) {
+			if(preg_match("/\|" . $svc[service_id] . "=(0|1|2)\|/", $_GET[str], $m)) {
+
 				$ibox[0][s]=0;
-				
 				$ibox[(int)$m[1]+1][s]=1;
-				$st_drop = $layout->DropDown("sel_service_state_" . $servs[$x][service_id], $ibox);
-				$already_sel .= "<div id='grp_service_" . $servs[$x][service_id] . "' name='" . $servs[$x][service_id] . "'><table width='100%'><tr><td>" . $servs[$x][server_name] . "/" . $servs[$x][service_name] . "</td><td width=100>" . $st_drop . "</td><td width=10><button id='remove_service_" . $servs[$x][service_id] . "' class=\"btn btn-small btn-danger\">remove</button></td></tr></table></div>";
+				$st_drop = $layout->DropDown("sel_service_state_" . $svc[service_id], $ibox);
+				$already_sel .= "<div id='grp_service_" . $svc[service_id] . "' name='" . $svc[service_id] . "'><table width='100%'><tr><td>" . $svc[server_name] . "/" . $svc[service_name] . "</td><td width=100>" . $st_drop . "</td><td width=10><button id='remove_service_" . $svc[service_id] . "' class=\"btn btn-small btn-danger\">remove</button></td></tr></table></div>";
+				
+			}
+			if($_GET[dropdown_term] && @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
+				$servers[$optind][c]="";
+				$servers[$optind][v]=$svc[service_id];	
+				$servers[$optind][k]=$svc[server_name] . "/" .  $svc[service_name];
+				$optind++;
 			}
 			
-			$optind++;
-		}
-	}
-
+		});
 
 
 

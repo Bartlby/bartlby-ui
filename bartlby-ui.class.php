@@ -1,4 +1,6 @@
 <?
+ini_set("memory_limit","999999999M");
+ob_start("ob_gzhandler");
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
  *
@@ -19,7 +21,7 @@ $Revision: 16 $
 $HeadURL: http://bartlby.svn.sourceforge.net/svnroot/bartlby/trunk/bartlby-core/src/ack.c $
 $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
-*/
+*/ 
 
 include_once("bartlbystorage.class.php");
 
@@ -27,8 +29,10 @@ session_start();
 
 set_time_limit(0);
 if(function_exists("set_magic_quotes")) set_magic_quotes_runtime(0);
-define("BARTLBY_UI_VERSION", "2.2-1.5.0");
+define("BARTLBY_UI_VERSION", "2.5-1.6.0");
 define("BARTLBY_RELNOT", "");
+define("LOOP_CONTINUE", -2);
+define("LOOP_BREAK", -1);
 $wdays[0]="Sunday";
 $wdays[1]="Monday";
 $wdays[2]="Tuesday";
@@ -43,6 +47,56 @@ if(!version_compare(phpversion(), "5.0.0", ">=")) {
 	echo "you should have at least a php5 series";
 	exit;	
 }
+/*
+REMOVED UI FUNCTIONS deprectaion layer
+*/
+
+function bartlby_svc_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_get_svc_map is removed");
+		return;
+}
+function bartlby_worker_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_worker_map is removed");
+		return;
+
+}
+function bartlby_servergroup_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_servergroup_map is removed");
+		return;
+
+}
+function bartlby_servicegroup_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_servicegroup_map is removed");
+		return;
+
+}
+function bartlby_downtime_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_downtime_map is removed");
+		return;
+
+}
+function bartlby_server_map() {
+		global $layout;
+
+		$layout->deprecated("bartlby_server_map is removed");
+		return;
+
+}
+
+
+
+		
+
 
 class BartlbyUi {
 	
@@ -385,74 +439,53 @@ class BartlbyUi {
 		
 		$cur_id=$start_id;
 		$l = 0;
-		
-		
-		
+		$r = "";
+
 		while($cur_id != 0) {
 			if($l != 0 && $l == $cur_id) {
 				return $r;	
 			}
-			@reset($map);
-			
-			$f = false;
-			while(@list($k, $v) = @each($map)) {
+			$f = false;				
+			$btl=$this;
+			$this->service_list_loop(function($svc, $shm_place) use (&$cur_id, &$l, &$rr, &$r, &$f, &$btl)  {
 				
-				
-				for($x=0; $x<count($v); $x++) {
+
+				if($svc[service_id] == $cur_id) {
+					$f = true;					
+					$r .= str_repeat("&nbsp;&nbsp;&nbsp;", $rr) .  "<a href='service_detail.php?service_place=" . $shm_place . "'>" . $svc[server_name] . "/" . $svc[service_name] . "</A> (<font color='" .  $btl->getColor($svc[current_state])  . "'>" . $btl->getState($svc[current_state]) . "</font>) active: " . $svc[service_active] . "<br>";
 					
-					if($v[$x][service_id] == $cur_id) {
-						$f = true;					
-						$r .= str_repeat("&nbsp;&nbsp;&nbsp;", $rr) .  "<a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A> (<font color='" .  $this->getColor($v[$x][current_state])  . "'>" . $this->getState($v[$x][current_state]) . "</font>) active: " . $v[$x][service_active] . "<br>";
 						
-						
-						$l = $cur_id;	
-						$cur_id = $v[$x][server_dead];
-						
-						if($v[$x][current_state] == 2) {
-							
-							return $r;	
-						}
-						
-						if($cur_id <= 0) {
-							
-							return $r;	
-						}
-						if($cur_id == $start_id ) {
-							
-							return $r;	
-						}
-						
-						$rr++;
-						
-						
+					$l = $cur_id;	
+					$cur_id = $svc[server_dead];
+					if($svc[current_state] == 2) {
+						return LOOP_BREAK;	
 					}
-					
-					
-				}	
-				
-			
-				
-				
-			}
+					if($cur_id <= 0) {
+						return LOOP_BREAK;
+					}
+					if($cur_id == $start_id ) {
+						
+						return LOOP_BREAK;
+					}
+						
+					$rr++;
+					return LOOP_CONTINUE;
+						
+						
+				}
+
+			});
 			if($f == false) {
-			
 				return $r . "<br>INDICATOR: " . $cur_id .  " not found";	
 			}
-			if($cur_id == $start_id ) {
-				echo "b";
-				return $r;	
-			}
+			
 			
 		}
+	
 		return $r;
-		
 				
 	}
-	function service_selector($f, $v, $d, $d1) {
-		$mydiv="<div style='background-color:#ffffff; position:absolute' id='" . $d . "'></div>";
-		$r = "<input type=hidden id='text_" . $d . "'  name='text_" . $d . "' value='" . $d1 . "'><input autocomplete=off type=text id='search_" . $d . "' name='search_" .  $d . "' value='" . $v . "' onkeyup=\"buffer_suggest.modified('search_" . $d . "', 'xajax_service_noaction', '" . $d . "');\"> <a href='javascript:document.getElementById(\"text_" . $d . "\").value=\"0\";document.getElementById(\"search_" . $d . "\").value=\"removed\";'>remove</A>" . $mydiv;
-		return $r;	
-	}
+	
 	function format_report($rep, $type='html', $hdr, $do_perf=false) {
 		global $btl;
 		
@@ -953,6 +986,7 @@ class BartlbyUi {
 		}
 		
 		$this->perform_auth($auth);
+
 		$this->release=$this->info[version];
 		$this->loadRights();
 		$this->BASEDIR=@bartlby_config($this->CFG, "basedir");
@@ -1173,12 +1207,15 @@ class BartlbyUi {
 				$this->rights[$s1[0]]=explode(",", trim($s1[1]));
 				
 			}
+
 			for($x=0; $x<count($this->rights[services]); $x++) {
 					if($this->rights[services][$x] == "") {
 						$this->rights[services][$x]=-4;
 						continue;
 					}
+					
 					settype($this->rights[services][$x], "integer");
+					
 			}
 			for($x=0; $x<count($this->rights[servers]); $x++) {
 					if($this->rights[servers][$x] == "") {
@@ -1201,6 +1238,7 @@ class BartlbyUi {
 					}
 					settype($this->rights[selected_services][$x], "integer");
 			}
+
 		} else {
 			if(!preg_match("/error.php/" , $_SERVER[SCRIPT_NAME])) {
 		
@@ -1242,34 +1280,47 @@ class BartlbyUi {
 	}
 	
 	function perform_auth($a=true) {
-		$wrks=$this->GetWorker(false);
+		
 		$auted=0;
 		if($a==false) {
 			$auted=1;
 		} else {
-			
-			while(list($k, $v) = each($wrks)) {
+		
+			$btl=$this;
+			$this->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
+				global $_SERVER;
 				if($_SESSION[username] != "" && $_SESSION[password] != "") {
-					
 					$_SERVER[PHP_AUTH_USER]=$_SESSION[username];
 					$_SERVER[PHP_AUTH_PW]=$_SESSION[password];
 				}
+				
 				if($_SERVER[PHP_AUTH_USER] == $v[name] && (md5($_SERVER[PHP_AUTH_PW]) == $v[password] || $_SERVER[PHP_AUTH_PW] == $v[password])) {
+					
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
-					$this->user_id=$v[worker_id];
+					$btl->user_id=$v[worker_id];
+					return LOOP_BREAK;
+
 				}
-			}
+				
+				
+				
+			});
+			
+			
 		}
+	
+
+
 		if($auted == 0 && $_SESSION[username] != "") {
 			$this->redirectError("BARTLBY::LOGIN");
 		}
 		if ($auted==0) { 
 			
 			 session_destroy();
-	      		 @header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
-	      		 @Header("HTTP/1.0 401 Unauthorized");
-	      		 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
+	      	@header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
+	      	@Header("HTTP/1.0 401 Unauthorized");
+	      	 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
 			 $this->redirectError("BARTLBY::LOGIN");
 			 exit;
 		} else {
@@ -1313,18 +1364,15 @@ class BartlbyUi {
 		
 	}
 	function findSHMPlace($svcid) {
-		$map=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);
-		
-		
-		
-		for($x=0; $x<count($map); $x++) {
-			if($map[$x][service_id] == $svcid) {
-				
-				return 	$map[$x][shm_place];
-				
+		$r = -1;
+		$this->service_list_loop(function($svc, $shm) use(&$r, &$svcid) {
+			if($svc[service_id] == $svcid) {
+				$r = $shm;
+				return LOOP_BREAK;				
 			}
-		}
-		return -1;	
+		});
+		return $r;
+
 	}
 	function isServerUp($server_id, $map) {
 		
@@ -1419,9 +1467,84 @@ class BartlbyUi {
 				return "";
 		}
 	}	
+	
+	function servergroup_list_loop($fcn) {
+
+		for($x=0; $x<$this->info[servergroups]; $x++) {
+			$srvcgrp = bartlby_get_servergroup($this->RES, $x	);
+
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function servicegroup_list_loop($fcn) {
+		for($x=0; $x<$this->info[servicegroups]; $x++) {
+			$srvcgrp = bartlby_get_servicegroup($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function server_list_loop($fcn) {
+		for($x=0; $x<$this->info[server]; $x++) {
+
+			$srvcgrp = bartlby_get_server($this->RES, $x);
+			if($this->btl_is_array($this->rights[servers], $srvcgrp[server_id]) == -1) continue;
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function worker_list_loop($fcn) {
+		for($x=0; $x<$this->info[workers]; $x++) {
+			$srvcgrp = bartlby_get_worker($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+
+	function downtime_list_loop($fcn) {
+		for($x=0; $x<$this->info[downtimes]; $x++) {
+			$srvcgrp = bartlby_get_downtime($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function service_list_loop($fcn) {
+
+		for($x=0; $x<$this->info[services]; $x++) {
+			$svc = bartlby_get_service($this->RES, $x);
+			if($this->btl_is_array($this->rights[services], $svc[service_id]) == -1 && $this->btl_is_array($this->rights[servers], $svc[server_id]) == -1) continue;
+			$rtc=$fcn($svc, $x);			
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+
+		}		
+	}
+
+
+	function btl_is_array($arr = array(), $svc_id) {
+		
+		if(!is_array($arr)) return 1;
+
+		if(in_array($svc_id, $arr)) return 1;
+
+		return -1;
+
+
+	}
+
 	function GetSVCMap($state=false) {
 		//array(2555, 3191,2558)
 		#view_service_output
+		global $layout;
+
+		$layout->deprecated("GetSVCMap is removed");
+		return;
+
 		$has_right = $this->hasRight("view_service_output", false);
 		
 		$r=bartlby_svc_map($this->RES, $this->rights[services], $this->rights[servers]);

@@ -34,26 +34,35 @@ if(!$defaults) {
 	exit(1);	
 }
 
-$map=$btl->getSVCMap($btl->RES, NULL, NULL);
-$server_map=$map[$_GET[server_id]];
+//$map=$btl->getSVCMap($btl->RES, NULL, NULL);
+//$server_map=$map[$_GET[server_id]];
 
 
 
 
-if($btl->isServerUp($_GET[server_id], $map)) {
-	$isup="<font color='green'>UP</font>";	
-} else {
-	$isup="<font color='red'>DOWN</font>";
-}
+$isup="<font color='green'>UP</font>";	
 
 $services_assigned="";
 
-for($x=0; $x<count($server_map); $x++) {
-	$dmp_info[$server_map[$x][current_state]] += 1;
-	
-}
 
-while(list($k, $v) = each($dmp_info)) {
+$dmp_info[0] = 0;
+$dmp_info[1] = 0;
+$dmp_info[2] = 0;
+$is_up_down=-1;
+$server_service_count=0;
+$btl->service_list_loop(function($svc, $shm) use (&$dmp_info, &$server_service_count) {
+	global $_GET;
+	if($svc[server_id] != $_GET[server_id]) return LOOP_CONTINUE;
+	$server_service_count++;
+	if($svc[current_state] == 0) $is_up_down=1;
+	$dmp_info[$svc[current_state]] += 1;
+});
+
+if($is_up_down > 0) 	$isup="<font color='red'>DOWN</font>";
+	
+	
+
+while(list($k, $v) = @each($dmp_info)) {
 		$services_assigned .= "<a href='services.php?server_id=" . $_GET[server_id] . "&expect_state=" . $k . "'><font color='" . $btl->getColor($k) . "'>" . $btl->getState($k) . "</font></A>:" . $v . ",";
 }
 
@@ -98,7 +107,6 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 										"isup" => $isup,
 										"notify_enabled" => $noti_en,
 										"server_enabled" => $server_en,
-										"map" => $map,
 										"triggers" => $triggers
 										),
 			"server_detail_server_info", false,true);
@@ -115,7 +123,7 @@ if($defaults[server_ssh_keyfile] != " ") {
 $info_box_title='Services';  
 $layout->create_box($info_box_title, $core_content, "server_detail_services", array(
 									"services_assigned" => $services_assigned,
-									"server_map" => $server_map
+									"server_service_count" => $server_service_count									
 									)
 			, "server_detail_services", false,true);
 	
@@ -136,47 +144,12 @@ if($defaults[is_downtime] == 1) {
 	
 }
 
-$services_found=array();
-while(list($k, $servs) = @each($map)) {
-
-	for($x=0; $x<count($servs); $x++) {
-			if($servs[$x][server_id] == $_GET[server_id]) {
-				$svc_color=$btl->getColor($servs[$x][current_state]);
-				$svc_state=$btl->getState($servs[$x][current_state]);
-				$abc=$servs[$x][server_id];
-				
-				
-				if($servs[$x][is_downtime] == 1) {
-					$svc_state="Downtime";
-					$svc_color="silver";	
-				}
-				
-				$servs[$x][color]=$svc_color;
-				$servs[$x][state_readable]=$svc_state;
-				
-				array_push($services_found, $servs[$x]);	
-			}
-	}
-
-	
-	
-
-}
 $layout->create_box("Mass Actions", "", "mass_actions",
 											array("a"=>"b")				
 				,"service_list_mass_actions", false);
 	
 
-$layout->create_box($cur_box_title, $cur_box_content, "server_box_" . $abc,
-											array(
-												"services" => $services_found,
-												"state" => $svc_state,
-												"color" => $svc_color,
-												
-												
-											)
-				
-				,"service_list_element");
+
 
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);
 

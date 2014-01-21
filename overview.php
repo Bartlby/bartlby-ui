@@ -86,7 +86,8 @@ $Author: hjanuschka $
 
 	$btl->service_list_loop(function($v)  {
 			//service_delay_sum
-			global $hosts_down, $hosts_up, $services_critical, $services_critical, $services_info, $services_ok, $services_warning, $services_unkown, $services_downtime, $all_services, $acks_outstanding, $gdelay_sum, $gdelay_count, $service_state_a, $server_state_a;
+
+			global $reload_status, $hosts_down, $hosts_up, $services_critical, $services_critical, $services_info, $services_ok, $services_warning, $services_unkown, $services_downtime, $all_services, $acks_outstanding, $gdelay_sum, $gdelay_count, $service_state_a, $server_state_a;
 
 			$gdelay_sum += $v[service_delay_sum];
 			$gdelay_count += $v[service_delay_count];
@@ -247,6 +248,7 @@ $Author: hjanuschka $
 		'uptime' =>  $btl->intervall(time()-$btl->info[startup_time]),
 		'services' => $info[services],
 		'workers' => $info[workers],
+		'servers' => $info[server],
 		'downtimes' => $info[downtimes],
 		'datalib' => $lib[Name],
 		'datalib_version' => $lib[Version],
@@ -265,6 +267,7 @@ $Author: hjanuschka $
 	
 	
 	
+
 	
 	
 	$tac_title='Tactical Overview';  
@@ -278,7 +281,8 @@ $Author: hjanuschka $
 		'services_downtime' => $services_downtime,
 		'acks_outstanding' => $acks_outstanding,
 		'services_info' => $services_info,
-		'services_sum' => $info[services]
+		'services_sum' => $info[services],
+		'services_unkown' => $services_unkown
 	
 	), "tactical_overview", false, true);
 	

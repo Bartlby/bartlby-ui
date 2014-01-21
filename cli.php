@@ -1,7 +1,7 @@
 <?php
 
 
-error_reporting(0);	
+//error_reporting(0);	
 	
 	include "config.php";
 	include "layout.class.php";
@@ -81,6 +81,8 @@ while(1){
 			}
 			$ztx++;
 			usleep(500000);
+			bartlby_close($btl->RES);
+			$btl->RES=bartlby_new($btl->CFG);
 			
 		}
 	}
@@ -179,8 +181,8 @@ while(1){
 			
 	}
 
-	unset($map);
-	$map = @$btl->GetSVCMap();
+//	unset($map);
+	//$map = @$btl->GetSVCMap();
 	$oks=0;
 	$warns=0;
 	$crits=0;	
@@ -202,21 +204,20 @@ for($tt=0; $tt<$lines; $tt++) {
         $y=2;
 
 	$a=0;
-	@reset($map);
+	//@reset($map);
 	$per_server=false;
 	$already_displayed=false;
 	unset($f);
-	while(list($k, $servs) = @each($map)) {
-		$displayed_servers++;
-		
-			
-			
-			for($x=0; $x<count($servs); $x++) {
+	$f=array();
+	$selected_svc=array();
+	$selected_pos=0;
 				
+	$btl->service_list_loop(function($svc, $shm) use(&$lines, &$per_server, &$oks, &$crits, &$warns, &$hide_warns, &$hide_infos, &$alerts_only, &$show_downtimes, &$running_only, &$a, &$f, &$a, &$selected_svc, &$selected_pos, &$selected_index) {
+
 				
-				$per_server[$servs[$x][server_name]][$servs[$x][current_state]]++;
+				$per_server[$svc[server_name]][$svc[current_state]]++;
 				
-				switch($servs[$x][current_state]) {
+				switch($svc[current_state]) {
 					case 0:
 						$oks++;
 						
@@ -234,46 +235,50 @@ for($tt=0; $tt<$lines; $tt++) {
 					break;
 				}
 				if($hide_warns == 1) {
-					if($servs[$x][current_state] == 1) {
-                                                continue;
+					if($svc[current_state] == 1) {
+                                               return LOOP_CONTINUE;
                                         }
 				}
 				if($hide_infos == 1) {
-					if($servs[$x][current_state] == 4) {
-					        continue;
+					if($svc[current_state] == 4) {
+					        return LOOP_CONTINUE;
 					}
-        }
+        		}
 
 				if($alerts_only == 1) {
-					if($servs[$x][current_state] == 0) {
-						continue;	
+					if($svc[current_state] == 0) {
+						return LOOP_CONTINUE;
 					}
-					if($servs[$x][is_downtime] == 1 && $show_downtimes == 0) {
-						continue;
+					if($svc[is_downtime] == 1 && $show_downtimes == 0) {
+						return LOOP_CONTINUE;
 					}
 				}
 				if($running_only == 1) {
-					if($servs[$x][check_starttime] == 0) 
-						continue;
+					if($svc[check_starttime] == 0) 
+						return LOOP_CONTINUE;
 				}
-				//$out_str=sprintf("%s - %s", $servs[$x][service_name], );
+				//$out_str=sprintf("%s - %s", $svc[service_name], );
 				if($a == $selected_index) {
-					$selected_svc=$servs[$x];
+					$selected_svc=$svc;
 					$selected_pos=$a;
-					$servs[$x][selected] = true;
+					$svc[selected] = true;
 				} else {
-					$servs[$x][selected] = false;
+					$svc[selected] = false;
 
 				}
-				$f[$a] = $servs[$x];
+				$f[$a] = $svc;
+				
+
 				$a++;
-			}	
-		}
+				if($a >= $lines*2) return LOOP_BREAK;
+		
+			});	
+
 			$gservice_count=count($f);
 			
+			
+			
 
-			
-			
 			for($z=0; $z<count($f); $z++) {
 				
 				if($z >= $start_from && $y <= $lines - 4) {
@@ -303,7 +308,7 @@ for($tt=0; $tt<$lines; $tt++) {
 					
 					$this_row_selected = $f[$z][selected];
 					ncurses_move($y+1, 6);
-					//ncurses_addstr($servs[$x][server_name] .  str_repeat(" ", 20-strlen($servs[$x][server_name])));
+					//ncurses_addstr($svc[server_name] .  str_repeat(" ", 20-strlen($svc[server_name])));
 					ncurses_color_set(get_ncurses_color($f[$z][current_state]));
 					
 
@@ -576,8 +581,8 @@ function window_force_check() {
         global $reopen_service,$reopen_server;
 
         $defaults=$selected_svc;
-
-        bartlby_check_force($btl->RES, $defaults[shm_place]);
+       	$id=$btl->findSHMPlace($defaults[service_id]);
+       	bartlby_check_force($btl->RES, $id);
 
         $reopen_service=true;
 
@@ -626,8 +631,8 @@ function window_disable_check() {
         global $reopen_service;
 
         $defaults=$selected_svc;
-
-        bartlby_toggle_service_active($btl->RES, $defaults[shm_place], 1);
+        $id=$btl->findSHMPlace($defaults[service_id]);
+        bartlby_toggle_service_active($btl->RES, $id, 1);
 
         $reopen_service=true;
 
@@ -644,8 +649,8 @@ function window_disable_notification() {
 	global $reopen_service;
 
         $defaults=$selected_svc;
-	
-	bartlby_toggle_service_notify($btl->RES, $defaults[shm_place], 1);
+	$id=$btl->findSHMPlace($defaults[service_id]);
+	bartlby_toggle_service_notify($btl->RES, $id, 1);
 	$reopen_service=true;
 
 
@@ -667,7 +672,7 @@ function btl_disp_server() {
 	global $selected_svc;
 	global $lines, $columns, $btl;
 	global $reopen_service, $reopen_server;
-	global $map;
+	
 
 	$reopen_server=false;
 	
@@ -689,16 +694,7 @@ function btl_disp_server() {
 
 	window_td($w, 1,1, "Name:", $selected_svc[server_name]);
 	
-	if($btl->isServerUp($defaults[server_id], $map)) {
-		
-
-        	ncurses_wcolor_set($w, 3);
-		$isup="UP";
-	} else {
-
-        	ncurses_wcolor_set($w, 1);
-		$isup="DOWN";
-	}
+	
 	
 	window_td($w, 2,1, "Status:" , $isup);
 
@@ -788,7 +784,7 @@ function disp_reload_window() {
 	global $selected_svc;
         global $lines, $columns, $btl;
         global $reopen_service, $reopen_server;
-        global $map;
+        
         global $help;
         
        	switch($ticker) {
@@ -860,7 +856,7 @@ function disp_help() {
 	global $selected_svc;
 	global $lines, $columns, $btl;
 	global $reopen_service, $reopen_server;
-	global $map;
+	
 	global $help;
 
 	$help = array(

@@ -194,7 +194,7 @@ $(document).ready(function() {
 	
 	
 	//Service-DataTable
-		s_url = document.location.href.replace(/s.*\.php/, "services.php");
+		s_url = document.location.href.replace(/\/s.*\.php/, "/services.php");
 		s_char = "?";
 		if(s_url.match(/\?/)) {
 			s_char = "&";

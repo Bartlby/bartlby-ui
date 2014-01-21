@@ -17,20 +17,27 @@
 ?>
 
 <table class='nopad' width='100%'>
+		
 		<tr>
-			<td colspan=2 class='font1'>Hosts:<font class='font2'><?=$plcs[host_sum]?></font></td>
-			<td colspan=6 align=left class='font1'>Services:<font Fav. Services class='font2'><?=$plcs[services_sum]?></font></td>
-		</tr>
-		<tr>
-			<td class='font1'>Up:<font class='font2'><?=$plcs[hosts_up]?></font></td>
-			<td class='font1'>Down:<font class='font2'><?=$plcs[hosts_down]?></font></td>
-			<td class='font1'><a href='services.php?expect_state=0'><font color=green><span class="label label-success">OK</span></font></A>:<font class='font2'><?=$plcs[services_ok]?></font></td>
-			<td class='font1'><a href='services.php?expect_state=1'><font color=orange><span class="label label-warning">Warning</span></font></A>:<font class='font2'><?=$plcs[services_warning]?></font></td>
-			<td class='font1'><a href='services.php?expect_state=2'><font color=red><span class="label label-important">Critical</span></font></A>:<font class='font2'><?=$plcs[services_critical]?></font></td>
-			<td class='font1'><a href='services.php?expect_state=4'><font color=grey><span class="label">Info</span></font></A>:<font class='font2'><?=$plcs[services_info]?></font></td>
-			<td class='font1'><a href='services.php?downtime=true'>Downtime</A>:<font class='font2'><?=$plcs[services_downtime]?></font></td>
-			<td class='font1'><a href='services.php?acks=yes'>Acks</A> outstanding:<font class='font2'><?=$plcs[acks_outstanding]?></font></td>
-			<td class='font1'><a href='services.php?expect_state=0&invert=true'>all failures</A></td>
+			<td class='font1'>
+
+				
+
+				<? if($plcs[services_ok]>0) {?><a href='services.php?&expect_state=0'><span class='label label-success'><?=$plcs[services_ok]?> OK's</A><? } ?>
+				<? if($plcs[services_warning]>0) {?><a href='services.php?&expect_state=1'><span class='label label-warning'><?=$plcs[services_warning]?> Warnings</A><? } ?>
+				<? if($plcs[services_critical]>0) {?><a href='services.php?&expect_state=2'><span class='label label-important'><?=$plcs[services_critical]?> Criticals</A><? } ?>
+				<? if($plcs[services_unkown]>0) {?><a href='services.php?&expect_state=3'><span class='label label-default'><?=$plcs[services_unkown]?>  Unkown</A><? } ?>
+				<? if($plcs[services_info]>0) {?><a href='services.php?&expect_state=4'><span class='label label-default'><?=$plcs[services_info]?> Info</A><? } ?>
+				<? if($plcs[services_downtime]>0) {?><a href='services.php?&downtime=true'><span class='label label-default'><?=$plcs[services_downtime]?> Downtime</A><? } ?>
+				<? if($plcs[acks_outstanding]>0) {?><a href='services.php?&expect_state=2&acks=yes'><span class='label label-default'><?=$plcs[acks_outstanding]?> Ack Wait</A><? } ?>
+				<a href='services.php?expect_state=0&invert=true'>show all failures</A>
+
+
+
+
+
+			</td>
+			
 		</tr>
 		
 	</table>

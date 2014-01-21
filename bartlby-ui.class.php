@@ -2114,7 +2114,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 				$r="Perfhandler '$cmd' does not exists";
 			} else {
 				
-				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->RES . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
+				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->CFG . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
 				
 				$fp=popen($exec, "r");
 				$output="<hr><pre>";

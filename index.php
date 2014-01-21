@@ -12,7 +12,7 @@ include "config.php";
 	<meta name="author" content="Muhammad Usman">
 
 	<!-- The styles -->
-	<link id="bs-css" href="themes/classic/css/bootstrap-cerulean.css" rel="stylesheet">
+	<link id="bs-css" href="themes/classic/css/bootstrap-simplex.css" rel="stylesheet">
 	<style type="text/css">
 	  body {
 		padding-bottom: 40px;
@@ -49,23 +49,20 @@ include "config.php";
 </head>
 
 <body>
-		<div class="container-fluid">
-		<div class="row-fluid">
-		
-			<div class="row-fluid">
-				<div class="span12 center login-header">
-					<img src='themes/classic/images/btl-logo.gif'><br>
-					<h2>Welcome to Bartlby</h2>
-					
-				</div><!--/span-->
-			</div><!--/row-->
-			
-			<div class="row-fluid">
-				<div class="well span5 center login-box">
-					<div class="alert alert-info">
+
+<div class="box" id="MAIN" style="height:92%">
+					<div class="box-header well">
+						<h2><i class="xicon-info-sign"></i> Login</h2>
+						<div class="box-icon">
+							<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
+						</div>
+					</div>
+					<div class="box-content" id="content_MAIN" style="display:block; ">
+						
+<div class="alert alert-info">
 						Please login with your Username and Password.
 					</div>
-					<form class="form-horizontal" action="login.php" method="post">
+<form class="form-horizontal" action="login.php" method="post">
 						<fieldset>
 							<div class="input-prepend" title="Username" data-rel="tooltip">
 								<span class="add-on"><i class="icon-user"></i></span><input autofocus class="input-large span10" name="login_username" id="username" type="text" value="admin" />
@@ -87,11 +84,14 @@ include "config.php";
 							</p>
 						</fieldset>
 					</form>
-				</div><!--/span-->
-			</div><!--/row-->
-				</div><!--/fluid-row-->
-		
-	</div><!--/.fluid-container-->
+					
+
+
+		<div class="clearfix"></div>
+					</div>
+</div>
+
+
 
 	<!-- external javascript
 	================================================== -->

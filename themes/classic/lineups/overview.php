@@ -1,7 +1,7 @@
-<div id="system_health_ajax" style='width: 50%; float:right'>
+<div id="system_health_ajax" style='width: 50%; float:right; '>
 <?=$this->disp_box("system_health")?>
 </div>
-<div id="core_info_ajax" style='width: 50%; float:left'>
+<div id="core_info_ajax" style='width: 50%; float:left;'>
 <?=$this->disp_box("core_info")?>
 </div>
 <div id="tactical_overview_ajax" style='width: 50%; float:right'>

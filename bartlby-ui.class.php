@@ -1684,7 +1684,7 @@ class BartlbyUi {
 	function wikiLink($page_name, $display) {
 		return "<a target='_blank' href='http://wiki.bartlby.org/dokuwiki/doku.php?id=" . $page_name . "'>" . $display . "</A>";	
 	}
-	function installPackage($pkg, $server, $force_plugin, $force_perf, $my_path="") {
+	function installPackage($pkg, $server, $force_plugin, $force_perf, $my_path="", $force_service_type=0) {
 		$basedir=bartlby_config($this->CFG, "basedir");
 		
 		
@@ -1703,6 +1703,7 @@ class BartlbyUi {
 		} else {
 			$fp=@fopen($my_path . $pkg, "r");	
 		}
+
 		if($fp) {
 			while(!feof($fp)) {
 				$bf .= fgets($fp, 1024);	
@@ -1713,10 +1714,16 @@ class BartlbyUi {
 				$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
 				
 				
+				$svc_type = $re[$x][service_type];
+				if($force_service_type != 0) {
+					$svc_type = $force_service_type;
+					
+				}
 				
 				$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
 				$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
-				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $re[$x][service_type] . "<br>";
+				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $svc_type . "<br>";
+				
 				
 
 				$svc_obj = array(
@@ -1725,7 +1732,7 @@ class BartlbyUi {
 					"notify_enabled"=>$re[$x][notify_enabled],					
 					"plugin_arguments"=>$re[$x][plugin_arguments],
 					"check_interval"=>$re[$x][check_interval],
-					"service_type"=>$re[$x][service_type],
+					"service_type"=>$svc_type,
 					"service_passive_timeout" => $re[$x][service_passive_timeout],
 					"server_id" => $server,
 					"service_check_timeout" => $re[$x][service_check_timeout],

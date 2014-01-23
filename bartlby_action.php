@@ -304,7 +304,8 @@ switch($act) {
 		
 		$layout->set_menu("packages");
 		if($_GET[package_name] && $_GET[server_id]) {
-			$global_msg["package"] = $btl->installPackage($_GET[package_name], $_GET[server_id], $_GET[force_plugins], $_GET[force_perf]);
+			
+			$global_msg["package"] = $btl->installPackage($_GET[package_name], $_GET[server_id], $_GET[force_plugins], $_GET[force_perf], NULL, $_GET[force_service_type]);
 			$layout->OUT .= "<script>doReloadButton();</script>";
 		}  else {
 			$act="missing_param";

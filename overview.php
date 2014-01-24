@@ -31,7 +31,8 @@ $Author: hjanuschka $
 	$layout->do_auto_reload=true;
 
 	$btl->hasRight("main.overview");
-
+	$layout->setMainTabName("Overview");
+	
 	$layout->set_menu("main");
 	//$layout->MetaRefresh(30);
 	$layout->Table("100%");
@@ -479,7 +480,7 @@ $Author: hjanuschka $
 	} 
 	
 	
-	$layout->boxes_placed[MAIN]=false;
+	$layout->boxes_placed[MAIN]=true;
 	$layout->TableEnd();
 	$layout->display("overview");
 	

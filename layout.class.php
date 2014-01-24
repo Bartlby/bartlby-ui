@@ -29,7 +29,8 @@ class Layout {
 	var $OUT;
 	var $template_file;
 	var $box_count;
-	
+
+
 	function stackTrace() {
     $stack = debug_backtrace();
     $output = '';
@@ -76,6 +77,9 @@ class Layout {
 	function setJSONOutput() {
 		$this->OUTPUT_JSON=true;
 	}
+	function setMainTabName($n) {
+		$this->mainTabName=$n;
+	}
 	function Layout($scr='') {
 		global $_GET;
 		
@@ -92,13 +96,20 @@ class Layout {
 		$this->template_file="template.html";
 		$this->start_time=$this->microtime_float();
 		$this->menu_set=false;
-		
+			
+		$this->tab_count=0;
+		$this->tabs=array();
+
+
 		if($_GET[json]) {
 			$this->setJSONOutput();
 		}
 		
 	}
-
+	function Tab($name, $cnt) {
+		$this->tab_count++;
+		$this->tabs[]=array(name=>$name, cnt=>$cnt);
+	}
 	function Table($proz="100%", $border=0) {
 		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
 	}
@@ -485,11 +496,30 @@ class Layout {
 			$lineup_path="themes/classic/lineups/default.php";
 		}
 		ob_start();
-			include($lineup_path);
+		include($lineup_path);
 		
 		$this->BTUIOUTSIDE = $depre . ob_get_contents();		
 		ob_end_clean();
 		
+
+		if($this->tab_count > 0) {
+			if($this->mainTabName == "") $this->mainTabName="use setMainTabName";
+			$this->tabs[-1][name]=$this->mainTabName;
+			$this->tabs[-1][cnt]=$this->BTUIOUTSIDE;
+			$this->BTUIOUTSIDE='<div id="myTabContent" class="tab-content">';
+			$this->BTTABBAR='<ul class="nav nav-tabs" id="coreTabs">';
+			for($x=-1; $x<$this->tab_count; $x++) {
+				$this->BTTABBAR .='<li><a href="#coretab' . $x . '">' . $this->tabs[$x][name] . '</a></li>';
+				$this->BTUIOUTSIDE .= '<div class="tab-pane" id="coretab' . $x . '">' . $this->tabs[$x][cnt] . '</div>';
+			}
+			$this->BTUIOUTSIDE .= "</div>";
+			$this->BTTABBAR .="</ul>";
+			//If we have tabs do em :)
+
+
+		}
+		
+
 
 		ob_start();
 		include($this->template_file);
@@ -584,9 +614,10 @@ class Layout {
 		ob_end_clean();	
 		
 	
-			
 		$this->boxes[$oid]=$o;
 		$this->boxes_content[$oid]=$content;
+
+		
 		
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
 		

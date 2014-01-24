@@ -11,7 +11,7 @@ $layout= new Layout();
 $layout->do_auto_reload=true;
 $layout->set_menu("main");
 $layout->setTitle("Actions");
-
+$layout->setMainTabName("Details");
 if($_GET[service_id]) {
 	$_GET[service_place] = $btl->findSHMPlace($_GET[service_id]);	
 }

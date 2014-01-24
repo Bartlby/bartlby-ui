@@ -37,7 +37,7 @@
 <?=$this->disp_box("service_detail_gauglets")?>
 </div>
 
-<div style='clear: both;'/>
+<div style='clear: both;'></div>
 
 
 

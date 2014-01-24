@@ -435,6 +435,12 @@ $('[data-rel="ajax_report_service"]').ajaxChosen(
 	  e.preventDefault();
 	  $(this).tab('show');
 	});
+	$('#coreTabs a:first').tab('show');
+	$('#coreTabs a').click(function (e) {
+	  e.preventDefault();
+	  $(this).tab('show');
+	});
+	
 
 	//makes elements soratble, elements that sort need to have id attribute to save the result
 	$('.sortable').sortable({

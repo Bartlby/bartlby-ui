@@ -152,6 +152,7 @@ class OcL {
 	
 	function _overview() {
 		global $btl;
+		global $layout;
 		$identifier = date("m.Y",time());
 		$v=unserialize($this->storage->load_key($identifier));
 		$v=@array_reverse($v);
@@ -169,10 +170,10 @@ class OcL {
 		
 		
 		
+		$layout->Tab("On-Call Duty", $lm);
 		
 		
-		
-		return $lm;
+		return "";
 		
 		
 	}

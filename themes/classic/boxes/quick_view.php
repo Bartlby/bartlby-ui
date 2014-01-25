@@ -50,7 +50,7 @@ $quick_view = "<table class='nopad' width=100%>";
 			}
 			if($qck[$k][handled]) {
 				//$qk="<tr><td class=silver_box><font size=1>" . $qck[$k][downtime] . " Downtime</td></tr>";
-				$qk="<tr><td ><font size=1><a href='services.php?server_id=" . $qck[$k][10] . "&downtime=true'><span class='label label-default'>" . $qck[$k][handled] . " Handled</A></span></td></tr>";
+				$qk="<tr><td ><font size=1><a href='services.php?server_id=" . $qck[$k][10] . "&handled=true'><span class='label label-default'>" . $qck[$k][handled] . " Handled</A></span></td></tr>";
 			}
 			if($qck[$k][acks]) {
 				$qk="<tr><td ><font size=1><a href='services.php?server_id=" . $qck[$k][10] . "&expect_state=2&acks=yes'><span class='label label-default'>" . $qck[$k][acks] . " Ack Wait</A></span></td></tr>";

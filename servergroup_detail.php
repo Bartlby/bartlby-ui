@@ -41,6 +41,12 @@ $btl->service_list_loop(function($svc, $shm) use (&$qck){
         	$qck[$svc[server_id]][downtime]++;
                                 
     	}
+    	if($svc[handled] == 1) {
+            $qck[$svc[server_id]][$svc[current_state]]--;
+        	$qck[$svc[server_id]][handled]++;
+                                
+    	}
+
     	if($svc[service_ack_current] == 2) {
     		$qck[$svc[server_id]][acks]++;        
 	   		

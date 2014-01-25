@@ -444,6 +444,34 @@ function toggle_server_notify_check($server_id, $service_id) {
 	}	
 	return $res;
 }
+function toggle_service_handled($server_id, $service_id) {
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	if($btl->hasServerorServiceRight($service_id, false)) {
+			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
+			$idx=$btl->findSHMPlace($service_id);
+			$cur=bartlby_toggle_service_handled($btl->RES, $idx, 1);
+			
+			if($cur == 1) { //Active
+				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
+				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
+			} else {
+				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
+				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/unhandled.png");
+				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
+			}
+			
+			
+			
+			
+		} else{
+			$res->addAlert("permission denied");
+		}
+	
+	return $res;
+}
+
 function toggle_service_notify_check($server_id, $service_id) {
 	global $btl, $layout;
 	$res = new xajaxresponse();

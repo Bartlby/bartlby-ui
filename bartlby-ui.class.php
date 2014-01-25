@@ -1752,7 +1752,8 @@ class BartlbyUi {
 					"escalate_divisor" => $re[$x][escalate_divisor],
 					"fires_events" => $re[$x][fires_events],
 					"renotify_interval" => $re[$x][renotify_interval],
-					"enabled_triggers" => $re[$x][enabled_triggers]
+					"enabled_triggers" => $re[$x][enabled_triggers],
+					"handled" => 0
 				);
 			
 
@@ -2084,7 +2085,13 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		} else {
 			$downtime="&nbsp;";
 		}
-				
+		if($defaults[current_state] != 0) {
+			if($defaults[handled] == 1) {
+				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/handled.png' id='handled_" . $defaults[service_id] . "' title='Unhandle this Service' border=0 data-rel='tooltip'></A>";
+			} else {
+				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='handled_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/unhandled.png' title='Handle this Service' border=0 data-rel='tooltip'></A>";
+			}
+		}			
 		
 		$modify = "<a href='modify_service.php?service_id=" . $defaults[service_id] . "'><img data-rel='tooltip' src='themes/" . $this->theme . "/images/modify.gif' title='Modify this Service' border=0 data-rel='tooltip'></A>";
 		$force = "<a href='javascript:void(0);' onClick=\"xajax_forceCheck('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img title='Force an immediate Check' src='themes/" . $this->theme . "/images/force.gif' border=0 data-rel='tooltip'></A>";
@@ -2100,7 +2107,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 
 		$is_gone=$this->is_gone($defaults[is_gone]);
 				
-		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat";
+		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat $handled";
 		
 	
 		return $ret;

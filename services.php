@@ -60,7 +60,9 @@
 		if($_GET[expect_state] != "" && $svc[is_downtime] == 1) {
 			return LOOP_CONTINUE;	
 		}
-			
+		if($_GET[handled] == yes && $svc[handled] != 1) {
+			return LOOP_CONTINUE;
+		}
 		if($_GET[acks] == "yes" && $svc[service_ack_current] != 2) {
 			return LOOP_CONTINUE;	
 		}

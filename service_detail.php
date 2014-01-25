@@ -192,6 +192,8 @@ if(strlen($defaults[enabled_triggers]) > 2) {
 	
 	
 }
+$handled = "UNHANDLED";
+if($defaults[handled] == 1) $handled = "HANDLED";
 
 if($triggers == "") $triggers = "all";
 
@@ -215,7 +217,8 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											"color" => $svc_color,
 											"state" => $svc_state,
 											"check_plan" => $plan_box,
-											"triggers" => $triggers
+											"triggers" => $triggers,
+											"handled" => $handled
 											)
 											
 		, "service_detail_service_info", false, true);

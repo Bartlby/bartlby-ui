@@ -14,6 +14,7 @@ $layout= new Layout();
 $layout->set_menu("core");
 $layout->setTitle("Core Extensions");
 $layout->Table("100%");
+$layout->setMainTabName("Core Extensions");
 
 $core_extensions="";
 $cnt = (int)bartlby_config($btl->CFG, "extension_count");
@@ -112,7 +113,8 @@ for($x=0; $x<count($r); $x++) {
 }
 
 $ext_table .= ' </tbody></table>';
-$layout->create_box("UI-Extensions", $ext_table);
+$layout->create_box("UI-Extensions", $ext_table, "ui_ext");
+$layout->Tab("UI-Extensions", $layout->disp_box("ui_ext"));
 
 
 $layout->TableEnd();

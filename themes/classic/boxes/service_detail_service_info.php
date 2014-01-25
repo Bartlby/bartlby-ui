@@ -157,5 +157,10 @@
 		<td align=left ><?= $plcs[triggers]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
+	<tr>
+		<td width=150 class='font2'>Problem Handled:</td>
+		<td align=left ><?= $plcs[handled]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
 	
 </table>

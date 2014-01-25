@@ -47,6 +47,7 @@ $ticker="|";
 $hide_warns=0;
 $hide_infos=0;
 $group_similar=1;
+$hide_handled=0;
 
 $ncurses_session = ncurses_init();
 $main = ncurses_newwin(0, 0, 0, 0); // main window
@@ -132,7 +133,14 @@ while(1){
                         $hide_infos = 0;
                 }
         }
+	if($k == 72) {
+                if($hide_handled == 0)  {
+                        $hide_handled = 1;
+                } else {
+                        $hide_handled = 0;
+                }
 
+        }
 	if($k == 258) {
 		if($selected_pos > $lines/2) {
 			$start_from=$start_from+1;	
@@ -212,7 +220,7 @@ for($tt=0; $tt<$lines; $tt++) {
 	$selected_svc=array();
 	$selected_pos=0;
 				
-	$btl->service_list_loop(function($svc, $shm) use(&$lines, &$per_server, &$oks, &$crits, &$warns, &$hide_warns, &$hide_infos, &$alerts_only, &$show_downtimes, &$running_only, &$a, &$f, &$a, &$selected_svc, &$selected_pos, &$selected_index) {
+	$btl->service_list_loop(function($svc, $shm) use(&$lines, &$per_server, &$oks, &$crits, &$warns, &$hide_warns, &$hide_infos, &$alerts_only, &$show_downtimes, &$running_only, &$a, &$f, &$a, &$selected_svc, &$selected_pos, &$selected_index, &$hide_handled) {
 
 				
 				$per_server[$svc[server_name]][$svc[current_state]]++;
@@ -243,6 +251,13 @@ for($tt=0; $tt<$lines; $tt++) {
 					if($svc[current_state] == 4) {
 					        return LOOP_CONTINUE;
 					}
+        		}
+        		if($hide_handled == 1) {
+
+        			if($svc[handled] == 1) {
+        		
+        				return LOOP_CONTINUE;
+        			}
         		}
 
 				if($alerts_only == 1) {

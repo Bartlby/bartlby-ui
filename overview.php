@@ -78,6 +78,7 @@ $Author: hjanuschka $
 	$services_warning=0;
 	$services_unkown=0;
 	$services_downtime=0;
+	$services_handled=0;
 	$all_services=0;
 	$acks_outstanding=0;
 	$gdelay_count = 0;
@@ -89,6 +90,7 @@ $Author: hjanuschka $
 			//service_delay_sum
 
 			global $reload_status, $hosts_down, $hosts_up, $services_critical, $services_critical, $services_info, $services_ok, $services_warning, $services_unkown, $services_downtime, $all_services, $acks_outstanding, $gdelay_sum, $gdelay_count, $service_state_a, $server_state_a;
+			global $services_handled;
 
 			$gdelay_sum += $v[service_delay_sum];
 			$gdelay_count += $v[service_delay_count];
@@ -108,6 +110,14 @@ $Author: hjanuschka $
 				$qck[$v[server_id]][downtime]++;
 				
 			}
+			if($v[handled] == 1) {
+				$services_handled++;
+				$qck[$v[server_id]][$v[current_state]]--;
+				$qck[$v[server_id]][handled]++;
+
+				$service_state_a[$v[service_id]][$v[current_state]]--;	
+				$server_state_a[$v[server_id]][$v[current_state]]--;
+			}
 			if($v[service_ack_current] == 2) {
 				$qck[$v[server_id]][acks]++;	
 				$acks_outstanding++;
@@ -124,15 +134,15 @@ $Author: hjanuschka $
 					
 				break;
 				case 1:
-					$services_warning++;
+					if($v[handled] == 0) $services_warning++;
 					
 				break;
 				case 2:
-					$services_critical++;
+					if($v[handled] == 0) $services_critical++;
 				
 				break;
 				case 4:
-					$services_info++;
+					if($v[handled] == 0)  $services_info++;
 					
 
 				break;
@@ -158,7 +168,7 @@ $Author: hjanuschka $
 		
 	
 	
-	$service_sum=$all_services-$services_downtime-$services_info;
+	$service_sum=$all_services-$services_downtime-$services_info-$services_handled;
 	
 	
 	
@@ -283,7 +293,8 @@ $Author: hjanuschka $
 		'acks_outstanding' => $acks_outstanding,
 		'services_info' => $services_info,
 		'services_sum' => $info[services],
-		'services_unkown' => $services_unkown
+		'services_unkown' => $services_unkown,
+		'services_handled' => $services_handled
 	
 	), "tactical_overview", false, true);
 	

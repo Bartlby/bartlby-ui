@@ -622,7 +622,8 @@ switch($act) {
 					"escalate_divisor" => $_GET[escalate_divisor],
 					"fires_events" => $_GET[fires_events],
 					"renotify_interval" => $_GET[renotify_interval],
-					"enabled_triggers" => $triggerstr
+					"enabled_triggers" => $triggerstr,
+					"handled" => $_GET[handled]
 				);
 
 			
@@ -710,7 +711,8 @@ switch($act) {
 					"escalate_divisor" => $_GET[escalate_divisor],
 					"fires_events" => $_GET[fires_events],
 					"renotify_interval" => $_GET[renotify_interval],
-					"enabled_triggers" => $triggerstr
+					"enabled_triggers" => $triggerstr,
+					"handled" => $_GET[handled]
 				);
 				
 				

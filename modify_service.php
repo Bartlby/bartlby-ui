@@ -150,6 +150,16 @@ if(is_int($defaults[notify_enabled]) && $defaults[notify_enabled] == 0) {
 	$notenabled[1][s]=1;
 }
 
+$handled[0][c]="";
+$handled[0][v] = 0; //No
+$handled[0][k] = "Unhandled"; //No
+$handled[0][s]=0;
+
+$handled[1][c]="";
+$handled[1][v] = 1; //No
+$handled[1][k] = "Handled"; //No
+$handled[1][s]=0;
+
 //Events Enabled
 $eventenabled[0][c]="";
 $eventenabled[0][v] = 0; //No
@@ -172,6 +182,13 @@ $eventenabled[3][v] = 3; //No
 $eventenabled[3][k] = "BOTH"; //No
 $eventenabled[3][s]=0;
 
+
+if(is_int($defaults[handled]) && $defaults[handled] == 1) {
+	$handled[1][s]=1;	
+	
+} else {
+	$handled[0][s]=1;	
+}
 
 if(is_int($defaults[fires_events]) && $defaults[fires_events] == 1) {
 	$eventenabled[1][s]=1;	
@@ -496,6 +513,16 @@ $active_box_out .= $layout->Tr(
 	)
 ,true);
 
+
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Problem Handled",
+			1=>$layout->DropDown("handled", $handled)
+			
+		)
+	)
+,true);
 
 $active_box_out .= $layout->Tr(
 	$layout->Td(

@@ -30,6 +30,7 @@
 				<? if($plcs[services_info]>0) {?><a href='services.php?&expect_state=4'><span class='label label-default'><?=$plcs[services_info]?> Info</A><? } ?>
 				<? if($plcs[services_downtime]>0) {?><a href='services.php?&downtime=true'><span class='label label-default'><?=$plcs[services_downtime]?> Downtime</A><? } ?>
 				<? if($plcs[acks_outstanding]>0) {?><a href='services.php?&expect_state=2&acks=yes'><span class='label label-default'><?=$plcs[acks_outstanding]?> Ack Wait</A><? } ?>
+				<? if($plcs[services_handled]>0) {?><a href='services.php?handled=yes'><span class='label label-default'><?=$plcs[services_handled]?> Handled</A><? } ?>
 				<a href='services.php?expect_state=0&invert=true'>show all failures</A>
 
 

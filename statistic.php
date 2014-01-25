@@ -30,13 +30,14 @@ if($sorto == "asc") {
 
 $layout= new Layout();
 $layout->set_menu("core");
+$layout->setMainTabName("Statistics");
 $layout->do_auto_reload=true;
 //function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false, $auto_reload=false) {
-$layout->setTitle("Bartlby Core Performance");
+$layout->setTitle("Core Performance");
 $layout->Table("100%");
 
 //Check if profiling is enabled
-	$map = $btl->GetSVCMap();
+	//$map = $btl->GetSVCMap();
 	$info = $btl->getInfo();
 	$check_max=0;
 	$check_avg=0;
@@ -52,9 +53,10 @@ $layout->Table("100%");
 	$retain_count=0;
 	$retain_sum=0;
 	
-	while(list($k, $servs) = @each($map)) {
-		for($x=0; $x<count($servs); $x++) {
-			
+	$btl->service_list_loop(function($svc, $shm) use (&$check_sum, &$check_count, &$delay_sum, &$delay_count, &$plugin_table, &$service_table, &$server_table, &$delay_service_table, &$delay_server_table, &$retain_table) {
+		$x=0;
+		$servs[$x]=$svc;
+	
 			$check_sum +=$servs[$x][service_time_sum];
 			$check_count +=$servs[$x][service_time_count];
 			
@@ -118,8 +120,7 @@ $layout->Table("100%");
 			array_push($retain_table[$service],(time()-$servs[$x][last_state_change]));
 			
 			
-		}	
-	}
+	});		
 
 	
 	$round_sum=$info[round_time_sum];
@@ -158,46 +159,46 @@ $layout->Table("100%");
 	
 	
 	
-	$info_box_title="Plugin Check Time:";  
+	$info_box_title="Check Time";  
 	$core_content = $plugin_html;
-	
 	//function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false, $auto_reload=false) {
-	$layout->create_box($info_box_title, $core_content, "plugin_check_time", "", "", true);
+	$b=$layout->create_box("Plugins", $core_content, "plugin_check_time", "", "", false);
 	
 	
-	$info_box_title="Services Check Time:";  
-	$core_content = 	$service_html;
-	
-	$layout->create_box($info_box_title, $core_content, "service_check_time", "", "", true);
-	
-	$info_box_title="Delay Time Services:";  
-	$core_content = $delay_service_html;
-				
-			
-	$layout->create_box($info_box_title, $core_content, "delay_service_time", "", "", true);
-	
-	
-	
-	
-	
-	
-	
-	$info_box_title="Servers Check Time:";  
+
+	$info_box_title="Servers";  
 	$core_content = 					$server_html;
-	$layout->create_box($info_box_title, $core_content, "server_time_check", "", "", true);
-	$info_box_title="Servers Delay Time:";  
+	$b=$layout->create_box($info_box_title, $core_content, "server_time_check", "", "", false);
+
+	
+	$core_content = 	$service_html;
+	$b=$layout->create_box("Services", $core_content, "service_check_time", "", "", false);
+	
+	$layout->Tab("Check Time", $layout->disp_box("plugin_check_time") . $layout->disp_box("service_check_time") .   $layout->disp_box("server_time_check"));
+	
+
+
+
+	$info_box_title="Services";  
+	$core_content = $delay_service_html;
+	$b=$layout->create_box($info_box_title, $core_content, "delay_service_time", "", "", false);
+	
+	
+	
+	
+	
+	
+	
+
+
+
+	$info_box_title="Server";  
 	$core_content = $delay_server_html;
+	$b=$layout->create_box($info_box_title, $core_content, "server_delay_time", "", "", false);
 	
-	$layout->create_box($info_box_title, $core_content, "server_delay_time", "", "", true);
-	
-	
-	/*
-	$info_box_title="Longest Unchanged Service:";  
-	$core_content = 	$retain_service_table;
-	
-	$layout->create_box($info_box_title, $core_content, "service_retain_counter", "", "", true);
-	
-	*/
+
+	$layout->Tab("Delays", $layout->disp_box("delay_service_time") .   $layout->disp_box("server_delay_time"));
+		
 	
 	$info_box_title="Timing:";  
 	$layout->OUT .= "<table  width='100%'>

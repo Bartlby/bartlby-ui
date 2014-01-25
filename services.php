@@ -49,7 +49,9 @@
 		
 			return LOOP_CONTINUE;	
 		}
-				
+		if($_GET[invert] && $_GET[expect_state] != "" && $svc[handled] == 1) {
+			return LOOP_CONTINUE;	
+		}		
 		if($_GET[invert] && $_GET[expect_state] != "" && $svc[current_state] == 4) {
 			return LOOP_CONTINUE;	
 		}

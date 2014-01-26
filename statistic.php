@@ -133,7 +133,7 @@ $layout->Table("100%");
 	$round_avg=round($round_sum / $round_count,2);
 	$delay_avg=round(($delay_sum / $delay_count)*1000, 2);
 	
-	$retain_avg=round($retain_sum / $retain_count,2);
+	//$retain_avg=round($retain_sum / $retain_count,2);
 	
 	
 	

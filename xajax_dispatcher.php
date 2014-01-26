@@ -455,10 +455,12 @@ function toggle_service_handled($server_id, $service_id) {
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
+				
 				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
-			} else {
+			} else { 
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
 				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/unhandled.png");
+				
 				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
 			}
 			
@@ -712,6 +714,18 @@ function QuickLook($what) {
 									  
 								  </tr>
 							  </thead>   ';
+
+
+	$svcgrpfound=false;
+	$btl->worker_list_loop(function($wrk, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $wrk[name])) {
+			
+				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'><font size=1>" . $wrk[name] . "</A></font></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
+				$wrkfound=true;
+		}
+
+	});
+
 
     $svcfound_counter=0;
     $btl->server_list_loop(function($srv, $shm)  {

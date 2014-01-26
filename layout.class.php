@@ -31,6 +31,21 @@ class Layout {
 	var $box_count;
 
 
+
+function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
+    $url = 'http://www.gravatar.com/avatar/';
+    $url .= md5( strtolower( trim( $email ) ) );
+    $url .= "?s=$s&d=$d&r=$r";
+    if ( $img ) {
+        $url = '<img src="' . $url . '"';
+        foreach ( $atts as $key => $val )
+            $url .= ' ' . $key . '="' . $val . '"';
+        $url .= ' />';
+    }
+    return $url;
+}
+
+
 	function stackTrace() {
     $stack = debug_backtrace();
     $output = '';
@@ -104,10 +119,16 @@ class Layout {
 		if($_GET[json]) {
 			$this->setJSONOutput();
 		}
+
+		//
+
+
+
 		
 	}
 	function Tab($name, $cnt) {
 		$this->tab_count++;
+		
 		$this->tabs[]=array(name=>$name, cnt=>$cnt);
 	}
 	function Table($proz="100%", $border=0) {

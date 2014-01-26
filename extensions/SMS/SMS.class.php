@@ -154,6 +154,13 @@ class SMS {
 		
 		
 	}
+	function _workerDetails() {
+		global $layout, $_GET, $defaults, $btl;
+		$k = $defaults[name] . "_SMSextension_mobile_nr";
+		$v = $this->storage->load_key($k);
+		if(!$v) $v="unset";
+		return "Mobile Number: " . $v;	
+	}
         
         
 }

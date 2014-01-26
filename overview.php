@@ -478,6 +478,7 @@ $Author: hjanuschka $
 	
 	
 
+
 	
 	$layout->setTitle("QuickView");
 	$r=$btl->getExtensionsReturn("_overview", $layout);
@@ -490,6 +491,12 @@ $Author: hjanuschka $
 		
 	} 
 	
+
+
+
+
+
+
 	
 	$layout->boxes_placed[MAIN]=true;
 	$layout->TableEnd();

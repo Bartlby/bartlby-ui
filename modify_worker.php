@@ -280,7 +280,7 @@ $ov .= $layout->Tr(
 $ov .= $layout->Tr(
 	$layout->Td(
 		array(
-			0=>"Escalation",
+			0=>"Notification Limit",
 			1=>"<font size=1>" . $layout->Field("escalation_limit", "text", $defaults[escalation_limit]) . "notify's  per <br>" . $layout->Field("escalation_minutes", "text", $defaults[escalation_minutes]) .  " minutes</font>"
 		)
 	)
@@ -382,7 +382,7 @@ $ov .= $layout->Tr(
 				0=>Array(
 					'colspan'=> 2,
 					"align"=>"left",
-					'show'=>"<a href='modify_worker.php?copy=true&worker_id=" . $_GET[worker_id] . "'><img src='images/edit-copy.gif' title='Copy (Create a similar) this worker' border=0></A>"
+					'show'=>"<a href='modify_worker.php?copy=true&worker_id=" . $_GET[worker_id] . "'><img src='themes/classic/images/edit-copy.gif' title='Copy (Create a similar) this worker' border=0></A>"
 					)
 			)
 		)

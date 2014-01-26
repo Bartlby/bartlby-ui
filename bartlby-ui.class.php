@@ -919,6 +919,17 @@ class BartlbyUi {
 	function dnl($i) {
 		return sprintf("%02d", $i);
 	}
+
+	function addToUserActivityFeed($msg) {
+		$sto=new BartlbyStorage("UserActivityFeed");
+		$db=$sto->SQLDB($this->UserActivityFeedDB);
+		if($db != false) {
+
+			$r = $db->exec("INSERT INTO UserActivityFeed (user_id, user_name, txt, insert_date) VALUES(" . $this->user_id . ", '" . SQLite3::escapeString($this->username) . "',  '" . SQLite3::escapeString($msg) . "',datetime())");
+			//echo "INSERT INTO UserActivityFeed (" . $this->user_id . ", '" . SQLite3::escapeString($msg) . "',NOW)";
+		}
+	}
+
 	function BartlbyUi($cfg, $auth=true, $shm_check=true) {
 			global $Bartlby_CONF_Remote;
 		if(!function_exists("bartlby_version")) {
@@ -929,6 +940,8 @@ class BartlbyUi {
 			}
 		}	
 	
+		$this->UserActivityFeedDB="CREATE TABLE UserActivityFeed (user_id integer, txt TEXT, user_name TEXT ,insert_date DATE) ";
+
 		
 
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
@@ -2047,7 +2060,15 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview . " " .  $downtime;
 		
 	}
-	
+	function getWorkerOptionsBTN($defaults, $layout) {
+		$defaults[service_id]="";
+		$modify = "<a href='modify_worker.php?worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this  Worker' border=0></A>";
+		$copy = "<a href='modify_worker.php?copy=true&worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Worker' border=0></A>";
+		$is_gone=$this->is_gone($defaults[server_gone]);
+		
+		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
+
+	}
 	function getserveroptions($defaults, $layout) {
 		$defaults[service_id]="";
 		$modify = "<a href='modify_server.php?server_id=" . $defaults[server_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this server' border=0></A>";

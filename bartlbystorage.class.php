@@ -18,6 +18,29 @@
 				}
 			}
 		}
+
+		function SQLDB($cr) {
+			$first_run=false;
+			try {
+				if(!file_exists($this->save_path . "/sql.sqlite." . md5($cr))) {
+					$this->db = new PDO('sqlite:' . $this->save_path . "/sql.db." . md5($cr));	
+					$tables = explode(";", $cr);
+					for($x=0; $x<count($tables); $x++) {
+						$this->db->exec($tables[$x]);
+					}
+				} else {
+					$this->db = new PDO('sqlite:' . $this->save_path . "/sql.db." . md5($cr));	
+				}
+			} catch(Exception $e) {
+				
+				return false;
+			}
+
+			return $this->db;
+			
+			
+			
+		}	
 		function save_key($key, $value) {
 			$sk = md5($key);
 			$fp = @fopen($this->save_path . "/" . $sk, "w");

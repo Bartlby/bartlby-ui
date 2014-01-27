@@ -10,25 +10,18 @@ $(document).ready(function() {
 		 	function(data) {
 				
 				$("#sm_manage").html(data.boxes.sm_manage);
-				$(".sm_delete_btn").click(function() {
-					id=$(this).data("node-id");
-					console.log("Delete id=>" + id);
-				});
-				$(".sm_edit_btn").click(function() {
-					id=$(this).data("node-id");
-					console.log("EDIT id=>" + id);
-				});
 				
+
 
 	});
 	window.clearInterval(window.auto_reloader);
 	btl_start_auto_reload();
 	console.log("READY CALLED");
-	$(".sm_delete_btn").click(function() {
+	$(document.body).on('click','.sm_delete_btn', function() {
 		id=$(this).data("node-id");
 		console.log("Delete id=>" + id);
 	});
-	$(".sm_edit_btn").click(function() {
+	$(document.body).on('click','.sm_edit_btn', function() {
 		id=$(this).data("node-id");
 		console.log("EDIT id=>" + id);
 	});

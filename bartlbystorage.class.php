@@ -26,7 +26,8 @@
 					$this->db = new PDO('sqlite:' . $this->save_path . "/sql.db." . md5($cr));	
 					$tables = explode(";", $cr);
 					for($x=0; $x<count($tables); $x++) {
-						$this->db->exec($tables[$x]);
+						$e=$this->db->exec($tables[$x]);
+						
 					}
 				} else {
 					$this->db = new PDO('sqlite:' . $this->save_path . "/sql.db." . md5($cr));	

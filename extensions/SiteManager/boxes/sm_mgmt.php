@@ -8,6 +8,7 @@
 									  <th>Alias</th>
 									  <th>Mode</th>
 									  <th>Last Sync</th>
+									  <th>Last Output</th>
 									   <th>Action</th>
 								  </tr>
 							  </thead>
@@ -26,6 +27,7 @@ foreach($r as $row) {
 		<td><?=$row[remote_alias]?></td>
 		<td><?=$row[mode]?></td>
 		<td><?=$row[last_sync]?></td>
+		<td><?=$row[last_output]?></td>
 		<td>
 			<button  class="sm_modify_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Edit</button>
 			<button  class="sm_delete_btn btn btn-mini btn-danger"  data-node-id="<?=$row[id]?>" >Delete</button>

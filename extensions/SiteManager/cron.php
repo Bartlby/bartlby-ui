@@ -5,6 +5,7 @@
 //   	script=SiteManager/cron.php 
 //		var1=a //in $_GET
 //   	Needs to be run as root
+//Re-Do https://github.com/Bartlby/Bartlby/blob/master/multi_instances_HA/sync_bartlby_shm.sh as a PHP script
 
 	ini_set('display_errors', '1');
 	error_reporting(E_ERROR);

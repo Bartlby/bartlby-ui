@@ -8,7 +8,7 @@
 //Re-Do https://github.com/Bartlby/Bartlby/blob/master/multi_instances_HA/sync_bartlby_shm.sh as a PHP script
 
 	ini_set('display_errors', '1');
-	error_reporting(E_ERROR);
+	error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	include "config.php";
 	include "layout.class.php";
 	include "bartlby-ui.class.php";
@@ -19,32 +19,161 @@
 	$btl->hasRight("sitemanager");
 	$sm = new SiteManager();
 	
-	
+	$local_core_path=$sm->storage->load_key("local_core_path");
+	$local_ui_path=$sm->storage->load_key("local_ui_path");
+	$local_ui_replication_path=$sm->storage->load_key("local_ui_replication_path");
+	$local_core_replication_path=$sm->storage->load_key("local_core_replication_path");
 	
 
 	$sync = $_GET[sync];
 	if(!$sync) $sync="SHM";
 	$r = $sm->db->query("select * from sm_remotes");
 	foreach($r as $row) {
+		$key_file=$row[ssh_key];
+		$user=$row[ssh_username];
+		$host=$row[ssh_ip];
+		$ssh_cmd_str="-i " . $key_file . " " . $user .  "@" . $host;
+		$randomness=sha1(microtime(true).mt_rand(10000,90000));
+		$tmp_dir="/tmp/bartlby_sync." . $randomness;
+
+		mkdir($tmp_dir);
+		if(!is_dir($local_core_replication_path . "/" . $row[id])) {
+			mkdir($local_core_replication_path . "/" . $row[id], 0777, true);
+			
+		}
+		if(!is_dir($local_ui_replication_path . "/" . $row[id])) {
+			mkdir($local_ui_replication_path . "/" . $row[id], 0777, true);
+		}
+
+		echo "Random: $randomness \n";
+		if(!$key_file || !$user || !$host || !file_exists($key_file)) {
+			echo "Error on Node => " . $row[remote_alias] . " SSH PARAMS skipping!\n";
+			continue;
+		}
+
+
 		switch($sync) {
-			case "SHM":
-				switch($row[mode]) {
-					case 'pull':
-						//PULL SHM from remote
-						//Check for /node folders
-						//Check for Key
-						//Dump SHM on remote side
-						//import SHM on local side
-						echo "DO SHM MAGIC\n";
-					break;
-					default;
-						echo $row[mode] . " unkown\n";
+			case "GENERATE-BARTLBYCFG":
+				//Does not matter if push or pull
+				$local_shm_hex = runLocalCMD($local_core_path . "/bin/bartlby_shmt ftok " . $local_core_replication_path . "/" . $row[id]);
+				$local_shm_size=runLocalCMD("ipcs -m|grep " .  $local_shm_hex . "|awk '{print \$5}'");
+				
+//Generates a CFG file required by bartlby-php
+				$cfg_file = "
+############ BARTLBY CONF
+data_library=/opt/bartlby/lib/mysql.so
+shm_key=" . $local_core_replication_path . "/" . $row[id] . "
+shm_size=" . (floor($local_shm_size/1024/1024)*10) . "
+max_load=10
+logfile=" . $local_core_replication_path . "/" . $row[id] . "/logs/  
+mysql_host=" . $row[local_db_host] . "
+mysql_user=" .$row[local_db_user] . "
+mysql_pw=" . $row[local_db_pass] . "
+mysql_db=" . $row[local_db_name] . "
+###########################################
+				";
+				//SAVE CFG
+				file_put_contents($local_core_replication_path . "/" . $row[id] . "/bartlby.cfg", $cfg_file);
+				echo "bartlby.cfg  for Node $row[remote_alias]  generated\n";		
+			break;
+			case "DB":
+				if($row[mode] == "pull") {
+					//GET THE MYSQL DB from remote side					
+				} 
+				if($row[mode] == "push") {
+					//Check if exists
+					// if is not existing pull once from remote!
+					//push to remote side
+
+
 				}
+			break;
+			case "SHM":
+					echo "Checking SHM Segment from $row[remote_alias]\n";
+					if(checkSSHConn($ssh_cmd_str)) {
+						//Get Expect Core Version
+						//Get Arch
+						$local_expectcore = runLocalCMD($local_core_path . "/bin/bartlby_shmt expectcore");
+						$remote_expectcore = runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt expectcore");
+
+						if($local_expectcore == $remote_expectcore)  {
+							$local_arch= runLocalCMD("uname -m");
+							$remote_arch = runSSHCMD($ssh_cmd_str, "uname -m");
+							if($local_arch == $remote_arch) {
+								//OK so pull the SHM segment from remote side
+								runSSHCMD($ssh_cmd_str, "mkdir " . $tmp_dir);
+								$d = runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt dump " . $row[remote_core_path] . " " . $tmp_dir . "/shm.dump; gzip " . $tmp_dir . "/shm.dump");
+								runLocalCMD("scp " . $ssh_cmd_str . ":" . $tmp_dir . "/shm.dump.gz " . $tmp_dir . "/shm.dump.gz; gunzip " . $tmp_dir . "/shm.dump.gz");
+								$local_shm_hex = runLocalCMD($local_core_path . "/bin/bartlby_shmt ftok " . $local_core_replication_path . "/" . $row[id]);
+								$local_shm_size=runLocalCMD("ipcs -m|grep " .  $local_shm_hex . "|awk '{print \$5}'");
+								$local_shm_id=runLocalCMD("ipcs -m|grep " .  $local_shm_hex . "|awk '{print \$2}'");
+								$si = filesize($tmp_dir . "/shm.dump");
+								//echo "Node: $row[remote_alias] requires " . $si . " has " . $local_shm_size;
+								$si += 0;
+								if($si > $local_shm_size) {
+									runLocalCMD("ipcrm -m " . $local_shm_id);
+								}
+								$r=runLocalCMD($local_core_path . "/bin/bartlby_shmt replay " . $local_core_replication_path . "/" . $row[id]  . " " . $tmp_dir . "/shm.dump " .  $si);
+								echo $r;
+								echo "SHM synced for Node $row[remote_alias] \n";
+								$sm->db->exec("update sm_remotes set last_sync=datetime('now') where id=" . (int) $row[id]);
+							} else {
+								echo "ERROR on $row[remote_alias] ARCH does not match $local_arch $remote_arch";	
+							}
+						} else {
+							echo "ERROR on $row[remote_alias] expectcore not matching maybe you forgot to upgrade bartlby-core on remote node versions must match";
+						}
+						
+					}  else {
+						echo "ERROR on $row[remote_alias] ssh does not work fix it!";
+						continue;
+					}
 
 			break;
 			default:
 				echo $sync . " mode unkown\n";
 		}	
 	}
+
+function runLocalCMD($str) {
+	$rcmd = "$str  2>/dev/null";
+	
+	$fp = popen($rcmd, "r");
+	while(!feof($fp)) {
+		$s = fgets($fp);
+		$s = rtrim($s, "\r\n");
+		$rr .= $s;
+	}
+	pclose($fp);
+	return $rr;
+
+}
+function runSSHCMD($str, $cmd) {
+	$rcmd = "ssh $str -C '$cmd' 2>/dev/null";
+	$fp = popen($rcmd, "r");
+	while(!feof($fp)) {
+		$s = fgets($fp);
+		$s = rtrim($s, "\r\n");
+		$rr .= $s;
+	}
+	pclose($fp);
+	return $rr;
+
+}
+function checkSSHConn($str) {
+	$rcmd = "ssh $str -C 'echo 1' 2>/dev/null";
+
+	$fp = popen($rcmd, "r");
+	while(!feof($fp)) {
+		$s = fgets($fp);
+		$s = rtrim($s, "\r\n");
+		if($s == "1") {
+			pclose($fp);
+			return true;
+		}
+	}
+	pclose($fp);
+	return false;
+}
 
 ?>

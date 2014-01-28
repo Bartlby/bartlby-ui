@@ -47,7 +47,19 @@ $confs[1][uniq_id] = 1;
 	$confs[0][db_sync] = true;
 	$confs[0][display_name] = "Primary";
 	
+
+	$confs[1][file] = "/opt/bartlby/nodes/1/bartlby.cfg";
+	$confs[1][remote] = true;
+	$confs[1][db_sync] = false;
+	$confs[1][display_name] = "docker2";
+	$confs[1][uniq_id] = 1;
 	
+
+	$confs[2][file] = "/opt/bartlby/nodes/2/bartlby.cfg";
+	$confs[2][remote] = true;
+	$confs[2][db_sync] = true;
+	$confs[2][display_name] = "docker3";
+	$confs[2][uniq_id] = 2;
 	
 }
 

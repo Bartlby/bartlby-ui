@@ -1,3 +1,7 @@
+<p>
+<button  class="sm_add_new_btn btn  btn-success"   >Add New Node</button>
+</p>
+
 <table class="table table-bordered table-striped table-condensed" id=sm_list>
 							  <thead>
 								  <tr>
@@ -23,7 +27,7 @@ foreach($r as $row) {
 		<td><?=$row[mode]?></td>
 		<td><?=$row[last_sync]?></td>
 		<td>
-			<button  class="sm_modify_btn btn btn-mini btn-success"  data-node-id="<?=$row[id]?>" >Edit</button>
+			<button  class="sm_modify_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Edit</button>
 			<button  class="sm_delete_btn btn btn-mini btn-danger"  data-node-id="<?=$row[id]?>" >Delete</button>
 		</td>
 

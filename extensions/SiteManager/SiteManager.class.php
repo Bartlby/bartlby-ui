@@ -59,8 +59,9 @@ class SiteManager {
 		$sql .= "'" .  SQLite3::escapeString($values[mode]) . "',";
 		$sql .= "'" .  SQLite3::escapeString($values[remote_alias]) . "')";
 		$this->db->exec($sql);
-		$res->AddScript('noty({"text":"[SITEMANAGER] Node saved! (' . $values[ssh_key] . ')","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
-	
+		$res->AddScript('noty({"text":"[SITEMANAGER] Node saved! (' . $values[ssh_key] . ')","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})'); //Notify User
+		$res->AddScript('btl_force_reload_ui();'); // Force Reload
+		$res->AddScript('sm_show_tab("sm_manage");'); // Change to Manage Tab
 		return $res;
 		//$values[ocl_date]
 	}

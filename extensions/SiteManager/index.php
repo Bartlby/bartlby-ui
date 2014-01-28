@@ -32,9 +32,9 @@ $layout->do_auto_reload=false;
 	$layout->create_box("title", "Sync Content", "sm_sync");
 	
 
-	$layout->Tab("Manage", $layout->disp_box("sm_manage"));
-	$layout->Tab("Add/Modify", $layout->disp_box("sm_add"));
-	$layout->Tab("Sync", $layout->disp_box("sm_sync"));
+	$layout->Tab("Manage", $layout->disp_box("sm_manage"), "sm_manage");
+	$layout->Tab("Add/Modify", $layout->disp_box("sm_add"), "sm_add");
+	$layout->Tab("Sync", $layout->disp_box("sm_sync"), "sm_sync");
 
 
 

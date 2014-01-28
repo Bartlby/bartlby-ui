@@ -126,10 +126,10 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		
 	}
-	function Tab($name, $cnt) {
+	function Tab($name, $cnt, $tab_name="") {
 		$this->tab_count++;
 		
-		$this->tabs[]=array(name=>$name, cnt=>$cnt);
+		$this->tabs[]=array(name=>$name, cnt=>$cnt, tab_name=>$tab_name);
 	}
 	function Table($proz="100%", $border=0) {
 		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
@@ -527,11 +527,18 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			if($this->mainTabName == "") $this->mainTabName="use setMainTabName";
 			$this->tabs[-1][name]=$this->mainTabName;
 			$this->tabs[-1][cnt]=$this->BTUIOUTSIDE;
+			$this->tabs[-1][tab_name]="ROOT";
+
 			$this->BTUIOUTSIDE='<div id="myTabContent" class="tab-content">';
 			$this->BTTABBAR='<ul class="nav nav-tabs" id="coreTabs">';
 			for($x=-1; $x<$this->tab_count; $x++) {
-				$this->BTTABBAR .='<li><a href="#coretab' . $x . '">' . $this->tabs[$x][name] . '</a></li>';
-				$this->BTUIOUTSIDE .= '<div class="tab-pane" id="coretab' . $x . '">' . $this->tabs[$x][cnt] . '</div>';
+				if($this->tabs[$x][tab_name] != "") {
+					$ttname=$this->tabs[$x][tab_name];
+				} else {
+					$ttname="coretab" . $x;
+				}
+				$this->BTTABBAR .='<li><a href="#' . $ttname . '">' . $this->tabs[$x][name] . '</a></li>';
+				$this->BTUIOUTSIDE .= '<div class="tab-pane" id="' . $ttname . '">' . $this->tabs[$x][cnt] . '</div>';
 			}
 			$this->BTUIOUTSIDE .= "</div>";
 			$this->BTTABBAR .="</ul>";

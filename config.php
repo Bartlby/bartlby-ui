@@ -22,12 +22,15 @@ $Author: hjanuschka $
 */
 session_start();
 
+$Bartlby_CONF_single_sign_on=1; //Auth agains instance 0
 
 
 	$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
 	$confs[0][remote] = false;
 	$confs[0][db_sync] = true;
 	$confs[0][display_name] = "Primary";
+	$confs[0][is_master]=true;
+	$confs[0][uniq_id]=0;
 	
 
 	
@@ -43,18 +46,25 @@ if(!$_SESSION[instance_id]) {
 	$Bartlby_CONF_Remote=$confs[0][remote];
 	$Bartlby_CONF_DBSYNC=$confs[0][db_sync];
 	$Bartlby_CONF_IDX=$confs[0][uniq_id];
+	$Bartlby_CONF_DisplayName=$confs[0][display_name];
+	$Bartlby_CONF_isMaster=$confs[0][is_master];
+
 } else {
 	$Bartlby_CONF=$confs[$_SESSION[instance_id]][file];
 	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
 	$Bartlby_CONF_Remote=$confs[$_SESSION[instance_id]][remote];
 	$Bartlby_CONF_DBSYNC=$confs[$_SESSION[instance_id]][db_sync];
 	$Bartlby_CONF_IDX=$confs[$_SESSION[instance_id]][uniq_id];
+	$Bartlby_CONF_DisplayName=$confs[$_SESSION[instance_id]][display_name];
+	$Bartlby_CONF_isMaster=$confs[$_SESSION[instance_id]][is_master];
 }
 if($_SESSION[instance_id] > count($confs)) {
 	$Bartlby_CONF=$confs[0][file];
 	$Bartlby_CONF_Remote=$confs[0][remote];
 	$Bartlby_CONF_IDX=$confs[0][uniq_id];
 	$Bartlby_CONF_DBSYNC=true;
+	$Bartlby_CONF_DisplayName=$confs[0][display_name];
+	$Bartlby_CONF_isMaster=$confs[0][is_master];
 	
 }
 

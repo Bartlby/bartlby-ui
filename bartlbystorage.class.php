@@ -7,7 +7,7 @@
 			$this->plugin_name=$plugin_name;
 			$this->base_dir="store";
 			if($Bartlby_CONF_IDX>0) {
-				$this->base_dir = "store-" . $Bartlby_CONF_IDX;
+				$this->base_dir = "nodes/" . $Bartlby_CONF_IDX . "/store/";
 			}
 		
 			$this->save_path=$this->base_dir . "/" . $this->plugin_name;

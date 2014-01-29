@@ -189,6 +189,7 @@ class AutoDiscoverAddons {
         function _globExt($svcid, $path, $width="", $all=true) {
         	  global $defaults, $xajax, $btl;
         	  $x = 0;        	  
+
         	  $defaults = bartlby_get_service_by_id($btl->RES, $svcid);
                 foreach(glob($path . "/" . $svcid . "_*.png") as $fn) {
                 				if($all == false) {
@@ -196,11 +197,11 @@ class AutoDiscoverAddons {
                 						if(!preg_match("/24h.png/", basename($fn)) ) {
                 							continue;
                 						} else {
-                							$r .= "<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
+                							$r .= "<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='" . $btl->rrd_web_path . "/" . basename($fn) . "?" . time() . "'><br>";
                 							break;
                 						}
                 				}
-                				$s_image ="<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='rrd/" . basename($fn) . "?" . time() . "'><br>";
+                				$s_image ="<img $width onClick='updatePerfhandlerExt();' id='perfh" . $x . "' src='" . $btl->rrd_web_path . "/" . basename($fn) . "?" . time() . "'><br>";
                         $r .=  $s_image;
                         $this->images[] = $s_image;
                         $bn = basename($fn);
@@ -322,7 +323,7 @@ class AutoDiscoverAddons {
 																	  $re .= '<script>
 																		
 																		function fname_update() {
-																	        fname="rrd/' .  $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd";
+																	        fname="' . $btl->rrd_web_path ."/" .   $defaults[service_id] . '_' .  $defaults[plugin] . '.rrd";
 																	        
 																	        try {
 																	          FetchBinaryURLAsync(fname,update_fname_handler);

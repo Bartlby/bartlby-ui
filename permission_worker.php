@@ -34,7 +34,7 @@ $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$s
 	if($svc[is_gone] != 0) {
 	 return LOOP_CONTINUE;
 	}
-	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || strstr($defaults[services], "|" . $svc[service_id]  . "|") || @in_array( $svc[server_id], $worker_rights[servers]) || @in_array( $svc[server_id], $worker_rights[servers])) {
+	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || strstr($defaults[services], "|" . $svc[service_id]  . "|") || @in_array( $svc[server_id], $worker_rights[servers]) || @in_array( $svc[service_id], $worker_rights[services])) {
 		if(!is_array($servers_out[$svc[server_id]])) {
 			$servers_out[$svc[server_id]]=array();
 		}
@@ -44,7 +44,6 @@ $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$s
 	
 });			
 ksort($servers_out);
-
 
 
 $optind=0;
@@ -76,7 +75,9 @@ while(list($k, $servs) = @each($map)) {
 		$servers[$optind][c]="";
 		$servers[$optind][v]=$servs[$x][service_id];	
 		$servers[$optind][k]=$servs[$x][server_name] . "/" .  $servs[$x][service_name];
+
 		if(@in_array($servs[$x][service_id], $worker_rights[services])) {
+
 			$servers[$optind][s]=1;	
 		}
 		

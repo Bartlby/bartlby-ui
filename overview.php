@@ -238,10 +238,12 @@ $Author: hjanuschka $
 	} else {
 		$load_bar = "<font color=green>" . $info[current_running]  . "</font> Load: <font color=green>" . $curr_load[0] . " / " . $max_load . " </font>";	
 	}
+
 	$fin_last_sync =  "MASTER";
-	$last_sync = @file_get_contents("last_sync-" . $Bartlby_CONF_IDX);
+	$last_sync = @filemtime("nodes/" . $Bartlby_CONF_IDX . "/last_sync_shm");
+	$last_db = @filemtime("nodes/" . $Bartlby_CONF_IDX . "/last_sync_db");
 	if($last_sync != "") {
-		$fin_last_sync = $btl->intervall(time()-$last_sync);
+		$fin_last_sync = "SHM: " . $btl->intervall(time()-$last_sync) ;
 	}
 	
 	$rel_name = $btl->getRelease();

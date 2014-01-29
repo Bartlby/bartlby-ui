@@ -19,8 +19,15 @@
 	$layout->setTitle("SiteManager");
 	$layout->set_menu("SiteManager");
 	$layout->setMainTabName("Master-Settings");
-$layout->do_auto_reload=false;
+	$layout->do_auto_reload=false;
 
+
+
+	if($Bartlby_CONF_isMaster != true) {
+		$layout->OUT = "Sites is only available on Master";
+		$layout->display();
+		exit;
+	}
 	/* Add Extension JS */
 	$layout->OUT .= '<script src="extensions/SiteManager/sm.js" type="text/javascript"></script>';
 
@@ -64,7 +71,7 @@ $layout->do_auto_reload=false;
 
 	$layout->Tab("Manage", $layout->disp_box("sm_manage"), "sm_manage");
 	$layout->Tab("Add/Modify",$frm_tab, "sm_add");
-	$layout->Tab("Sync", $layout->disp_box("sm_sync"), "sm_sync");
+	//$layout->Tab("Sync", $layout->disp_box("sm_sync"), "sm_sync");
 
 
 

@@ -6,6 +6,13 @@
 //		var1=a //in $_GET
 //   	Needs to be run as root
 //Re-Do https://github.com/Bartlby/Bartlby/blob/master/multi_instances_HA/sync_bartlby_shm.sh as a PHP script
+//cronjobs you require
+//*/2 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=SHM)
+//*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)
+//*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)
+//*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)
+
+
 
 	ini_set('display_errors', '1');
 	error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -65,11 +72,15 @@ data_library=/opt/bartlby/lib/mysql.so
 shm_key=" . $local_core_replication_path . "/" . $row[id] . "
 shm_size=" . (floor($local_shm_size/1024/1024)*10) . "
 max_load=10
-logfile=" . $local_core_replication_path . "/" . $row[id] . "/logs/  
+logfile=" . $local_core_replication_path . "/" . $row[id] . "/log/bartlby
 mysql_host=" . $row[local_db_host] . "
 mysql_user=" .$row[local_db_user] . "
 mysql_pw=" . $row[local_db_pass] . "
 mysql_db=" . $row[local_db_name] . "
+performance_dir=" . $local_core_path . "/perf/
+basedir=" . $local_core_path  . "
+rrd_web_path=nodes/" . $row[id] . "/rrd/
+performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 ###########################################
 				";
 				//SAVE CFG
@@ -82,7 +93,8 @@ mysql_db=" . $row[local_db_name] . "
 						$a[file] = "' . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg" .  '";
 						$a[remote] = true;
 						$a[db_sync] = ' . $db_sync . ';
-						$a[display_name] = "' .  $row[remote_alias] . '";		
+						$a[display_name] = "' .  $row[remote_alias] . '";
+						$a[uniq_id] = ' . $row[id] . ';		
 						array_push($confs, $a);			
 				';
 
@@ -111,6 +123,7 @@ mysql_db=" . $row[local_db_name] . "
 						runLocalCMD("gunzip " . $tmp_dir . "/mysql.dump");
 						runLocalCMD("mysql -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " < " . $tmp_dir . "/mysql.dump");
 						echo "mysql -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " < " . $tmp_dir . "/mysql.dump";
+						touch($local_ui_replication_path . "/" . $row[id] . "/last_sync_db");
 					}	 else {
 						echo "$row[remote_alias] ERROR on connecting to local DB host";
 					}		
@@ -147,7 +160,7 @@ mysql_db=" . $row[local_db_name] . "
 						//SCP to remote
 						// Schedule reload on remote side
 						//DUMP remote SITE
-						
+						touch($local_ui_replication_path . "/" . $row[id] . "/last_sync_db");
 					}	 else {
 						echo "$row[remote_alias] ERROR on connecting to local DB host";
 					}		
@@ -155,6 +168,46 @@ mysql_db=" . $row[local_db_name] . "
 
 
 				}
+			break;
+			case "FOLDERS":
+				//PULL fOLDERS
+				$ssh_conn=checkSSHConn($ssh_cmd_str);
+				if(!$ssh_conn) {
+					echo "ERROR on $row[remote_alias] ssh does not work fix it!\n";
+					continue;
+				}
+				$folder_str = $row[additional_folders_pull];
+				$folder_str = str_replace("%UINODEPATH%", $local_ui_replication_path . "/" . $row[id] . "/", $folder_str);
+				$folder_str = str_replace("%CORENODEPATH%", $local_core_replication_path . "/" . $row[id] . "/", $folder_str);
+				$li = explode("\n", $folder_str);
+				for($x=0; $x<count($li); $x++) {
+					$ll = explode(":", $li[$x]);
+						if(strlen($ll[0]) > 3 != "" && strlen($ll[1]) > 2) {
+								$scm="rsync -e 'ssh -i " .  $key_file . "' -azv " . $user . "@" . $host . ":" . $ll[0] . " " . $ll[1];
+								runLocalCMD($scm);
+
+								//echo $scm . "\n";
+
+						}
+					
+				}
+				echo "DONE PULL FOLDERS FOR NODE: $row[remote_alias]\n";
+				$folder_str = $row[additional_folders_push];
+				$folder_str = str_replace("%UINODEPATH%", $local_ui_replication_path . "/" . $row[id] . "/", $folder_str);
+				$folder_str = str_replace("%CORENODEPATH%", $local_core_replication_path . "/" . $row[id] . "/", $folder_str);
+				$li = explode("\n", $folder_str);
+				for($x=0; $x<count($li); $x++) {
+					$ll = explode(":", $li[$x]);
+						if(strlen($ll[0]) > 3 != "" && strlen($ll[1]) > 2) {
+								$scm="rsync -e 'ssh -i " .  $key_file . "' -azv " . $ll[0] . " " . $user . "@" . $host . ":" . $ll[1];
+								runLocalCMD($scm);
+
+
+						}
+					
+				}
+				echo "DONE PUSH FOLDERS FOR NODE: $row[remote_alias]\n";
+
 			break;
 			case "SHM":
 					echo "Checking SHM Segment from $row[remote_alias]\n";
@@ -185,6 +238,7 @@ mysql_db=" . $row[local_db_name] . "
 								echo $r;
 								echo "SHM synced for Node $row[remote_alias] \n";
 								$sm->db->exec("update sm_remotes set last_sync=datetime('now') where id=" . (int) $row[id]);
+								touch($local_ui_replication_path . "/" . $row[id] . "/last_sync_shm");
 							} else {
 								echo "ERROR on $row[remote_alias] ARCH does not match $local_arch $remote_arch";	
 							}

@@ -1,5 +1,29 @@
 <?
 include "config.php";
+if(count($confs) > 0) {
+			$drpd .= "<select name='btl_instance_id' onChange='btl_change(this)'>";
+			for($x=0; $x<count($confs); $x++) {
+				$sel = " ";
+				if($_SESSION[instance_id] == $x) {
+					$sel = "selected";
+				}
+				
+				
+				$r = "(LOCAL)";
+				$read_only = "";
+				$rw="green";
+				if($confs[$x][remote]) {
+					 $r = "(REMOTE)";
+					if($confs[$x][db_sync] == false) {
+						 $rw = "grey";
+					}
+				}
+				$drpd .= "<option style='background-color: $rw' value=" . $x ." $sel>" . $confs[$x][display_name] . " $r</option>";
+			}
+			$drpd .= "</select>";
+		}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,6 +101,24 @@ include "config.php";
 							<div class="input-prepend">
 							
 							</div>
+
+							<div class="input-prepend" title="Instance" data-rel="tooltip">
+								Instance (if Single Sign on is enabled please use the credentials from the Master Node)
+							</div>
+							<div class="clearfix"></div>
+
+							<div class="input-prepend">
+								<?
+echo $drpd;
+								?>		
+							</div>
+
+
+
+
+
+
+
 							<div class="clearfix"></div>
 
 							<p class="center span5">

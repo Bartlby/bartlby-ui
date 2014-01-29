@@ -847,7 +847,7 @@ class BartlbyUi {
 	function setUIRight($k, $v, $user) {
 		$base="rights/";
 		if($Bartlby_CONF_IDX>0) {
-			$base="rights-" . $Bartlby_CONF_IDX . "/";
+			$base="nodes/"  . $Bartlby_CONF_IDX . "/rights/";
 		}
 		if(!file_exists($base . $user . ".dat")) {
 			copy($base . "/template.dat", $base . $user . ".dat");
@@ -1004,6 +1004,10 @@ class BartlbyUi {
 		$this->loadRights();
 		$this->BASEDIR=@bartlby_config($this->CFG, "basedir");
 		$this->PERFDIR=@bartlby_config($this->CFG, "performance_dir");
+		$this->rrd_web_path=@bartlby_config($this->CFG, "rrd_web_path");
+		if(strlen($this->rrd_web_path) < 2) {
+			$this->rrd_web_path="rrd/";
+		}
 		
 		
 		
@@ -1135,11 +1139,18 @@ class BartlbyUi {
 		}	
 	}
 	function loadForeignRights($user) {
-		if(!file_exists("rights/" . $user . ".dat")) {
-			copy("rights/template.dat", "rights/" . $user . ".dat");
+		global $Bartlby_CONF_IDX;
+		$base="rights/";
+		if($Bartlby_CONF_IDX>0) {
+			$base="nodes/" . $Bartlby_CONF_IDX . "/rights/";
+			//$ui_extra_file = "nodes/" . $Bartlby_CONF_IDX . "/ui-extra.conf";
 		}
-		if(file_exists("rights/" . $user . ".dat")) {
-			$fa=file("rights/" . $user . ".dat");
+		
+		if(!file_exists($base . $user . ".dat")) {
+			copy($base . "/template.dat", $base . "/" . $user . ".dat");
+		}
+		if(file_exists($base . "/" . $user . ".dat")) {
+			$fa=file($base . "/" . $user . ".dat");
 			while(list($k, $v) = each($fa)) {
 				$s1=explode("=", $v);
 				$r[$s1[0]]=explode(",", trim($s1[1]));
@@ -1206,11 +1217,11 @@ class BartlbyUi {
 		
 		$ui_extra_file = getcwd() . "/ui-extra.conf";
 		if($Bartlby_CONF_IDX>0) {
-			$base="rights-" . $Bartlby_CONF_IDX . "/";
-			$ui_extra_file = "ui-extra-" . $Bartlby_CONF_IDX . ".conf";
+			$base="nodes/" . $Bartlby_CONF_IDX . "/rights/";
+			//$ui_extra_file = "nodes/" . $Bartlby_CONF_IDX . "/ui-extra.conf";
 		}
 		if(!file_exists($base . "/" . $this->user_id . ".dat")) {
-			copy($base . "/template.dat", "rights/" . $this->user_id . ".dat");
+			copy($base . "/template.dat", $base . "/" . $this->user_id . ".dat");
 		}
 		
 		if(file_exists($base . "/" . $this->user_id . ".dat")) {
@@ -1293,14 +1304,23 @@ class BartlbyUi {
 	}
 	
 	function perform_auth($a=true) {
-		
+		global $Bartlby_CONF_IDX;
+		global $Bartlby_CONF_single_sign_on;
+		global $confs;
 		$auted=0;
 		if($a==false) {
 			$auted=1;
 		} else {
-		
+			$btl_to_use=$this;
+			if($Bartlby_CONF_single_sign_on == 1 ) {
+				if($Bartlby_CONF_IDX > 0) {
+
+					$btl_to_use=new BartlbyUi($confs[0][file], false);
+					
+				}
+			}
 			$btl=$this;
-			$this->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
+			$btl_to_use->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
 				global $_SERVER;
 				if($_SESSION[username] != "" && $_SESSION[password] != "") {
 					$_SERVER[PHP_AUTH_USER]=$_SESSION[username];
@@ -2151,6 +2171,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 				
 				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->CFG . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
 				
+
 				$fp=popen($exec, "r");
 				$output="<hr><pre>";
 				while(!feof($fp)) {

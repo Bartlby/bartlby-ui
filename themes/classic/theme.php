@@ -22,13 +22,15 @@ $Author: hjanuschka $
 */
 ?>
 
-
+<?
+global $Bartlby_CONF_DisplayName;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
 	<meta charset="utf-8">
-	<title>Bartlby</title>
+	<title>(<?=$Bartlby_CONF_DisplayName?>) - Bartlby</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Bartlby">
 	<meta name="author" content="Helmut Januschka">

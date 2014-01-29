@@ -55,8 +55,8 @@ class SiteManager {
 		$re->AddScript('$("#local_db_user").val("' . $row[local_db_user] . '")');
 		$re->AddScript('$("#local_db_pass").val("' . $row[local_db_pass] . '")');
 		$re->AddScript('$("#local_db_host").val("' . $row[local_db_host] . '")');
-		$re->AddScript('$("#additional_folders_pull").val("' . $row[additional_folders_pull] . '")');
-		$re->AddScript('$("#additional_folders_push").val("' . $row[additional_folders_push] . '")');
+		$re->AddScript('$("#additional_folders_pull").val("' . str_replace("\n", "\\n", $row[additional_folders_pull]) . '")');
+		$re->AddScript('$("#additional_folders_push").val("' . str_replace("\n", "\\n", $row[additional_folders_push]) . '")');
 		$re->AddScript('$("#mode").val("' . $row[mode] . '")');
 		return $re;
 	}
@@ -194,11 +194,21 @@ class SiteManager {
 		$this->local_ui_replication_path=$this->storage->load_key("local_ui_replication_path");
 		$this->local_core_replication_path=$this->storage->load_key("local_core_replication_path");
 	}
+	function _overview() {
+		global $layout, $Bartlby_CONF_isMaster;
+		if($Bartlby_CONF_isMaster) {
+			$layout->Tab("Sites", "CNT", "sm_sitetab");
+		}
+		return "";
+	}
 	function _Menu() {
-		$r =  $this->layout->beginMenu();
-		$r .= $this->layout->addRoot("Sites");
-		$r .= $this->layout->addSub("Sites", "Manage","extensions_wrap.php?script=SiteManager/index.php");
-		$r .= $this->layout->endMenu();
+		global $Bartlby_CONF_isMaster;
+		if($Bartlby_CONF_isMaster) {
+			$r =  $this->layout->beginMenu();
+			$r .= $this->layout->addRoot("Sites");
+			$r .= $this->layout->addSub("Sites", "Manage","extensions_wrap.php?script=SiteManager/index.php");
+			$r .= $this->layout->endMenu();
+		}
 		return $r;
 	}
 

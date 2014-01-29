@@ -55,7 +55,12 @@ switch($act) {
 			$new_file .= $nk . "=true\n";	
 		}
 		$wk = bartlby_get_worker_by_id($btl->RES, $_POST[worker_id]);
-		$fp = @fopen("rights/" . $wk[worker_id] . ".dat", "w");
+		$base="rights/";
+		if($Bartlby_CONF_IDX>0) {
+			$base="nodes/" . $Bartlby_CONF_IDX . "/rights/";
+			//$ui_extra_file = "nodes/" . $Bartlby_CONF_IDX . "/ui-extra.conf";
+		}
+		$fp = @fopen($base . "/" . $wk[worker_id] . ".dat", "w");
 		@fwrite($fp, $new_file);
 		@fclose($fp);
 		//echo file_get_contents("rights/" . $wk[worker_id] . ".dat");

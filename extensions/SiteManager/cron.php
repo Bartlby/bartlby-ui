@@ -53,7 +53,7 @@
 
 
 		switch($sync) {
-			case "GENERATE-BARTLBYCFG":
+			case "GENCONF":
 				//Does not matter if push or pull
 				$local_shm_hex = runLocalCMD($local_core_path . "/bin/bartlby_shmt ftok " . $local_core_replication_path . "/" . $row[id]);
 				$local_shm_size=runLocalCMD("ipcs -m|grep " .  $local_shm_hex . "|awk '{print \$5}'");
@@ -74,16 +74,84 @@ mysql_db=" . $row[local_db_name] . "
 				";
 				//SAVE CFG
 				file_put_contents($local_core_replication_path . "/" . $row[id] . "/bartlby.cfg", $cfg_file);
+				$db_sync="false";
+				if($row[mode] == "push") {
+					$db_sync="true";
+				}
+				$ui_cfg  .= '
+						$a[file] = "' . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg" .  '";
+						$a[remote] = true;
+						$a[db_sync] = ' . $db_sync . ';
+						$a[display_name] = "' .  $row[remote_alias] . '";		
+						array_push($confs, $a);			
+				';
+
+
 				echo "bartlby.cfg  for Node $row[remote_alias]  generated\n";		
 			break;
 			case "DB":
 				if($row[mode] == "pull") {
-					//GET THE MYSQL DB from remote side					
+					//GET THE MYSQL DB from remote side		
+					//check if DB exists localy
+					$conn = mysql_connect($row[local_db_host], $row[local_db_user], $row[local_db_pass]);
+					$ssh_conn=checkSSHConn($ssh_cmd_str);
+					if($conn && $ssh_conn) {
+						$r = mysql_select_db($row[local_db_name]);
+						var_dump($r);
+						if($r == false) {
+							mysql_query("create database " . $row[local_db_name]);
+							echo "create database " . $row[local_db_name];
+
+						}
+						//DUMP remote SITE
+						runSSHCMD($ssh_cmd_str, "mkdir " . $tmp_dir);
+						$d = runSSHCMD($ssh_cmd_str, "mysqldump -u " . $row[remote_db_user] . " --password='" . $row[remote_db_pass] . "' " . $row[remote_db_name] . " > " . $tmp_dir . "/mysql.dump; gzip " . $tmp_dir . "/mysql.dump");
+						runLocalCMD("scp " . $ssh_cmd_str . ":" . $tmp_dir . "/mysql.dump.gz " . $tmp_dir . "/mysql.dump.gz; gunzip " . $tmp_dir . "/mysql.dump.gz");
+						echo $tmp_dir . "/mysql.dump.gz";
+						runLocalCMD("gunzip " . $tmp_dir . "/mysql.dump");
+						runLocalCMD("mysql -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " < " . $tmp_dir . "/mysql.dump");
+						echo "mysql -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " < " . $tmp_dir . "/mysql.dump";
+					}	 else {
+						echo "$row[remote_alias] ERROR on connecting to local DB host";
+					}		
 				} 
 				if($row[mode] == "push") {
 					//Check if exists
 					// if is not existing pull once from remote!
 					//push to remote side
+
+
+					$conn = mysql_connect($row[local_db_host], $row[local_db_user], $row[local_db_pass]);
+					$ssh_conn=checkSSHConn($ssh_cmd_str);
+					if($conn && $ssh_conn) {
+						$r = mysql_select_db($row[local_db_name]);
+						var_dump($r);
+						if($r == false) {
+							mysql_query("create database " . $row[local_db_name]);
+							echo "create database " . $row[local_db_name];
+							//Make a new DB
+							runLocalCMD("mysql -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " < " . " " . $local_core_path . "/mysql.shema");
+
+						}
+						runSSHCMD($ssh_cmd_str, "mkdir " . $tmp_dir);
+						
+
+						//Dump Local
+						runLocalCMD("mysqldump -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " > " . $tmp_dir . "/" . "mysql.dump; gzip " . $tmp_dir . "/mysql.dump");
+						runLocalCMD("scp -i " . $key_file . " " . $tmp_dir . "/mysql.dump.gz " . $user . "@" . $host . ":" . $tmp_dir . "/mysql.dump.gz");
+
+						runSSHCMD($ssh_cmd_str, "gunzip " . $tmp_dir . "/mysql.dump.gz; mysql  -u " . $row[remote_db_user] . " --password='" . $row[remote_db_pass] . "' " . $row[remote_db_name] . " < " . $tmp_dir . "/mysql.dump");
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt " . $row[remote_core_path] . "/etc/bartlby.cfg " . " reload");
+						
+
+						//SCP to remote
+						// Schedule reload on remote side
+						//DUMP remote SITE
+						
+					}	 else {
+						echo "$row[remote_alias] ERROR on connecting to local DB host";
+					}		
+
 
 
 				}
@@ -133,6 +201,11 @@ mysql_db=" . $row[local_db_name] . "
 			default:
 				echo $sync . " mode unkown\n";
 		}	
+	}
+	if($sync == "GENCONF") {
+		echo "CREATED: " . $local_ui_replication_path . "/uinodes.php\n";
+		file_put_contents($local_ui_replication_path . "/uinodes.php", "<?\n" . $ui_cfg . "\n?>");
+
 	}
 
 function runLocalCMD($str) {

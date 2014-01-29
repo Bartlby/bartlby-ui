@@ -23,46 +23,18 @@ $Author: hjanuschka $
 session_start();
 
 
-if($_SERVER[SERVER_NAME] == "www.bartlby.org") {
-$confs[0][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
-$confs[0][remote] = false;
-$confs[0][db_sync] = true;
-$confs[0][display_name] = "2ka-primary";
-$confs[0][uniq_id] = 0;
 
-
-$confs[1][file] = "/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local.second";
-$confs[1][remote] = true;
-$confs[1][db_sync] = true;
-$confs[1][display_name] = "Old-Hetzner";
-$confs[1][uniq_id] = 1;
-
-
-
-
-
-} else {
 	$confs[0][file] = "/opt/bartlby/etc/bartlby.cfg";
 	$confs[0][remote] = false;
 	$confs[0][db_sync] = true;
 	$confs[0][display_name] = "Primary";
 	
 
-	$confs[1][file] = "/opt/bartlby/nodes/1/bartlby.cfg";
-	$confs[1][remote] = true;
-	$confs[1][db_sync] = false;
-	$confs[1][display_name] = "docker2";
-	$confs[1][uniq_id] = 1;
 	
-
-	$confs[2][file] = "/opt/bartlby/nodes/2/bartlby.cfg";
-	$confs[2][remote] = true;
-	$confs[2][db_sync] = true;
-	$confs[2][display_name] = "docker3";
-	$confs[2][uniq_id] = 2;
 	
+if(file_exists("nodes/uinodes.php")) {
+	include_once "nodes/uinodes.php";
 }
-
 
 
 

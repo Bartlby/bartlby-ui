@@ -12,6 +12,18 @@
 //*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)
 //*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)
 
+/* DEFAULT PULL folders
+/var/www/bartlby-ui/rights/:%UINODEPATH%/rights/
+/var/www/bartlby-ui/store/:%UINODEPATH%/store/
+/var/www/bartlby-ui/rrd/:%UINODEPATH%/rrd/
+/opt/bartlby/var/log/:%CORENODEPATH%/log/
+
+PUSH folders on RW node:
+%UINODEPATH%/rights/:/var/www/bartlby-ui/rights/
+
+*/
+
+
 
 
 	ini_set('display_errors', '1');

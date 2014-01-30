@@ -26,7 +26,13 @@ error_reporting(0);
 
 	
 	$btl=new BartlbyUi($Bartlby_CONF, true);
-	
+	if($btl->auth_error == true) {
+		$input->done();
+		
+        echo "AUTH ERROR\n";
+		exit;
+	}
+
 	$info=@$btl->getInfo();
 	$layout= new Layout();
 	$layout->DisplayHelp(array(0=>"WARN|Welcome to BartlbyUI",1=>"INFO|This is the help screen"));

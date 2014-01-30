@@ -997,9 +997,12 @@ class BartlbyUi {
 				exit(1);
 			}
 		}
-		
-		$this->perform_auth($auth);
+		$this->auth_error=false;	
+		$ar = $this->perform_auth($auth);
+		if(!$ar) {
 
+			$this->auth_error=true;			
+		}
 		$this->release=$this->info[version];
 		$this->loadRights();
 		$this->BASEDIR=@bartlby_config($this->CFG, "basedir");
@@ -1347,6 +1350,10 @@ class BartlbyUi {
 
 		if($auted == 0 && $_SESSION[username] != "") {
 			$this->redirectError("BARTLBY::LOGIN");
+			if(php_sapi_name() == "cli") {
+
+				return false;
+			}
 		}
 		if ($auted==0) { 
 			
@@ -1354,6 +1361,10 @@ class BartlbyUi {
 	      	@header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
 	      	@Header("HTTP/1.0 401 Unauthorized");
 	      	 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
+	      	 if(php_sapi_name() == "cli") {
+
+				return false;
+			 }
 			 $this->redirectError("BARTLBY::LOGIN");
 			 exit;
 		} else {
@@ -1363,6 +1374,7 @@ class BartlbyUi {
 			
 			
 		}
+		return true;
 	}
 	function _log($str) {
 		$logfile=bartlby_config($this->CFG, "logfile");
@@ -1391,8 +1403,14 @@ class BartlbyUi {
 		//header("Location: error.php?msg=" . $msg);	
 		
 		if(!preg_match("/error.php/" , $_SERVER[SCRIPT_NAME])) {
-			echo "<script>parent.location.href='error.php?msg=$msg" . $qs . "';</script>";
-			exit;
+			if(php_sapi_name() == 'cli') {
+				return false;
+			} else {
+				echo "<script>parent.location.href='error.php?msg=$msg" . $qs . "';</script>";	
+				exit;
+			}
+			
+			
 		}
 		
 	}

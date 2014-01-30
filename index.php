@@ -1,7 +1,7 @@
 <?
 include "config.php";
 if(count($confs) > 0) {
-			$drpd .= "<select name='btl_instance_id' onChange='btl_change(this)'>";
+			$drpd .= "<select name='btl_instance_id' onChange='btl_change(this)' data-rel='chosen'>";
 			for($x=0; $x<count($confs); $x++) {
 				$sel = " ";
 				if($_SESSION[instance_id] == $x) {

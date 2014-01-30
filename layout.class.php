@@ -349,7 +349,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$diff=$this->end_time-$this->start_time;
 			
 		if(count($confs) > 0) {
-			$this->BTL_INSTANCES .= "<select name='btl_instance_id' onChange='btl_change(this)'>";
+			$this->BTL_INSTANCES .= "<select name='btl_instance_id' onChange='btl_change(this)' data-rel='chosen'>";
 			for($x=0; $x<count($confs); $x++) {
 				$sel = " ";
 				if($_SESSION[instance_id] == $x) {
@@ -359,11 +359,12 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 				
 				$r = "(LOCAL)";
 				$read_only = "";
-				$rw="green";
+				$rw="grey";
+				if($x == 0) $rw="#AEC6CF";
 				if($confs[$x][remote]) {
 					 $r = "(REMOTE)";
 					if($confs[$x][db_sync] == false) {
-						 $rw = "grey";
+						 $rw = "lightgrey";
 					}
 				}
 				$this->BTL_INSTANCES .= "<option style='background-color: $rw' value=" . $x ." $sel>" . $confs[$x][display_name] . " $r</option>";

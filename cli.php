@@ -64,7 +64,8 @@ ncurses_init_pair(4,NCURSES_COLOR_WHITE,NCURSES_COLOR_BLUE);
 ncurses_init_pair(5,NCURSES_COLOR_BLACK,NCURSES_COLOR_WHITE);
 
 
-
+if(!$_SESSION[instance_id]) $_SESSION[instance_id] = 0;
+$node_name="Primary";
 
 while(1){
 
@@ -88,8 +89,28 @@ while(1){
 		}
 	}
 	
-	
-	
+	if($k == 9 ) {
+		//Switch instance_id
+		if($_SESSION[instance_id]+1 > count($confs))  {
+			$_SESSION[instance_id]=0;
+		} else {
+			$_SESSION[instance_id]++;
+		}
+		
+		bartlby_close($btl->RES);
+		$btl->RES=bartlby_new($confs[$_SESSION[instance_id]][file]);
+		$btl->CFG=$confs[$_SESSION[instance_id]][file];
+		$node_name=$confs[$_SESSION[instance_id]][display_name];
+
+		if(!$btl->RES) {
+			$btl->RES=bartlby_new($confs[0][file]);
+			$node_name=$confs[0][display_name];
+		}
+		$btl->info=@bartlby_get_info($btl->RES);
+		$info=@$btl->getInfo();
+		$lib=@bartlby_lib_info($btl->RES);
+		continue;
+	}
 	if($k == ESCAPE_KEY || $k == 113) {
 		ncurses_resetty();
        		ncurses_end();
@@ -368,7 +389,7 @@ for($tt=0; $tt<$lines; $tt++) {
 	// border the main window
 	ncurses_attron(NCURSES_A_REVERSE);
 
-	ncurses_mvaddstr(0,1,"($selected_svc[service_id]) bartlby -> " . $btl->getRelease() . "\t" . date("d.m.Y H:i:s", time()) . " /" . $start_from . "-" . $btl->info[services]);
+	ncurses_mvaddstr(0,1,"$node_name bartlby -> " . $btl->getRelease() . "\t" . date("d.m.Y H:i:s", time()) . " /" . $start_from . "-" . $btl->info[services]);
 	ncurses_attroff(NCURSES_A_REVERSE);
 
 	if($alerts_only == 1)
@@ -887,6 +908,8 @@ function disp_help() {
 		array(1, "w", "hide services wich are in state:warning"),
 		array(1, "i", "hide services wich are in state:info"),
 		array(1, "g", "toggle grouping of similar error messages per server"),
+		array(1, "H", "hide services wich are handled"),
+		array(1, "<TAB>", "Switch between monitored nodes"),
 		array(1, "R", "Reset filter's"),
 		array(0, "Service Detail:"),
 		array(1, "f", "Force Check"),

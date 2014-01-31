@@ -13,7 +13,10 @@
 	
 	), "tactical_overview");
 */
-
+$instance_id_fix="";
+if($_GET[instance_id]) {
+	$instance_id_fix="&instance_id=" . $_GET[instance_id];
+}
 ?>
 
 <table class='nopad' width='100%'>
@@ -23,15 +26,15 @@
 
 				
 
-				<? if($plcs[services_ok]>0) {?><a href='services.php?&expect_state=0'><span class='label label-success'><?=$plcs[services_ok]?> OK's</A><? } ?>
-				<? if($plcs[services_warning]>0) {?><a href='services.php?&expect_state=1'><span class='label label-warning'><?=$plcs[services_warning]?> Warnings</A><? } ?>
-				<? if($plcs[services_critical]>0) {?><a href='services.php?&expect_state=2'><span class='label label-important'><?=$plcs[services_critical]?> Criticals</A><? } ?>
-				<? if($plcs[services_unkown]>0) {?><a href='services.php?&expect_state=3'><span class='label label-default'><?=$plcs[services_unkown]?>  Unkown</A><? } ?>
-				<? if($plcs[services_info]>0) {?><a href='services.php?&expect_state=4'><span class='label label-default'><?=$plcs[services_info]?> Info</A><? } ?>
-				<? if($plcs[services_downtime]>0) {?><a href='services.php?&downtime=true'><span class='label label-default'><?=$plcs[services_downtime]?> Downtime</A><? } ?>
-				<? if($plcs[acks_outstanding]>0) {?><a href='services.php?&expect_state=2&acks=yes'><span class='label label-default'><?=$plcs[acks_outstanding]?> Ack Wait</A><? } ?>
-				<? if($plcs[services_handled]>0) {?><a href='services.php?handled=yes'><span class='label label-default'><?=$plcs[services_handled]?> Handled</A><? } ?>
-				<a href='services.php?expect_state=0&invert=true'>show all failures</A>
+				<? if($plcs[services_ok]>0) {?><a href='services.php?&expect_state=0<?=$instance_id_fix?>'><span class='label label-success'><?=$plcs[services_ok]?> OK's</A><? } ?>
+				<? if($plcs[services_warning]>0) {?><a href='services.php?&expect_state=1<?=$instance_id_fix?>'><span class='label label-warning'><?=$plcs[services_warning]?> Warnings</A><? } ?>
+				<? if($plcs[services_critical]>0) {?><a href='services.php?&expect_state=2<?=$instance_id_fix?>'><span class='label label-important'><?=$plcs[services_critical]?> Criticals</A><? } ?>
+				<? if($plcs[services_unkown]>0) {?><a href='services.php?&expect_state=3<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_unkown]?>  Unkown</A><? } ?>
+				<? if($plcs[services_info]>0) {?><a href='services.php?&expect_state=4<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_info]?> Info</A><? } ?>
+				<? if($plcs[services_downtime]>0) {?><a href='services.php?&downtime=true<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_downtime]?> Downtime</A><? } ?>
+				<? if($plcs[acks_outstanding]>0) {?><a href='services.php?&expect_state=2&acks=yes<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[acks_outstanding]?> Ack Wait</A><? } ?>
+				<? if($plcs[services_handled]>0) {?><a href='services.php?handled=yes<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_handled]?> Handled</A><? } ?>
+				<a href='services.php?expect_state=0&invert=true<?=$instance_id_fix?>'>show all failures</A>
 
 
 

@@ -11,6 +11,8 @@
 //*/5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)
 //*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)
 //*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)
+//Removes demoted nodes
+//0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)
 
 /* DEFAULT PULL folders
 /var/www/bartlby-ui/rights/:%UINODEPATH%/rights/
@@ -112,6 +114,9 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 
 
 				echo "bartlby.cfg  for Node $row[remote_alias]  generated\n";		
+			break;
+			case "CLEANUP":
+				$configured_node_ids[] = $row[id];
 			break;
 			case "DB":
 				if($row[mode] == "pull") {
@@ -284,6 +289,17 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 		echo "CREATED: " . $local_ui_replication_path . "/uinodes.php\n";
 		file_put_contents($local_ui_replication_path . "/uinodes.php", "<?\n" . $ui_cfg . "\n?>");
 
+	}
+	if($sync == "CLEANUP") {
+		$d = opendir($local_core_replication_path);
+		while($f = readdir($d)) {
+			if(is_dir($local_core_replication_path . "/" . $f) && preg_match("/[0-9]+/", $f) ){
+				if(!in_array($f, $configured_node_ids)) {
+					runLocalCMD("rm -vfr " . $local_core_replication_path . "/" . $f ."/");
+					runLocalCMD("rm -vfr " . $local_ui_replication_path . "/" . $f ."/");
+				}
+			}
+		}		
 	}
 
 function runLocalCMD($str) {

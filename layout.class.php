@@ -97,6 +97,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	function Layout($scr='') {
 		global $_GET;
+		global $_SESSION;
 		
 		$this->box_count=1;
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
@@ -105,7 +106,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->theme="classic";
 		}
 		
-		
+		$this->instance_id=$_SESSION[instance_id];
 		$this->do_auto_reload=false;
 		$this->OUTPUT_JSON=false;
 		$this->template_file="template.html";
@@ -653,9 +654,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->create_box($title, $o, $oid, "","", $collapsed, false);
 		}
 		
-		
+		$this->boxes_wo_reload[$oid] = $this->boxes[$oid];
 		if($auto_reload) {
-			
+		
 		$this->boxes[$oid] .= "<script>
 		btl_add_refreshable_object(function(data) {
 				

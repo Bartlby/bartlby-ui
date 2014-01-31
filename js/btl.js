@@ -117,7 +117,7 @@ function btl_call_refreshable_objects(data) {
 	
 
 function btl_change(t) {
-		document.location.href='bartlby_action.php?instance_id=' + t.selectedIndex + '&action=set_instance_id';
+		document.location.href='bartlby_action.php?set_instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }
 $(document).ready(function() {
 		

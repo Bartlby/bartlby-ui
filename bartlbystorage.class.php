@@ -19,18 +19,22 @@
 			}
 		}
 
-		function SQLDB($cr) {
+		function SQLDB($cr, $fixed_name="") {
 			$first_run=false;
 			try {
-				if(!file_exists($this->save_path . "/sql.sqlite." . md5($cr))) {
-					$this->db = new PDO('sqlite:' . $this->save_path . "/sql.db." . md5($cr));	
+				$fna = "sql.db." . md5($cr);
+				if($fixed_name != "") {
+					$fna = $fixed_name;
+				}
+				if(!file_exists($this->save_path . "/" . $fna)) {
+					$this->db = new PDO('sqlite:' . $this->save_path . "/" . $fna);	
 					$tables = explode(";", $cr);
 					for($x=0; $x<count($tables); $x++) {
 						$e=$this->db->exec($tables[$x]);
 						
 					}
 				} else {
-					$this->db = new PDO('sqlite:' . $this->save_path . "/sql.db." . md5($cr));	
+					$this->db = new PDO('sqlite:' . $this->save_path . "/" . $fna);	
 				}
 			} catch(Exception $e) {
 				

@@ -163,7 +163,7 @@ class SiteManager {
 	function SiteManager() {
 		$this->layout = new Layout();
 		$this->storage = new BartlbyStorage("SiteManager");
-		$this->DBSTR = "CREATE TABLE sm_remotes (id INTEGER PRIMARY  KEY, 
+		$this->DBSTR = "CREATE TABLE sm_remotes (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
 				remote_core_path TEXT,
 				ssh_key TEXT,
 				ssh_ip TEXT, 
@@ -184,7 +184,7 @@ class SiteManager {
 				remote_alias TEXT,
 				last_output TEXT
 				);";
-		$this->db = $this->storage->SQLDB($this->DBSTR);
+		$this->db = $this->storage->SQLDB($this->DBSTR, "sm_remote_v1.db");
 
 		//Load Local Conf
 		//local_core_path TEXT,
@@ -196,8 +196,14 @@ class SiteManager {
 	}
 	function _overview() {
 		global $layout, $Bartlby_CONF_isMaster;
+		global $confs;
 		if($Bartlby_CONF_isMaster) {
-			$layout->Tab("Sites", "CNT", "sm_sitetab");
+			$cnt .= "<script>sm_conf_counter=" . count($confs) . ";</script>";
+			$cnt .= '<script src="extensions/SiteManager/sm_overview.js" type="text/javascript"></script>';
+			for($x=1; $x<count($confs); $x++) {
+				$cnt .= $confs[$x][display_name] . "<br><div id=sm_tacbox_" . $x . "></div>";
+			}
+			$layout->Tab("Sites", $cnt, "sm_sitetab");
 		}
 		return "";
 	}

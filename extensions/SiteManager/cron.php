@@ -165,8 +165,10 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 						runLocalCMD("mysqldump -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " > " . $tmp_dir . "/" . "mysql.dump; gzip " . $tmp_dir . "/mysql.dump");
 						runLocalCMD("scp -i " . $key_file . " " . $tmp_dir . "/mysql.dump.gz " . $user . "@" . $host . ":" . $tmp_dir . "/mysql.dump.gz");
 
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt " . $row[remote_core_path] . "/etc/bartlby.cfg " . " lock_for_db");
 						runSSHCMD($ssh_cmd_str, "gunzip " . $tmp_dir . "/mysql.dump.gz; mysql  -u " . $row[remote_db_user] . " --password='" . $row[remote_db_pass] . "' " . $row[remote_db_name] . " < " . $tmp_dir . "/mysql.dump");
-						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt " . $row[remote_core_path] . "/etc/bartlby.cfg " . " reload");
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt " . $row[remote_core_path] . "/etc/bartlby.cfg " . " unlock_for_db");
+						
 						
 
 						//SCP to remote

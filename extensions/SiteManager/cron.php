@@ -161,6 +161,10 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 						runSSHCMD($ssh_cmd_str, "mkdir " . $tmp_dir);
 						
 
+						//GET REMOTE DB
+						
+						//MERGE IT WITH LOCAL DB (for doUpdate calls)
+
 						//Dump Local
 						runLocalCMD("mysqldump -u " . $row[local_db_user] . " --password='" . $row[local_db_pass] . "' " . $row[local_db_name] . " > " . $tmp_dir . "/" . "mysql.dump; gzip " . $tmp_dir . "/mysql.dump");
 						runLocalCMD("scp -i " . $key_file . " " . $tmp_dir . "/mysql.dump.gz " . $user . "@" . $host . ":" . $tmp_dir . "/mysql.dump.gz");
@@ -231,6 +235,12 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 						$local_expectcore = runLocalCMD($local_core_path . "/bin/bartlby_shmt expectcore");
 						$remote_expectcore = runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt expectcore");
 
+						if($row[mode] == "push") {
+							//Writeback services so next mysql sync has new states
+							$wb = runLocalCMD($local_core_path . "/bin/bartlby -w -d " . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg");
+							
+
+						}
 						if($local_expectcore == $remote_expectcore)  {
 							$local_arch= runLocalCMD("uname -m");
 							$remote_arch = runSSHCMD($ssh_cmd_str, "uname -m");

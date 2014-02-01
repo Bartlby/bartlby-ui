@@ -30,6 +30,7 @@ foreach($r as $row) {
 		<td><?=$row[last_output]?></td>
 		<td>
 			<button  class="sm_modify_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Edit</button>
+			<button  class="sm_copy_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Copy</button>
 			<button  class="sm_delete_btn btn btn-mini btn-danger"  data-node-id="<?=$row[id]?>" >Delete</button>
 		</td>
 

@@ -208,7 +208,8 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 						if(strlen($ll[0]) > 3 != "" && strlen($ll[1]) > 2) {
 								$scm="rsync -e 'ssh -i " .  $key_file . "' -azv " . $user . "@" . $host . ":" . $ll[0] . " " . $ll[1];
 								runLocalCMD($scm);
-
+								echo $scm;
+								flush();
 								//echo $scm . "\n";
 
 						}

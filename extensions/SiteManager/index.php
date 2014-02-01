@@ -47,7 +47,7 @@
 	$layout->create_box("Local DB", $sm_form_local, "sm_form_local");
 	$layout->create_box("Additional Folders", $sm_form_add_folders, "sm_form_addfolders");
 	$layout->create_box("Action", $sm_form_end, "sm_form_end");
-	$layout->create_box("title", "Sync Content", "sm_sync");
+	//$layout->create_box("title", "Sync Content", "sm_sync");
 	
 
 	

@@ -201,7 +201,11 @@ class SiteManager {
 			$cnt .= "<script>sm_conf_counter=" . count($confs) . ";</script>";
 			$cnt .= '<script src="extensions/SiteManager/sm_overview.js" type="text/javascript"></script>';
 			for($x=1; $x<count($confs); $x++) {
-				$cnt .= $confs[$x][display_name] . "<br><div id=sm_tacbox_" . $x . "></div>";
+				$cnt .= $confs[$x][display_name] . "<br>";
+				$cnt .= "<div id=sm_core_info_" . $x . " style='clear:both;'></div>";
+				$cnt .= "<div style='width: 100%'>";
+				$cnt .= "<div id=sm_system_health_" . $x . " style='width: 100%;  '></div>";
+				$cnt .= "</div>";
 			}
 			$layout->Tab("Sites", $cnt, "sm_sitetab");
 		}

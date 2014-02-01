@@ -14,9 +14,7 @@
 	), "tactical_overview");
 */
 $instance_id_fix="";
-if($_GET[instance_id]) {
-	$instance_id_fix="&instance_id=" . $_GET[instance_id];
-}
+
 ?>
 
 <table class='nopad' width='100%'>

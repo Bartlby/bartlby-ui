@@ -219,7 +219,9 @@ $layout->Table("100%");
 	
 
 		$info_box_title="Options:";  
-	$core_content = "<table  width='100%'>
+	$core_content = "
+
+	<table  width='100%'>
 	
 		<tr>
 			<td width=150 valign=top class='font2'>Max Num:</td>

@@ -151,10 +151,12 @@ $Author: hjanuschka $
 					$services_downtime++;
 				break;
 				default:
-					$services_unkown++;
+					
 					if($v[is_downtime] == 1) {
 						$services_ok--;
 						$services_downtime++;	
+					} else {
+						$services_unkown++;
 					}
 				
 				
@@ -174,35 +176,25 @@ $Author: hjanuschka $
 	
 	
 
-	if($service_sum == 0) {
-		$criticals=100;
-	} else {
-		$criticals=(($service_sum-$services_ok) * 100 / $service_sum);
-	}
+	$oks=($services_ok * 100 / $service_sum);
+	$downtimes_infos=(($services_downtime+$services_info+$services_unkown) * 100 / $service_sum);
+	$warnings=($services_warning * 100 / $service_sum);
+	$criticals=($services_critical * 100 / $service_sum);
 
 	$proz=100-$criticals;
 	
-	
-	
-	
-	$prozent_zahl = floor($proz);
-	$prozent_float = number_format($proz, 1); 
-	$prozent_crit_zahl = floor($criticals);
-	$prozent_crit_float = number_format($criticals, 1); 
-	
-	$color="green";
-	
-	if($prozent_float <= 60) {
-		$color="red";	
-	} else if($prozent_float <= 90) {
-		$color="yellow";	
-	} else if($prozent_float <= 80) {
-		$color="red";	
-	} else {
-		$color="green";
-	}
 
-	$bar=$prozent_float . "% Ok - $prozent_crit_float % Critical";
+	
+	
+	
+	$prozent_float[ok] = number_format($oks, 1); 
+	$prozent_float[warning] = number_format($warnings, 1); 
+	$prozent_float[downtimes_infos] = number_format($downtimes_infos, 1); 
+	$prozent_float[criticals] = number_format($criticals, 1); 
+
+	
+	
+	
 		
 	if($gdelay_count>0 && $gdelay_sum > 0) {
 		
@@ -215,7 +207,7 @@ $Author: hjanuschka $
 	$layout->create_box($health_title, $health_content,"system_health", array(
 			'prozent_float' => $prozent_float,
 			'color' => $color
-		), "system_health", false, false);
+		), "system_health", false, true);
 	
 	
 	$max_running = bartlby_config($btl->CFG, "max_concurent_checks");
@@ -320,6 +312,9 @@ $Author: hjanuschka $
 			$all[0]=0;
 			$all[1]=0;
 			$all[2]=0;
+			$all[4]=0;
+			$all[8]=0;
+
 			$zero_members=0;
 			for($x=0; $x<count($members); $x++) {
 					if(strlen($members[$x]) <= 0) {  continue; }
@@ -327,6 +322,8 @@ $Author: hjanuschka $
 					$all[0] += $server_state_a[$members[$x]][0];
 					$all[1] += $server_state_a[$members[$x]][1];
 					$all[2] += $server_state_a[$members[$x]][2];
+					$all[4] += $server_state_a[$members[$x]][4];
+					$all[8] += $server_state_a[$members[$x]][8];
 
 					
 					
@@ -334,36 +331,23 @@ $Author: hjanuschka $
 			}
 			
 			
-			$service_sum=($all[0]+$all[1]+$all[2]);
+			$service_sum=($all[0]+$all[1]+$all[2]+$all[4]+$all[8]);
 
-			if($service_sum == 0) {
-				$criticals=100;
-			} else {
-				$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
-			}
-     	
+			
+		
+			$oks=($all[0] * 100 / $service_sum);
+			$downtimes_infos=(($all[8]+$all[4]) * 100 / $service_sum);
+			$warnings=($all[1] * 100 / $service_sum);
+			$criticals=($all[2] * 100 / $service_sum);
+
 			$proz=100-$criticals;
-			
-			
-			
-			
-			$prozent_zahl = floor($proz);
-			$prozent_float = number_format($proz, 1); 
-			$prozent_crit_zahl = floor($criticals);
-			$prozent_crit_float = number_format($criticals, 1); 
-			
-			$color="green";
 	
-			if($prozent_float <= 60) {
-				$color="red";	
-				$lbl = "progress-danger";
-			} else if($prozent_float <= 90) {
-				$lbl = "progress-warning";
-			} else if($prozent_float <= 80) {
-				$lbl = "progress-danger";
-			} else {
-				$lbl = "progress-success";
-			}
+
+			$prozent_float[ok] = number_format($oks, 1); 
+			$prozent_float[warning] = number_format($warnings, 1); 
+			$prozent_float[downtimes_and_infos] = number_format($downtimes_infos, 1); 
+			$prozent_float[criticals] = number_format($criticals, 1); 	
+     	
 			
 			$tt[prozent_float]=$prozent_float;
 			$tt[prozent_zahl]=$prozent_zahl;
@@ -410,6 +394,8 @@ $Author: hjanuschka $
 			$all[0]=0;
 			$all[1]=0;
 			$all[2]=0;
+			$all[4]=0;
+			$all[8]=0;
 			$zero_members=0;
 			for($x=0; $x<count($members); $x++) {
 					if(strlen($members[$x]) <= 0) {  continue; }
@@ -418,40 +404,31 @@ $Author: hjanuschka $
 					$all[0] += $service_state_a[$members[$x]][0];
                     $all[1] += $service_state_a[$members[$x]][1];
 					$all[2] += $service_state_a[$members[$x]][2];
+					$all[4] += $service_state_a[$members[$x]][4];
+					$all[8] += $service_state_a[$members[$x]][8];
 					
 					
 					
 			}
 			$service_sum=($all[0]+$all[1]+$all[2]);
-			if($service_sum == 0) {
-				$criticals=100;
-			} else {
-				$criticals=(($service_sum-$all[0]) * 100 / $service_sum);
-			}
-     	
+
+			
+		
+			$oks=($all[0] * 100 / $service_sum);
+			$downtimes_infos=(($all[8]+$all[4]) * 100 / $service_sum);
+			$warnings=($all[1] * 100 / $service_sum);
+			$criticals=($all[2] * 100 / $service_sum);
 			$proz=100-$criticals;
-			
-			
-			
-			
-			$prozent_zahl = floor($proz);
-			$prozent_float = number_format($proz, 1); 
-			$prozent_crit_zahl = floor($criticals);
-			$prozent_crit_float = number_format($criticals, 1); 
-			
-			$color="green";
 	
-			if($prozent_float <= 60) {
-				$color="red";	
-				$lbl = "progress-danger";
-			} else if($prozent_float <= 90) {
-				$lbl = "progress-warning";
-			} else if($prozent_float <= 80) {
-				$lbl = "progress-danger";
-			} else {
-				$lbl = "progress-success";
+			if($grp[servicegroup_name] == "hexbased daemons") {
+				
 			}
-			
+			$prozent_float[ok] = number_format($oks, 1); 
+			$prozent_float[warning] = number_format($warnings, 1); 
+			$prozent_float[downtimes_and_infos] = number_format($downtimes_infos, 1); 
+			$prozent_float[criticals] = number_format($criticals, 1); 	
+     	
+
 			$tt[prozent_float]=$prozent_float;
 			$tt[prozent_zahl]=$prozent_zahl;
 			$tt[prozent_crit_zahl]=$prozent_crit_zahl;

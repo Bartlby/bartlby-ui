@@ -24,6 +24,9 @@ function sm_copy_node(id) {
 	sm_lock_form();
 	xajax_ExtensionAjax("SiteManager", "sm_load_form", id);
 }
+function sm_toggle_sync_active(id) {
+	xajax_ExtensionAjax("SiteManager", "sm_toggle_sync_active", id);
+}
 function sm_edit_node(id) {
 	$("#sm_edit_mode").html("EDIT Node Mode");
 	$("#sm_edit_node_id").val(id);
@@ -75,6 +78,12 @@ $(document).ready(function() {
 		id=$(this).data("node-id");
 		
 		sm_edit_node(id);
+
+	});
+	$(document.body).on('click','.sm_toggle_sync_btn', function() {
+		id=$(this).data("node-id");
+		
+		sm_toggle_sync_active(id);
 
 	});
 	$(document.body).on('click','.sm_copy_btn', function() {

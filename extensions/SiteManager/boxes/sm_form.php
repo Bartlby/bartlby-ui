@@ -83,8 +83,8 @@
 				<select name=mode id=mode>
 					<option value='pull'>(read only) - PULL</option>
 					<option value='push'>(read write) - PUSH</option>
-					<option value='receiv-pull'>(read only) - RECEIVE-PULL (remote pushed)</option>
-					<option value='receiv-push'>(read write) - RECEIVE-PUSH (remote pushed)</option>
+					<option value='arch-ind-pull'>(read only) - ARCH indend (EXPERIMENTIAL)</option>
+					
 				</select>
 			</td>
 	</tr>

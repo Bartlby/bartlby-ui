@@ -243,7 +243,11 @@ $Author: hjanuschka $
 	$last_sync = @filemtime("nodes/" . $Bartlby_CONF_IDX . "/last_sync_shm");
 	$last_db = @filemtime("nodes/" . $Bartlby_CONF_IDX . "/last_sync_db");
 	if($last_sync != "") {
-		$fin_last_sync = "SHM: " . $btl->intervall(time()-$last_sync) ;
+		$cl = "green";
+		if(time()-$last_sync>10*60) {
+			$cl="red";
+		}
+		$fin_last_sync = "<font color=$cl>" . $btl->intervall(time()-$last_sync) . "</font>";
 	}
 	
 	$rel_name = $btl->getRelease();

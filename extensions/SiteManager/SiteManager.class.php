@@ -25,6 +25,32 @@ ini_set('display_errors', 1);
 class SiteManager {
 
 	/*XAJAX functions */
+	function sm_toggle_sync_active() {
+		$re = new XajaxResponse();
+		$id = $_GET[xajaxargs][2];
+		$sql = "select id, sync_active from sm_remotes where id=" . (int)$id;
+		$r = $this->db->query($sql);
+		foreach($r as $row) {
+	
+			if((int)$row[sync_active] == 0) {
+
+				$sql = "update sm_remotes set sync_active=1 where id=" . (int) $row[id];
+				
+			} else {
+				$sql = "update sm_remotes set sync_active=0 where id=" . (int) $row[id];
+			}			 
+			$this->db->exec($sql);
+
+		}
+		$re->AddScript('noty({"text":"[SITEMANAGER] Node toggled!  to ' . $row[sync_active] . ' (' . $values[ssh_key] . ')","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})'); //Notify User
+		$re->AddScript('btl_force_reload_ui();'); // Force Reload
+		$re->AddScript('sm_show_tab("sm_manage");'); // Change to Manage Tab
+
+		return $re;
+
+
+
+	}
 	function sm_delete_node() {
 		global $_GET;
 		$re = new XajaxResponse();
@@ -182,7 +208,8 @@ class SiteManager {
 				additional_folders_push TEXT,
 				mode TEXT,
 				remote_alias TEXT,
-				last_output TEXT
+				last_output TEXT,
+				sync_active INTEGER
 				);";
 		$this->db = $this->storage->SQLDB($this->DBSTR, "sm_remote_v1.db");
 

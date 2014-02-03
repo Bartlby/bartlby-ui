@@ -133,7 +133,7 @@ class Basket {
        
        function _overview() {
        	global $layout;
-       	$layout->OUT .= "<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>";
+       	$layout->addScript("<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>");
        }
        
 }

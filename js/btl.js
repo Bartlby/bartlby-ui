@@ -79,7 +79,15 @@ function btl_force_reload_ui() {
 		
 			$.getJSON(u, function(data) {
 				btl_call_refreshable_objects(data);
+
+
+
 			});
+		
+			
+
+
+
 }
 function btl_start_auto_reload() {
 		
@@ -105,6 +113,22 @@ function btl_add_refreshable_object(fcn_callback) {
 		window.refreshable_objects.push(o);
 		
 }
+function toFixed(num, fixed) {
+    fixed = fixed || 0;
+    fixed = Math.pow(10, fixed);
+    return Math.ceil(num * fixed) / fixed;
+}
+function btl_set_bars() {
+	$(".bar").each(function() {
+				px=$(this).css("width").replace(/px/, "");
+				if(px > 25) {
+					$(this).html($(this).data("perc") + '%');
+				} else {
+					$(this).html("");
+				}
+			});
+		
+}
 function btl_call_refreshable_objects(data) {
 	if(typeof(window.refreshable_objects.length) == "undefined") {
 		return;
@@ -113,6 +137,10 @@ function btl_call_refreshable_objects(data) {
 		tw = 	window.refreshable_objects[x];
 		tw.callback(data);
 	}
+
+
+	btl_set_bars();
+
 }
 	
 
@@ -120,7 +148,7 @@ function btl_change(t) {
 		document.location.href='bartlby_action.php?set_instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }
 $(document).ready(function() {
-		
+		btl_set_bars();
 		$("#services_bulk_force").click(function() {
 		var force_services = new Array();
 			$('.service_checkbox').each(function() {

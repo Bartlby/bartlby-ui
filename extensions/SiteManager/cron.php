@@ -144,6 +144,11 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 							echo $c("create database " . $row[local_db_name] . PHP_EOL)->green;
 
 						}
+						//RELOAD
+						if($row[reload_before_db_sync] == 1) {
+							runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt " . $row[remote_core_path] . "/etc/bartlby.cfg " . " lock_for_db");
+							runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/bin/bartlby_shmt " . $row[remote_core_path] . "/etc/bartlby.cfg " . " unlock_for_db");
+						}
 						//DUMP remote SITE
 						runSSHCMD($ssh_cmd_str, "mkdir " . $tmp_dir);
 						$d = runSSHCMD($ssh_cmd_str, "mysqldump -u " . $row[remote_db_user] . " --password='" . $row[remote_db_pass] . "' " . $row[remote_db_name] . " > " . $tmp_dir . "/mysql.dump; gzip " . $tmp_dir . "/mysql.dump");

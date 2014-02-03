@@ -88,4 +88,13 @@
 				</select>
 			</td>
 	</tr>
+	<tr>
+		<td>Reload Before DB Transfer</td>
+		<td>
+			<select name=reload_before_db_sync id=reload_before_db_sync>
+				<option value="0">Off</option>
+				<option value="1">On</option>
+			</select>
+		</td>
+	</tr>
 </table>

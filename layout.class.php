@@ -127,6 +127,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		
 	}
+	function addScript($sc) {
+		$this->BTUI_SCRIPTS .= $sc;
+	}
 	function Tab($name, $cnt, $tab_name="") {
 		$this->tab_count++;
 		

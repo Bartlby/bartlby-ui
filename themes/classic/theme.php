@@ -172,13 +172,16 @@ global $Bartlby_CONF_IDX;
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="themes/classic/img/favicon.ico">
 		
+	<?
+		echo $this->BTUI_SCRIPTS;
+	?>
 </head>
 
 <body>
 	<?
 		if($Bartlby_CONF_IDX > 0) {
 	?>
-	<div class="alert alert-warning">
+	<div class="alert alert-warning" style='margin-bottom: 0px;'>
 							<button type="button" class="close" data-dismiss="alert">×</button>
 							You are on a remote Node (<?=$Bartlby_CONF_DisplayName?>)!!
 						</div>
@@ -227,6 +230,7 @@ global $Bartlby_CONF_IDX;
 	</div>
 	<!-- topbar ends -->
 		<div class="container-fluid">
+
 		<div class="row-fluid">
 				
 			<!-- left menu starts -->
@@ -253,7 +257,7 @@ global $Bartlby_CONF_IDX;
 			
 			
 			
-			<div class="ui_performance" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp; Memory Used: <?=$this->BTMEMUSAGE?>MB &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp; &nbsp;&nbsp;&nbsp;</div>
+			
 			<?=$this->BTTABBAR?>
 			<?=$this->BTUIOUTSIDE?>
 			    
@@ -287,6 +291,7 @@ global $Bartlby_CONF_IDX;
 												</td>
 											</tr>
 										</table>
+										<div class="ui_performance1" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp; Memory Used: <?=$this->BTMEMUSAGE?>MB &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp; &nbsp;&nbsp;&nbsp;</div>
 										</center>		
 		</footer>
 		

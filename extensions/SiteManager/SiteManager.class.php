@@ -84,6 +84,7 @@ class SiteManager {
 		$re->AddScript('$("#additional_folders_pull").val("' . str_replace("\n", "\\n", $row[additional_folders_pull]) . '")');
 		$re->AddScript('$("#additional_folders_push").val("' . str_replace("\n", "\\n", $row[additional_folders_push]) . '")');
 		$re->AddScript('$("#mode").val("' . $row[mode] . '")');
+		$re->AddScript('$("#reload_before_db_sync").val("' . $row[reload_before_db_sync] . '")');
 		return $re;
 	}
 	function sm_load_form() {
@@ -121,7 +122,7 @@ class SiteManager {
 		$e=0;
 
 		if($values[sm_edit_node_id] == "") {
-			$sql = "INSERT INTO sm_remotes (remote_core_path, ssh_key, ssh_ip, ssh_username, remote_ui_path, remote_db_name, remote_db_pass, remote_db_host, local_db_name, local_db_user, local_db_pass, local_db_host, additional_folders_pull, additional_folders_push, remote_db_user, mode, remote_alias) VALUES(";
+			$sql = "INSERT INTO sm_remotes (remote_core_path, ssh_key, ssh_ip, ssh_username, remote_ui_path, remote_db_name, remote_db_pass, remote_db_host, local_db_name, local_db_user, local_db_pass, local_db_host, additional_folders_pull, additional_folders_push, remote_db_user, mode, remote_alias, reload_before_db_sync) VALUES(";
 			$sql .= "'" .  SQLite3::escapeString($values[remote_core_path]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[ssh_key]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[ssh_ip]) . "',";
@@ -138,7 +139,8 @@ class SiteManager {
 			$sql .= "'" .  SQLite3::escapeString($values[additional_folders_push]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[remote_db_user]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[mode]) . "',";
-			$sql .= "'" .  SQLite3::escapeString($values[remote_alias]) . "')";
+			$sql .= "'" .  SQLite3::escapeString($values[remote_alias]) . ",";
+			$sql .= "'" .  SQLite3::escapeString($values[reload_before_db_sync]) . "')";
 		} else {
 			$sql = "UPDATE sm_remotes set ";
 			$sql .= "remote_core_path='" . SQLite3::escapeString($values[remote_core_path]) . "',";
@@ -157,7 +159,8 @@ class SiteManager {
 			$sql .= "additional_folders_pull='" . SQLite3::escapeString($values[additional_folders_pull]) . "',";
 			$sql .= "additional_folders_push='" . SQLite3::escapeString($values[additional_folders_push]) . "',";
 			$sql .= "mode='" . SQLite3::escapeString($values[mode]) . "',";
-			$sql .= "remote_alias='" . SQLite3::escapeString($values[remote_alias]) . "'";
+			$sql .= "mode='" . SQLite3::escapeString($values[mode]) . "',";
+			$sql .= "reload_before_db_sync='" . SQLite3::escapeString($values[reload_before_db_sync]) . "'";
 			$sql .= " where id=" . (int)$values[sm_edit_node_id];
 				
 		}
@@ -185,6 +188,13 @@ class SiteManager {
 			$re->AddScript('noty({"text":"[SITEMANAGER] Settings saved - ' . $_GET[xajaxargs][4] . '","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 			return $re;
+	}
+	function db_has_field($f, $create) {
+		if(!$this->db) return;
+		$r=$this->db->exec("select " . $f  . " from sm_remotes");
+		if($r == false) {
+			$this->db->exec($create);
+		}
 	}
 	function SiteManager() {
 		$this->layout = new Layout();
@@ -220,13 +230,17 @@ class SiteManager {
 		$this->local_ui_path=$this->storage->load_key("local_ui_path");
 		$this->local_ui_replication_path=$this->storage->load_key("local_ui_replication_path");
 		$this->local_core_replication_path=$this->storage->load_key("local_core_replication_path");
+
+
+		//ADD Addditional fields
+		$this->db_has_field("reload_before_db_sync", "alter table sm_remotes add reload_before_db_sync integer default 0");
 	}
 	function _overview() {
 		global $layout, $Bartlby_CONF_isMaster;
 		global $confs;
 		if($Bartlby_CONF_isMaster) {
-			$cnt .= "<script>sm_conf_counter=" . count($confs) . ";</script>";
-			$cnt .= '<script src="extensions/SiteManager/sm_overview.js" type="text/javascript"></script>';
+			$layout->AddScript("<script>sm_conf_counter=" . count($confs) . ";</script>");
+			$layout->addScript('<script src="extensions/SiteManager/sm_overview.js" type="text/javascript"></script>');
 			for($x=1; $x<count($confs); $x++) {
 				$cnt .= $confs[$x][display_name] . "<br>";
 				$cnt .= "<div id=sm_core_info_" . $x . " style='clear:both;'></div>";

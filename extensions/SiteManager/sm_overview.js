@@ -11,15 +11,20 @@ function sm_overview_load() {
 				$("#sm_tacbox_" + json.instance_id).html(json.boxes.tactical_overview.replace(SCRIPT_REGEX, ""));
 				$("#sm_system_health_" + json.instance_id).html(json.boxes.system_health.replace(SCRIPT_REGEX, ""));
 				$("#sm_core_info_" + json.instance_id).html(json.boxes.core_info.replace(SCRIPT_REGEX, ""));
-				
+				window.setTimeout(function() { btl_set_bars(); }, 300);
 			});			
 		}
+		
 
 
 }
 $(document).ready(function() {
 		sm_overview_load();
+
 		window.setInterval(function () {
 			sm_overview_load();
+			
+		
 		}, 5000);
+
 });

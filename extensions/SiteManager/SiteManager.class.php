@@ -248,7 +248,9 @@ class SiteManager {
 				$cnt .= "<div id=sm_system_health_" . $x . " style='width: 100%;  '></div>";
 				$cnt .= "</div>";
 			}
-			$layout->Tab("Sites", $cnt, "sm_sitetab");
+			if($cnt != "") {
+				$layout->Tab("Sites", $cnt, "sm_sitetab");
+			}
 		}
 		return "";
 	}

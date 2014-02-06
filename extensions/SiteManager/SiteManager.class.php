@@ -139,7 +139,7 @@ class SiteManager {
 			$sql .= "'" .  SQLite3::escapeString($values[additional_folders_push]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[remote_db_user]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[mode]) . "',";
-			$sql .= "'" .  SQLite3::escapeString($values[remote_alias]) . ",";
+			$sql .= "'" .  SQLite3::escapeString($values[remote_alias]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[reload_before_db_sync]) . "')";
 		} else {
 			$sql = "UPDATE sm_remotes set ";
@@ -158,12 +158,13 @@ class SiteManager {
 			$sql .= "remote_db_user='" . SQLite3::escapeString($values[remote_db_user]) . "',";
 			$sql .= "additional_folders_pull='" . SQLite3::escapeString($values[additional_folders_pull]) . "',";
 			$sql .= "additional_folders_push='" . SQLite3::escapeString($values[additional_folders_push]) . "',";
-			$sql .= "mode='" . SQLite3::escapeString($values[mode]) . "',";
+			$sql .= "remote_alias='" . SQLite3::escapeString($values[remote_alias]) . "',";
 			$sql .= "mode='" . SQLite3::escapeString($values[mode]) . "',";
 			$sql .= "reload_before_db_sync='" . SQLite3::escapeString($values[reload_before_db_sync]) . "'";
 			$sql .= " where id=" . (int)$values[sm_edit_node_id];
 				
 		}
+		
 		$this->db->exec($sql);
 		$res->AddScript('noty({"text":"[SITEMANAGER] Node saved! (' . $values[ssh_key] . ')","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})'); //Notify User
 		$res->AddScript('btl_force_reload_ui();'); // Force Reload

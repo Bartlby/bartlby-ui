@@ -104,7 +104,7 @@ class BartlbyUi {
 		include_once "Mail.php";
 		include_once "Mail/mime.php";
 		
-		$storage = new BartlbyStorage("ArS");
+		$storage = new BartlbyStorage("AutoReports");
 		$defaults=bartlby_get_service_by_id($this->RES, $service_id);
 		$rap = "Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
 		$btl_subj = "Bartlby Custom report";
@@ -120,7 +120,7 @@ class BartlbyUi {
 		
 		
 		
-		$tmpfname = tempnam ("/tmp", "ArS");
+		$tmpfname = tempnam ("/tmp", "AutoReports");
 		
 		$fp = fopen($tmpfname, "w");
 		fwrite($fp, $file);
@@ -154,11 +154,11 @@ class BartlbyUi {
 		$dd = explode(";", $emails);
 		for($x=0; $x<count($dd); $x++) {
 	
-			$headers = array('From' =>  $storage->load_key("ars_smtp_from") , 'To' => $dd[$x],
+			$headers = array('From' =>  $storage->load_key("local_mail_from") , 'To' => $dd[$x],
 				   'Subject' => $btl_subj);
 		
 			$smtp = Mail::factory('smtp',
-				array ('host' =>  $storage->load_key("ars_smtp_host"),
+				array ('host' =>  $storage->load_key("local_smtp_host"),
 		  			'auth' => false,
 			   		'timeout' => 10,
 					'debug' => false

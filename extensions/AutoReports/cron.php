@@ -31,18 +31,53 @@ $_GLO[debug_commands]=true;
 	$local_smtp_host=$ar->storage->load_key("local_smtp_host");
 	$local_mail_from=$ar->storage->load_key("local_mail_from");
 	
+
 	switch($_GET[wich]) {
+        case 'convert-ars':
+            $old_storage = new BartlbyStorage("ArS");
+            $da = $old_storage->load_key("reports");
+            $reports=unserialize($da);
+            for($x=0; $x<count($reports); $x++) {
+                $sql = "insert into autoreports (receipient, service_var, daily, weekly, monthly) values(";
+                $sql .= "'" . $reports[$x][ars_to] . "',";
+                $sql .= "'|" . $reports[$x][ars_service_id] . "=0|',";
+
+                $d=0;
+                $w=0;
+                $m=0;
+
+                if($reports[$x][ars_daily] == "checked") $d=1;
+                if($reports[$x][ars_weekly] == "checked") $w=1;
+                if($reports[$x][ars_monthly] == "checked") $m=1;
+
+                $sql .= "'" . $d . "',";
+                $sql .= "'" . $w . "',";
+                $sql .= "'" . $m . "'";
+                $sql .= ");";
+                $ar->db->exec($sql);
+            }
+
+        break;
 		case 'daily':
 			$r = $ar->db->query("select * from autoreports where daily=1");	
-			$d_from=date("d.m.Y", time()-86400);
-			$d_to=date("d.m.Y", time()-86400);
+			$d_from=date("d.m.Y H:i", time()-86400);
+			$d_to=date("d.m.Y H:i", time());
+            $btl_subj="Daily Report";
 		break;
 		case 'weekly':
 			$r = $ar->db->query("select * from autoreports where weekly=1");
+            $d_from=date("d.m.Y H:i", time()-(86400*7));
+            $d_to=date("d.m.Y H:i", time());
+            $btl_subj="Weekly Report";
 		break;
 		case 'monthly':
 			$r = $ar->db->query("select * from autoreports where monthly=1");
+            $d_from=date("d.m.Y H:i", time()-(86400*31));
+            $d_to=date("d.m.Y H:i", time());
+            $btl_subj="Monthly Report";
 		break;
+
+
 
 	}
 
@@ -52,190 +87,21 @@ $_GLO[debug_commands]=true;
 			echo "sending report to:" . $row[receipient] . " \n";
 
 			$svcel = explode("|", $row[service_var]);
-			$rap = "";
-			$rap .="<html><head><style>td{font-size:12px; font-family:tahoma}</style></head><body>";
+			unset($svc_ids);
 			for($x=0; $x<count($svcel); $x++) {
 				if($svcel[$x] == "") continue;
 				$svcid_a=explode("=", $svcel[$x]);
 				$svc_id=$svcid_a[0];
-
-				
-				$defaults=bartlby_get_service_by_id($btl->RES, $svc_id);
-				$rap .= "<h1>Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "</h1>\n";
-				$rep = $btl->do_report($d_from, $d_to, $lstate, $svc_id);		
-				$rap .= format_report($rep, "html");
-				
-				$btl->updatePerfHandler($defaults[server_id], $svc_id);
-				$path=bartlby_config($btl->CFG, "performance_rrd_htdocs");
-				$rap .= "<h2>Graphs for " . $defaults[server_name] . "/" . $defaults[service_name] . "<h2>";
-	            foreach(glob($path . "/" . $svc_id . "_*.png") as $fn) {
-	            	
-	            	$b64=base64_encode(file_get_contents($fn));
-                	$rap .= '<img src="data:image/gif;base64,' . $b64 . '">';
-		        }
-
-
-
+				$svc_ids[]=$svc_id;
 			}
-			$rap .= "</body></html>";
-			
-			$tmpfname = tempnam ("/tmp", "AutoReports");
 
-			$fp = fopen($tmpfname, "w");
-			fwrite($fp, $rap);
-			fclose($fp);
-
-			copy($tmpfname, $tmpfname . ".html");
-			unlink($tmpfname);
-
-			$btl_sub="Bartlby Report for: ";
-			$headers = array('From' =>  $ar->storage->load_key("local_mail_from") , 'To' => $row[receipient],
-						   'Subject' => $btl_subj);
-
-
-			$smtp = Mail::factory('smtp',
-		                	array ('host' =>  $ar->storage->load_key("local_smtp_host"),
-              		          		'auth' => false,
-                        		   	'timeout' => 10,
-                        			'debug' => false
-                			));
-
-
-			$mime = new Mail_Mime();
-			$mime->setTxtBody("see the attachment for details");
-			$mime->addAttachment($tmpfname . ".html", "text/html", "report.html");
-			$mime->setHTMLBody($file);
-	        $body=$mime->get();
-			$hdrs=$mime->headers($headers);
-			$mail = $smtp->send($row[receipient], $hdrs, $body);
+            $btl->send_custom_report($row[receipient], $svc_ids, $d_from, $d_to, $btl_subj);
 			$c("Sent Report to " . $row[receipient] . " with " . $x . " Services" . PHP_EOL)->green->bold;
 
 	}
 
 
-function format_report($rep, $type='html', $hdr) {
-		global $btl;
 
-
-
-		$svc=$rep[svc];
-		$state_array=$rep[state_array];
-		$notify=$rep[notify];
-		$files_scanned=$rep[files_scanned];
-
-		$hun=$svc[0]+$svc[1]+$svc[2];
-
-
-
-
-		switch($type) {
-			case 'html':
-				
-				$rap .= "<table width=100% border=3>";
-			break;	
-		}
-		switch($type) {
-			case 'html':
-				$rap .= "<tr><td colspan=3>" . $hdr . "</td></tr>";
-			break;	
-		}
-
-		switch($type) {
-			case 'html':
-				$rap .= "<tr><td colspan=3><b>Service Availability</b></td></tr>";
-			break;	
-		}
-
-		while(list($state, $time) = @each($svc)) {
-
-
-			$perc =   (($hun-$time) * 100 / $hun);
-			$perc =100-$perc;
-
-
-			switch($type) {
-				case 'html':
-					$rap .= "<tr>";
-					$rap .= "<td>";
-					$rap .= "<font color=" . $btl->getColor($state) . ">" . $btl->getState($state) . "</font>";
-					$rap .= "</td>";
-					$rap .= "<td>";
-					$rap .= $btl->intervall($time);
-					$rap .= "</td>";
-					$rap .= "<td>";
-					$rap .= round($perc,2);
-					$rap .= "%</td>";
-					$rap .= "</tr>";
-				break;	
-			}
-
-
-
-
-		}
-
-		switch($type) {
-			case 'html':
-				$rap .= "<tr><td colspan=3><b>Notifications</b></td></tr>";
-			break;	
-		}
-		while(list($worker, $dd) = @each($notify)) {
-
-			switch($type) {
-				case 'html':
-					$rap .= "<tr><td colspan=2>" . $worker . "</td><td>";
-				break;	
-			}
-
-
-			while(list($trigger, $dd1) = @each($dd)) {
-				$rap .= "\t" . $trigger . "<br>";
-				while(list($k, $ts) = @each($dd1)) {
-
-					switch($type) {
-						case 'html':
-							$rap .= "<li>" . date("d.m.Y H:i:s", $ts[0]) . " (" . $btl->getState($ts[1]) . ")<br>";
-						break;	
-					}
-				}
-			}
-			switch($type) {
-				case 'html':
-					$rap .= "</td></tr>";
-				break;	
-			}
-
-		}
-		switch($type) {
-			case 'html':
-				$rap .= "<tr><td colspan=3><b>Output</b></td></tr>";
-			break;	
-		}
-		for($xy=0; $xy<count($state_array);$xy++) {
-				switch($type) {
-					case 'html':
-						$o1 .= "<tr>";
-						$o1 .= "<td>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
-						$o1 .= "<td>" .  $btl->getState($state_array[$xy][lstate]) . " </td>";
-						$o1 .= "<td>" . $state_array[$xy][msg] . " </td>";
-						$o1 .= "</tr>";
-
-					break;	
-				}
-
-		}
-
-		$rap .= $o1;
-
-		switch($type) {
-			case 'html':
-				$rap .= "</table></body></html>";
-			break;	
-		}
-
-		return $rap;
-
-}
 
 
 //https://github.com/kevinlebrun/colors.php/blob/master/src/Colors/Color.php

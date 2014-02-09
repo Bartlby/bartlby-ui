@@ -2,10 +2,45 @@
 include "config.php";
 
 class OcL {
+	function ocl_get_worker_list() {
+		global $btl;
+		$search = $_GET[xajaxargs][2];
+		$re = new XajaxResponse();
+		$re->AddScript('$("#ocl_external-events").html("");');
+		$btl->worker_list_loop(function($wrk, $shm) use(&$re, &$search) {
+
+			if($search != "" && !preg_match("/" . $search . "/i", $wrk[name])) return LOOP_CONTINUE;
+			$re->AddScript('$("#ocl_external-events").append("<div class=\'external-event\' data-worker_id=' . $wrk[worker_id] . ' data-activity_level=1>' . $wrk[name] . ' (ACTIVE)</div>");');
+			$re->AddScript('$("#ocl_external-events").append("<div class=\'external-event1\' data-worker_id=' . $wrk[worker_id] . ' data-activity_level=2>' . $wrk[name] . ' (STANDBY)</div>");');
+		});
+		$re->AddScript("ocl_make_draggable();");
+		return $re;
+	}
 	function OcL() {
 		$this->layout = new Layout();
 		$this->storage = new BartlbyStorage("OcL");
+		$this->DBSTR = "CREATE TABLE logbook (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
+				ocl_date DATETIME,
+				ocl_subject TEXT,
+				ocl_duration TEXT, 
+				ocl_caller TEXT,
+				ocl_error_long TEXT,
+				ocl_type TEXT,
+				ocl_service_var TEXT,
+				ocl_poster TEXT				
+				);";
+		$this->db_logbook = $this->storage->SQLDB($this->DBSTR, "ocl_logbook.db");
 		
+		$this->DBSTR = "CREATE TABLE schedule (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
+				date_from DATETIME,
+				date_to DATETIME,
+				worker_id INTEGER, 
+				activity_level INTEGER,
+				all_day INTEGER DEFAULT 1,
+				color TEXT				
+				);";
+		$this->db_schedule = $this->storage->SQLDB($this->DBSTR, "ocl_schedule.db");
+
 	}
 	
 	function resolveGroupString($str) {
@@ -27,18 +62,19 @@ class OcL {
 		return $r;
 	}
 	function _About() {
-		$snotice="enables you to 'blog' about system events";
+		$snotice="Manage OnCall";
 		return $snotice;
 			
 	}
 	
 	function _Menu() {
 		$r =  $this->layout->beginMenu();
-		$r .= $this->layout->addRoot("OcL");
-		$r .= $this->layout->addSub("OcL", "Logs","extensions_wrap.php?script=OcL/index.php");
-		$r .= $this->layout->addSub("OcL", "Add","extensions_wrap.php?script=OcL/add.php");
-		
-		
+		$r .= $this->layout->addRoot("On-Call");
+		$r .= $this->layout->addSub("On-Call", "Logs","extensions_wrap.php?script=OcL/index.php");
+		$r .= $this->layout->addSub("On-Call", "Add","extensions_wrap.php?script=OcL/add.php");
+		$r .= $this->layout->addSub("On-Call", "Schedule","extensions_wrap.php?script=OcL/schedule.php");
+
+
 		$r .= $this->layout->endMenu();
 		return $r;
 	}
@@ -51,21 +87,10 @@ class OcL {
 		$identifier=$_GET[xajaxargs][2];
 		$ocl_id=$_GET[xajaxargs][3];
 		
-		$v=unserialize($this->storage->load_key($identifier));
-		
-		
-		$new_x=0;;
-		for($x=0; $x<count($v); $x++) {
-			if($v[$x][ocl_id] != $ocl_id) {
-				$n[$new_x]=$v[$x];
-				$new_x++;
-			}
-		}
-		
-		
-		$this->storage->save_key($identifier,serialize($n));
+		$sql = "delete from logbook where id=" . $ocl_id;
+		$this->db_logbook->exec($sql);
+
 		$res->AddScript("document.location.reload()");
-		
 		return $res;
 	}
 	function xajax_ocl_add_form() {
@@ -128,76 +153,70 @@ class OcL {
 	}
 	
 	
-	function bsp_me_is_in($map, $state) {
-		global $btl;
-		$last_swaped=0;
-		$gx=0;
-		while(list($k, $v) = @each($map)) {
-			
-			for($x=0; $x<count($v); $x++) {
-				
-				if($v[$x] == $btl->user_id) {
-					
-					$r .= sprintf("%02d:00", $k) . " ";	
-					
-				}
-				
-				
-				
-			}	
-			
-		}
-		return $r;
-	}
+	
 	
 	function _overview() {
 		global $btl;
 		global $layout;
-		$identifier = date("m.Y",time());
-		$v=unserialize($this->storage->load_key($identifier));
-		$v=@array_reverse($v);
 		
 		
-		$lm = "Latest 3 OcL entry's:";
+	$sql = "select * from logbook order by ocl_date desc limit 30";
+	$r = $this->db_logbook->query($sql);
+	$cur_box_content  = '<button onClick="document.location.href=\'extensions_wrap.php?script=OcL/add.php\'" class="sm_add_new_btn btn  btn-success">Add New Entry</button>';
+	$cur_box_content .= ' <ol class="discussion">';
+	$ocnt=0;
+foreach($r as $row) {
+
+
+		//images/diabled.gif
+		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
+		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
+		$grp_str=$this->resolveGroupString($row[ocl_service_var]);
+		$gv="";
+		$btl->worker_list_loop(function($wrk, $shm) use (&$gv, &$layout){
+				if($wrk[worker_name] == $row[ocl_poster]) {
+					$gv =  $layout->get_gravatar($wrk[mail]);
+				}
+		});
+
+		$cur_box_content .= '<li class="other">
+      <div class="avatar1">
+      	<div class=avatar style="width: 40px; height:40px;">
+        	<img src="' . $gv . '">
+    	</div>
+	' . $row[ocl_date] . '
+      </div>
+
+      <div class="messages">
+      <b><h2>' . $row[ocl_subject] . '</b></h2>
+      <span >' . $grp_str . '</span>
+      <hr noshade>
+       <p>
+       	' . nl2br($row[ocl_error_long]) . '
+       </p>
+       <hr noshade>
+       ' . $del_icon . '&nbsp;' .  $mod_icon . '
+        <span class="pull-right"><xsmall>Duration: '.  $row[ocl_duration] . ' Caller: ' . $row[ocl_caller] . ' Type: ' . $row[ocl_type] . '</sxmall></span>
+        
+      </div>
+    </li>	';		
 		
-		for($x=0; $x<3; $x++) {
-			if($v[$x][ocl_subject]) {
-				$lm .= "<li> <a href='extensions_wrap.php?script=OcL/index.php'>" . $v[$x][ocl_subject] . "</b></A> by <i>" . $v[$x][ocl_poster] . "</i> on " . $v[$x][ocl_date];	
-			}
-		}
-		$bsp_today="NO";
-		$bsp_tomorrow="NO";
-		
-		
-		
-		$layout->Tab("On-Call Duty", $lm);
-		
+
+    $ocnt++;
+	}
+	$cur_box_content .= "</ol>";
+	$layout->Tab("Recent On-Call Log <span class='notification blue' style='display:inline-block; font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif; position:relative;top: 0px;'>" . $ocnt . "</span>", $cur_box_content, "ocl_overview");
+
+	
+
+
+
 		
 		return "";
 		
 		
 	}
-	/*
-	function _services() {
-		return "_services";	
-	}
-	function _processInfo() {
-		return "_processInfo";	
-	}
-	*/
-	/*
-	function _serverDetail() {
-			
-	}
-	*/
-	/*
-	function _serviceDetail() {
-		global $defaults;
-		
-		
-		return "<a href='extensions_wrap.php?script=OcL/index.php&server_id=" . $defaults[server_id] . "'>Modify/View Inventory Details</A>";		
-	}
-	*/
+	
 	
 	
 	

@@ -14,7 +14,7 @@
 	
 	
 	$layout= new Layout();
-	$layout->setTitle("OcL: Add Entry");
+	$layout->setTitle("On-Call Log: Add Entry");
 
 	$layout->OUT .= "<script>function GrpChk() {
 			window.open('grpstr.php?str='+document.fm1.service_var.value, 'grp', 'width=600, height=600, scrollbars=yes');

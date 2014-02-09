@@ -53,67 +53,53 @@ array
 	
 	
 	//get all entrys via identifier
-	$identifier = date("m.Y",$edate);
-	$v=unserialize($ocl->storage->load_key($identifier));
-	$v=@array_reverse($v);
-	for($x=0; $x<count($v); $x++) {
-			
-		$cur_box_content = "<table class='service_table' cellpadding=2>";
-		$cur_box_content .=$layout->Tr(
-			$layout->Td(
-					Array(
-						0=>Array(
-							"width" => "900",
-							'colspan'=> 3,
-							"align"=>"left",
-							"show"=>  nl2br($v[$x][ocl_error_long])
-							)
-					)
-				)
-		
-		,true);
-		//images/diabled.gif
-		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $v[$x][ocl_id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
-		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&ocl_id=" . $v[$x][ocl_id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
-		$grp_str=$ocl->resolveGroupString($v[$x][ocl_service_var]);
-		
-		$cur_box_content .=$layout->Tr(
-			$layout->Td(
-					Array(
-						0=>Array(
-							
-							'colspan'=> 3,
-							"align"=>"left",
-							"show"=>  "<hr noshade>"
-							)
-					)
-				)
-		
-		,true);
-		
-		$cur_box_content .=$layout->Tr(
-			$layout->Td(
-					Array(
-						0=>Array(
-							'colspan'=> 1,
-							"align"=>"right",
-							"show"=>  "Type:" . $v[$x][ocl_type] . " Took: " . $v[$x][ocl_duration].  " mins. Activated by: <i>" . $v[$x][ocl_caller] . "</i>"
-							)
-						,	
-						1=> $grp_str,
-						2=> $del_icon . " " . $mod_icon
-						
-					)
-				)
-		
-		,true);
-		$cur_box_content .= "</table>";
-		
-		$layout->push_outside($layout->create_box($v[$x][ocl_subject] . " by <b>" . $v[$x][ocl_poster]  . "</b> posted on <i>" . $v[$x][ocl_date] . "</i>", $cur_box_content));
+	$identifier = date(".m.Y",$edate);
+	$sql = "select * from logbook where ocl_date like '%" . $identifier . " %' order by ocl_date desc";
+	$r = $ocl->db_logbook->query($sql);
+	$cur_box_content  = '<button onClick="document.location.href=\'extensions_wrap.php?script=OcL/add.php\'" class="sm_add_new_btn btn  btn-success">Add New Entry</button>';
+	$cur_box_content .= ' <ol class="discussion">';
+	foreach($r as $row) {
 
-			
-			
+
+		//images/diabled.gif
+		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
+		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
+		$grp_str=$ocl->resolveGroupString($row[ocl_service_var]);
+		$gv="";
+		$btl->worker_list_loop(function($wrk, $shm) use (&$gv, &$layout){
+				if($wrk[worker_name] == $row[ocl_poster]) {
+					$gv =  $layout->get_gravatar($wrk[mail]);
+				}
+		});
+
+		$cur_box_content .= '<li class="other">
+      <div class="avatar1">
+      	<div class=avatar style="width: 40px; height:40px;">
+        	<img src="' . $gv . '">
+    	</div>
+	' . $row[ocl_date] . '
+      </div>
+
+      <div class="messages">
+      <b><h2>' . $row[ocl_subject] . '</b></h2>
+      <span >' . $grp_str . '</span>
+      <hr noshade>
+       <p>
+       	' . nl2br($row[ocl_error_long]) . '
+       </p>
+       <hr noshade>
+       ' . $del_icon . '&nbsp;' .  $mod_icon . '
+        <span class="pull-right"><xsmall>Duration: '.  $row[ocl_duration] . ' Caller: ' . $row[ocl_caller] . ' Type: ' . $row[ocl_type] . '</sxmall></span>
+        
+      </div>
+    </li>	';		
+		
+
+
 	}
+	$cur_box_content .= "</ol>";
+	$layout->push_outside($layout->create_box("Entrys for " . $identifier, $cur_box_content));
+	
 	
 	$layout->TableEnd();
 	$layout->display();

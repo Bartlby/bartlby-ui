@@ -173,8 +173,8 @@ foreach($r as $row) {
 		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
 		$grp_str=$this->resolveGroupString($row[ocl_service_var]);
 		$gv="";
-		$btl->worker_list_loop(function($wrk, $shm) use (&$gv, &$layout){
-				if($wrk[worker_name] == $row[ocl_poster]) {
+		$btl->worker_list_loop(function($wrk, $shm) use (&$gv, &$layout, &$row){
+				if($wrk[name] == $row[ocl_poster]) {
 					$gv =  $layout->get_gravatar($wrk[mail]);
 				}
 		});

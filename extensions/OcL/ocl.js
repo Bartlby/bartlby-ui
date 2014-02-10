@@ -78,6 +78,13 @@ $(document).ready(function() {
 	/*
 
 	*/
+	$(".ocl_save_managed").click(function() {
+		xajax_ExtensionAjax("OcL", "ocl_save_managed", $("#worker_id").val());
+	});
+	$('[data-rel="ocl_chosen"]').chosen();
+	$('[data-rel="ocl_chosen"]').css("max-width", "300px");
+
+
 		$('#coreTabs a[href=#ocl_schedule_tab]').click(function() {
 			$("#ocl_calendar").fullCalendar('render');	
 			
@@ -101,7 +108,11 @@ $(document).ready(function() {
 			},
 			firstDay: 1,
 			editable: true,
-
+			axisFormat: 'HH:mm',
+timeFormat: {
+    agenda: 'H:mm{ - h:mm}'
+},
+ignoreTimezone: true,
 			defaultEventMinutes: 120,
 			droppable: true, // this allows things to be dropped onto the calendar !!!
 			eventResize:function( event, jsEvent, ui, view ) { 

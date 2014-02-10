@@ -3,18 +3,64 @@ include "config.php";
 
 class OcL {
 	function ocl_get_worker_list() {
-		global $btl;
+		global $btl, $xajax;
 		$search = $_GET[xajaxargs][2];
 		$re = new XajaxResponse();
 		$re->AddScript('$("#ocl_external-events").html("");');
-		$btl->worker_list_loop(function($wrk, $shm) use(&$re, &$search) {
-
+		$ocl=$this;
+		$btl->worker_list_loop(function($wrk, $shm) use(&$re, &$search, &$ocl) {
+			if(!in_array($wrk[worker_id], $ocl->managed_users)) return LOOP_CONTINUE;
 			if($search != "" && !preg_match("/" . $search . "/i", $wrk[name])) return LOOP_CONTINUE;
 			$re->AddScript('$("#ocl_external-events").append("<div class=\'external-event\' data-worker_id=' . $wrk[worker_id] . ' data-activity_level=1>' . $wrk[name] . ' (ACTIVE)</div>");');
 			$re->AddScript('$("#ocl_external-events").append("<div class=\'external-event1\' data-worker_id=' . $wrk[worker_id] . ' data-activity_level=2>' . $wrk[name] . ' (STANDBY)</div>");');
 		});
 		$re->AddScript("ocl_make_draggable();");
 		return $re;
+	}
+
+	function fire_trigger($wrk, $msg) {
+		global $btl;
+			$exi=-1;
+
+			$trigger_dir=bartlby_config($btl->CFG, "trigger_dir");
+			if(!$trigger_dir) {
+				$cmd_out="Trigger_dir not set";	
+			} else {
+				$base_dir=bartlby_config($btl->CFG, "basedir");
+				
+				$trs=explode("|", $wrk[enabled_triggers]);
+				
+				for($x=0; $x<count($trs); $x++) {
+					if($trs[$x] == "") {
+						continue;	
+					}	
+					if(!is_executable($trigger_dir . "/" . $trs[$x])) {
+						continue;
+					}
+
+					$estr="export BARTLBY_HOME=\"$base_dir\";" .  $trigger_dir . "/" . $trs[$x] . " \"" . $wrk[mail] . "\" \"" . $wrk[icq] . "\" \"" . $wrk[name] . "\" \"" . $msg . "\"";
+
+					$cmd_out .= "<hr><b>" . $trs[$x] . "</b><br>";
+					$p=popen($estr . "2>&1", "r");
+					while(!feof($p)) {
+						$cmd_out .= fgets($p, 1024);
+					}
+					$exi=(fclose($p)>>8)&0xFF;
+					
+					
+				}
+			}		
+	}
+	function ocl_save_managed() {
+		global $btl, $xajax;
+		$values = $xajax->_xmlToArray("xjxobj", $_GET[xajaxargs][2]);
+		
+		$re = new XajaxResponse();
+		$this->storage->save_key("managed_users", serialize($values));
+		$re->AddScript('noty({"text":"[OcL] Managed Users saved","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})'); //Notify User
+		return $re;
+
+
 	}
 	function OcL() {
 		$this->layout = new Layout();
@@ -40,6 +86,7 @@ class OcL {
 				color TEXT				
 				);";
 		$this->db_schedule = $this->storage->SQLDB($this->DBSTR, "ocl_schedule.db");
+		$this->managed_users=unserialize($this->storage->load_key("managed_users"));
 
 	}
 	

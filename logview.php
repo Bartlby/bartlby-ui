@@ -20,7 +20,7 @@
 							  </tr>
 						  </thead>   ';
 	
-	
+	$_GET[bartlby_filter]=stripslashes($_GET[bartlby_filter]);	
 	$ch_time=time();
 	if($_GET[l]) {
 		$tt=explode(".",$_GET[l]);

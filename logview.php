@@ -341,6 +341,11 @@
 	
 	
 	$layout->FormEnd();
+
+
+
+
+
 	
 	$r=$btl->getExtensionsReturn("_logView", $layout);
 	

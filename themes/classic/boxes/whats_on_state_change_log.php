@@ -8,6 +8,9 @@ $(document).ready(function() {
 			"sLengthMenu": "_MENU_ records per page"
 			}
 		} );
+
+	$('#coreTabs a[href=#ROOT]').css("display", "none");
+	$('#coreTabs a[href=#coretab0]').tab("show");
 });
 </script>
 <table class="table table-striped table-bordered datatable_whats_on"><thead>

@@ -22,6 +22,7 @@ $(document).ready(function() {
 							  </tr>
 		
 				  </thead>
+<tbody>
 
 
 <?
@@ -47,4 +48,5 @@ while(list($k, $v) = @each($plcs[whats_on][services])) {
 <?
 }
 ?>
+</tbody>
 </table>						 

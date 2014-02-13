@@ -632,7 +632,7 @@ class BartlbyUi {
 
 				}
 				if(preg_match("/(.*);\[.*@NOT@([0-9]+)\|([0-9])\|([0-9])\|(.*)\|(.*)\|(.*)/", $v, $m)) {
-					
+						date_default_timezone_set('UTC');	
 						list($d1, $m1,$y1, $h1, $s1, $i1) = sscanf($m[1], "%d.%d.%d %d:%d:%d");
 						$cur_time_mark=mktime($h1,$s1,$i1,$m1,$d1,$y1);
 

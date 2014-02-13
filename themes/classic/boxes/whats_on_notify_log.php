@@ -65,3 +65,36 @@ while(list($k, $v) = @each($plcs[whats_on][notifications][trigger])) {
 </table>							 
 </div>
 <div style='clear:both;'></div>
+<table class="table table-striped table-bordered datatable_whats_on_notify"><thead>
+							  <tr>
+
+								  <th>Date</th>
+								  <th>Worker</th>
+								  <th>State</th>
+								  <th>Service</th>
+								  <th>Actions</th>
+								
+							  </tr>
+		
+				  </thead>
+
+
+<?
+global $btl;
+while(list($k, $v) = @each($plcs[whats_on][notifications][msgs])) {
+	$tsvc=bartlby_get_service_by_id($btl->RES, $k);
+	//if(!$tsvc) continue;
+?>
+
+<tr>
+<td><?=date("d.m.Y H:i:s", $v[date])?></td>
+<td><?=$v[to]?></td>
+<td><?=$btl->getColorSpan($v[state])?></td>
+<td><a href='service_detail.php?service_id=<?=$tsvc[service_id]?>'><?=$tsvc[server_name]?>/<?=$tsvc[service_name]?></a> </td>
+<td><?=$btl->getserviceoptions($tsvc, $layout)?></td>
+
+</tr>
+<?
+}
+?>
+</table>

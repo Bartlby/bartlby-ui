@@ -631,8 +631,8 @@ class BartlbyUi {
 					$last_time[$cur_service_id]=$cur_time_mark;
 
 				}
-				if(preg_match("/(.*);\[.*@NOT@([0-9]+)\|([0-9])\|([0-9])\|(.*)\|(.*)\|/", $v, $m)) {
-
+				if(preg_match("/(.*);\[.*@NOT@([0-9]+)\|([0-9])\|([0-9])\|(.*)\|(.*)\|(.*)/", $v, $m)) {
+					
 						list($d1, $m1,$y1, $h1, $s1, $i1) = sscanf($m[1], "%d.%d.%d %d:%d:%d");
 						$cur_time_mark=mktime($h1,$s1,$i1,$m1,$d1,$y1);
 
@@ -648,7 +648,7 @@ class BartlbyUi {
 							$state_map[notifications_sent]++;
 							$state_map[notifications][worker][$m[6]][1]++; //Worker
 							$state_map[notifications][trigger][$m[5]][1]++; //trigger
-						
+							$state_map[notifications][msgs][]=array("to"=>$m[6], "state"=>$m[3], "date"=> $cur_time_mark, "service_id"=> $m[2]);
 							$state_map[services][$m[2]][notifications][trigger][$m[5]][1]++; //trigger
 							$state_map[services][$m[2]][notifications][worker][$m[6]][1]++; //Worker
 						
@@ -1571,6 +1571,25 @@ class BartlbyUi {
  		return $map; 
 			
 	}
+	function getColorSpan($state) {
+		switch($state) {
+			case 0:
+				$l = 'success';
+			break;
+			case 1:
+				$l = 'warning';
+			break;
+			case 2:
+				$l = 'important';
+			break;
+			default:
+				$l = '';
+			break;
+		}
+		return '<span class="label label-' . $l . '">'  . $this->getState($state) . '</span>';
+	}
+
+
 	function getColor($state) {
 		switch($state) {
 			case 0: return "green"; break;

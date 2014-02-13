@@ -77,7 +77,7 @@ $node_name="Primary";
 
 while(1){
 	bartlby_close($btl->RES);
-        $btl->RES=bartlby_new($btl->CFG);
+    $btl->RES=bartlby_new($btl->CFG);
 	ncurses_getmaxyx($main, $lines, $columns);
 	ncurses_timeout(2);
 	$k = ncurses_getch();

@@ -579,7 +579,101 @@ class BartlbyUi {
 	       return $plan_box;
 		
 	}
-	
+	function getWhatsOn() {
+		$log_mask=bartlby_config($this->CFG, "logfile");
+		$start_in=date("d.m.Y", strtotime( '-1 days' ));
+		$end_in=date("d.m.Y");
+		$date_start=explode(".", $start_in);
+		$date_end=explode(".", $end_in);
+				
+		$time_start=mktime(0,0,0, $date_start[1], $date_start[0], $date_start[2]);
+		$time_end=mktime(0,0,0, $date_end[1], $date_end[0], $date_end[2]);
+		$daycnt = $time_end-$time_start+86400;
+				
+		$day_x=$daycnt/86400;
+		$files_scanned=array();
+
+		$work_on=$time_start;
+		$last_state=$state_in;
+		for($x=0; $x<$day_x; $x++) {
+			$filename = $log_mask . "." . date("Y.m.d", $work_on);
+			$last_mark=$work_on;
+			
+			$work_on += 86400;
+
+			$fdata=@file($filename);
+			$lines = count($fdata);
+			
+			array_push($files_scanned, array(0=>$filename, 1=>$lines));
+			while(list($k,$v) = @each($fdata)) {
+				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|/", $v, $m)) {
+					$state_map[state_changes]++;
+					$cur_service_id=$m[2];
+					$cur_service_state=$m[3];
+
+					list($d, $m,$y, $h, $s, $i) = sscanf($m[1], "%d.%d.%d %d:%d:%d");
+					$cur_time_mark=mktime($h,$s,$i,$m,$d,$y);
+				
+
+					if(! $last_time[$cur_service_id]) {
+						 $last_time[$cur_service_id]=$time_start;
+						 $last_state[$cur_service_id]=0;
+					}
+					$diff = $cur_time_mark - $last_time[$cur_service_id];
+
+					$state_map[services][$cur_service_id][$last_state[$cur_service_id]] += $diff;
+					$state_map[services][$cur_service_id][state_changes]++;
+					$state_map[services][$cur_service_id][hours][date("d.m.Y H", $cur_time_mark)]++;
+					$state_map[services][hours][date("d.m.Y H", $cur_time_mark)]++;
+
+
+					$last_state[$cur_service_id]=$cur_service_state;
+					$last_time[$cur_service_id]=$cur_time_mark;
+
+				}
+				if(preg_match("/(.*);\[.*@NOT@([0-9]+)\|([0-9])\|([0-9])\|(.*)\|(.*)\|/", $v, $m)) {
+
+						list($d1, $m1,$y1, $h1, $s1, $i1) = sscanf($m[1], "%d.%d.%d %d:%d:%d");
+						$cur_time_mark=mktime($h1,$s1,$i1,$m1,$d1,$y1);
+
+
+						
+						$state_map[notifications][worker][$m[6]][0]++; //Worker
+						$state_map[notifications][trigger][$m[5]][0]++; //trigger
+						$state_map[services][$m[2]][notifications][trigger][$m[5]][0]++; //trigger
+						$state_map[services][$m[2]][notifications][worker][$m[6]][0]++; //Worker
+						//$state_map[$m[2]][notifications][state][$m[3]]++; //State
+
+						if($m[5] == "sms.sh") {
+							$state_map[notifications_sent]++;
+							$state_map[notifications][worker][$m[6]][1]++; //Worker
+							$state_map[notifications][trigger][$m[5]][1]++; //trigger
+						
+							$state_map[services][$m[2]][notifications][trigger][$m[5]][1]++; //trigger
+							$state_map[services][$m[2]][notifications][worker][$m[6]][1]++; //Worker
+						
+							$state_map[services][$m[2]][notifications][$m[4]]++;
+							$state_map[services][$m[2]][notifications][notifications_sent]++;
+							$state_map[notifications][hours][date("d.m.Y H", $cur_time_mark)]++;
+						}
+						
+						
+						
+				}
+			}
+		}
+		//FILL UP
+		while(list($k, $v) = each($state_map[services])) {
+			$diff = time() - $last_time[$k];
+			$state_map[services][$k][$last_state[$k]] += $diff;
+
+		
+
+		}
+		$state_map[start_date] = date("Y/m/d", $time_start);
+		$state_map[end_date] = date("Y/m/d", $time_end);
+		return $state_map;
+	}
 	function do_report($start_in, $end_in, $state_in, $in_service) {
 		$state_array=array();
 		

@@ -583,12 +583,13 @@ class BartlbyUi {
 		$log_mask=bartlby_config($this->CFG, "logfile");
 		$start_in=date("d.m.Y", strtotime( '-1 days' ));
 		$end_in=date("d.m.Y");
+
 		$date_start=explode(".", $start_in);
 		$date_end=explode(".", $end_in);
 				
 		$time_start=mktime(0,0,0, $date_start[1], $date_start[0], $date_start[2]);
-		$time_end=mktime(0,0,0, $date_end[1], $date_end[0], $date_end[2]);
-		$daycnt = $time_end-$time_start+86400;
+		$time_end=mktime(23,59,0, $date_end[1], $date_end[0], $date_end[2]);
+		$daycnt = $time_end-$time_start;
 				
 		$day_x=$daycnt/86400;
 		$files_scanned=array();
@@ -596,14 +597,22 @@ class BartlbyUi {
 		$work_on=$time_start;
 		$last_state=$state_in;
 		for($x=0; $x<$day_x; $x++) {
+
+
 			$filename = $log_mask . "." . date("Y.m.d", $work_on);
 			$last_mark=$work_on;
 			
-			$work_on += 86400;
+			//echo "READ FILE: " . $filename . "<br>";
+
 
 			$fdata=@file($filename);
 			$lines = count($fdata);
+		
+
+			$work_on += 86400*2;
+
 			
+		
 			array_push($files_scanned, array(0=>$filename, 1=>$lines));
 			while(list($k,$v) = @each($fdata)) {
 				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|/", $v, $m)) {
@@ -643,7 +652,9 @@ class BartlbyUi {
 						$state_map[services][$m[2]][notifications][trigger][$m[5]][0]++; //trigger
 						$state_map[services][$m[2]][notifications][worker][$m[6]][0]++; //Worker
 						//$state_map[$m[2]][notifications][state][$m[3]]++; //State
-
+if($m[2] == "5724") {
+	//echo $v;
+}
 						if($m[5] == "sms.sh") {
 							$state_map[notifications_sent]++;
 							$state_map[notifications][worker][$m[6]][1]++; //Worker
@@ -663,14 +674,14 @@ class BartlbyUi {
 			}
 		}
 		//FILL UP
-		while(list($k, $v) = each($state_map[services])) {
+		while(list($k, $v1) = each($state_map[services])) {
 			$diff = time() - $last_time[$k];
 			$state_map[services][$k][$last_state[$k]] += $diff;
 
 		
 
 		}
-		$state_map[start_date] = date("Y/m/d", $time_start);
+		$state_map[start_date] = date("Y/m/d", $time_start+86400);
 		$state_map[end_date] = date("Y/m/d", $time_end);
 		return $state_map;
 	}

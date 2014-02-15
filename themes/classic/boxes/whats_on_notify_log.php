@@ -3,11 +3,21 @@ $(document).ready(function() {
 	$('.datatable_whats_on_notify').dataTable({
 			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
 			"sPaginationType": "bootstrap",
-			
+			"bSort": true,			
 			"oLanguage": {
 			"sLengthMenu": "_MENU_ records per page"
 			}
 		} );
+	$('.datatable_whats_on_notify1').dataTable({
+			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+			"sPaginationType": "bootstrap",
+			"bSort": true,		
+			"aaSorting": [[ 4, "desc" ]],	
+			"oLanguage": {
+			"sLengthMenu": "_MENU_ records per page"
+			}
+		} );
+	
 });
 </script>
 <div id=service_detail_service_info_ajax class='fifty_float_left' style='width:25%'>
@@ -68,7 +78,7 @@ while(list($k, $v) = @each($plcs[whats_on][notifications][trigger])) {
 
 </div>
 <div class=fifty_float_left style='width: 50%;'>
-<table class="table table-striped table-bordered datatable_whats_on_notify" id=tb1>
+<table class="table table-striped table-bordered datatable_whats_on_notify1" id=tb1>
 	<thead>
 							  <tr>
 

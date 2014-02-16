@@ -41,12 +41,12 @@ class Basket {
 			</tr>
 			
 		</table>
-		<table id='BasketFavorites_sub' style='display:block;' class='table table-bordered table-striped table-condensed' >
+		<table id='BasketFavorites_sub' style='word-wrap:break-word;table-layout:fixed;xdisplay:block;' class='table table-bordered table-striped table-condensed' >
     <thead>
       <tr>
         <th>Service</th>
-        <th>State</th>
-        <th>R</th>
+        <th width=60>State</th>
+        <th width=10>R</th>
       </tr>
     </thead><tbody>";
 		

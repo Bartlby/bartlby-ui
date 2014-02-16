@@ -25,9 +25,10 @@ $c = new Color();
 	$ocl = new OcL();
 
 
+
 	$ct= time()-86400;
 	$cc=time();
-	$sql = "select id, strftime('%s', date_from) as dfrom, strftime('%s', date_to) as dto, all_day, color, worker_id, activity_level from schedule where (datetime(date_to, 'localtime')  >= '" .  date("Y-m-d H:i", $cc) . "' and datetime(date_from, 'localtime')  <= '" .  date("Y-m-d H:i", $cc) . "') or (all_day = 1 and datetime(date_from, 'localtime') like '" . date("Y-m-d") . "%')";
+	$sql = "select id, strftime('%s', date_from) as dfrom, strftime('%s', date_to) as dto, all_day, color, worker_id, activity_level from schedule where (datetime(date_to, 'localtime')  >= '" .  date("Y-m-d H:i", $cc) . "' and datetime(date_from, 'localtime')  <= '" .  date("Y-m-d H:i", $cc) . "') or (all_day = 1 and (datetime(date_from, 'localtime') like '" . date("Y-m-d") . "%' or datetime(date_to, 'localtime') like '" . date("Y-m-d") . "%'))";
 	
 	$r = $ocl->db_schedule->query($sql);
 
@@ -41,7 +42,6 @@ $c = new Color();
 	});
     
 	foreach($r as $row) {
-		
 		if((int)$row[activity_level] == 1) {
 			$btl->worker_list_loop(function($wrk, $shm) use(&$c, &$row, &$btl, &$wrk_states) {
 				if((int)$row[worker_id] == $wrk[worker_id]) {
@@ -68,6 +68,8 @@ while(list($k, $v) = @each($wrk_states)) {
 
     $wrk=bartlby_get_worker($btl->RES, $k);
 
+
+	
       if(!$ws["new"]) {
         if($ws[current] != 0) {
             echo $c("Deactivating user " . $wrk[name] . PHP_EOL)->red()->bold();

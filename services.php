@@ -106,6 +106,7 @@
 					
 
 					if($btl->bartlby_service_matches_string($svc, $_GET[sSearch])) {
+						$ajax_displayed_records++;
 						if($xc >= $_GET[iDisplayStart] && $xc <= $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
 
 
@@ -119,14 +120,14 @@
 							$ajax_service_output=str_replace( "\\dbr","<br>", nl2br($svc[new_server_text]));												
 							$ajax_service_options=$btl->getserviceOptions($svc, $layout);
 							$ajax_search["aaData"][] = array($ajax_checkbox, $server_ajax,$ajax_state , $ajax_last_check, $ajax_next_check, $ajax_service_name, $ajax_service_output, $ajax_service_options);		//FIXME
-							$ajax_displayed_records++;
+							
 						}
 					
+						$xc++;
 
 					}
 
-					$xc++;
-
+					
 		}
 
 

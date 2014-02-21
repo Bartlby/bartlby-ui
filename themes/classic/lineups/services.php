@@ -3,6 +3,8 @@
 -->
 <?=$this->disp_box("mass_actions")?>
 
+
+
 <script>
 	$(document).ready(function() {
 		var newtimer = setInterval('window.oTable.fnDraw(false)', 20000);
@@ -29,6 +31,7 @@
 
 </tbody>
 </table>
+
 
 <?=$this->disp_box("legend")?>
 <?=$this->disp_box("UNPLACED")?>

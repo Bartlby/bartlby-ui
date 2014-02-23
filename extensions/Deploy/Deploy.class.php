@@ -34,18 +34,40 @@ class Deploy {
 	function Deploy() {
 		$this->layout = new Layout();
 		$this->storage = new BartlbyStorage("Deploy");
-		$this->DBSTR = "CREATE TABLE agent_deploy_log (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
+		$this->DBSTR = "CREATE TABLE agent_deploy_log (
 				deploy_last_sync DATETIME,
 				deploy_desc TEXT,
 				deploy_server_id INTEGER				
 				);";
-		$this->db_log = $this->storage->SQLDB($this->DBSTR, "deploy_log.db");
+		$this->db_log = $this->storage->SQLDB($this->DBSTR, "deploy_log_v1.db");
 		$this->agent_base_path=$this->storage->load_key("agent_base_path");
 		$this->plugin_base_path=$this->storage->load_key("plugin_base_path");
 		$this->config_base_path=$this->storage->load_key("config_base_path");
-		
+		$this->archs[]="all";
+		$this->archs[]="i386";
+		$this->archs[]="x86_64";
+		$this->archs[]="amd64";
+
+
+
+		$this->check_storage_folders();
 		
 
+	}
+	function check_storage_folders() {
+		for($x=0; $x<count($this->archs); $x++) {
+			if(!is_dir($this->plugin_base_path . "/" . $this->archs[$x])) {
+				@mkdir($this->plugin_base_path . "/" . $this->archs[$x]);
+				
+			}			
+			if(!is_dir($this->config_base_path . "/" . $this->archs[$x])) {
+				@mkdir($this->config_base_path . "/" . $this->archs[$x]);
+			}
+			if(!is_dir($this->agent_base_path . "/" . $this->archs[$x])) {
+				@mkdir($this->agent_base_path . "/" . $this->archs[$x]);
+			}
+
+		}
 	}
 
 	function _Menu() {

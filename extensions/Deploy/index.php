@@ -28,21 +28,18 @@
 
 	$layout->OUT .= "<b>Deployment Settings</b><br>";
 	$layout->OUT .= "Agent Binary Base Path:<br>";
-	$layout->OUT .= "<input type=text value='' id=agent_binary_base_path>(e.g.:" . getcwd()  . "/extensions/Deploy/data_store/agent_binary/) (arch will be added automatically)<br>";
+	$layout->OUT .= "<input type=text value='' id=agent_binary_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_binary/) (arch will be added automatically)<br>";
 	
 
 	$layout->OUT .= "Plugin Base Path:<br>";
-	$layout->OUT .= "<input type=text value='' id=plugin_base_path>(e.g.:" . getcwd()  . "/extensions/Deploy/data_store/agent_plugins/) (arch will be added automatically)<br>";
+	$layout->OUT .= "<input type=text value='' id=plugin_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_plugins/) (arch will be added automatically)<br>";
 	
 	$layout->OUT .= "Agent Config Dir:<br>";
-	$layout->OUT .= "<input type=text value='' id=config_base_path>(e.g.:" . getcwd()  . "/extensions/Deploy/data_store/agent_config/) (arch will be added automatically)<br>";
+	$layout->OUT .= "<input type=text value='' id=config_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_config/) (arch will be added automatically)<br>";
 	
 	$layout->OUT .= "<input type=button value='Save' id=dp_save_local><br>";
 
-	$archs[]="all";
-	$archs[]="i386";
-	$archs[]="x86_64";
-	$archs[]="amd64";
+	$archs=$dp->archs;
 
 	$agent_bin_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
 	$agent_bin_tab .= "<thead>";

@@ -31,15 +31,16 @@ class FailedServices {
 						  
 						    <tbody>';
 						 $found=0;
-						$map = $btl->GetSVCMap();
-						while(list($k, $servs) = @each($map)) {
-							for($x=0; $x<count($servs); $x++) {
-								if($_GET[pipe] != "all") {
-									if($servs[$x][current_state] == 0 || $servs[$x][current_state] == 4) continue;
+						 $pipe=$_GET[pipe];
+					
+						$btl->service_list_loop(function($svc, $shm) use(&$pipe, &$found, &$r, &$btl) {
+
+								if($pipe != "all") {
+									if($svc[current_state] == 0 || $svc[current_state] == 4) return LOOP_CONTINUE;
 								}
 								$found++;
-								$svc_color=$btl->getColor($servs[$x][current_state]);
-								$svc_state=$btl->getState($servs[$x][current_state]);
+								$svc_color=$btl->getColor($svc[current_state]);
+								$svc_state=$btl->getState($svc[current_state]);
 									$lbl = "label-default";
 									if($svc_color == "green") {
 											$lbl = "label-success";
@@ -53,18 +54,21 @@ class FailedServices {
 									}
 								$r .= "<tr >";
 								$r .= "<td>";
-								$r .= "<a href='service_detail.php?service_id=" . $servs[$x][service_id] . "' >" . substr($servs[$x][server_name] . "/" . $servs[$x][service_name],0, 45) . "</A>";
+								$r .= "<a href='service_detail.php?service_id=" . $svc[service_id] . "' >" . substr($svc[server_name] . "/" . $svc[service_name],0, 45) . "</A>";
 								$r .= "</td>";
 								$r .= "<td>";
-								$r .= date("H:i:s", $servs[$x][last_check]);
+								$r .= date("H:i:s", $svc[last_check]);
 								$r .= "</td>";
 								
 								$r .= "<td>";
 								$r .= "<span class='label " . $lbl .  "'>" . $svc_state . "</span>";
 								$r .= "</td>";
 								$r .= "</tr>";
-							}
-						}
+
+						});
+							
+							
+						
 						if($found == 0) {
 								$r .= "<tr><td colspan=3>No Warn/Crit found</td></tr>";
 						}

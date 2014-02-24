@@ -70,11 +70,13 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 	$output = "";
 	//FIXME check for <= 0 $service_ids
 	$btl->service_list_loop(function($svc, $shm) use(&$service_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
-		$f = array_search($svc[service_id], $service_ids);
+		$f = in_array("" . $svc[service_id], $service_ids);
+		
 		$doedit=0;
 		if($f) {
+			
 			//Edit this one
-			$output .= "---------\n";
+		
 			$output .= "Working on:  " . $svc[server_name] . "/" .  $svc[service_name] . "(" . $svc[service_id] . ")\n";
 			@reset($new_values);
 			while(list($k, $v) = @each($new_values)) {
@@ -118,7 +120,7 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 
 					}
 					if($oldvalue != $newvalue) {
-						$output .= "Set: $k to <b>$newvalue</b> was:  $oldvalue \n";	
+						$output .= "$k to <b>$newvalue</b> was:  $oldvalue \n";	
 						$svc[$k] = $newvalue;
 						$doedit=1;
 					}
@@ -130,10 +132,12 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 							$ret=bartlby_modify_service($btl->RES,  $svc[service_id], $svc);
 							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
 						}
-					}						
+					}	
+										
+
 				}
 			}
-			
+		$output .= "-------------\n";	
 		}
 	});
 	bartlby_reload($btl->RES);

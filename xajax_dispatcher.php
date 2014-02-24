@@ -1127,33 +1127,33 @@ function AddModifyService($aFormValues) {
 			}
 		break;	
 		case 5:
-			if(!bartlbize_field($av[service_snmp_community])){
-				$res->addAssign("error_service_snmp_community", "innerHTML", "required field");
+			if(!bartlbize_field($av[snmp_community])){
+				$res->addAssign("error_snmp_community", "innerHTML", "required field");
 				$al="1";
 			} else {
-				$res->addAssign("error_service_snmp_community", "innerHTML", "");
+				$res->addAssign("error_snmp_community", "innerHTML", "");
 			}
 				
 			
 			
-			if(!bartlbize_field($av[service_snmp_objid])){
-				$res->addAssign("error_service_snmp_objid", "innerHTML", "required field");
+			if(!bartlbize_field($av[snmp_objid])){
+				$res->addAssign("error_snmp_objid", "innerHTML", "required field");
 				$al="1";
 			} else {
-				$res->addAssign("error_service_snmp_objid", "innerHTML", "");
+				$res->addAssign("error_snmp_objid", "innerHTML", "");
 			}
 			
-			if(!bartlbize_int($av[service_snmp_warning])){
-				$res->addAssign("error_service_snmp_warning", "innerHTML", "required field");
+			if(!bartlbize_int($av[snmp_warning])){
+				$res->addAssign("error_snmp_warning", "innerHTML", "required field");
 				$al="1";
 			} else {
-				$res->addAssign("error_service_snmp_warning", "innerHTML", "");
+				$res->addAssign("error_snmp_warning", "innerHTML", "");
 			}
-			if(!bartlbize_int($av[service_snmp_critical])){
-				$res->addAssign("error_service_snmp_critical", "innerHTML", "required field");
+			if(!bartlbize_int($av[snmp_critical])){
+				$res->addAssign("error_snmp_critical", "innerHTML", "required field");
 				$al="1";
 			} else {
-				$res->addAssign("error_service_snmp_critical", "innerHTML", "");
+				$res->addAssign("error_snmp_critical", "innerHTML", "");
 			}
 					
 		break;

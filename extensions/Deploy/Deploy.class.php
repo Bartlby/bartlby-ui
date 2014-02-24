@@ -1,166 +1,87 @@
 <?
+include "config.php";
 
+class Deploy {
+
+	function dp_save_local_settings() {
+			global $_GET;
+			$re = new XajaxResponse();
+			/*
+			$_GET[xajaxargs][2] == UI PATH
+			$_GET[xajaxargs][3] == CORE PATH
+			*/
+
+			$this->storage->save_key("agent_base_path", $_GET[xajaxargs][2]);
+			$this->storage->save_key("plugin_base_path", $_GET[xajaxargs][3]);
+			$this->storage->save_key("config_base_path", $_GET[xajaxargs][4]);
+			$re->AddScript('noty({"text":"[Deploy] Settings saved","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
-	include "config.php";
-	include "layout.class.php";
-	include "bartlby-ui.class.php";
-	
-	include "extensions/Deploy/Deploy.class.php";
-	
-	$btl=new BartlbyUi($Bartlby_CONF);
-	$btl->hasRight("Deploy");
-	$dp = new Deploy();
-	
-	
-	ini_set('display_errors', '1');
-	error_reporting(E_ERROR);
+			return $re;
+	}
 
-	$layout= new Layout();
-	$layout->setTitle("Deploy");
-	$layout->set_menu("Deploy");
-	$layout->setMainTabName("Master-Settings");
+	function dp_set_local_settings() {
+			global $_GET;
+			$re = new XajaxResponse();
+			/*
+			$_GET[xajaxargs][1] == UI PATH
+			$_GET[xajaxargs][2] == CORE PATH
+			*/
+			$re->AddScript("dp_local_settings_update('" . $this->agent_base_path . "','" . $this->plugin_base_path .  "', '" . $this->config_base_path . "');");
+			return $re;
+	}
 
-	$layout->do_auto_reload=false;
 
-	/* Add Extension JS */
+	function Deploy() {
+		$this->layout = new Layout();
+		$this->storage = new BartlbyStorage("Deploy");
+		$this->DBSTR = "CREATE TABLE agent_deploy_log (
+				deploy_last_sync DATETIME,
+				deploy_desc TEXT,
+				deploy_server_id INTEGER				
+				);";
+		$this->db_log = $this->storage->SQLDB($this->DBSTR, "deploy_log_v1.db");
+		$this->agent_base_path=$this->storage->load_key("agent_base_path");
+		$this->plugin_base_path=$this->storage->load_key("plugin_base_path");
+		$this->config_base_path=$this->storage->load_key("config_base_path");
+		$this->archs[]="all";
+		$this->archs[]="i386";
+		$this->archs[]="x86_64";
+		$this->archs[]="amd64";
+		$this->archs[]="i686";
 
-	$layout->addScript('<script src="extensions/Deploy/dp.js" type="text/javascript"></script>');
 
-	$layout->OUT .= "<b>Deployment Settings</b><br>";
-	$layout->OUT .= "Agent Binary Base Path:<br>";
-	$layout->OUT .= "<input type=text value='' id=agent_binary_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_binary/) (arch will be added automatically)<br>";
-	
 
-	$layout->OUT .= "Plugin Base Path:<br>";
-	$layout->OUT .= "<input type=text value='' id=plugin_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_plugins/) (arch will be added automatically)<br>";
-	
-	$layout->OUT .= "Agent Config Dir:<br>";
-	$layout->OUT .= "<input type=text value='' id=config_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_config/) (arch will be added automatically)<br>";
-	
-	$layout->OUT .= "<input type=button value='Save' id=dp_save_local><br>";
-
-	$archs=$dp->archs;
-
-	$agent_bin_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
-	$agent_bin_tab .= "<thead>";
-	$agent_bin_tab .= "<tr>";
-	$agent_bin_tab .= "<td>Architecture</td>";
-	$agent_bin_tab .= "<td>Filename</td>";
-	$agent_bin_tab .= "<td>SHA1</td>";
-	$agent_bin_tab .= "</tr>";
-	$agent_bin_tab .= "</thead><tbody>";
-	for($x=0; $x<count($archs); $x++) {
+		$this->check_storage_folders();
 		
-		$dh = opendir($dp->agent_base_path . "/" . $archs[$x]);
-		while($f = readdir($dh))  {
-			
-			if($f == "." || $f == ".." || $f == "1" || $f == "") continue;
-			$sha1 = sha1_file($dp->agent_base_path . "/" . $archs[$x] . "/" . $f);
-			$agent_bin_tab .= "<tr>";	
-			$agent_bin_tab .= "<td><b>" .  $archs[$x] . "</b></td>";
-			$agent_bin_tab .= "<td>" . $f . "</td>";
-			$agent_bin_tab .= "<td>" . $sha1 . "</td>";
-			$agent_bin_tab .= "</tr>";
+
+	}
+	function check_storage_folders() {
+		for($x=0; $x<count($this->archs); $x++) {
+			if(!is_dir($this->plugin_base_path . "/" . $this->archs[$x])) {
+				@mkdir($this->plugin_base_path . "/" . $this->archs[$x]);
+				
+			}			
+			if(!is_dir($this->config_base_path . "/" . $this->archs[$x])) {
+				@mkdir($this->config_base_path . "/" . $this->archs[$x]);
+			}
+			if(!is_dir($this->agent_base_path . "/" . $this->archs[$x])) {
+				@mkdir($this->agent_base_path . "/" . $this->archs[$x]);
+			}
+
 		}
-		closedir($dh);
 	}
-	$agent_bin_tab .= "</tbody></table>";
 
-
-	$plugin_bin_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
-	$plugin_bin_tab .= "<thead>";
-	$plugin_bin_tab .= "<tr>";
-	$plugin_bin_tab .= "<td>Architecture</td>";
-	$plugin_bin_tab .= "<td>Filename</td>";
-	$plugin_bin_tab .= "<td>SHA1</td>";
-	$plugin_bin_tab .= "</tr>";
-	$plugin_bin_tab .= "</thead><tbody>";
-
-
-	for($x=0; $x<count($archs); $x++) {
-		$dh = opendir($dp->plugin_base_path . "/" . $archs[$x]);
-		while($f = readdir($dh))  {
+	function _Menu() {
+		$r =  $this->layout->beginMenu();
+		$r .= $this->layout->addRoot("Deploy");
+		$r .= $this->layout->addSub("Deploy", "Manage","extensions_wrap.php?script=Deploy/index.php");
+	
+		$r .= $this->layout->endMenu();
+		return $r;
+	}
+	function _About() {
+		$snotice="Manage Client/Agent Deployment";
+		return $snotice;
 			
-			if($f == "." || $f == ".." || $f == "1" || $f == "") continue;
-			$sha1 = sha1_file($dp->plugin_base_path . "/" . $archs[$x] . "/" . $f);
-			$plugin_bin_tab .= "<tr>";	
-			$plugin_bin_tab .= "<td><b>" .  $archs[$x] . "</b></td>";
-			$plugin_bin_tab .= "<td>" . $f . "</td>";
-			$plugin_bin_tab .= "<td>" . $sha1 . "</td>";
-			$plugin_bin_tab .= "</tr>";
-		}
-		closedir($dh);
 	}
-
-	$plugin_bin_tab .= "</tbody></table>";
-
-
-	$config_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
-	$config_tab .= "<thead>";
-	$config_tab .= "<tr>";
-	$config_tab .= "<td>Architecture</td>";
-	$config_tab .= "<td>Filename</td>";
-	
-	$config_tab .= "<td>SHA1</td>";
-	$config_tab .= "</tr>";
-	$config_tab .= "</thead><tbody>";
-
-	for($x=0; $x<count($archs); $x++) {
-		$dh = opendir($dp->config_base_path . "/" . $archs[$x]);
-		while($f = readdir($dh))  {
-			
-			if($f == "." || $f == ".." || $f == "1" || $f == "") continue;
-			$sha1 = sha1_file($dp->config_base_path . "/" . $archs[$x] . "/" . $f);
-			$config_tab .= "<tr>";	
-			$config_tab .= "<td><b>" .  $archs[$x] . "</b></td>";
-			$config_tab .= "<td>" . $f . "</td>";
-			$config_tab .= "<td>" . $sha1 . "</td>";
-			$config_tab .= "</tr>";
-		}
-		closedir($dh);
-	}
-
-
-	$config_tab .= "</tbody></table>";
-
-
-
-
-
-	$sync_tab = "<table class='table table-striped table-bordered dataTable dp_table1'>";
-	$sync_tab .= "<thead>";
-	$sync_tab .= "<tr>";
-	$sync_tab .= "<td>Server</td>";
-	$sync_tab .= "<td>Last-Sync</td>";
-	$sync_tab .= "</tr>";
-	$sync_tab .= "</thead><tbody>";
-
-	$sql = "select * from agent_deploy_log";
-	$r = $dp->db_log->query($sql);
-	foreach($r as $row) {		
-		$srv = bartlby_get_server_by_id($btl->RES, $row[deploy_server_id]);
-		$sync_tab .= "<tr>";	
-		$sync_tab .= "<td><b>" .  $srv[server_name] . "</b></td>";
-		$sync_tab .= "<td>" . $row[deploy_last_sync] . "</td>";
-		
-		$sync_tab .= "</tr>";
-	}
-
-	$sync_tab .= "</tbody></table>";
-
-
-
-
-	$layout->Tab("Synchronization State", $sync_tab);
-
-	$layout->Tab("Agent Binarys", $agent_bin_tab);
-	$layout->Tab("Plugin Binarys", $plugin_bin_tab);
-
-	$layout->Tab("Config Files", $config_tab);
-
-	$layout->boxes_placed[MAIN]=false;
-	$layout->display();
-	
-	
-
-?>
+}

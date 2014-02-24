@@ -63,6 +63,83 @@ function idToInt($ids) {
 	}
 	return $ids;
 }
+
+function bulkEditValues($service_ids, $new_values, $mode = 0) {
+	global $btl;
+	$res = new xajaxresponse();
+	$output = "";
+	//FIXME check for <= 0 $service_ids
+	$btl->service_list_loop(function($svc, $shm) use(&$service_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
+		$f = array_search($svc[service_id], $service_ids);
+		$doedit=0;
+		if($f) {
+			//Edit this one
+			$output .= "---------\n";
+			$output .= "Working on:  " . $svc[server_name] . "/" .  $svc[service_name] . "(" . $svc[service_id] . ")\n";
+			@reset($new_values);
+			while(list($k, $v) = @each($new_values)) {
+				
+				if(preg_match("/_typefield\$/i", $k)) {
+					continue;
+				}
+
+				if($new_values[$k . "_typefield"] != "unused") {
+					$newvalue= $v;
+					$oldvalue=$svc[$k];
+					switch($new_values[$k . "_typefield"]) {
+						case 'set':
+						break;
+						case 'regex':
+							$regex = explode("#", $newvalue);
+							$newvalue = preg_replace("#" . $regex[1] . "#i", $regex[2], $oldvalue);
+						break;
+						case 'add':
+							$newvalue = $oldvalue + $newvalue;
+						break;
+						case 'sub':
+							$newvalue = $oldvalue - $newvalue;
+						break;
+						case 'addrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue + $newrand;
+						break;
+						case 'subrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue - $newrand;
+						break;
+						case 'toggle':
+							//$newvalue = $oldvalue - $newvalue;
+							if($oldvalue == 0) $newvalue=1;
+							if($oldvalue == 1) $newvalue=0;
+						break;
+
+
+					}
+					if($oldvalue != $newvalue) {
+						$output .= "Set: $k to <b>$newvalue</b> was:  $oldvalue \n";	
+						$svc[$k] = $newvalue;
+						$doedit=1;
+					}
+					
+					if((int)$mode == 1) {
+						//Real Mode:
+
+						if($doedit == 1) {
+							$ret=bartlby_modify_service($btl->RES,  $svc[service_id], $svc);
+							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
+						}
+					}						
+				}
+			}
+			
+		}
+	});
+	bartlby_reload($btl->RES);
+	$res->addAssign("services_bulk_output", "innerHTML", "<pre>$output</pre>");
+	return $res;
+}
 function bulkEnableChecks($ids) {
 	global $btl, $layout;
 	$res = new xajaxresponse();

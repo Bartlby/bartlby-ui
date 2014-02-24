@@ -147,8 +147,36 @@ function btl_call_refreshable_objects(data) {
 function btl_change(t) {
 		document.location.href='bartlby_action.php?set_instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }
+function bulk_service_edit(mode) {
+	services_to_handle=new Array();
+			$('.service_checkbox').each(function() {
+				
+				if($(this).is(':checked')) {
+						services_to_handle.push($(this).data("service_id"));
+				}
+			});
+			console.log("Handle Services");
+			console.log(services_to_handle);
+
+			xajax_bulkEditValues(services_to_handle, xajax.getFormValues("services_bulk_form"), mode);
+
+}
 $(document).ready(function() {
 		btl_set_bars();
+
+		$("#services_bulk_edit_run").click(function() {
+			bulk_service_edit(1);
+		});
+		//BULK EDIT
+		$("#services_bulk_edit_dry_run").click(function() {
+			//Get Service id list
+			bulk_service_edit(0);
+
+		});
+		$("#services_bulk_edit").click(function() {
+			window.clearTimeout(window.service_list_timer); //Disable auto reload
+			$('#myModal').modal('show');
+		});
 		$("#services_bulk_force").click(function() {
 		var force_services = new Array();
 			$('.service_checkbox').each(function() {

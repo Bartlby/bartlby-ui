@@ -47,6 +47,7 @@ class Deploy {
 		$this->archs[]="i386";
 		$this->archs[]="x86_64";
 		$this->archs[]="amd64";
+		$this->archs[]="i686";
 
 
 

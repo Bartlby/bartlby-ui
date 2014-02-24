@@ -83,7 +83,7 @@
 			$sql = "select * from agent_deploy_log where deploy_server_id=" . $_GET[server_id];
 			$r = $dp->db_log->query($sql);
 			foreach($r as $row) {
-				$sql = "update agent_deploy_log set deploy_last_sync=datetime('now') where server_id=" . $_GET[server_id];
+				$sql = "update agent_deploy_log set deploy_last_sync=datetime('now') where deploy_server_id=" . $_GET[server_id];
 				$dp->db_log->exec($sql);
 
 				exit;

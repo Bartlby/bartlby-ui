@@ -685,10 +685,19 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-			
+			$o_svc_type=$_GET[service_type];
+
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
 				
+				$svc_type_to_use=$o_svc_type;
+				if((int)$_GET[use_server_default_type] == 1) {
+					$srv_temp = bartlby_get_server_by_id($btl->RES, $server_id);
+					$svc_type_to_use = $srv_temp[default_service_type];
+					//FALLBACK
+					if($svc_type_to_use == "" || $svc_type_to_use == 0) $svc_type_to_use=1;
+				}
+
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -696,7 +705,7 @@ switch($act) {
 					"notify_enabled"=>$_GET[notify_enabled],					
 					"plugin_arguments"=>$_GET[service_args],
 					"check_interval"=>$_GET[service_interval],
-					"service_type"=>$_GET[service_type],
+					"service_type"=>$svc_type_to_use,
 					"service_passive_timeout" => $_GET[service_passive_timeout],
 					"server_id" => $server_id,
 					"service_check_timeout" => $_GET[service_check_timeout],
@@ -724,7 +733,7 @@ switch($act) {
 				$ads=bartlby_add_service($btl->RES, $svc_obj);
 				$tmp=bartlby_get_server_by_id($btl->RES, $server_id);
 
-				$global_msg[server_name] .= $tmp[server_name] . ",";
+				$global_msg[server_name] .= $tmp[server_name] . "(" . $svc_type_to_use . "),";
 			
 
 			}	

@@ -779,6 +779,7 @@ switch($act) {
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => $_GET[service_id],
+					"default_service_type" => $_GET[default_service_type],
 					"enabled_triggers" => $triggerstr
 					
 				);
@@ -983,7 +984,8 @@ switch($act) {
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => 0,
-					"enabled_triggers" => $triggerstr
+					"enabled_triggers" => $triggerstr,
+					"default_service_type" => $_GET[default_service_type]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);
@@ -993,7 +995,8 @@ switch($act) {
 				
 				
 				if($_GET[package_name] != "") {
-					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL);	
+					//function installPackage($pkg, $server, $force_plugin, $force_perf, $my_path="", $force_service_type=0) {
+					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL, "", $_GET[default_service_type]);	
 				} else {
 					//WE DO NOT NEED INIT SERVICE ANYMORE
 					

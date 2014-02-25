@@ -90,6 +90,45 @@ if(strlen($defaults[server_enabled_triggers]) > 2) {
 }
 if($triggers == "") $triggers="all";
 
+$svc_type="UNKOWN";
+if($defaults[default_service_type] == 1) {
+	$svc_type="Active";
+}
+
+if($defaults[default_service_type] == 2) {
+	$svc_type="Passive";
+}
+
+if($defaults[default_service_type] == 3) {
+	$svc_type="Group";
+}
+if($defaults[default_service_type] == 4) {
+	$svc_type="Local";
+}
+if($defaults[default_service_type] == 5) {
+	$svc_type="SNMP";
+}
+if($defaults[default_service_type] == 6) {
+	$svc_type="NRPE";
+}
+if($defaults[default_service_type] == 7) {
+	$svc_type="NRPE(ssl)";
+}
+
+if($defaults[default_service_type] == 8) {
+	$svc_type="AgentV2";
+}
+if($defaults[default_service_type] == 9) {
+	$svc_type="AgentV2(no-SSL)";
+}
+if($defaults[default_service_type] == 10) {
+	$svc_type="SSH";
+}
+
+
+
+
+
 for($x=0; $x<count($defaults[groups]); $x++) {
 	if($defaults[groups][$x][servergroup_active] == 0) {
 		$server_en .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $defaults[groups][$x][servergroup_id] . "'>" . $defaults[groups][$x][servergroup_name] . "</A>)";
@@ -107,7 +146,8 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 										"isup" => $isup,
 										"notify_enabled" => $noti_en,
 										"server_enabled" => $server_en,
-										"triggers" => $triggers
+										"triggers" => $triggers, 
+										"default_service_type" => $svc_type
 										),
 			"server_detail_server_info", false,true);
 

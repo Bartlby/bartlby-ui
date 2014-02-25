@@ -60,6 +60,12 @@
 		<td align=left ><?= $plcs[triggers]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
+		<tr>
+		<td width=150 class='font2'>Default Service Type:</td>
+		<td align=left ><?= $plcs[default_service_type]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
+	
 	
 	
 </table>

@@ -125,6 +125,34 @@
 
 
 
+
+
+	$sync_tab = "<table class='table table-striped table-bordered dataTable dp_table1'>";
+	$sync_tab .= "<thead>";
+	$sync_tab .= "<tr>";
+	$sync_tab .= "<td>Server</td>";
+	$sync_tab .= "<td>Last-Sync</td>";
+	$sync_tab .= "</tr>";
+	$sync_tab .= "</thead><tbody>";
+
+	$sql = "select * from agent_deploy_log";
+	$r = $dp->db_log->query($sql);
+	foreach($r as $row) {		
+		$srv = bartlby_get_server_by_id($btl->RES, $row[deploy_server_id]);
+		$sync_tab .= "<tr>";	
+		$sync_tab .= "<td><b>" .  $srv[server_name] . "</b></td>";
+		$sync_tab .= "<td>" . $row[deploy_last_sync] . "</td>";
+		
+		$sync_tab .= "</tr>";
+	}
+
+	$sync_tab .= "</tbody></table>";
+
+
+
+
+	$layout->Tab("Synchronization State", $sync_tab);
+
 	$layout->Tab("Agent Binarys", $agent_bin_tab);
 	$layout->Tab("Plugin Binarys", $plugin_bin_tab);
 

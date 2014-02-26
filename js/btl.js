@@ -168,7 +168,12 @@ function bulk_service_edit(mode) {
 }
 $(document).ready(function() {
 		btl_set_bars();
-
+		$("#services_bulk_edit_delete").click(function() {
+			if(confirm("You really want to delete the selected services?")) {
+				bulk_service_edit(3);	
+			}
+			
+		})
 		$("#services_bulk_edit_run").click(function() {
 			bulk_service_edit(1);
 		});
@@ -180,6 +185,11 @@ $(document).ready(function() {
 		});
 		$("#services_bulk_edit").click(function() {
 			window.clearTimeout(window.service_list_timer); //Disable auto reload
+			if($('.service_checkbox').is(":checked") == false) {
+				if(!confirm("You have not selected any service if you continue - all your bulk actions will apply to EVERY services (system wide)!!")) {
+					return;
+				}
+			}
 			$('#myModal').modal('show');
 		});
 		$("#services_bulk_force").click(function() {

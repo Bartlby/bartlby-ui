@@ -71,7 +71,10 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 	//FIXME check for <= 0 $service_ids
 	$btl->service_list_loop(function($svc, $shm) use(&$service_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
 		$f = in_array("" . $svc[service_id], $service_ids);
-		
+
+		if(count($service_ids) == 0) {
+			$f = true;
+		}
 		$doedit=0;
 		if($f) {
 			
@@ -79,6 +82,12 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 		
 			$output .= "Working on:  " . $svc[server_name] . "/" .  $svc[service_name] . "(" . $svc[service_id] . ")\n";
 			@reset($new_values);
+
+			if((int)$mode == 3) {
+				bartlby_delete_service($btl->RES, $svc[service_id]);
+				$output .= "<font color=red>Removed Service with id: " . $svc[service_id] . "</font>\n";
+			}	
+
 			while(list($k, $v) = @each($new_values)) {
 				
 				if(preg_match("/_typefield\$/i", $k)) {
@@ -132,7 +141,9 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 							$ret=bartlby_modify_service($btl->RES,  $svc[service_id], $svc);
 							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
 						}
-					}	
+					}
+
+					
 										
 
 				}
@@ -140,6 +151,7 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 		$output .= "-------------\n";	
 		}
 	});
+	
 	bartlby_reload($btl->RES);
 	$res->addAssign("services_bulk_output", "innerHTML", "<pre>$output</pre>");
 	return $res;

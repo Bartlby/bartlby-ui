@@ -90,8 +90,11 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
 				</table>
 			</div>
 			<div class="modal-footer">
-				<a href="#" class="btn" data-dismiss="modal">Close</a>
-				<a href="#" id=services_bulk_edit_dry_run class="btn btn-success">Dry Run</a>
-				<a href="#" id=services_bulk_edit_run class="btn btn-danger">Run</a>
+				
+				<button data-dismiss="modal"class="btn btn-success1"><i class="icon-ok"></i> Close</button>
+				
+				<button id=services_bulk_edit_dry_run class="btn btn-success"><i class="icon-eye-open"></i> Dry Run</button>
+				<button id=services_bulk_edit_run class="btn btn-warning"><i class="icon-fire"></i> Run</button>
+				<button id=services_bulk_edit_delete class="btn btn-danger"><i class="icon-trash"></i> Delete</button>
 			</div>
 		</div>

@@ -100,30 +100,41 @@ function bartlby_server_map() {
 
 class BartlbyUi {
 	
-	function send_custom_report($emails, $service_id, $from, $to) {
+	function html_report_footer() {
+		return "</body></html>";
+	}
+	function html_report_header() {
+		return "<html><head><style>" . 
+		file_get_contents("themes/classic/css/bootstrap-simplex.css") 
+		 . "</style></head><body>";
+	}
+	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report") {
 		include_once "Mail.php";
 		include_once "Mail/mime.php";
 		
-		$storage = new BartlbyStorage("ArS");
-		$defaults=bartlby_get_service_by_id($this->RES, $service_id);
-		$rap = "Report for: " . $defaults[server_name] . "/" . $defaults[service_name] . "\n";
-		$btl_subj = "Bartlby Custom report";
+		$storage = new BartlbyStorage("AutoReports");
+
+
+		$btl_subj = $subj;
+		$rap = $this->html_report_header();
+		for($x=0; $x<count($service_ids); $x++) {
+			$service_id=$service_ids[$x];			
+			$defaults=bartlby_get_service_by_id($this->RES, $service_id);
+
+			
+			
+			$rep = $this->do_report($from, $to, 0, $service_id);
+			$rap .=  $this->format_report($rep, "html", "Report for: " . $defaults[server_name] . "/" . $defaults[service_name], true);
+			
 		
-		$rap .= "DAILY REPORT:\n\n";
-		$rep = $this->do_report($from, $to, 0, $service_id);
-		
-		$rap .= "FROM: " . $from . " TO: " . $to . "\n";
-		$file =  $this->format_report($rep, "html", $rap);
+		}
+		$rap .= $this->html_report_footer();
 		
 		
-		
-		
-		
-		
-		$tmpfname = tempnam ("/tmp", "ArS");
+		$tmpfname = tempnam ("/tmp", "AutoReports");
 		
 		$fp = fopen($tmpfname, "w");
-		fwrite($fp, $file);
+		fwrite($fp, $rap);
 		fclose($fp);
 		
 		copy($tmpfname, $tmpfname . ".html");
@@ -131,19 +142,8 @@ class BartlbyUi {
 		
 		$mime = new Mail_Mime();
 		$mime->setTxtBody("see the attachment for details");
-		
 		$mime->addAttachment($tmpfname . ".html", "text/html", "report.html");
-		
-		
-		//update perf handler ;)
-		$this->updatePerfHandler($defaults[server_id], $defaults[service_id]);
-		$path=bartlby_config($this->CFG, "performance_rrd_htdocs");
-		foreach(glob($path . "/" . $service_id . "_*.png") as $fn) {
-		     	//$mime->addAttachment($fn, "image/png", basename($fn), true, 'base64', 'inline');
-		     	$mime->addHTMLImage($fn, "image/png", basename($fn), true);
-		     	$file .= "<img src='" . basename($fn) . "'><br>";
-		}
-		$mime->setHTMLBody($file);
+		$mime->setHTMLBody($rap);
 		$body=$mime->get();
 		
 		
@@ -154,11 +154,11 @@ class BartlbyUi {
 		$dd = explode(";", $emails);
 		for($x=0; $x<count($dd); $x++) {
 	
-			$headers = array('From' =>  $storage->load_key("ars_smtp_from") , 'To' => $dd[$x],
+			$headers = array('From' =>  $storage->load_key("local_mail_from") , 'To' => $dd[$x],
 				   'Subject' => $btl_subj);
 		
 			$smtp = Mail::factory('smtp',
-				array ('host' =>  $storage->load_key("ars_smtp_host"),
+				array ('host' =>  $storage->load_key("local_smtp_host"),
 		  			'auth' => false,
 			   		'timeout' => 10,
 					'debug' => false
@@ -178,181 +178,7 @@ class BartlbyUi {
 	}
 	function bartlby_service_matches_string($svc, $string) {
 		if(!$string) return true;
-		/*
-		 ["service_id"]=>
-  int(26011)
-  ["server_id"]=>
-  int(4)
-  ["last_state"]=>
-  int(0)
-  ["current_state"]=>
-  int(0)
-  ["client_port"]=>
-  int(9040)
-  ["new_server_text"]=>
-  string(52) "[bartlby_load.sh::OK]\dbr load: 30 , 0.34 0.30 0.29
-"
-  ["service_name"]=>
-  string(12) "123testMASS2"
-  ["server_name"]=>
-  string(8) "ACKHOST2"
-  ["client_ip"]=>
-  string(9) "localhost"
-  ["server_ssh_keyfile"]=>
-  string(1) " "
-  ["server_ssh_passphrase"]=>
-  string(1) " "
-  ["server_ssh_username"]=>
-  string(1) " "
-  ["server_enabled_triggers"]=>
-  string(0) ""
-  ["plugin"]=>
-  string(12) "bartlby_load"
-  ["plugin_arguments"]=>
-  string(5) "-c 30"
-  ["check_interval"]=>
-  int(60)
-  ["check_interval_original"]=>
-  int(60415)
-  ["last_check"]=>
-  int(1373897858)
-  ["exec_plan"]=>
-  string(98) "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59|"
-  ["notify_enabled"]=>
-  int(1)
-  ["last_notify_send"]=>
-  int(1373888853)
-  ["last_state_change"]=>
-  int(1373888853)
-  ["flap_count"]=>
-  int(1)
-  ["service_active"]=>
-  int(1)
-  ["service_type"]=>
-  int(8)
-  ["service_passive_timeout"]=>
-  int(120)
-  ["service_var"]=>
-  string(0) ""
-  ["server_icon"]=>
-  string(9) "linux.gif"
-  ["service_check_timeout"]=>
-  int(20)
-  ["service_ack_enabled"]=>
-  int(0)
-  ["service_ack_current"]=>
-  int(0)
-  ["service_retain"]=>
-  int(0)
-  ["service_retain_current"]=>
-  int(150)
-  ["check_is_running"]=>
-  int(0)
-  ["check_starttime"]=>
-  int(0)
-  ["shm_place"]=>
-  int(2)
-  ["service_time_sum"]=>
-  int(212515)
-  ["service_time_count"]=>
-  int(7043)
-  ["service_delay_sum"]=>
-  int(3408)
-  ["service_delay_count"]=>
-  int(7043)
-  ["service_snmp_community"]=>
-  string(0) ""
-  ["service_snmp_textmatch"]=>
-  string(0) ""
-  ["service_snmp_objid"]=>
-  string(0) ""
-  ["service_snmp_warning"]=>
-  int(0)
-  ["service_snmp_critical"]=>
-  int(0)
-  ["service_snmp_version"]=>
-  int(1)
-  ["service_snmp_type"]=>
-  int(1)
-  ["flap_seconds"]=>
-  int(120)
-  ["server_flap_seconds"]=>
-  int(120)
-  ["server_last_notify_send"]=>
-  int(1373888853)
-  ["server_notify"]=>
-  int(1)
-  ["server_enabled"]=>
-  int(1)
-  ["server_dead"]=>
-  int(0)
-  ["renotify_interval"]=>
-  int(0)
-  ["escalate_divisor"]=>
-  int(0)
-  ["fires_events"]=>
-  int(0)
-  ["enabled_triggers"]=>
-  string(0) ""
-  ["server_gone"]=>
-  int(0)
-  ["is_gone"]=>
-  int(0)
-  ["is_downtime"]=>
-  int(0)
-  ["servergroups"]=>
-  array(1) {
-    [0]=>
-    array(8) {
-      ["servergroup_place"]=>
-      int(0)
-      ["servergroup_name"]=>
-      string(3) "sad"
-      ["servergroup_members"]=>
-      string(9) "|4|15|13|"
-      ["servergroup_active"]=>
-      int(1)
-      ["servergroup_notify"]=>
-      int(1)
-      ["servergroup_id"]=>
-      int(17)
-      ["servergroup_dead"]=>
-      int(0)
-      ["enabled_triggers"]=>
-      string(0) ""
-    }
-  }
-  ["servicegroups"]=>
-  array(1) {
-    [0]=>
-    array(8) {
-      ["servicegroup_place"]=>
-      int(0)
-      ["servicegroup_name"]=>
-      string(7) "DEFAULT"
-      ["servicegroup_member"]=>
-      string(355) "|104||26005||26011||116||11||26046||26040||26003||26032||26041||105||26073||25999||26035||26037||26047||26012||26007||109||26169||26010||26002||26051||26044||26067||26038||106||26004||26013||26008||26166||26042||26049||26168||15||26023||13||26015||26070||117||26034||26069||26050||26167||115||26045||26036||26080||26048||26068||26031||26072||26066||26043|"
-      ["servicegroup_active"]=>
-      int(1)
-      ["servicegroup_notify"]=>
-      int(1)
-      ["servicegroup_id"]=>
-      int(7)
-      ["servicegroup_dead"]=>
-      int(0)
-      ["enabled_triggers"]=>
-      string(0) ""
-    }
-  }
-  ["x"]=>
-  int(0)
-  ["color"]=>
-  string(5) "green"
-  ["state_readable"]=>
-  string(2) "OK"
-  ["class"]=>
-  string(7) "header1"
-		*/
+		
 		$rt = true;
 		
 		if(strstr($string, " ")) {
@@ -505,13 +331,13 @@ class BartlbyUi {
 		
 		switch($type) {
 			case 'html':
-				$rap ="<html><head><style>td{font-size:12px; font-family:tahoma}</style></head><body>";
-				$rap .= "<table width=100% border=3>";
+				$rap ="";
+				$rap .= "<table width=100% class='table table-bordered table-striped table-condensed'>";
 			break;	
 		}
 		switch($type) {
 			case 'html':
-				$rap .= "<tr><td colspan=3>" . $hdr . "</td></tr>";
+				$rap .= "<tr><td colspan=3><h1>" . $hdr . "</h1></td></tr>";
 			break;	
 		}
 		
@@ -548,17 +374,9 @@ class BartlbyUi {
 			
 			
 		}
-		
-	if($do_perf == true) {
-		$this->updatePerfHandler($srv_id, $svc_id);
-		$path=bartlby_config($this->CFG, "performance_rrd_htdocs");
-
-		foreach(glob($path . "/" . $svc_id  . "_*.png") as $fn) {
-    	    //$mime->addAttachment($fn, "image/png", basename($fn), true, 'base64', 'inline');
 	
-				$rap .= "<tr><td colspan=3><img src='rrd/" . basename($fn) . "'><td></tr>";
-		}
-	}
+
+
 		
 		switch($type) {
 			case 'html':
@@ -580,7 +398,7 @@ class BartlbyUi {
 					
 					switch($type) {
 						case 'html':
-							$rap .= "<li>" . date("d.m.Y H:i:s", $ts[0]) . " (" . $btl->getState($ts[1]) . ")<br>";
+							$rap .= "<li>" . date("d.m.Y H:i:s", $ts[0]) . " (<font color=" . $btl->getColor($ts[1]) . ">" . $btl->getState($ts[1]) . "</font>)<br>";
 						break;	
 					}
 				}
@@ -619,23 +437,16 @@ class BartlbyUi {
 						if(!$_GET[sec_filter] ||  $stay_sec > $_GET[sec_filter]) {
 						
 							$o1 .= "<tr>";
-							$o1 .= "<td bgcolor='$cl'>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
-							$o1 .= "<td bgcolor='$cl'>" .  $btl->getState($state_array[$xy][lstate]) . " </td>";
-							$o1 .= "<td bgcolor='$cl'>" . $state_array[$xy][msg] . " </td>";
+							$o1 .= "<td >" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
+							$o1 .= "<td><font color=" . $btl->getColor($state_array[$xy][lstate]) . ">" .  $btl->getState($state_array[$xy][lstate]) . " </font></td>";
+							$o1 .= "<td >" . $state_array[$xy][msg] . " </td>";
 							$o1 .= "</tr>";
 						
 							
 						
 							$z++;
 							$z++;
-							if($z == 2) {
-								if($cl == $c1 ){
-									$cl = $c2;
-								} else {
-									$cl = $c1;	
-								}	
-								$z=0;
-							}
+							
 						}
 					break;	
 				}
@@ -644,9 +455,48 @@ class BartlbyUi {
 		
 		$rap .= $o1;
 		
+
+	if($do_perf == true) {
+		$this->updatePerfHandler($srv_id, $svc_id);
+		$path=bartlby_config($this->CFG, "performance_rrd_htdocs");
+		$rap .= "<tr><td colspan=3><b>Graphs of " . $hdr . "</b></td></tr>";
+		$rap .= "<tr><td colspan=3>";
+		foreach(glob($path . "/" . $svc_id  . "_*.png") as $fn) {
+    	    //$mime->addAttachment($fn, "image/png", basename($fn), true, 'base64', 'inline');
+				$b64=base64_encode(file_get_contents($fn));
+				$rap .= "<img src='data:image/gif;base64," . $b64 . "'>";
+		}
+
+		//PNP4nagios support // needs to be web accessable set pnp4nagios_web to http://PNPHOST/pnp4nagios/image
+		$pnp_url=bartlby_config("ui-extra.conf", "pnp4nagios_web");
+		if($pnp_url) {
+			$defaults = bartlby_get_service_by_id($this->RES, $svc_id);
+			if(file_exists("pnp4data/" . $defaults[server_id] . '-' .  str_replace(" ", "_", $defaults[server_name]) . '/' . $defaults[service_id] . '-' . str_replace(" ", "_", $defaults[service_name]) . '.rrd')) {
+				$pnp4_hostname = urlencode($defaults[server_id] . "-" . $defaults[server_name]);
+				$pnp4_servicename = urlencode($defaults[service_id] . "-" .  $defaults[service_name]);
+
+				$i_start = $rep[time_start];
+				$i_end = $rep[time_end];
+				for($z=0; $z<8;$z++) {
+					$u = $pnp_url . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $z . "&cb=" . $t;
+					$b64 = base64_encode(file_get_contents($u));
+					if(strlen($b64) > 2) {
+						$rap .= "<img src='data:image/gif;base64," . $b64 . "'>";
+					}
+				}
+
+			}
+
+		}
+
+		$rap .= "</td></tr>";
+	}
+
+
+
 		switch($type) {
 			case 'html':
-				$rap .= "</table></body></html>";
+				$rap .= "</table><br><br>";
 			break;	
 		}
 		
@@ -729,7 +579,112 @@ class BartlbyUi {
 	       return $plan_box;
 		
 	}
-	
+	function getWhatsOn() {
+		$log_mask=bartlby_config($this->CFG, "logfile");
+		$start_in=date("d.m.Y", strtotime( '-1 days' ));
+		$end_in=date("d.m.Y");
+
+		$date_start=explode(".", $start_in);
+		$date_end=explode(".", $end_in);
+				
+		$time_start=mktime(0,0,0, $date_start[1], $date_start[0], $date_start[2]);
+		$time_end=mktime(23,59,0, $date_end[1], $date_end[0], $date_end[2]);
+		$daycnt = $time_end-$time_start;
+				
+		$day_x=$daycnt/86400;
+		$files_scanned=array();
+
+		$work_on=$time_start;
+		$last_state=$state_in;
+		for($x=0; $x<$day_x; $x++) {
+
+
+			$filename = $log_mask . "." . date("Y.m.d", $work_on);
+			$last_mark=$work_on;
+			
+			//echo "READ FILE: " . $filename . "<br>";
+
+
+			$fdata=@file($filename);
+			$lines = count($fdata);
+		
+
+			$work_on += 86400*2;
+
+			
+		
+			array_push($files_scanned, array(0=>$filename, 1=>$lines));
+			while(list($k,$v) = @each($fdata)) {
+				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|/", $v, $m)) {
+					$state_map[state_changes]++;
+					$cur_service_id=$m[2];
+					$cur_service_state=$m[3];
+
+					list($d, $m,$y, $h, $s, $i) = sscanf($m[1], "%d.%d.%d %d:%d:%d");
+					$cur_time_mark=mktime($h,$s,$i,$m,$d,$y);
+				
+
+					if(! $last_time[$cur_service_id]) {
+						 $last_time[$cur_service_id]=$time_start;
+						 $last_state[$cur_service_id]=0;
+					}
+					$diff = $cur_time_mark - $last_time[$cur_service_id];
+
+					$state_map[services][$cur_service_id][$last_state[$cur_service_id]] += $diff;
+					$state_map[services][$cur_service_id][state_changes]++;
+					$state_map[services][$cur_service_id][hours][date("d.m.Y H", $cur_time_mark)]++;
+					$state_map[services][hours][date("d.m.Y H", $cur_time_mark)]++;
+
+
+					$last_state[$cur_service_id]=$cur_service_state;
+					$last_time[$cur_service_id]=$cur_time_mark;
+
+				}
+				if(preg_match("/(.*);\[.*@NOT@([0-9]+)\|([0-9])\|([0-9])\|(.*)\|(.*)\|(.*)/", $v, $m)) {
+						date_default_timezone_set('UTC');	
+						list($d1, $m1,$y1, $h1, $s1, $i1) = sscanf($m[1], "%d.%d.%d %d:%d:%d");
+						$cur_time_mark=mktime($h1,$s1,$i1,$m1,$d1,$y1);
+
+
+						
+						$state_map[notifications][worker][$m[6]][0]++; //Worker
+						$state_map[notifications][trigger][$m[5]][0]++; //trigger
+						$state_map[services][$m[2]][notifications][trigger][$m[5]][0]++; //trigger
+						$state_map[services][$m[2]][notifications][worker][$m[6]][0]++; //Worker
+						//$state_map[$m[2]][notifications][state][$m[3]]++; //State
+if($m[2] == "5724") {
+	//echo $v;
+}
+						if($m[5] == "sms.sh") {
+							$state_map[notifications_sent]++;
+							$state_map[notifications][worker][$m[6]][1]++; //Worker
+							$state_map[notifications][trigger][$m[5]][1]++; //trigger
+							$state_map[notifications][msgs][]=array("to"=>$m[6], "state"=>$m[3], "date"=> $cur_time_mark, "service_id"=> $m[2]);
+							$state_map[services][$m[2]][notifications][trigger][$m[5]][1]++; //trigger
+							$state_map[services][$m[2]][notifications][worker][$m[6]][1]++; //Worker
+						
+							$state_map[services][$m[2]][notifications][$m[4]]++;
+							$state_map[services][$m[2]][notifications][notifications_sent]++;
+							$state_map[notifications][hours][date("d.m.Y H", $cur_time_mark)]++;
+						}
+						
+						
+						
+				}
+			}
+		}
+		//FILL UP
+		while(list($k, $v1) = each($state_map[services])) {
+			$diff = time() - $last_time[$k];
+			$state_map[services][$k][$last_state[$k]] += $diff;
+
+		
+
+		}
+		$state_map[start_date] = date("Y/m/d", $time_start+86400);
+		$state_map[end_date] = date("Y/m/d", $time_end);
+		return $state_map;
+	}
 	function do_report($start_in, $end_in, $state_in, $in_service) {
 		$state_array=array();
 		
@@ -740,7 +695,12 @@ class BartlbyUi {
 		$time_start=mktime(0,0,0, $date_start[1], $date_start[0], $date_start[2]);
 		$time_end=mktime(0,0,0, $date_end[1], $date_end[0], $date_end[2]);
 		
-		
+
+
+
+		$r[time_start] = $time_start;
+		$r[time_end] = $time_end;
+
 		$daycnt = $time_end-$time_start+86400;
 		
 		$day_x=$daycnt/86400;
@@ -838,6 +798,7 @@ class BartlbyUi {
 		$r[state_array]=$state_array;
 		$r[notify]=$notify;
 		$r[files_scanned]=$files_scanned;
+	
 		
 		return $r;
 		
@@ -1621,6 +1582,25 @@ class BartlbyUi {
  		return $map; 
 			
 	}
+	function getColorSpan($state) {
+		switch($state) {
+			case 0:
+				$l = 'success';
+			break;
+			case 1:
+				$l = 'warning';
+			break;
+			case 2:
+				$l = 'important';
+			break;
+			default:
+				$l = '';
+			break;
+		}
+		return '<span class="label label-' . $l . '">'  . $this->getState($state) . '</span>';
+	}
+
+
 	function getColor($state) {
 		switch($state) {
 			case 0: return "green"; break;
@@ -1766,9 +1746,16 @@ class BartlbyUi {
 				
 				
 				$svc_type = $re[$x][service_type];
-				if($force_service_type != 0) {
+				if($force_service_type != 0) { //Use selected type
 					$svc_type = $force_service_type;
 					
+				}
+				
+				if($force_service_type == -1) { //use server default type
+
+					$srv_temp=bartlby_get_server_by_id($this->RES, $server);
+				
+					$svc_type=$srv_temp[default_service_type];
 				}
 				
 				$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
@@ -1791,14 +1778,14 @@ class BartlbyUi {
 					"exec_plan" => $re[$x][exec_plan],
 					"service_ack_enabled" => $re[$x][service_ack_enabled],
 					"service_retain" => $re[$x][service_retain],
-					"snmp_community" => $re[$x][service_snmp_community],
-					"snmp_version" => $re[$x][service_snmp_version],
-					"snmp_objid" => $re[$x][service_snmp_objid],
-					"snmp_warning" => $re[$x][service_snmp_warning],
-					"snmp_critical" => $re[$x][service_snmp_critical],
-					"snmp_type" => $re[$x][service_snmp_type],
+					"snmp_community" => $re[$x][snmp_community],
+					"snmp_version" => $re[$x][snmp_version],
+					"snmp_objid" => $re[$x][snmp_objid],
+					"snmp_warning" => $re[$x][snmp_warning],
+					"snmp_critical" => $re[$x][snmp_critical],
+					"snmp_type" => $re[$x][snmp_type],
 					"service_active" => $re[$x][service_active],
-					"snmp_textmatch" => $re[$x][service_snmp_textmatch],
+					"snmp_textmatch" => $re[$x][snmp_textmatch],
 					"flap_seconds" => $re[$x][flap_seconds],
 					"escalate_divisor" => $re[$x][escalate_divisor],
 					"fires_events" => $re[$x][fires_events],

@@ -29,7 +29,7 @@
 		exit;
 	}
 	/* Add Extension JS */
-	$layout->OUT .= '<script src="extensions/SiteManager/sm.js" type="text/javascript"></script>';
+	$layout->addScript('<script src="extensions/SiteManager/sm.js" type="text/javascript"></script>');
 
 	$mgmt_content = local_box_render("sm_mgmt.php");
 

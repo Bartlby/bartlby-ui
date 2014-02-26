@@ -48,7 +48,8 @@ if(!$_GET[report_service] || !$log_mask) {
 	
 	if($_POST[report_rcpt]) {
 		
-		$out .= $btl->send_custom_report($_POST[report_rcpt], $_GET[report_service], $_GET[report_start], $_GET[report_end]);
+		$out .= $btl->send_custom_report($_POST[report_rcpt], array($_GET[report_service]), $_GET[report_start], $_GET[report_end]);
+		
 	}
 	
 	

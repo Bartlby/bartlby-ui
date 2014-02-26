@@ -20,6 +20,7 @@
 		global $Bartlby_CONF_isMaster;
 ?>
 
+						
 
 <div style='xmin-height:150px'>
 						

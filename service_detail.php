@@ -264,19 +264,19 @@ if($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[s
 
 
 if($defaults[service_type] == 5){
-	if($defaults[service_snmp_type]  == 1) {
+	if($defaults[snmp_type]  == 1) {
 		$snmp_type = "Lower";
 	} 
-	if($defaults[service_snmp_type]  == 2) {
+	if($defaults[snmp_type]  == 2) {
 		$snmp_type = "Greater";
 	} 
-	if($defaults[service_snmp_type]  == 3) {
+	if($defaults[snmp_type]  == 3) {
 		$snmp_type = "Equal";
 	}
-	if($defaults[service_snmp_type]  == 4) {
+	if($defaults[snmp_type]  == 4) {
 		$snmp_type = "Not-Equal";
 	}
-	if($defaults[service_snmp_type]  == 5) {
+	if($defaults[snmp_type]  == 5) {
 		$snmp_type = "Contains";
 	}
 	$info_box_title='SNMP Service';  

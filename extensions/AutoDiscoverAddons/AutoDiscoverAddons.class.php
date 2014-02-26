@@ -230,7 +230,7 @@ class AutoDiscoverAddons {
 															
 															$s_image="";
 															for($ploop=0; $ploop<8; $ploop++) {
-																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t;
+																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t . "&w=600&h=300";
 																$s_image .= "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
 																$re .= $s_image;
 															}
@@ -247,7 +247,7 @@ class AutoDiscoverAddons {
 
 															$s_image="";
 															for($ploop=0; $ploop<8; $ploop++) {
-																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t;
+																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t . "&w=600&h=300";
 																$s_image .= "<img  $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'>";
 																$tre .= $s_image;
 															}
@@ -268,7 +268,7 @@ class AutoDiscoverAddons {
 															$i_end = time();
 															
 															
-															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t;
+															$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=0&cb=" . $t . "&w=600&h=300";
 															$re .= "<img $width  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 															
 															
@@ -280,7 +280,7 @@ class AutoDiscoverAddons {
 															$s_image="";
 															for($ploop=0; $ploop<8; $ploop++) {
 															
-																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t;
+																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t . "&w=600&h=300";
 																$s_image .= "<img $width  onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 																$re .= $s_image;
 															}
@@ -295,7 +295,7 @@ class AutoDiscoverAddons {
 															
 															$s_image="";
 															for($ploop=0; $ploop<8; $ploop++) {
-																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t;
+																$i_url = $pnp4_nagios . "?host=" . $pnp4_hostname . "&srv=" . $pnp4_servicename . "&start=" . $i_start . "&end="  . $i_end . "&view=0&source=" . $ploop . "&cb=" . $t . "&w=600&h=300";
 																$s_image .= "<img $width onClick='updatePerfhandlerExt();' src='" . $i_url . "' style='display:none;' onLoad='this.style.display=\"block\";'><br>";
 																$re .= $s_image;
 																

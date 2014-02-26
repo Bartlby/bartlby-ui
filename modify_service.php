@@ -399,7 +399,7 @@ $active_box_out .=$layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Service Type",
-			1=>$layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"") 
+			1=>$layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"")  . "Use Server Default Type: " . $layout->Field("use_server_default_type", "checkbox", "1")
 		)
 	)
 , true);
@@ -668,7 +668,7 @@ $snmptypes[0][v]="1";
 $snmptypes[0][k]="Lower";
 
 
-if($defaults[service_snmp_type] == 1) {
+if($defaults[snmp_type] == 1) {
 	 $snmptypes[0][s]=1;
 }
 
@@ -676,7 +676,7 @@ $snmptypes[1][c]="";
 $snmptypes[1][v]="2";
 $snmptypes[1][k]="Greater";
 
-if($defaults[service_snmp_type] == 2) {
+if($defaults[snmp_type] == 2) {
 	 $snmptypes[1][s]=1;
 }
 
@@ -684,7 +684,7 @@ $snmptypes[2][c]="";
 $snmptypes[2][v]="3";
 $snmptypes[2][k]="Equal";
 
-if($defaults[service_snmp_type] == 3) {
+if($defaults[snmp_type] == 3) {
 	 $snmptypes[2][s]=1;
 }
 
@@ -692,7 +692,7 @@ $snmptypes[3][c]="";
 $snmptypes[3][v]="4";
 $snmptypes[3][k]="Not-Equal";
 
-if($defaults[service_snmp_type] == 4) {
+if($defaults[snmp_type] == 4) {
 	 $snmptypes[3][s]=1;
 }
 
@@ -700,7 +700,7 @@ $snmptypes[4][c]="";
 $snmptypes[4][v]="5";
 $snmptypes[4][k]="contains";
 
-if($defaults[service_snmp_type] == 5) {
+if($defaults[snmp_type] == 5) {
 	 $snmptypes[4][s]=1;
 }
 
@@ -710,7 +710,7 @@ $snmpversions[0][v]="1";
 $snmpversions[0][k]="1";
 
 
-if($defaults[service_snmp_version] == 1) {
+if($defaults[snmp_version] == 1) {
 	 $snmpversions[0][s]=1;
 }
 
@@ -718,7 +718,7 @@ $snmpversions[1][c]="";
 $snmpversions[1][v]="2";
 $snmpversions[1][k]="2c";
 
-if($defaults[service_snmp_version] == 2) {
+if($defaults[snmp_version] == 2) {
 	 $snmpversions[1][s]=1;
 }
 
@@ -728,7 +728,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Community",
-			1=>$layout->Field("service_snmp_community", "text", $defaults[service_snmp_community])
+			1=>$layout->Field("snmp_community", "text", $defaults[snmp_community])
 			
 		)
 	)
@@ -737,7 +737,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"OBJ ID",
-			1=>$layout->Field("service_snmp_objid", "text", $defaults[service_snmp_objid])
+			1=>$layout->Field("snmp_objid", "text", $defaults[snmp_objid])
 			
 		)
 	)
@@ -746,7 +746,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Version",
-			1=>$layout->DropDown("service_snmp_version", $snmpversions, "") 
+			1=>$layout->DropDown("snmp_version", $snmpversions, "") 
 			
 		)
 	)
@@ -755,7 +755,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Warning",
-			1=>$layout->Field("service_snmp_warning", "text", $defaults[service_snmp_warning])
+			1=>$layout->Field("snmp_warning", "text", $defaults[snmp_warning])
 			
 		)
 	)
@@ -764,7 +764,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Critical",
-			1=>$layout->Field("service_snmp_critical", "text", $defaults[service_snmp_critical])
+			1=>$layout->Field("snmp_critical", "text", $defaults[snmp_critical])
 			
 		)
 	)
@@ -774,7 +774,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"TextMatch",
-			1=>$layout->Field("service_snmp_textmatch", "text", $defaults[service_snmp_textmatch])
+			1=>$layout->Field("snmp_textmatch", "text", $defaults[snmp_textmatch])
 			
 		)
 	)
@@ -784,7 +784,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"MatchType",
-			1=>$layout->DropDown("service_snmp_type", $snmptypes, "") 
+			1=>$layout->DropDown("snmp_type", $snmptypes, "") 
 			
 		)
 	)

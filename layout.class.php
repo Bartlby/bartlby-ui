@@ -127,6 +127,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		
 	}
+	function addScript($sc) {
+		$this->BTUI_SCRIPTS .= $sc;
+	}
 	function Tab($name, $cnt, $tab_name="") {
 		$this->tab_count++;
 		
@@ -388,6 +391,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Reporting", "Report/s","create_report.php");
                 $this->ext_menu .= $this->addSub("Reporting", "Logfile","logview.php");
                 $this->ext_menu .= $this->addSub("Reporting", "Notifications","logview.php?bartlby_filter=@NOT@");
+                $this->ext_menu .= $this->addSub("Reporting", "Whats On","whats_on.php");
 		$this->ext_menu .= $this->endMenu();
 
 		$this->ext_menu .= $this->beginMenu();

@@ -10,8 +10,16 @@ $c=0;
 		if($grp[service_sum] == 0) {
 				continue;
 		}
+			$bar = "<div id='sys_health_base1' class='progress progress-success' style='width: 80px;'>
+							<div data-perc='" . $grp[prozent_float][ok] . "'  data-rel='tooltip' title='OK: " . $grp[prozent_float][ok] . "%' id='sys_health_progress1' class='bar' style='width: " . $grp[prozent_float][ok] . "%;float:left;'></div>
+							<div data-perc='" . $grp[prozent_float][downtimes_and_infos] . "'  data-rel='tooltip' title='Infos/Downtimes:" . $grp[prozent_float][downtimes_and_infos] . "%' id='sys_health_progress3' class='bar' style='float:left; width: " . $grp[prozent_float][downtimes_and_infos] . "%;background-image: -webkit-linear-gradient(top,  #e0e0e0, #e8e8e8);'></div>
+							<div data-perc='" . $grp[prozent_float][warning] . "'  data-rel='tooltip' title='Warning:" . $grp[prozent_float][warning] . "%' id='sys_health_progress2' class='bar' style='float:left; width: " . $grp[prozent_float][warning] . "%;background-image: -webkit-linear-gradient(top, #ff944d, #ff6600);'></div>
+							<div data-perc='" . $grp[prozent_float][criticals] . "'  data-rel='tooltip' title='Critical:" . $grp[prozent_float][criticals] . "%'  id='sys_health_progress3' class='bar' style='float:left; width: " . $grp[prozent_float][criticals] . "%;background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);'></div>
+</div>
+<div style='clear:both;'></div>
+			";
 			echo  "<td align=left valign=top width=300>";					
-			echo  "<table width='100%'><tr><td><b><a href='servicegroup_detail.php?servicegroup_id=" . $grp[servicegroup_id] . "'>" . $grp[servicegroup_name] . "</b></td><tr><tr><td ><div class='progress " . $grp[lbl] . "' style='width:80px;'><div class='bar' style='width: " . $grp[prozent_float] . "%;'>" . $grp[prozent_float] . " % OK</div></td></tr></table>";
+			echo  "<table width='100%'><tr><td><b><a href='servicegroup_detail.php?servicegroup_id=" . $grp[servicegroup_id] . "'>" . $grp[servicegroup_name] . "</b></td><tr><tr><td >" . $bar . "</td></tr></table>";
 
 			$c++;
 			

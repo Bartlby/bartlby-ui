@@ -41,21 +41,32 @@ class Basket {
 			</tr>
 			
 		</table>
-		<table class=\"nopad\" id='BasketFavorites_sub' style='display:block;'>";
+		<table id='BasketFavorites_sub' style='word-wrap:break-word;table-layout:fixed;xdisplay:block;' class='table table-bordered table-striped table-condensed' >
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th width=60>State</th>
+        <th width=10>R</th>
+      </tr>
+    </thead><tbody>";
 		
 		
 		while(@list($k, $v) = @each($sto[services])) {
 			$idx=$btl->findSHMPlace($k);
 			if($idx < 0) continue;
 			$svc = bartlby_get_service($btl->RES, $idx);
-			$beauty_state = $btl->getState($svc[current_state]);
+			$beauty_state = $btl->getColorSpan($svc[current_state]);
 			$label=$svc[server_name] . "/" . $svc[service_name];
-			$label=substr($label, 0,20);
-			$r .= "<tr><td style='font-size:10px;'><b><a href='service_detail.php?service_place=" . $idx . "'><font size=1>" .  $label . "</A> ($beauty_state) <a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '" . $svc[service_id] . "')\">X</A></b></td></tr>";	
+			//$label=substr($label, 0,30);
+			$r .= "<tr>";
+      $r .= "<td ><b><a href='service_detail.php?service_place=" . $idx . "'><font size=1>" .  $label . "</A></td>";
+      $r .= "<td> $beauty_state </td>";
+      $r .= "<td><a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '" . $svc[service_id] . "')\">X</A></b></td>";
+      $r .= "</tr>";	
 			
 		}
 
-		$r .= "</table>";
+		$r .= "</tbody></table>";
        	
        	return $r;	
        }
@@ -133,7 +144,7 @@ class Basket {
        
        function _overview() {
        	global $layout;
-       	$layout->OUT .= "<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>";
+       	$layout->addScript("<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>");
        }
        
 }

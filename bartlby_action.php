@@ -615,14 +615,14 @@ switch($act) {
 					"exec_plan" => $exec_plan,
 					"service_ack_enabled" => $_GET[service_ack_enabled],
 					"service_retain" => $_GET[service_retain],
-					"snmp_community" => $_GET[service_snmp_community],
-					"snmp_version" => $_GET[service_snmp_version],
-					"snmp_objid" => $_GET[service_snmp_objid],
-					"snmp_warning" => $_GET[service_snmp_warning],
-					"snmp_critical" => $_GET[service_snmp_critical],
-					"snmp_type" => $_GET[service_snmp_type],
+					"snmp_community" => $_GET[snmp_community],
+					"snmp_version" => $_GET[snmp_version],
+					"snmp_objid" => $_GET[snmp_objid],
+					"snmp_warning" => $_GET[snmp_warning],
+					"snmp_critical" => $_GET[snmp_critical],
+					"snmp_type" => $_GET[snmp_type],
 					"service_active" => $_GET[service_active],
-					"snmp_textmatch" => $_GET[service_snmp_textmatch],
+					"snmp_textmatch" => $_GET[snmp_textmatch],
 					"flap_seconds" => $_GET[flap_seconds],
 					"escalate_divisor" => $_GET[escalate_divisor],
 					"fires_events" => $_GET[fires_events],
@@ -685,10 +685,19 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-			
+			$o_svc_type=$_GET[service_type];
+
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
 				
+				$svc_type_to_use=$o_svc_type;
+				if((int)$_GET[use_server_default_type] == 1) {
+					$srv_temp = bartlby_get_server_by_id($btl->RES, $server_id);
+					$svc_type_to_use = $srv_temp[default_service_type];
+					//FALLBACK
+					if($svc_type_to_use == "" || $svc_type_to_use == 0) $svc_type_to_use=1;
+				}
+
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -696,7 +705,7 @@ switch($act) {
 					"notify_enabled"=>$_GET[notify_enabled],					
 					"plugin_arguments"=>$_GET[service_args],
 					"check_interval"=>$_GET[service_interval],
-					"service_type"=>$_GET[service_type],
+					"service_type"=>$svc_type_to_use,
 					"service_passive_timeout" => $_GET[service_passive_timeout],
 					"server_id" => $server_id,
 					"service_check_timeout" => $_GET[service_check_timeout],
@@ -704,14 +713,14 @@ switch($act) {
 					"exec_plan" => $exec_plan,
 					"service_ack_enabled" => $_GET[service_ack_enabled],
 					"service_retain" => $_GET[service_retain],
-					"snmp_community" => $_GET[service_snmp_community],
-					"snmp_version" => $_GET[service_snmp_version],
-					"snmp_objid" => $_GET[service_snmp_objid],
-					"snmp_warning" => $_GET[service_snmp_warning],
-					"snmp_critical" => $_GET[service_snmp_critical],
-					"snmp_type" => $_GET[service_snmp_type],
+					"snmp_community" => $_GET[snmp_community],
+					"snmp_version" => $_GET[snmp_version],
+					"snmp_objid" => $_GET[snmp_objid],
+					"snmp_warning" => $_GET[snmp_warning],
+					"snmp_critical" => $_GET[snmp_critical],
+					"snmp_type" => $_GET[snmp_type],
 					"service_active" => $_GET[service_active],
-					"snmp_textmatch" => $_GET[service_snmp_textmatch],
+					"snmp_textmatch" => $_GET[snmp_textmatch],
 					"flap_seconds" => $_GET[flap_seconds],
 					"escalate_divisor" => $_GET[escalate_divisor],
 					"fires_events" => $_GET[fires_events],
@@ -724,7 +733,7 @@ switch($act) {
 				$ads=bartlby_add_service($btl->RES, $svc_obj);
 				$tmp=bartlby_get_server_by_id($btl->RES, $server_id);
 
-				$global_msg[server_name] .= $tmp[server_name] . ",";
+				$global_msg[server_name] .= $tmp[server_name] . "(" . $svc_type_to_use . "),";
 			
 
 			}	
@@ -779,6 +788,7 @@ switch($act) {
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => $_GET[service_id],
+					"default_service_type" => $_GET[default_service_type],
 					"enabled_triggers" => $triggerstr
 					
 				);
@@ -983,7 +993,8 @@ switch($act) {
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => 0,
-					"enabled_triggers" => $triggerstr
+					"enabled_triggers" => $triggerstr,
+					"default_service_type" => $_GET[default_service_type]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);
@@ -993,7 +1004,8 @@ switch($act) {
 				
 				
 				if($_GET[package_name] != "") {
-					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL);	
+					//function installPackage($pkg, $server, $force_plugin, $force_perf, $my_path="", $force_service_type=0) {
+					$global_msg["package"].= "<br>" . $btl->installPackage($_GET[package_name], $add_server, NULL, NULL, "", $_GET[default_service_type]);	
 				} else {
 					//WE DO NOT NEED INIT SERVICE ANYMORE
 					

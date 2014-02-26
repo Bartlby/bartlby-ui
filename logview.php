@@ -1,4 +1,5 @@
 <?
+//logview.php?bartlby_filter=.*;@LOG@.*\|[0,1,2]\|&json=1
 	include "config.php";
 	include "layout.class.php";
 	include "bartlby-ui.class.php";
@@ -20,7 +21,7 @@
 							  </tr>
 						  </thead>   ';
 	
-	
+	$_GET[bartlby_filter]=stripslashes($_GET[bartlby_filter]);	
 	$ch_time=time();
 	if($_GET[l]) {
 		$tt=explode(".",$_GET[l]);
@@ -78,7 +79,8 @@
 	$lcounter=0;
 
 	$curp = $_GET["site"] > 0 ? $_GET["site"] : 1;
-	$perp=100;
+	if(!$_GET[perp]) $_GET[perp]=100;
+	$perp=$_GET[perp];
 	$forward_link=$btl->create_pagelinks("logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$srvgrpid&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time), count($fl)-1, $perp, $curp,"site");
 	$skip_em=($curp*$perp)-$perp;
 	$skipped=0;
@@ -293,7 +295,7 @@
 			$skipped++;
 			continue;	
 		}
-		if($lcounter > 100) {
+		if($lcounter > $_GET[perp]) {
 			break;	
 		}
 		$lcounter++;
@@ -330,12 +332,20 @@
 		$log_line_json[$lcounter][date]=$date;
 		$log_line_json[$lcounter][icon]="<img src='themes/" . $layout->theme . "/images/$img'>";
 		$log_line_json[$lcounter][txt]=$outline;
+		$log_line_json[$lcounter][state]=$stcheck;
+		$log_line_json[$lcounter][service_id]=$tmp[0];
+		
 		
 	}
 	$layout->TableEnd();
 	
 	
 	$layout->FormEnd();
+
+
+
+
+
 	
 	$r=$btl->getExtensionsReturn("_logView", $layout);
 	

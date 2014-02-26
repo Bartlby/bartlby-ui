@@ -686,7 +686,7 @@ switch($act) {
 				$triggerstr = "|" . $triggerstr;
 			}
 			$o_svc_type=$_GET[service_type];
-
+			
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
 				

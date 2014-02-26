@@ -71,7 +71,10 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 	//FIXME check for <= 0 $service_ids
 	$btl->service_list_loop(function($svc, $shm) use(&$service_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
 		$f = in_array("" . $svc[service_id], $service_ids);
-		
+
+		if(count($service_ids) == 0) {
+			$f = true;
+		}
 		$doedit=0;
 		if($f) {
 			
@@ -79,6 +82,12 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 		
 			$output .= "Working on:  " . $svc[server_name] . "/" .  $svc[service_name] . "(" . $svc[service_id] . ")\n";
 			@reset($new_values);
+
+			if((int)$mode == 3) {
+				bartlby_delete_service($btl->RES, $svc[service_id]);
+				$output .= "<font color=red>Removed Service with id: " . $svc[service_id] . "</font>\n";
+			}	
+
 			while(list($k, $v) = @each($new_values)) {
 				
 				if(preg_match("/_typefield\$/i", $k)) {
@@ -132,7 +141,9 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 							$ret=bartlby_modify_service($btl->RES,  $svc[service_id], $svc);
 							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
 						}
-					}	
+					}
+
+					
 										
 
 				}
@@ -140,6 +151,7 @@ function bulkEditValues($service_ids, $new_values, $mode = 0) {
 		$output .= "-------------\n";	
 		}
 	});
+	
 	bartlby_reload($btl->RES);
 	$res->addAssign("services_bulk_output", "innerHTML", "<pre>$output</pre>");
 	return $res;
@@ -159,7 +171,8 @@ function bulkEnableChecks($ids) {
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	for($x=0; $x<count($ids); $x++) {
-			$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/enabled.gif");
+			//$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/enabled.gif");
+			$res->AddScript("addAssignAllImg('service_" . $ids[$x] . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
 	}
 	
 	return $res;
@@ -183,7 +196,7 @@ function bulkDisableChecks($ids) {
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	for($x=0; $x<count($ids); $x++) {
-			$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/diabled.gif");
+			$res->AddScript("addAssignAllImg('service_" . $ids[$x] . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
 	}
 	
 	return $res;	
@@ -203,7 +216,8 @@ function bulkEnableNotifys($ids) {
 	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	for($x=0; $x<count($ids); $x++) {
-		$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/trigger.gif");
+		//$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/trigger.gif");
+		$res->AddScript("addAssignAllImg('trigger_" . $ids[$x] . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
 	}
 	
 	
@@ -225,7 +239,8 @@ function bulkDisableNotifys($ids) {
 	
 	
 	for($x=0; $x<count($ids); $x++) {
-		$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+		//$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+		$res->AddScript("addAssignAllImg('trigger_" . $ids[$x] . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
 	}
 	
 	
@@ -331,11 +346,13 @@ function toggle_servicegroup_notify_check($service_id, $service_id1) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/trigger.gif");
+				//$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/trigger.gif");
+				$res->AddScript("addAssignAllImg('servicegroup_trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+				//$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+				$res->AddScript("addAssignAllImg('servicegroup_trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
 			}
 			
@@ -367,11 +384,15 @@ function toggle_servicegroup_check($service_id, $service_id1) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("servicegroup_" . $service_id, "src", "themes/" . $layout->theme . "/images/enabled.gif");
+				//$res->AddAssign("servicegroup_" . $service_id, "src", "themes/" . $layout->theme . "/images/enabled.gif");
+
+				$res->AddScript("addAssignAllImg('servicegroup_" . $service_id . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
+
 				//$res->AddAssign("service_" . $service_id, "title", "Disable Checks");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[service_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("servicegroup_" . $service_id, "src", "themes/" . $layout->theme . "/images/diabled.gif");
+				$res->AddScript("addAssignAllImg('servicegroup_" . $service_id . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
+				//$res->AddAssign("servicegroup_" . $service_id, "src", "themes/" . $layout->theme . "/images/diabled.gif");
 				//$res->AddAssign("service_" . $service_id, "title", "Enable Checks");
 			}
 			
@@ -402,11 +423,12 @@ function toggle_servergroup_notify_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("trigger_" . $server_id, "src", "themes/" . $layout->theme . "/images/trigger.gif");
+				
+				$res->AddScript("addAssignAllImg('servergroup_trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $server_id, "title", "disable notifications");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("trigger_" . $server_id, "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+				$res->AddScript("addAssignAllImg('servergroup_trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $server_id, "title", "enable trigger");
 			}
 			
@@ -438,11 +460,13 @@ function toggle_servergroup_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("servergroup_" . $server_id, "src", "themes/" . $layout->theme . "/images/enabled.gif");
+				
+				$res->AddScript("addAssignAllImg('servergroup_" . $server_id . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
 				//$res->AddAssign("server_" . $server_id, "title", "Disable Checks");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("servergroup_" . $server_id, "src", "themes/" . $layout->theme . "/images/diabled.gif");
+				
+				$res->AddScript("addAssignAllImg('servergroup_" . $server_id . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
 				//$res->AddAssign("server_" . $server_id, "title", "Enable Checks");
 			}
 			
@@ -468,11 +492,12 @@ function toggle_server_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("server_" . $server_id, "src", "themes/" . $layout->theme . "/images/enabled.gif");
+				
+				$res->AddScript("addAssignAllImg('server_" . $server_id . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
 				//$res->AddAssign("server_" . $server_id, "title", "Disable Checks");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("server_" . $server_id, "src", "themes/" . $layout->theme . "/images/diabled.gif");
+				$res->AddScript("addAssignAllImg('server_" . $server_id . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
 				//$res->AddAssign("server_" . $server_id, "title", "Enable Checks");
 			}
 			
@@ -505,11 +530,12 @@ function toggle_server_notify_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("trigger_" . $server_id, "src", "themes/" . $layout->theme . "/images/trigger.gif");
+				
+				$res->AddScript("addAssignAllImg('server_trigger_" . $server_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $server_id, "title", "disable notifications");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("trigger_" . $server_id, "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+				$res->AddScript("addAssignAllImg('server_trigger_" . $server_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $server_id, "title", "enable trigger");
 			}
 			
@@ -535,12 +561,13 @@ function toggle_service_handled($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
+				//$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
+				$res->AddScript("addAssignAllImg('handled_" . $server_id . "', 'themes/" . $layout->theme . "/images/handled.gif" . "');");
 				
 				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
 			} else { 
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/unhandled.png");
+				$res->AddScript("addAssignAllImg('handled_" . $server_id . "', 'themes/" . $layout->theme . "/images/unhandled.gif" . "');");
 				
 				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
 			}
@@ -566,11 +593,13 @@ function toggle_service_notify_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/trigger.gif");
+				
+				$res->AddScript("addAssignAllImg('trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("trigger_" . $service_id, "src", "themes/" . $layout->theme . "/images/notrigger.gif");
+				
+				$res->AddScript("addAssignAllImg('trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
 				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
 			}
 			
@@ -598,11 +627,13 @@ function toggle_service_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddAssign("service_" . $service_id, "src", "themes/" . $layout->theme . "/images/enabled.gif");
+				
+				$res->AddScript("addAssignAllImg('service_" . $service_id . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
 				//$res->AddAssign("service_" . $service_id, "title", "Disable Checks");
 			} else {
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddAssign("service_" . $service_id, "src", "themes/" . $layout->theme . "/images/diabled.gif");
+				
+				$res->AddScript("addAssignAllImg('service_" . $service_id . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
 				//$res->AddAssign("service_" . $service_id, "title", "Enable Checks");
 			}
 			

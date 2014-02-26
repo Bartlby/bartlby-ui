@@ -2043,9 +2043,9 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='servicegroup_" . $defaults[servicegroup_id] . "' title='Enable  Checks for this ServiceGroup' border=0></A>";
 		}
 		if($defaults[servicegroup_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[servicegroup_id] . "' title='Disable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
+			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='servicegroup_trigger_" . $defaults[servicegroup_id] . "' title='Disable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img id='trigger_" . $defaults[servicegroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
+			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img id='servicegroup_trigger_" . $defaults[servicegroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
 		}
 		//$is_gone=$this->is_gone($defaults[service_gone]);
 		if($defaults[is_downtime] == 1) {
@@ -2071,9 +2071,9 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='servergroup_" . $defaults[servergroup_id] . "' title='Enable  Checks for this ServerGroup' border=0></A>";
 		}
 		if($defaults[servergroup_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[servergroup_id] . "' title='Disable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
+			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='servergroup_trigger_" . $defaults[servergroup_id] . "' title='Disable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img id='trigger_" . $defaults[servergroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
+			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img id='servergroup_trigger_" . $defaults[servergroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
 		}
 		//$is_gone=$this->is_gone($defaults[server_gone]);
 		if($defaults[is_downtime] == 1) {
@@ -2106,9 +2106,9 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='server_" . $defaults[server_id] . "' title='Enable  Checks for this Service' border=0></A>";
 		}
 		if($defaults[server_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[server_id] . "' title='Disable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='server_trigger_" . $defaults[server_id] . "' title='Disable Notifications for this Service' border=0 data-rel='tooltip'></A>";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='trigger_" . $defaults[server_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='server_trigger_" . $defaults[server_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this Service' border=0 data-rel='tooltip'></A>";
 		}
 		$is_gone=$this->is_gone($defaults[server_gone]);
 		

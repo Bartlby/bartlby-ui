@@ -16,6 +16,11 @@ $(window).focus(function() {
 		btl_start_auto_reload();
 	}
 });
+
+function addAssignAllImg(id, src) {
+	$('[id=' + id + ']').attr("src", src);
+}
+
 function quick_look_group() {
 
  $('#quick_look_table').dataTable({

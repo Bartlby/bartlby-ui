@@ -108,6 +108,84 @@ while($file = readdir($dhl)) {
 closedir($dhl);
 
 
+$types[0][c]="";
+$types[0][v]="1";
+$types[0][k]="Active";
+
+if($defaults[default_service_type] == 1) {
+	$types[0][s]=1;
+}
+
+$types[1][c]="";
+$types[1][v]="2";
+$types[1][k]="Passive";
+if($defaults[default_service_type] == 2) {
+	$types[1][s]=1;
+}
+
+$types[2][c]="";
+$types[2][v]="3";
+$types[2][k]="Group";
+if($defaults[default_service_type] == 3) {
+	$types[2][s]=1;
+}
+
+$types[3][c]="";
+$types[3][v]="4";
+$types[3][k]="Local";
+if($defaults[default_service_type] == 4) {
+	$types[3][s]=1;
+}
+$types[4][c]="";
+$types[4][v]="5";
+$types[4][k]="SNMP";
+if($defaults[default_service_type] == 5) {
+	$types[4][s]=1;
+}
+
+$types[5][c]="";
+$types[5][v]="6";
+$types[5][k]="NRPE";
+if($defaults[default_service_type] == 6) {
+	$types[5][s]=1;
+}
+
+$types[6][c]="";
+$types[6][v]="7";
+$types[6][k]="NRPE(ssl)";
+if($defaults[default_service_type] == 7) {
+	$types[6][s]=1;
+}
+
+$types[8][c]="";
+$types[8][v]="9";
+$types[8][k]="AgentV2(no-SSL)";
+if($defaults[default_service_type] == 9) {
+	$types[8][s]=1;
+}
+
+$types[7][c]="";
+$types[7][v]="8";
+$types[7][k]="AgentV2";
+if($defaults[default_service_type] == 8) {
+	$types[7][s]=1;
+}
+
+
+$types[9][c]="";
+$types[9][v]="10";
+$types[9][k]="SSH";
+if($defaults[default_service_type] == 10) {
+	$types[9][s]=1;
+}
+
+
+if(!$defaults[default_service_type]) {
+	$types[0][s]=1;	
+}
+
+
+
 $fm_action="modify_server";
 $layout->setTitle("Modify Server");
 if($_GET["copy"] == "true") {
@@ -312,6 +390,16 @@ $ov .= $layout->Tr(
 		)
 	)
 ,true);
+
+
+$ov .=$layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Default Service Type:",
+			1=>$layout->DropDown("default_service_type", $types) 
+		)
+	)
+, true);
 
 if($fm_action == "add_server") {
 	$ov .= $layout->Tr(

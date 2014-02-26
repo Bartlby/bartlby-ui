@@ -65,7 +65,10 @@ $types[10][v]="";
 $types[10][k]="use package value";
 $types[10][s]=1;
 
-
+$types[11][c]="";
+$types[11][v]="-1";
+$types[11][k]="use server default type";
+$types[11][s]=0;
 
 while($file = readdir($dhl)) {
 	//$sr=bartlby_get_server_by_id($btl->CFG, $k);

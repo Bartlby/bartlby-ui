@@ -399,7 +399,7 @@ $active_box_out .=$layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Service Type",
-			1=>$layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"") 
+			1=>$layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"")  . "Use Server Default Type: " . $layout->Field("use_server_default_type", "checkbox", "1")
 		)
 	)
 , true);

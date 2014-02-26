@@ -1746,9 +1746,16 @@ if($m[2] == "5724") {
 				
 				
 				$svc_type = $re[$x][service_type];
-				if($force_service_type != 0) {
+				if($force_service_type != 0) { //Use selected type
 					$svc_type = $force_service_type;
 					
+				}
+				
+				if($force_service_type == -1) { //use server default type
+
+					$srv_temp=bartlby_get_server_by_id($this->RES, $server);
+				
+					$svc_type=$srv_temp[default_service_type];
 				}
 				
 				$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	

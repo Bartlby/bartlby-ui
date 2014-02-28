@@ -50,7 +50,7 @@ $dmp_info[1] = 0;
 $dmp_info[2] = 0;
 $is_up_down=-1;
 $server_service_count=0;
-$btl->service_list_loop(function($svc, $shm) use (&$dmp_info, &$server_service_count) {
+$btl->service_list_loop(function($svc, $shm) use (&$dmp_info, &$server_service_count, &$is_up_down) {
 	global $_GET;
 	if($svc[server_id] != $_GET[server_id]) return LOOP_CONTINUE;
 	$server_service_count++;
@@ -58,7 +58,9 @@ $btl->service_list_loop(function($svc, $shm) use (&$dmp_info, &$server_service_c
 	$dmp_info[$svc[current_state]] += 1;
 });
 
-if($is_up_down > 0) 	$isup="<font color='red'>DOWN</font>";
+
+
+if($is_up_down < 0) 	$isup="<font color='red'>DOWN</font>";
 	
 	
 

@@ -63,6 +63,21 @@ switch($act) {
 		$fp = @fopen($base . "/" . $wk[worker_id] . ".dat", "w");
 		@fwrite($fp, $new_file);
 		@fclose($fp);
+
+		if($servers == "") $servers="";
+ 		if($services == "") $services="";
+
+		$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
+		$wrk1[visible_servers]=$servers . ",";
+		$wrk1[visible_services]=$services . ",";
+
+
+	
+
+		$a = bartlby_modify_worker($btl->RES, $_GET[worker_id], $wrk1);
+		
+
+
 		//echo file_get_contents("rights/" . $wk[worker_id] . ".dat");
 	break;
 	
@@ -448,30 +463,34 @@ switch($act) {
 			}
 			$end_pw= md5($_GET[worker_password]);
 			
+			$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 			if(!$_GET[worker_password]) {
-					$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 					$end_pw=$wrk1[password];
 			}
 			//, , $svcstr, $notifystr, , ,$end_pw, $triggerstr, , , $exec_plan
 			$wrk_obj = array(
-				"worker_name" =>$_GET[worker_name],
-				"worker_icq" => $_GET[worker_icq],
-				"worker_mail" => $_GET[worker_mail],
-				"worker_services" => $svcstr,
-				"worker_notify_levels" => $notifystr,
-				"worker_active" => $_GET[worker_active],
-				"worker_password" => $end_pw,
+				"name" =>$_GET[worker_name],
+				"icq" => $_GET[worker_icq],
+				"mail" => $_GET[worker_mail],
+				"services" => $svcstr,
+				"notify_levels" => $notifystr,
+				"active" => $_GET[worker_active],
+				"password" => $end_pw,
 				"enabled_triggers" => $triggerstr,
-				"worker_escalation_limit" => $_GET[escalation_limit],
-				"worker_escalation_minutes" => $_GET[escalation_minutes],
-				"worker_notify_plan" => $exec_plan
-				
+				"escalation_limit" => $_GET[escalation_limit],
+				"escalation_minutes" => $_GET[escalation_minutes],
+				"notify_plan" => $exec_plan,				
+				"selected_services" => $selected_services,
+				"selected_servers" => $selected_servers,
+				"visible_servers" => $wrk1[visible_servers],
+				"visible_services" => $wrk1[visible_services]
 				
 				
 				
 			
 			);
-			
+			error_reporting(E_ALL);
+
 			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);
 			$btl->setUIRight("selected_services", $selected_services, $_GET[worker_id]);
@@ -496,6 +515,24 @@ switch($act) {
 				}	
 			}
 			
+			$selected_servers="";
+			$selected_services="";
+			
+			for($x=0;$x<count($_GET[worker_services]); $x++) {
+				if($_GET[worker_services][$x]{0} == 's') {
+					$cl = str_replace("s", "", $_GET[worker_services][$x]);
+					$selected_servers .= "," . $cl;
+
+				} else {
+					$selected_services .= "," . $_GET[worker_services][$x];
+
+				}	
+			}
+			$selected_servers .= ",";
+			$selected_services .= ",";
+
+
+
 			$svcstr="";
 			$notifystr="";
 			
@@ -535,21 +572,25 @@ switch($act) {
 			}
 			
 			$wrk_obj = array(
-				"worker_name" =>$_GET[worker_name],
-				"worker_icq" => $_GET[worker_icq],
-				"worker_mail" => $_GET[worker_mail],
-				"worker_services" => $svcstr,
-				"worker_notify_levels" => $notifystr,
-				"worker_active" => $_GET[worker_active],
-				"worker_password" => md5($_GET[worker_password]),
+				"name" =>$_GET[worker_name],
+				"icq" => $_GET[worker_icq],
+				"mail" => $_GET[worker_mail],
+				"services" => $svcstr,
+				"notify_levels" => $notifystr,
+				"active" => $_GET[worker_active],
+				"password" => md5($_GET[worker_password]),
 				"enabled_triggers" => $triggerstr,
-				"worker_escalation_limit" => $_GET[escalation_limit],
-				"worker_escalation_minutes" => $_GET[escalation_minutes],
-				"worker_notify_plan" => $exec_plan
+				"escalation_limit" => $_GET[escalation_limit],
+				"escalation_minutes" => $_GET[escalation_minutes],
+				"notify_plan" => $exec_plan,
+				"selected_services" => $selected_services,
+				"selected_servers" => $selected_servers,
+				"visible_servers" => $selected_servers,
+				"visible_services" => $selected_services
 				
 			);
 			
-	
+
 			$add=bartlby_add_worker($btl->RES, $wrk_obj);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";

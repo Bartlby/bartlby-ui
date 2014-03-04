@@ -1,6 +1,7 @@
 <?
 ini_set("memory_limit","999999999M");
 ob_start("ob_gzhandler");
+
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
  *
@@ -1121,6 +1122,14 @@ if($m[2] == "5724") {
 				
 				
 			}
+			$wrk = bartlby_get_worker_by_id($this->RES, $user);
+			
+			$r[services] = explode(",", $wrk[visible_services]);
+			$r[servers] = explode(",", $wrk[visible_servers]);
+			$r[selected_services] = explode(",", $wrk[selected_services]);
+			$r[selected_servers] = explode(",", $wrk[selected_servers]);
+
+
 			for($x=0; $x<count($r[services]); $x++) {
 					if($r[services][$x] == "") {
 						$r[services][$x]=-4;
@@ -1190,11 +1199,20 @@ if($m[2] == "5724") {
 		
 		if(file_exists($base . "/" . $this->user_id . ".dat")) {
 			$fa=file($base . "/" . $this->user_id . ".dat");
+			
 			while(list($k, $v) = each($fa)) {
 				$s1=explode("=", $v);
-				$this->rights[$s1[0]]=explode(",", trim($s1[1]));
+				$r[$s1[0]]=explode(",", trim($s1[1]));
+				
 				
 			}
+
+			$wrk = bartlby_get_worker_by_id($this->RES, $this->user_id);
+
+			$this->rights[services] = explode(",", $wrk[visible_services]);
+			$this->rights[servers] = explode(",", $wrk[visible_servers]);
+			$this->rights[selected_services] = explode(",", $wrk[selected_services]);
+			$this->rights[selected_servers] = explode(",", $wrk[selected_servers]);
 
 			for($x=0; $x<count($this->rights[services]); $x++) {
 					if($this->rights[services][$x] == "") {

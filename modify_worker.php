@@ -126,7 +126,8 @@ while(list($k, $servs) = @each($map)) {
              
 
                        
-                        if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))  || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
+                        if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))) {
+                        // || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
                         	$servers[$optind][s]=1;
                         }
 
@@ -141,7 +142,8 @@ while(list($k, $servs) = @each($map)) {
 		
 		
 			//if(@in_array($servs[$x][service_id], $worker_rights[selected_services])) {
-			if((@in_array($servs[$x][service_id], $worker_rights[selected_services]))  || 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
+			if((@in_array($servs[$x][service_id], $worker_rights[selected_services])))  {
+				//|| 	(@in_array($servs[$x][server_id], $worker_rights[selected_servers])) ) {
 
 				$servers[$optind][s]=1;
 			}

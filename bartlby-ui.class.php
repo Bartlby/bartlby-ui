@@ -1088,7 +1088,6 @@ if($m[2] == "5724") {
 			
 			return true;	
 		}
-		
 		if($this->rights[$k] && $this->rights[$k][0] != "false") {
 			
 				return true;
@@ -1202,7 +1201,7 @@ if($m[2] == "5724") {
 			
 			while(list($k, $v) = each($fa)) {
 				$s1=explode("=", $v);
-				$r[$s1[0]]=explode(",", trim($s1[1]));
+				$this->rights[$s1[0]]=explode(",", trim($s1[1]));
 				
 				
 			}
@@ -1314,6 +1313,7 @@ if($m[2] == "5724") {
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
 					$btl->user_id=$v[worker_id];
+					
 					return LOOP_BREAK;
 
 				}
@@ -1321,6 +1321,7 @@ if($m[2] == "5724") {
 				
 				
 			});
+
 			
 			
 		}

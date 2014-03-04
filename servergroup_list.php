@@ -36,7 +36,7 @@ $btl->servergroup_list_loop(function($grp, $shm) use(&$servergroups, &$optind) {
 		$layout->Td(
 				Array(
 					0=>"Servergroup:",
-					1=>$layout->DropDown("servergroup_id", $servergroups,"", "", false, "ajax_servergroup_list")
+					1=>$layout->DropDown("servergroup_id", $servergroups,"", "", false, "ajax_servergroup_list")  .  $passthrough
 				)
 			)
 	

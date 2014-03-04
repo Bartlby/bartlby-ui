@@ -19,7 +19,6 @@ $layout->set_menu("downtimes");
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
 $layout->Table("100%");
 
-
 switch($_GET[downtime_type]) {
 	case 1:
 		$dt_hidden = 1;

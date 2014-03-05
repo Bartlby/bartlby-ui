@@ -562,12 +562,12 @@ function toggle_service_handled($server_id, $service_id) {
 			if($cur == 1) { //Active
 				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 				//$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
-				$res->AddScript("addAssignAllImg('handled_" . $server_id . "', 'themes/" . $layout->theme . "/images/handled.gif" . "');");
+				$res->AddScript("addAssignAllImg('handled_" . $service_id . "', 'themes/" . $layout->theme . "/images/handled.png" . "');");
 				
 				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
 			} else { 
 				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddScript("addAssignAllImg('handled_" . $server_id . "', 'themes/" . $layout->theme . "/images/unhandled.gif" . "');");
+				$res->AddScript("addAssignAllImg('handled_" . $service_id . "', 'themes/" . $layout->theme . "/images/unhandled.png" . "');");
 				
 				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
 			}

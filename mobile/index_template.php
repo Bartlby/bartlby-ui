@@ -1,7 +1,7 @@
 <?
 require_once ("xajax/xajax.inc.php");
 include "xajax.common.php";
-
+$xajax->sRequestURI="../xajax_dispatcher.php";
 $xajax=$xajax->getJavascript("../xajax");
 ?>
 <!DOCTYPE html>
@@ -40,6 +40,9 @@ $xajax=$xajax->getJavascript("../xajax");
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="js/btl_mobile.js"></script>
 
+  <link href='../themes/classic/css/jquery.noty.css' rel='stylesheet'>
+  <link href='../themes/classic/css/noty_theme_default.css' rel='stylesheet'>
+  <script src="../themes/classic/js/jquery.noty.js"></script>
     <script>
     
     </script>

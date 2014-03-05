@@ -170,6 +170,17 @@
 			$json_ret["aaData"] = $ajax_search["aaData"];
 			if($_GET[rawService]) {
 				$json_ret["rawService"] = $ajax_search["rawService"];
+				@usort($json_ret[rawService], function($a, $b) {
+					
+					$a=$a[server_id];
+					$b=$b[server_id];
+
+					if ($a == $b) {
+	        				return 0;
+	    			}
+	    			return ($a < $b) ? -1 : 1;
+
+				});
 			}
 			
 			@usort($json_ret[aaData], function($a, $b) {
@@ -183,6 +194,7 @@
     			return ($a < $b) ? -1 : 1;
 
 			});
+
 
 
 			

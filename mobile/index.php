@@ -22,10 +22,15 @@
   $other_count=0;
   $gdelay_count=0;
   $gdelay_sum=0;
-  $btl->service_list_loop(function($svc)  use(&$ok_count, &$warning_count, &$critical_count, &$other_count, &$gdelay_sum, &$gdelay_count) {
+  $handled_count=0;
+  $btl->service_list_loop(function($svc)  use(&$ok_count, &$warning_count, &$critical_count, &$other_count, &$gdelay_sum, &$gdelay_count, &$handled_count) {
         //service_delay_sum
         $gdelay_sum += $svc[service_delay_sum];
         $gdelay_count += $svc[service_delay_count];
+        if($svc[handled] == 1) {
+          $handled_count++;
+          return LOOP_CONTINUE;
+        }
 
         switch($svc[current_state]) {
           case 0:
@@ -99,6 +104,10 @@ if($info[round_time_count] > 0 &&  $info[round_time_sum] > 0 ) {
     $other = '<span class="badge p1">' . $other_count . ' Downtime/Infos</span>';
 
   }
+   if($handled_count>0) {
+    $handled = '<span class="badge p1">' . $handled_count . ' </span>';
+
+  }
 
 if($warning_count == 0 && $critical_count == 0 && $other_count == 0) {
   $allok="Everthing is fine all services are good";
@@ -110,13 +119,25 @@ $_MOBILE[CONTENT]='<div class="btlpage" data-name="index.php"></div>
 <ul class="table-view">
   <li class="table-view-cell table-view-divider">Quick Status</li>
   <li class="table-view-cell">
-  <a href="service_list.php?expect_state=0&invert=true&datatables_output=1&rawService=1&iDisplayStart=0&iDisplayLength=50" data-transition="slide-in" data-btl_init="service_list">
-     <div class="media-body" style="text-align: center">
-      ' . $ok .  $criticals . $warning  . $other . $allok . '
-      </div>
+  <a href="service_list.php?expect_state=0&invert=true" data-transition="slide-in" class="push-right" data-btl_init="service_list">
+      <span class="badge" style="background-color:rgba(0, 0, 0, 0.0);">' . $warning . $criticals . $other . '</span>
+      Broken Services
   </a>
   </li>
+  <li class="table-view-cell">
+    <a href="service_list.php?handled=yes" data-transition="slide-in" class="push-right" data-btl_init="service_list">
+    ' . $handled . '
+    Handled Services</A>
+  </li>
+
+  <li class="table-view-cell">
+    <a href="service_list.php" data-transition="slide-in" class="push-right" data-btl_init="service_list">
+    <span class="badge">' . $info[services] . '</span>
+    All</A>
+  </li>
   <li class="table-view-cell table-view-divider">Last Notifications:</li>
+
+  
   
 ';
   for($x=count($won["notifications"][msgs])-1; $x>=0 && $x>count($won["notifications"][msgs])-10; $x--) {

@@ -14,9 +14,9 @@ $_MOBILE[TITLE]="Service List";
 
 
 $_MOBILE[TOP_CONTENT] = '<div class="bar bar-standard bar-header-secondary">
-      <form>
-        <input type="search" placeholder="Search">
-      </form>
+      
+        <input type="search" placeholder="Search" id=svcsearchbox>
+     
       
     </div>
 
@@ -25,17 +25,6 @@ $_MOBILE[TOP_CONTENT] = '<div class="bar bar-standard bar-header-secondary">
 
 $_MOBILE[CONTENT]='<div class="btlpage" data-name="service_list.php" ></div>
 
-<ul class="table-view" id=svcoptions >
-
-<li class="table-view-cell table-view-divider">Options</li>
-
-<li class="table-view-cell svcoptions_el" >
-    Item 2
-    <div class="toggle active">
-      <div class="toggle-handle"></div>
-    </div>
-  </li>
-  </ul>
 
 
 <ul class="table-view" id=svclist>
@@ -60,9 +49,9 @@ $_MOBILE[CONTENT] .= '
 
 $_MOBILE[NAVBARBUTTONS]=' <a class="icon icon-left-nav pull-left" id=backbtn data-transition="slide-out"></a>';
 $_MOBILE[NAVBARBUTTONS] .=  '<span class="pull-right" style="font-size:12px;text-valign:top">
-<span class="icon icon-left-nav"></span>
-100/999
-<span class="icon icon-right-nav"></span>
+<span class="icon icon-left-nav" id=prevpage></span>
+<span id=pager></span>
+<span class="icon icon-right-nav" id=nextpage></span>
 
 </span>';
 

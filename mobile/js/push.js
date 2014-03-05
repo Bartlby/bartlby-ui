@@ -171,6 +171,7 @@
     );
 
     PUSH.id = id;
+    triggerStateChange();
 
     document.body.offsetHeight; // force reflow to prevent scroll
   };

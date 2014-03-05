@@ -11,74 +11,39 @@
   $info=$btl->info;
 
 $_MOBILE[TITLE]="Service List";
-$_MOBILE[CONTENT]='
 
-<ul class="table-view">
-  <li class="table-view-cell table-view-divider">Services</li>
+
+$_MOBILE[TOP_CONTENT] = '<div class="bar bar-standard bar-header-secondary">
+      <form>
+        <input type="search" placeholder="Search">
+      </form>
+      
+    </div>
+
+
+';
+
+$_MOBILE[CONTENT]='<div class="btlpage" data-name="service_list.php" ></div>
+
+<ul class="table-view" id=svcoptions >
+
+<li class="table-view-cell table-view-divider">Options</li>
+
+<li class="table-view-cell svcoptions_el" >
+    Item 2
+    <div class="toggle active">
+      <div class="toggle-handle"></div>
+    </div>
+  </li>
+  </ul>
+
+
+<ul class="table-view" id=svclist>
+  
   ';
 
-$btl->service_list_loop(function($svc, $shm_place)  {
-    global $_GET, $ajax_search, $btl, $ajax_total_records, $xc, $ajax_displayed_records, $_MOBILE;
-    $display_serv=$_GET[server_id];
-    if($display_serv && $display_serv != $svc[server_id]) {
-        return LOOP_CONTINUE; 
-    }
-
-
-  
-    if($_GET[service_id] != "" && $svc[service_id] != $_GET[service_id]) {
-          
-      return LOOP_CONTINUE; 
-    }
-        
-        
-    if($_GET[downtime] == "" && $_GET[invert] == "" && $_GET[expect_state] != "" && $svc[current_state] != $_GET[expect_state]) {
-      
-      return LOOP_CONTINUE; 
-    }
-    if($_GET[downtime] == "" &&  $_GET[invert] && $_GET[expect_state] != "" && $svc[current_state] == $_GET[expect_state] ) {
-    
-      return LOOP_CONTINUE; 
-    }
-    if($_GET[invert] && $_GET[expect_state] != "" && $svc[handled] == 1) {
-      return LOOP_CONTINUE; 
-    }   
-    if($_GET[invert] && $_GET[expect_state] != "" && $svc[current_state] == 4) {
-      return LOOP_CONTINUE; 
-    }
-    
-    if($_GET[downtime] && $svc[is_downtime] != 1) {
-      return LOOP_CONTINUE;       
-    }
-    if($_GET[expect_state] != "" && $svc[is_downtime] == 1) {
-      return LOOP_CONTINUE; 
-    }
-    if($_GET[expect_state] != "" && $svc[handled] == 1) {
-      return LOOP_CONTINUE; 
-    }
-    if(($_GET[handled] == "yes"||$_GET[handled] == true) && $svc[handled] != 1) {
-      return LOOP_CONTINUE;
-    }
-    if($_GET[acks] == "yes" && $svc[service_ack_current] != 2) {
-      return LOOP_CONTINUE; 
-    }
-     switch((int)$svc[current_state]) {
-      case 0:
-        $cl = '#4cd964';
-      break;
-      case 1:
-        $cl = 'orange';
-      break;
-      case 2:
-        $cl='#d9534f';
-      break;
-      default:
-      $cl = 'grey';
-      break;
-    }
-
-
-    $_MOBILE[CONTENT] .= '<li class="table-view-cell">
+/*
+<li class="table-view-cell">
     
       <a href="service_detail.php?service_id=' . $svc[service_id] . '">
       <div class="media-body">
@@ -88,19 +53,18 @@ $btl->service_list_loop(function($svc, $shm_place)  {
       </div>
     </a>
   </li>
-  ';
-
-});
-
-
-  
-
+*/
 $_MOBILE[CONTENT] .= '
 </ul>
 ';
 
-$_MOBILE[NAVBARBUTTONS]=' <a class="icon icon-left-nav pull-left" href="index.php" data-transition="slide-out"></a>';
-$_MOBILE[NAVBARBUTTONS] .=  '<a class="icon icon-refresh pull-right" data-ignore="push" href="index.php"></a>';
+$_MOBILE[NAVBARBUTTONS]=' <a class="icon icon-left-nav pull-left" id=backbtn data-transition="slide-out"></a>';
+$_MOBILE[NAVBARBUTTONS] .=  '<span class="pull-right" style="font-size:12px;text-valign:top">
+<span class="icon icon-left-nav"></span>
+100/999
+<span class="icon icon-right-nav"></span>
+
+</span>';
 
 
 $_MOBILE[NAVBARBOTTOM] .= '<a class="tab-item" href="#">

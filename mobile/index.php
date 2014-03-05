@@ -105,12 +105,12 @@ if($warning_count == 0 && $critical_count == 0 && $other_count == 0) {
 }
 
 $_MOBILE[TITLE]="Bartlby";
-$_MOBILE[CONTENT]='
+$_MOBILE[CONTENT]='<div class="btlpage" data-name="index.php"></div>
 
 <ul class="table-view">
   <li class="table-view-cell table-view-divider">Quick Status</li>
   <li class="table-view-cell">
-  <a href="service_list.php?expect_state=0&invert=true" data-transition="slide-in">
+  <a href="service_list.php?expect_state=0&invert=true&datatables_output=1&rawService=1&iDisplayStart=0&iDisplayLength=50" data-transition="slide-in" data-btl_init="service_list">
      <div class="media-body" style="text-align: center">
       ' . $ok .  $criticals . $warning  . $other . $allok . '
       </div>

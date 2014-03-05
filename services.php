@@ -120,7 +120,7 @@
 							$ajax_service_output=str_replace( "\\dbr","<br>", nl2br($svc[new_server_text]));												
 							$ajax_service_options=$btl->getserviceOptions($svc, $layout);
 							$ajax_search["aaData"][] = array($ajax_checkbox, $server_ajax,$ajax_state , $ajax_last_check, $ajax_next_check, $ajax_service_name, $ajax_service_output, $ajax_service_options);		//FIXME
-							
+							$ajax_search["rawService"][] = $svc;
 						}
 					
 						$xc++;
@@ -168,6 +168,9 @@
 			
 			//$json_ret["iTotalDisplayRecords"]=0;
 			$json_ret["aaData"] = $ajax_search["aaData"];
+			if($_GET[rawService]) {
+				$json_ret["rawService"] = $ajax_search["rawService"];
+			}
 			
 			@usort($json_ret[aaData], function($a, $b) {
 				

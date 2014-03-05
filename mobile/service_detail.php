@@ -49,7 +49,7 @@ $_MOBILE[CONTENT]='
 </ul>
 ';
 
-$_MOBILE[NAVBARBUTTONS]=' <a class="icon icon-left-nav pull-left" href="index.php" data-transition="slide-out"></a>';
+$_MOBILE[NAVBARBUTTONS]='  <a class="icon icon-left-nav pull-left" id=backbtn data-transition="slide-out"></a>';
 $_MOBILE[NAVBARBUTTONS] .=  '<a class="icon icon-refresh pull-right" data-ignore="push" href="index.php"></a>';
 
 

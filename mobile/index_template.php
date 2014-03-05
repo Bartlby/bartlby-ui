@@ -36,11 +36,12 @@ $xajax=$xajax->getJavascript("../xajax");
     <script src="js/push.js"></script>
     <script src="js/segmented-controllers.js"></script>
     <script src="js/toggles.js"></script>
+
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="js/btl_mobile.js"></script>
+
     <script>
-      window.addEventListener('push', mypushHandler);
-      function mypushHandler(ev) {
-        console.log(ev);
-      }
+    
     </script>
     <?=$xajax?>
     <!-- Intro paragraph styles. Delete once you start using this page -->
@@ -69,9 +70,12 @@ $xajax=$xajax->getJavascript("../xajax");
     </header>
 
     <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
+    <?=$_MOBILE[TOP_CONTENT]?>
     <div class="content">
       <?=$_MOBILE[CONTENT]?>
     </div>
+
     
+
   </body>
 </html>

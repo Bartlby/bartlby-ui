@@ -98,7 +98,7 @@ function bartlby_server_map() {
 function utf8_encode_all($dat) // -- It returns $dat encoded to UTF8 
 { 
   if (is_string($dat)) return utf8_encode($dat); 
-  if (!is_array($dat)) return $dat; 
+  if (!is_array($dat) && !is_object($dat)) return $dat; 
   $ret = array(); 
   foreach($dat as $i=>$d) $ret[utf8_encode($i)] = utf8_encode_all($d); 
   return $ret; 

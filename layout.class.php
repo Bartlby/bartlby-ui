@@ -562,7 +562,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		ob_end_clean();
 
 		if($this->OUTPUT_JSON) {
-			echo json_encode(utf8_encode_all($this);
+			echo json_encode(utf8_encode_all($this));
 			exit;
 		}
 		

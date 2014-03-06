@@ -16,6 +16,12 @@ function btl_svc_list_search() {
 	cur_page=0;
 	btl_svc_list(qs);
 }
+function btl_svc_detail(d) {
+	$.getJSON("../services.php?" +  qs + "&datatables_output=1&rawService=1&iDisplayStart=" + cur_page*20 + "&iDisplayLength=20", function(d) {
+		console.log(d);
+	});
+
+}
 function btl_svc_list(d) {
 	qs = d;
 	$("#svcsearchbox").unbind("keydown").on("keydown", function(d) {
@@ -94,6 +100,9 @@ function btl_ready(ev) {
 	qs=window.location.search.slice(1);
 	base_qs=qs;
 	switch(a.data("name")) {
+		case 'service_detail.php':
+			btl_svc_detail(qs);
+		break;
 		case "service_list.php":
 			btl_svc_list(qs);
 		break;

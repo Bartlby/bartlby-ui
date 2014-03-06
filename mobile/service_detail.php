@@ -12,7 +12,7 @@
   
 $_MOBILE[TITLE]="Service Detail";
 $_MOBILE[CONTENT]='
-
+<div class="btlpage" data-name="service_detail.php" ></div>
 <ul class="table-view">
   <li class="table-view-cell table-view-divider">Quick Status</li>
   <li class="table-view-cell">

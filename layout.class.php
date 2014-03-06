@@ -266,7 +266,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 						$obj_cleaned[]=$obj[$x];
 					}
 				}
-				echo json_encode($obj_cleaned);
+				echo json_encode(utf8_encode_all($obj_cleaned));
 				exit;
 				
 				
@@ -562,7 +562,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		ob_end_clean();
 
 		if($this->OUTPUT_JSON) {
-			echo json_encode($this);
+			echo json_encode(utf8_encode_all($this);
 			exit;
 		}
 		

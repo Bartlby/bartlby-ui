@@ -201,7 +201,7 @@
 			if(!is_array($json_ret["aaData"])) {
 				$json_ret["aaData"]=array();
 			}
-			echo json_encode($json_ret);
+			echo json_encode(utf8_encode_all($json_ret));
 			exit;
 	}
 	

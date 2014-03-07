@@ -18,7 +18,7 @@ $_MOBILE[CONTENT]='<div class="btlpage" data-name="service_detail.php" ></div>
   <li class="table-view-cell">
          <div class="media-body">
         
-        <span id=svc_output>Item 1</span>
+        <p id=svc_output>Item 1</p>
       </div>
     
   </li>

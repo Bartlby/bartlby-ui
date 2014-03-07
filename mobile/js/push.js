@@ -87,6 +87,7 @@
       || !target.hash && /#/.test(target.href)
       || target.hash && target.href.replace(target.hash, '') === location.href.replace(location.hash, '')
       || target.getAttribute('data-ignore') == 'push'
+      || 1==1
     ) return;
 
     return target;

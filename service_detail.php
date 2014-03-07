@@ -218,7 +218,8 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											"state" => $svc_state,
 											"check_plan" => $plan_box,
 											"triggers" => $triggers,
-											"handled" => $handled
+											"handled" => $handled,
+											"dead_marker" => $btl->resolveDeadMarker($defaults[server_dead])
 											)
 											
 		, "service_detail_service_info", false, true);

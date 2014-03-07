@@ -101,7 +101,7 @@ if($info[round_time_count] > 0 &&  $info[round_time_sum] > 0 ) {
   }
 
   if($other_count>0) {
-    $other = '<span class="badge p1">' . $other_count . ' Downtime/Infos</span>';
+    $other = '<span class="badge p1">' . $other_count . '</span>';
 
   }
    if($handled_count>0) {

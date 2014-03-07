@@ -89,8 +89,8 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function setTemplate($file) {
 		$this->template_file=$file;
 	}
-	function setJSONOutput() {
-		$this->OUTPUT_JSON=true;
+	function setJSONOutput($json_variant = 1) {
+		$this->OUTPUT_JSON=$json_variant;
 	}
 	function setMainTabName($n) {
 		$this->mainTabName=$n;
@@ -118,8 +118,8 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		if($_GET[json]) {
-			$this->setJSONOutput();
-		}
+			$this->setJSONOutput($_GET[json]);
+		} 
 
 		//
 
@@ -625,6 +625,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$box_file="default_box.php";
 		} else {
 			$box_file .= ".php";
+			if($this->OUTPUT_JSON == 2) {
+				$this->boxes_values[$oid]=$plcs;
+			}
 		}
 		$boxes_path="themes/" . $this->theme . "/boxes/" . $box_file;
 		if(!file_exists($boxes_path)) {
@@ -646,11 +649,11 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$o = ob_get_contents();	
 			
 		ob_end_clean();	
-		
 	
-		$this->boxes[$oid]=$o;
-		$this->boxes_content[$oid]=$content;
-
+		if($this->OUTPUT_JSON != 2) {
+			$this->boxes[$oid]=$o;
+			$this->boxes_content[$oid]=$content;
+		}
 		
 		
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
@@ -661,12 +664,14 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		//$this->boxes_wo_reload[$oid] = $this->boxes[$oid];
 		if($auto_reload) {
 		
-		$this->boxes[$oid] .= "<script>
-		btl_add_refreshable_object(function(data) {
-				
-				$('#content_" . $oid . "').html(data.boxes_content." . $oid . ");
-		});
-		</script>";
+		if($this->OUTPUT_JSON != 2) {
+			$this->boxes[$oid] .= "<script>
+			btl_add_refreshable_object(function(data) {
+					
+					$('#content_" . $oid . "').html(data.boxes_content." . $oid . ");
+			});
+			</script>";
+		}
 		
 		
 		}

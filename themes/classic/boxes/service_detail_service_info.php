@@ -50,7 +50,7 @@
 	</tr>
 	<tr>
 		<td width=150 class='font2' Valign=top>Server Life Indicator:</td>
-		<td align=left><?=$btl->resolveDeadMarker($plcs[service][server_dead], $plcs[map])?></td> 
+		<td align=left><?=$plcs[dead_marker]?></td> 
 		<td>&nbsp;</td>          
 	</tr>
 	

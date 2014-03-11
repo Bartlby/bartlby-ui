@@ -38,6 +38,7 @@ $xajax=$xajax->getJavascript("../xajax");
     <script src="js/toggles.js"></script>
 
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery.timeago.js"></script>
     <script src="js/btl_mobile.js"></script>
 
   <link href='../themes/classic/css/jquery.noty.css' rel='stylesheet'>

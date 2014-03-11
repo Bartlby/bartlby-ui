@@ -1575,6 +1575,46 @@ if($m[2] == "5724") {
 
 
 	}
+	function getSVCType($t) {
+		switch($t) {
+			case 1:
+				return "ACTIVE";
+			break;
+			case 2:
+				return "PASSIVE";
+			break;
+			case 3:
+				return "GROUP";
+			break;
+			case 4:
+				return "LOCAL";
+			break;
+			case 5:
+				return "SNMP";
+			break;
+			case 6:
+				return "NRPE";
+			break;
+			case 7:
+				return "NRPE(SSL)";
+			break;
+			case 9:
+				return "AGENTV2(no-ssl)";
+			break;
+			case 8:
+				return "AGENTV2";
+			break;
+			case 10:
+				return "SSH";
+			break;
+
+
+			default:
+				return "active";
+
+		}
+
+	}
 
 	function GetSVCMap($state=false) {
 		//array(2555, 3191,2558)

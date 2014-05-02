@@ -43,6 +43,7 @@ $app->group("/v1", function() use($app) {
                 $btl->service_list_loop(function($svc, $shm) use ($id, &$btl) {
                     if($svc[service_id] == $id) {
                         bartlby_check_force($btl->RES, $shm);
+                        return LOOP_BREAK;
                     }                    
                 });
                 $r[api][status_code]=0;
@@ -60,6 +61,7 @@ $app->group("/v1", function() use($app) {
                 $btl->service_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
                     if($svc[service_id] == $id) {
                         $rcode=bartlby_toggle_service_notify($btl->RES, $shm, 1);
+                        return LOOP_BREAK;
                     }                    
                 });
                 $r[api][status_code]=$rcode;
@@ -77,6 +79,7 @@ $app->group("/v1", function() use($app) {
                 $btl->service_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
                     if($svc[service_id] == $id) {
                         $rcode=bartlby_toggle_service_active($btl->RES, $shm, 1);
+                        return LOOP_BREAK;
                     }                    
                 });
                 $r[api][status_code]=$rcode;
@@ -94,6 +97,7 @@ $app->group("/v1", function() use($app) {
                 $btl->service_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
                     if($svc[service_id] == $id) {
                         $rcode=bartlby_toggle_service_handled($btl->RES, $shm, 1);
+                        return LOOP_BREAK;
                     }                    
                 });
                 $r[api][status_code]=$rcode;
@@ -156,7 +160,9 @@ function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) 
     $rcnt =0;
     $avail=0;
     $btl->service_list_loop(function($svc, $shm) use(&$filter, &$rcnt, &$avail, &$from_disk, &$btl) {
-
+        if($from_disk) {
+                $svc=bartlby_get_service_by_id($btl->RES, $svc[service_id]);
+        }
         if($filter[service_id] && (int)$svc[service_id] != (int)$filter[service_id]) return LOOP_CONTINUE;
         if($filter[server_id] && $filter[server_id] != $svc[server_id]) {
                 return LOOP_CONTINUE;   
@@ -203,9 +209,7 @@ function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) 
         }
         
         if($shm >= $filter[from] && $rcnt <= $filter[to]) { 
-            if($from_disk) {
-                $svc=bartlby_get_service_by_id($btl->RES, $svc[service_id]);
-            }
+            
             //get color and beauty state
             
             if((int)$filter[service_expand_ui] == 1) {

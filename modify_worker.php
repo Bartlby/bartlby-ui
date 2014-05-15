@@ -297,14 +297,7 @@ $ov .= $layout->Tr(
 		)
 	)
 ,true);
-$ov .= $layout->Tr(
-	$layout->Td(
-		array(
-			0=>"Notification Aggregation Interval",
-			1=>"<font size=1>" . $layout->Field("notification_aggregation_interval", "text", $defaults[notification_aggregation_interval]) . "</font>"
-		)
-	)
-,true);
+
 
 if($defaults[notification_aggregation_interval] == 1) $aggcheck="checked";
 $ov .= $layout->Tr(

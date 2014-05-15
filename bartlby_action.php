@@ -493,7 +493,7 @@ switch($act) {
 				
 			
 			);
-			error_reporting(E_ALL);
+			
 
 			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);

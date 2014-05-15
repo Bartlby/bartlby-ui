@@ -249,6 +249,16 @@ $Author: hjanuschka $
 		$tmpa[1]= str_replace(")", "", $tmpa[1]);
 		$rel_name = $tmpa[0] . " <a href='https://github.com/Bartlby/bartlby-core/commit/" . $tmpa[1] . "'>" . $tmpa[1] . "</A>)";
 	}
+
+	$notifications_aggregation_wait=0;
+	for($x=0; $x<MAX_NOTIFICATION_LOG; $x++) {
+		$r=bartlby_notification_log_at_index($btl->RES, $x);
+		if($r != false && $r[notification_valid] >= 0 && $r[aggregated] != 1 && $r[aggregation_interval] > 0) {
+			$notifications_aggregation_wait++;
+		}
+	}
+
+
 	$info_box_title='Core Information';  
 	$core_content = "";
 	$layout->create_box($info_box_title, $core_content, "core_info", array(
@@ -269,7 +279,8 @@ $Author: hjanuschka $
 		'sirene'  => $sir,
 		'last_sync' => $fin_last_sync,
 		'checks_performed' => number_format($info[checks_performed], 0, ',', '.'),
-		'checks_performed_per_sec' => round($info[checks_performed] / (time()-$btl->info[checks_performed_time]),2)
+		'checks_performed_per_sec' => round($info[checks_performed] / (time()-$btl->info[checks_performed_time]),2),
+		"notification_aggregation_queue" => $notifications_aggregation_wait
 		
 		), "core_info", false, true);
 	

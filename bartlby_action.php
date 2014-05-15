@@ -433,6 +433,8 @@ switch($act) {
 			$selected_servers .= ",";
 			$selected_services .= ",";
 			
+			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			
 			for($x=0;$x<count($_GET[notify]); $x++) {
@@ -483,7 +485,9 @@ switch($act) {
 				"selected_services" => $selected_services,
 				"selected_servers" => $selected_servers,
 				"visible_servers" => $wrk1[visible_servers],
-				"visible_services" => $wrk1[visible_services]
+				"visible_services" => $wrk1[visible_services],
+				"is_super_user" => $_GET[is_super_user],
+				"notification_aggregation_interval" => $_GET[notification_aggregation_interval]
 				
 				
 				
@@ -538,6 +542,9 @@ switch($act) {
 			
 			$msg = "wa:" .  $_GET[worker_active] . "\n";
 			
+			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
+			
 			for($x=0;$x<count($_GET[worker_services]); $x++) {
 				$svcstr .="" . $_GET[worker_services][$x] . "|";	
 			}
@@ -586,7 +593,9 @@ switch($act) {
 				"selected_services" => $selected_services,
 				"selected_servers" => $selected_servers,
 				"visible_servers" => $selected_servers,
-				"visible_services" => $selected_services
+				"visible_services" => $selected_services,
+				"is_super_user" => $_GET[is_super_user],
+				"notification_aggregation_interval" => $_GET[notification_aggregation_interval]
 				
 			);
 			

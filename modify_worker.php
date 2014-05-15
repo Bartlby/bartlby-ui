@@ -8,6 +8,9 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 
 
+
+
+
 if($Bartlby_CONF_Remote == true && $Bartlby_CONF_DBSYNC == false) {
 	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
 }
@@ -232,8 +235,15 @@ $layout->OUT .= "<script>
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
 $layout->Table("100%");
 
-
-
+if($defaults[is_super_user] == 1) $ss="checked";
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Is Super User",
+			1=>"<font size=1>" . "<input type=checkbox value=1 name=is_super_user $ss>"
+		)
+	)
+,true);
 
 $ov .= $layout->Tr(
 	$layout->Td(
@@ -287,6 +297,25 @@ $ov .= $layout->Tr(
 		)
 	)
 ,true);
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Notification Aggregation Interval",
+			1=>"<font size=1>" . $layout->Field("notification_aggregation_interval", "text", $defaults[notification_aggregation_interval]) . "</font>"
+		)
+	)
+,true);
+
+if($defaults[notification_aggregation_interval] == 1) $aggcheck="checked";
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Aggregate Notifications:",
+			1=>"<font size=1>" . "<input type=checkbox value=1 name=notification_aggregation_interval $aggcheck>"
+		)
+	)
+,true);
+
 
 $ov .= $layout->Tr(
 	$layout->Td(

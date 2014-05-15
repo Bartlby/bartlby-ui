@@ -60,7 +60,10 @@
 		?>
 		<tr>
 			<td><font class='font1'>Last-Sync: <font class='font2'><?=$plcs[last_sync]?></td>
-			<td align=right class='font1' colspan=1 rxowspan=1>Checks Performed:<font class='font2'><?=$plcs[checks_performed]?> <font class=font1> Checks/s: <font class=font2><?=$plcs[checks_performed_per_sec]?></font></td>
+			<td align=right class='font1' colspan=1 rxowspan=1>Checks Performed:<font class='font2'><?=$plcs[checks_performed]?> <font class=font1> Checks/s: <font class=font2><?=$plcs[checks_performed_per_sec]?></font>
+			<br>
+			Notifications Waiting: <font class='font2'><?=$plcs[notification_aggregation_queue]?></font>
+			</td>
 		</tr>
 		<tr>
 			<td colspan=2 class='font1'>Version: <font class='font2'><?=$plcs[release_name]?></font></td>

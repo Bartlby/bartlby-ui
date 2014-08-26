@@ -43,7 +43,7 @@ switch($_GET[downtime_type]) {
 	
 }
 
-
+$ORCH_ID=0; //FIXME GET ORCH ID OF SERVER/SERVICE/..GROUP
 $optind=0;
 
 
@@ -72,6 +72,16 @@ $ov .= $layout->Tr(
 		)
 	)
 ,true);
+
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Orchestra ID",
+			1=>$layout->Field("orch_id", "text", $ORCH_ID)
+		)
+	)
+,true);
+
 $ov .= $layout->Tr(
 	$layout->Td(
 			Array(

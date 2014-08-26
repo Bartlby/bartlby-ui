@@ -162,5 +162,10 @@
 		<td align=left ><?= $plcs[handled]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
+	<tr>
+		<td width=150 class='font2'>Orchestra ID:</td>
+		<td align=left ><?= $plcs[service][orch_id]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
 	
 </table>

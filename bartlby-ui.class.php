@@ -1557,6 +1557,7 @@ if($m[2] == "5724") {
 
 		for($x=0; $x<$this->info[services]; $x++) {
 			$svc = bartlby_get_service($this->RES, $x);
+			
 			if($this->btl_is_array($this->rights[services], $svc[service_id]) == -1 && $this->btl_is_array($this->rights[servers], $svc[server_id]) == -1) continue;
 			$rtc=$fcn($svc, $x);			
 			if($rtc == -1) break;
@@ -1859,7 +1860,8 @@ if($m[2] == "5724") {
 					"fires_events" => $re[$x][fires_events],
 					"renotify_interval" => $re[$x][renotify_interval],
 					"enabled_triggers" => $re[$x][enabled_triggers],
-					"handled" => 0
+					"handled" => 0,
+					"enabled_triggers" => $re[$x][orch_id]
 				);
 			
 

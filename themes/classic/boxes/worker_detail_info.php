@@ -38,6 +38,12 @@
 		<td align=left ><?=$plcs[levels]?></font></td>  
 		<td>&nbsp;</td>         
 	</tr>	
+	<tr>
+		<td width=150 class='font2'>Orchestra ID:</td>
+		<td align=left ><?=$plcs[worker][orch_id]?></font></td>  
+		<td>&nbsp;</td>         
+	</tr>	
+	
 	
 	
 </table>

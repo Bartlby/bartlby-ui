@@ -131,7 +131,8 @@ switch($act) {
 				"downtime_to" => $dto,
 				"downtime_type" => $_GET[downtime_type],
 				"downtime_notice" => $_GET[downtime_notice],
-				"downtime_service" => $clean_service
+				"downtime_service" => $clean_service,
+				"orch_id" => $_GET[orch_id]
 			);
 			
 			
@@ -164,7 +165,9 @@ switch($act) {
 				"downtime_to" => $dto,
 				"downtime_type" => $_GET[downtime_type],
 				"downtime_notice" => $notice,
-				"downtime_service" => $clean_service
+				"downtime_service" => $clean_service,
+				"orch_id" => $_GET[orch_id]
+
 			);
 			
 			
@@ -487,7 +490,8 @@ switch($act) {
 				"visible_servers" => $wrk1[visible_servers],
 				"visible_services" => $wrk1[visible_services],
 				"is_super_user" => $_GET[is_super_user],
-				"notification_aggregation_interval" => $_GET[notification_aggregation_interval]
+				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
+				"orch_id" => $_GET[orch_id]
 				
 				
 				
@@ -595,7 +599,8 @@ switch($act) {
 				"visible_servers" => $selected_servers,
 				"visible_services" => $selected_services,
 				"is_super_user" => $_GET[is_super_user],
-				"notification_aggregation_interval" => $_GET[notification_aggregation_interval]
+				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
+				"orch_id" => $_GET[orch_id]
 				
 			);
 			
@@ -678,7 +683,8 @@ switch($act) {
 					"fires_events" => $_GET[fires_events],
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
-					"handled" => $_GET[handled]
+					"handled" => $_GET[handled],
+					"orch_id" => $_GET[orch_id]
 				);
 
 			
@@ -776,7 +782,8 @@ switch($act) {
 					"fires_events" => $_GET[fires_events],
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
-					"handled" => $_GET[handled]
+					"handled" => $_GET[handled],
+					"orch_id" => $_GET[orch_id]
 				);
 				
 				
@@ -839,7 +846,9 @@ switch($act) {
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => $_GET[service_id],
 					"default_service_type" => $_GET[default_service_type],
-					"enabled_triggers" => $triggerstr
+					"enabled_triggers" => $triggerstr,
+					"orch_id" => $_GET[orch_id]
+					
 					
 				);
 				
@@ -874,7 +883,8 @@ switch($act) {
 				"servergroup_notify" => $_GET[servergroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servergroup_members" => $group_members,
-				"servergroup_dead" => (int)$_GET["service_dead"]
+				"servergroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 						
 			);
 			
@@ -913,7 +923,8 @@ switch($act) {
 				"servicegroup_notify" => $_GET[servicegroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servicegroup_members" => $group_members,
-				"servicegroup_dead" => (int)$_GET["service_dead"]
+				"servicegroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 						
 			);
 			$add_servergroup = bartlby_modify_servicegroup($btl->RES, $_GET[servicegroup_id], $svcgrp_obj);
@@ -950,7 +961,8 @@ switch($act) {
 				"servicegroup_notify" => $_GET[servicegroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servicegroup_members" => $group_members,
-				"servicegroup_dead" => (int)$_GET["service_dead"]
+				"servicegroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 						
 			);
 			
@@ -990,7 +1002,8 @@ switch($act) {
 				"servergroup_notify" => $_GET[servergroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servergroup_members" => $group_members,
-				"servergroup_dead" => (int)$_GET["service_dead"]
+				"servergroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 				
 			
 				
@@ -1044,7 +1057,8 @@ switch($act) {
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => 0,
 					"enabled_triggers" => $triggerstr,
-					"default_service_type" => $_GET[default_service_type]
+					"default_service_type" => $_GET[default_service_type],
+					"orch_id" => $_GET[orch_id]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);

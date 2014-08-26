@@ -12,6 +12,7 @@ Perform Action on Selected services<br>
 
 
 <?
+$editable_service_fields[] = array("orch_id", "Orchestra ID");
 $editable_service_fields[] = array("plugin", "Plugin");
 $editable_service_fields[] = array("service_name", "Service Name");
 $editable_service_fields[] = array("plugin_arguments", "Plugin Arguments");
@@ -38,6 +39,7 @@ $editable_service_fields[] = array("snmp_version", "SNMP Version");
 $editable_service_fields[] = array("snmp_warning", "SNMP Warning");
 $editable_service_fields[] = array("snmp_critical", "SNMP Critical");
 $editable_service_fields[] = array("snmp_type", "SNMP Type");
+
 
 
 ?>	

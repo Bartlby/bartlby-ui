@@ -275,6 +275,14 @@ $ov .= $layout->Tr(
 	)
 ,true);
 
+$ov .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Orchestra ID",
+			1=>$layout->Field("orch_id", "text", $defaults[orch_id])  
+		)
+	)
+,true);
 
 
 

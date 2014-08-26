@@ -584,6 +584,14 @@ $active_box_out .= $layout->Tr(
 		)
 	)
 ,true);
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Orchestra ID:",
+			1=>$layout->Field("orch_id", "text", $defaults[orch_id])
+		)
+	)
+,true);
 
 $active_box_out .= "</table>";
 

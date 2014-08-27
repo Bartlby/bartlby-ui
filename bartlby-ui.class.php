@@ -1557,7 +1557,10 @@ if($m[2] == "5724") {
 
 		for($x=0; $x<$this->info[services]; $x++) {
 			$svc = bartlby_get_service($this->RES, $x);
-			
+			if($svc[is_gone] == 2) {
+				//Skip deleted services
+				continue;
+			}
 			if($this->btl_is_array($this->rights[services], $svc[service_id]) == -1 && $this->btl_is_array($this->rights[servers], $svc[server_id]) == -1) continue;
 			$rtc=$fcn($svc, $x);			
 			if($rtc == -1) break;
@@ -1798,135 +1801,138 @@ if($m[2] == "5724") {
 		
 		
 		$msg = "Installing package '$pkg' on Server:  $server<br>";
+		
 		if($my_path == "") {
-			$fp=@fopen("pkgs/" . $pkg, "r");
+			$bf=file_get_contents("pkgs/" . $pkg);
 		} else {
-			$fp=@fopen($my_path . $pkg, "r");	
+			$bf=file_get_contents($my_path . $pkg);	
 		}
 
-		if($fp) {
-			while(!feof($fp)) {
-				$bf .= fgets($fp, 1024);	
-			}
-			$re=unserialize($bf);
-			fclose($fp);
-			for($x=0; $x<count($re); $x++) {
-				$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
-				
-				
-				$svc_type = $re[$x][service_type];
-				if($force_service_type != 0) { //Use selected type
-					$svc_type = $force_service_type;
-					
-				}
-				
-				if($force_service_type == -1) { //use server default type
-
-					$srv_temp=bartlby_get_server_by_id($this->RES, $server);
-				
-					$svc_type=$srv_temp[default_service_type];
-				}
-				
-				$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
-				$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
-				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $svc_type . "<br>";
-				
-				
-
-				$svc_obj = array(
-					"plugin"=>$re[$x][plugin],
-					"service_name"=>$re[$x][service_name],
-					"notify_enabled"=>$re[$x][notify_enabled],					
-					"plugin_arguments"=>$re[$x][plugin_arguments],
-					"check_interval"=>$re[$x][check_interval],
-					"service_type"=>$svc_type,
-					"service_passive_timeout" => $re[$x][service_passive_timeout],
-					"server_id" => $server,
-					"service_check_timeout" => $re[$x][service_check_timeout],
-					"service_var" => $re[$x][service_var],
-					"exec_plan" => $re[$x][exec_plan],
-					"service_ack_enabled" => $re[$x][service_ack_enabled],
-					"service_retain" => $re[$x][service_retain],
-					"snmp_community" => $re[$x][snmp_community],
-					"snmp_version" => $re[$x][snmp_version],
-					"snmp_objid" => $re[$x][snmp_objid],
-					"snmp_warning" => $re[$x][snmp_warning],
-					"snmp_critical" => $re[$x][snmp_critical],
-					"snmp_type" => $re[$x][snmp_type],
-					"service_active" => $re[$x][service_active],
-					"snmp_textmatch" => $re[$x][snmp_textmatch],
-					"flap_seconds" => $re[$x][flap_seconds],
-					"escalate_divisor" => $re[$x][escalate_divisor],
-					"fires_events" => $re[$x][fires_events],
-					"renotify_interval" => $re[$x][renotify_interval],
-					"enabled_triggers" => $re[$x][enabled_triggers],
-					"handled" => 0,
-					"enabled_triggers" => $re[$x][orch_id]
-				);
+		if($bf) {
 			
-
-				
-				$ads=bartlby_add_service($this->RES, $svc_obj);
-				
-				
-
-				$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
-				
-				if($re[$x][__install_plugin]) {
-					$msg .= str_repeat("&nbsp;", 20) . "Installing plugin: " . $re[$x][plugin] . "<br>";	
+			$re=unserialize($bf);
+			
+			if($re) {
+				for($x=0; $x<count($re); $x++) {
+					$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
 					
-					if(!file_exists($plugin_dir . "/" . $re[$x][plugin]) || $force_plugin == "checked") {
-						$plugin=@fopen($plugin_dir . "/" . $re[$x][plugin], "wb");
-						if($plugin){
-							fwrite($plugin, $re[$x][__install_plugin]);
-							fclose($plugin);
-							@chmod($plugin_dir . "/" . $re[$x][plugin], 0777);
-						} else {
-							$msg .= str_repeat("&nbsp;", 25) . " plugin fopen( " . $plugin_dir . "/" . $re[$x][plugin] . ") failed<br>";
-						}
-					} else {
-						$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $plugin_dir . "/" . $re[$x][plugin] . ") already existing<br>";
+					
+					$svc_type = $re[$x][service_type];
+					if($force_service_type != 0) { //Use selected type
+						$svc_type = $force_service_type;
+						
 					}
 					
-				}
-				if($re[$x][__install_perf]) {
-					$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler: " . $re[$x][plugin] . "<br>";	
+					if($force_service_type == -1) { //use server default type
+
+						$srv_temp=bartlby_get_server_by_id($this->RES, $server);
 					
-					if(!file_exists($perf_dir . "/" . $re[$x][plugin]) || $force_perf == "checked") {
-						$perf=@fopen($perf_dir . "/" . $re[$x][plugin], "wb");
-						if($perf){
-							fwrite($perf, $re[$x][__install_perf]);
-							fclose($perf);
-							@chmod($perf_dir . "/" . $re[$x][plugin], 0777);
-						} else {
-							$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
-						}
-					} else {
-						$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
+						$svc_type=$srv_temp[default_service_type];
 					}
 					
-				}
-				if($re[$x][__install_perf_default]) {
-					$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler (default): " . $re[$x][plugin] . "<br>";	
+					$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
+					$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
+					$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $svc_type . "<br>";
 					
-					if(!file_exists($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd") || $force_perf == "checked") {
-						$perf=@fopen($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", "wb");
-						if($perf){
-							fwrite($perf, $re[$x][__install_perf_default]);
-							fclose($perf);
-							@chmod($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", 0777);
-						} else {
-							$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
-						}
-					} else {
-						$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
-					}
 					
-				}
-				
-				
+
+					$svc_obj = array(
+						"plugin"=>$re[$x][plugin],
+						"service_name"=>$re[$x][service_name],
+						"notify_enabled"=>$re[$x][notify_enabled],					
+						"plugin_arguments"=>$re[$x][plugin_arguments],
+						"check_interval"=>$re[$x][check_interval],
+						"service_type"=>$svc_type,
+						"service_passive_timeout" => $re[$x][service_passive_timeout],
+						"server_id" => $server,
+						"service_check_timeout" => $re[$x][service_check_timeout],
+						"service_var" => $re[$x][service_var],
+						"exec_plan" => $re[$x][exec_plan],
+						"service_ack_enabled" => $re[$x][service_ack_enabled],
+						"service_retain" => $re[$x][service_retain],
+						"snmp_community" => $re[$x][snmp_community],
+						"snmp_version" => $re[$x][snmp_version],
+						"snmp_objid" => $re[$x][snmp_objid],
+						"snmp_warning" => $re[$x][snmp_warning],
+						"snmp_critical" => $re[$x][snmp_critical],
+						"snmp_type" => $re[$x][snmp_type],
+						"service_active" => $re[$x][service_active],
+						"snmp_textmatch" => $re[$x][snmp_textmatch],
+						"flap_seconds" => $re[$x][flap_seconds],
+						"escalate_divisor" => $re[$x][escalate_divisor],
+						"fires_events" => $re[$x][fires_events],
+						"renotify_interval" => $re[$x][renotify_interval],
+						"enabled_triggers" => $re[$x][enabled_triggers],
+						"handled" => 0,
+						"orch_id" => $re[$x][orch_id]
+					);
 				
 
+				
+					$ads=bartlby_add_service($this->RES, $svc_obj);
+					
+					
+
+					$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
+					
+					if($re[$x][__install_plugin]) {
+						$msg .= str_repeat("&nbsp;", 20) . "Installing plugin: " . $re[$x][plugin] . "<br>";	
+						
+						if(!file_exists($plugin_dir . "/" . $re[$x][plugin]) || $force_plugin == "checked") {
+							$plugin=@fopen($plugin_dir . "/" . $re[$x][plugin], "wb");
+							if($plugin){
+								fwrite($plugin, $re[$x][__install_plugin]);
+								fclose($plugin);
+								@chmod($plugin_dir . "/" . $re[$x][plugin], 0777);
+							} else {
+								$msg .= str_repeat("&nbsp;", 25) . " plugin fopen( " . $plugin_dir . "/" . $re[$x][plugin] . ") failed<br>";
+							}
+						} else {
+							$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $plugin_dir . "/" . $re[$x][plugin] . ") already existing<br>";
+						}
+						
+					}
+					if($re[$x][__install_perf]) {
+						$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler: " . $re[$x][plugin] . "<br>";	
+						
+						if(!file_exists($perf_dir . "/" . $re[$x][plugin]) || $force_perf == "checked") {
+							$perf=@fopen($perf_dir . "/" . $re[$x][plugin], "wb");
+							if($perf){
+								fwrite($perf, $re[$x][__install_perf]);
+								fclose($perf);
+								@chmod($perf_dir . "/" . $re[$x][plugin], 0777);
+							} else {
+								$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
+							}
+						} else {
+							$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
+						}
+						
+					}
+					if($re[$x][__install_perf_default]) {
+						$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler (default): " . $re[$x][plugin] . "<br>";	
+						
+						if(!file_exists($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd") || $force_perf == "checked") {
+							$perf=@fopen($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", "wb");
+							if($perf){
+								fwrite($perf, $re[$x][__install_perf_default]);
+								fclose($perf);
+								@chmod($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", 0777);
+							} else {
+								$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
+							}
+						} else {
+							$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
+						}
+						
+					}
+					
+					
+					
+
+				}
+			} else {
+				$msg = "unserialize failed";
 			}
 //			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {

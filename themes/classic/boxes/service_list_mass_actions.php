@@ -12,7 +12,7 @@ Perform Action on Selected services<br>
 
 
 <?
-$editable_service_fields[] = array("orch_id", "Orchestra ID");
+//$editable_service_fields[] = array("orch_id", "Orchestra ID");
 $editable_service_fields[] = array("plugin", "Plugin");
 $editable_service_fields[] = array("service_name", "Service Name");
 $editable_service_fields[] = array("plugin_arguments", "Plugin Arguments");

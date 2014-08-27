@@ -783,7 +783,7 @@ switch($act) {
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
 					"handled" => $_GET[handled],
-					"orch_id" => $_GET[orch_id]
+					"orch_id" => $srv_temp[orch_id]
 				);
 				
 				

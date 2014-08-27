@@ -317,15 +317,15 @@ $layout->set_menu("services");
 
 $optind=0;
 $servers=array();
-
-$btl->server_list_loop(function($srv, $shm) use (&$optind, &$servers, &$defaults) {
+$server_orch_id=-1;
+$btl->server_list_loop(function($srv, $shm) use (&$optind, &$servers, &$defaults, &$server_orch_id) {
 	global $_GET;
 	if(($_GET[dropdown_term] && preg_match("/" . $_GET[dropdown_term] . "/", $srv[server_name])) || $srv[server_id] == $defaults[server_id]) {
 		$servers[$optind][c]="";
 		$servers[$optind][v]=$srv[server_id];	
 		$servers[$optind][k]=$srv[server_name];
 		if($defaults[server_id] == $srv[server_id]) {
-
+			$server_orch_id=$srv[orch_id];
 			$servers[$optind][s]=1;	
 		}
 		$optind++;
@@ -588,7 +588,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Orchestra ID:",
-			1=>$layout->Field("orch_id", "text", $defaults[orch_id])
+			1=>$layout->Field("orch_id", "text", $server_orch_id, "", "disabled") . "<small><i>Orchestra ID is bound to the server (on initial add -1 will be replaced by the servers orchestra id)</small></i>"
 		)
 	)
 ,true);
@@ -846,3 +846,4 @@ $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
 $layout->TableEnd();
 $layout->FormEnd();
 $layout->display();
+

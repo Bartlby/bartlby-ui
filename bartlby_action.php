@@ -655,6 +655,10 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+			
+			$srv=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
+			$global_msg=$srv;
+
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -684,10 +688,10 @@ switch($act) {
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
 					"handled" => $_GET[handled],
-					"orch_id" => $_GET[orch_id]
+					"orch_id" => $srv[orch_id]
 				);
 
-			
+		
 			$ads=bartlby_modify_service($btl->RES, $_GET[service_id] , $svc_obj);
 			$global_msg=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
 			$global_msg[exec_plan]=$btl->resolveServicePlan($exec_plan);

@@ -749,10 +749,11 @@ switch($act) {
 			
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
-				
 				$svc_type_to_use=$o_svc_type;
+				$srv_temp = bartlby_get_server_by_id($btl->RES, $server_id);
+				
 				if((int)$_GET[use_server_default_type] == 1) {
-					$srv_temp = bartlby_get_server_by_id($btl->RES, $server_id);
+					
 					$svc_type_to_use = $srv_temp[default_service_type];
 					//FALLBACK
 					if($svc_type_to_use == "" || $svc_type_to_use == 0) $svc_type_to_use=1;

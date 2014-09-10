@@ -95,7 +95,7 @@ $Author: hjanuschka $
 			$gdelay_sum += $v[service_delay_sum];
 			$gdelay_count += $v[service_delay_count];
 			
-			if($v[is_gone]) $reload_status="<font color=red>Reload needed</font>";		
+			if($v[is_gone] == 1 || $v[is_gone] == 2) $reload_status="<font color=red>Reload needed</font>";		
 			
 			$service_state_a[$v[service_id]][$v[current_state]]++;	
 			$server_state_a[$v[server_id]][$v[current_state]]++;	

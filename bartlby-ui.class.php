@@ -1503,6 +1503,9 @@ if($m[2] == "5724") {
 				return "<img src='themes/" . $this->theme . "/images/emblem-generic.png' alt='Object changed you should reload' border=0>";
 			case 2:
 				return "<img src='themes/" . $this->theme . "/images/emblem-important.png' alt='Object deleted you should reload' border=0>";
+			case 3:
+				return "<img src='themes/" . $this->theme . "/images/emblem-timeout.gif' alt='Object has beend timed out' border=0>";
+			break;
 			default:
 				return "";
 		}

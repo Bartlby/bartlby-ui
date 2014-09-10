@@ -23,27 +23,35 @@ switch($_GET[downtime_type]) {
 	case 1:
 		$dt_hidden = 1;
 		$dt_service = $_GET[service_id];
+		$svc=bartlby_get_service_by_id($btl->RES, $_GET[service_id]);
+		$ORCH_ID=$svc[orch_id]; //FIXME GET ORCH ID OF SERVER/SERVICE/..GROUP
 		$dt_type = "Service (" .  $dt_service . ")";
 	break;
 	case 2:
 		$dt_hidden = 2;
 		$dt_service = $_GET[server_id];
 		$dt_type = "Server (" .  $dt_service . ")";
+		$svc=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
+		$ORCH_ID=$svc[orch_id]; //FIXME GET ORCH ID OF SERVER/SERVICE/..GROUP
 	break;
 	case 3:
 		$dt_hidden = 3;
 		$dt_service = $_GET[servergroup_id];
 		$dt_type = "Servergroup (" .  $dt_service . ")";
+		$svc=bartlby_get_servergroup_by_id($btl->RES, $_GET[servergroup_id]);
+		$ORCH_ID=$svc[orch_id]; //FIXME GET ORCH ID OF SERVER/SERVICE/..GROUP
 	break;
 	case 4:
 		$dt_hidden = 4;
 		$dt_service = $_GET[servicegroup_id];
 		$dt_type = "Servicegroup (" .  $dt_service . ")";
+		$svc=bartlby_get_servicegroup_by_id($btl->RES, $_GET[servicegroup_id]);
+		$ORCH_ID=$svc[orch_id]; //FIXME GET ORCH ID OF SERVER/SERVICE/..GROUP
 	break;
 	
 }
 
-$ORCH_ID=0; //FIXME GET ORCH ID OF SERVER/SERVICE/..GROUP
+
 $optind=0;
 
 

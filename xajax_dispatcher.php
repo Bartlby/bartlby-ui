@@ -688,10 +688,14 @@ function forceCheck($server, $service) {
 		if($service) {
 			if($btl->hasServerorServiceRight($service, false)) {
 				$gsm=bartlby_get_service_by_id($btl->RES, $service);
-				$idx=$btl->findSHMPlace($service);
-				$cur=bartlby_check_force($btl->RES, $idx);
-				//$res->addAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				$res->AddScript('noty({"text":"Check has been forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+				if($gsm[orch_id] == 0) {
+					$idx=$btl->findSHMPlace($service);
+					$cur=bartlby_check_force($btl->RES, $idx);
+					//$res->addAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+					$res->AddScript('noty({"text":"Check has been forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+				} else {
+					$res->addAlert("force on: " . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name] . " not possible because on orch-node");	
+				}
 			} else {
 				$res->addAlert("permission denied to force:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 			}

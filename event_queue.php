@@ -13,10 +13,118 @@ $layout= new Layout();
 $layout->set_menu("core");
 $layout->setTitle("Bartlby Last Event's");
 
+
+
+
+if($_GET[datatables_output] == 1) {
+	if($_GET[table] == "notify_log") {
+
+		$not_log_array = array();
+
+		for($x=0; $x<MAX_NOTIFICATION_LOG; $x++) {
+			$r=bartlby_notification_log_at_index($btl->RES, $x);
+			if($r != false && $r[notification_valid] >= 0) {
+				$r[id]=$x;
+				$not_log_array[$r[time] . "-" . $r[service_id] . $r[state] . $r[worker_id] . "-" . $x] = $r;
+			}
+		}	
+		krsort($not_log_array);						  
+		foreach($not_log_array as $el) {
+
+			$svc_color=$btl->getColor($el[state]);
+			$svc_state=$btl->getState($el[state]);
+			$id=$el[id];
+			$ajax_lbl = "label-default";
+			if($svc_color == "green") {
+				$ajax_lbl = "label-success";
+			}
+						
+			if($svc_color == "orange") {
+				$ajax_lbl = "label-warning";
+			}
+			if($svc_color == "red") {
+				$ajax_lbl = "label-important";
+			}
+			switch($el[type]) {
+				case 0:
+					$el_type = "normal";
+				break;
+				case 2:
+					$el_type = "renotify";
+				break;
+				case 1:
+					$el_type="escalation";		
+				break;
+			}
+
+			switch($el[received_via]) {
+				case 1:
+					$el_via =  "Local";
+				break;
+				case 2:
+					$el_via  = "Upstream";
+				break;
+
+
+			}
+
+
+
+			$btl->worker_list_loop(function($wrk, $idx) use (&$el_worker, &$el) {
+					if($wrk[worker_id] == $el[worker_id]) {
+						$el_worker=$wrk[name];
+						return LOOP_BREAK;
+					}
+			});
+
+			$btl->service_list_loop(function($wrk, $idx) use (&$el_service, &$el) {
+					if($wrk[service_id] == $el[service_id]) {
+						
+						 $el_service = "<a href='service_detail.php?service_id=" .$wrk[service_id] . "'>" .  $wrk[server_name] . "/" .  $wrk[service_name] . " </a>";
+						return LOOP_BREAK;
+					}
+			});
+			if(!$el_service) {
+				$el_service = "Not found local - ID: " . $el[service_id];
+			}
+			if($el[aggregation_interval] > 0) {
+				$el_agg = "<font color=red>no</font>";
+				if($el[aggregated] == 1) {
+					$el_agg = "<font color=green>yes</font>";
+				} 		
+			} else {
+				$el_agg = "not aggregatable";
+			}
+			$el_state = "<span class='label " . $ajax_lbl  . "'>" . $svc_state . "</span>";
+			//$not_log .= "<tr><td>" . date("d.m.Y H:i:s", $el[time]) . "</td><td>" . $el_worker . "</td><td>" . $el_service . "</td><td>" . $el_state . "</td><td>" . $el[trigger_name] . "</td><td>" . $el_type . "</td><td>" . $el_agg. "</td><td>" . $el_via. "</td></tr>";
+				if($xc >= $_GET[iDisplayStart] && $xc <= $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
+
+					$ajax_search["aaData"][] = array($id,date("d.m.Y H:i:s", $el[time]), $el_worker , $el_service, $el_state, $el[trigger_name], $el_type, $el_agg, $el_via);		//FIXME
+					$ajax_displayed_records++;
+				}
+				$xc++;
+			}
+
+			$json_ret["iTotalRecords"] = count($not_log_array);
+			$json_ret["iTotalDisplayRecords"] = count($not_log_array);
+			$json_ret["sEcho"] = (int)$_GET[sEcho];
+			$json_ret["aaData"]=$ajax_search["aaData"];
+
+			echo json_encode($json_ret);
+
+			exit;
+
+	}
+
+
+}
+
+
 //Check if profiling is enabled
 	$evnts = '<table class="datat1able table table-bordered table-striped table-condensed">
 							  <thead>
 								  <tr>
+								  	<th style="width:20px">ID</th>
 									  <th style="width:150px">Date</th>
 									  <th style="width:100px">Type</th>
 									  <th style="width:100px">Output</th>
@@ -101,7 +209,26 @@ $layout->setTitle("Bartlby Last Event's");
 	$evnts .="</table>";
 
 
-$not_log  = '<table class="dat1atable table table-bordered table-striped table-condensed">
+$not_log  = '
+<script>
+$(document).ready(function() {
+
+
+$(".notify_log_table").dataTable({
+			    "sPaginationType": "bootstrap",
+			    "sAjaxSource": "event_queue.php?table=notify_log&datatables_output=1",
+			    "bServerSide": true,
+			    "bProcessing": true,
+			    "sDom": "<\'row-fluid\'<\'span6\'l><\'span6\'f>r>t<\'row-fluid\'<\'span12\'i><\'span12 center\'p>>",
+			    "oLanguage": {
+			    	"sEmptyTable": "No Services found",
+            "sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
+        	}
+        	});
+});
+</script>
+
+<table class="notify_log_table table table-bordered table-striped table-condensed">
 							  <thead>
 								  <tr>
 									  <th style="width:50px">Date</th>
@@ -117,85 +244,6 @@ $not_log  = '<table class="dat1atable table table-bordered table-striped table-c
 								  </tr>
 							  </thead>   ';
 
-$not_log_array = array();
-
-for($x=0; $x<MAX_NOTIFICATION_LOG; $x++) {
-	$r=bartlby_notification_log_at_index($btl->RES, $x);
-	if($r != false && $r[notification_valid] >= 0) {
-		$not_log_array[$r[time] . "-" . $r[service_id] . $r[state] . $r[worker_id] . "-" . $x] = $r;
-	}
-}	
-krsort($not_log_array);						  
-foreach($not_log_array as $el) {
-
-	$svc_color=$btl->getColor($el[state]);
-	$svc_state=$btl->getState($el[state]);
-		
-	$ajax_lbl = "label-default";
-	if($svc_color == "green") {
-		$ajax_lbl = "label-success";
-	}
-				
-	if($svc_color == "orange") {
-		$ajax_lbl = "label-warning";
-	}
-	if($svc_color == "red") {
-		$ajax_lbl = "label-important";
-	}
-	switch($el[type]) {
-		case 0:
-			$el_type = "normal";
-		break;
-		case 2:
-			$el_type = "renotify";
-		break;
-		case 1:
-			$el_type="escalation";		
-		break;
-	}
-
-	switch($el[received_via]) {
-		case 1:
-			$el_via =  "Local";
-		break;
-		case 2:
-			$el_via  = "Upstream";
-		break;
-
-
-	}
-
-
-
-	$btl->worker_list_loop(function($wrk, $idx) use (&$el_worker, &$el) {
-			if($wrk[worker_id] == $el[worker_id]) {
-				$el_worker=$wrk[name];
-				return LOOP_BREAK;
-			}
-	});
-
-	$btl->service_list_loop(function($wrk, $idx) use (&$el_service, &$el) {
-			if($wrk[service_id] == $el[service_id]) {
-				
-				 $el_service = "<a href='service_detail.php?service_id=" .$wrk[service_id] . "'>" .  $wrk[server_name] . "/" .  $wrk[service_name] . " </a>";
-				return LOOP_BREAK;
-			}
-	});
-	if(!$el_service) {
-		$el_service = "Not found local - ID: " . $el[service_id];
-	}
-	if($el[aggregation_interval] > 0) {
-		$el_agg = "<font color=red>no</font>";
-		if($el[aggregated] == 1) {
-			$el_agg = "<font color=green>yes</font>";
-		} 		
-	} else {
-		$el_agg = "not aggregatable";
-	}
-	$el_state = "<span class='label " . $ajax_lbl  . "'>" . $svc_state . "</span>";
-	$not_log .= "<tr><td>" . date("d.m.Y H:i:s", $el[time]) . "</td><td>" . $el_worker . "</td><td>" . $el_service . "</td><td>" . $el_state . "</td><td>" . $el[trigger_name] . "</td><td>" . $el_type . "</td><td>" . $el_agg. "</td><td>" . $el_via. "</td></tr>";
-
-}
 
 
 $not_log .= "</table>";

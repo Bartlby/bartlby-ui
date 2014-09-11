@@ -218,6 +218,7 @@ $(".notify_log_table").dataTable({
 			    "sPaginationType": "bootstrap",
 			    "sAjaxSource": "event_queue.php?table=notify_log&datatables_output=1",
 			    "bServerSide": true,
+			    "bFilter": false,
 			    "bProcessing": true,
 			    "sDom": "<\'row-fluid\'<\'span6\'l><\'span6\'f>r>t<\'row-fluid\'<\'span12\'i><\'span12 center\'p>>",
 			    "oLanguage": {

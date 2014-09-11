@@ -104,7 +104,7 @@ if($_GET[datatables_output] == 1) {
 				}
 				$xc++;
 			}
-
+			if(!is_array($ajax_search["aaData"])) $ajax_search["aaData"]=array();
 			$json_ret["iTotalRecords"] = count($not_log_array);
 			$json_ret["iTotalDisplayRecords"] = count($not_log_array);
 			$json_ret["sEcho"] = (int)$_GET[sEcho];
@@ -115,13 +115,106 @@ if($_GET[datatables_output] == 1) {
 			exit;
 
 	}
+	if($_GET[table] == "event_log") {
+
+		$msg_array=array();
+		for($x=128; $x>=0; $x--) {
+			$msg=bartlby_event_fetch($btl->RES, $x);
+			
+			if($msg[id] == 0) {
+				continue;	
+			}
+			$msg_array[$msg[time] + $msg[id]]=$msg;
+			
+			
+		}
+
+		krsort($msg_array);
+
+		foreach($msg_array as $msg) {
+
+			switch($msg[id]) {
+				case 2:
+					$evnt_type="STATE CHANGE";
+				break;
+				case 3:
+					$evnt_type="TRIGGER";
+				break;
+				default:
+					$evnt_type=$msg[id];	
+				break;
+			}
+			$replaced_msg=str_replace("\\dbr", "\\n",$msg[message]);
+			/*
+			$replaced_msg=str_replace("}", "",$replaced_msg);
+			$replaced_msg=str_replace("{", "",$replaced_msg);
+			*/
+			//$replaced_msg = utf8_encode($replaced_msg);
+			$replaced_msg = trim($replaced_msg);	
+			
+			$replaced_msg = preg_replace( '/\s+/', ' ', $replaced_msg );
+			$evnt_object = json_decode($replaced_msg,true);
+			
+			
+			$svc_color=$btl->getColor($evnt_object[current_state]);
+			$svc_state=$btl->getState($evnt_object[current_state]);
+			
+						$ajax_lbl = "label-default";
+						if($svc_color == "green") {
+								$ajax_lbl = "label-success";
+						}
+					
+						if($svc_color == "orange") {
+								$ajax_lbl = "label-warning";
+						}
+						if($svc_color == "red") {
+								$ajax_lbl = "label-important";
+						}
+						
+			
+			
+			$output = $evnt_object[type] . " <br>";
+			//$output = (" . $evnt_object[service_id] . ")  - ";
+			//$output .=  $evnt_object[current_state] . " <br>";
+			$output .=  $evnt_object[current_output] . " <br>";
+
+			$msgo = $evnt_object[current_output];
+			$st = "<span class='label " . $ajax_lbl  . "'>" . $svc_state . "</span>";
+			$lnk =  "<a href='service_detail.php?service_id=" .$evnt_object[service_id] . "'>" .  $evnt_object[server_and_service_name] . " </a>";
+		
+			
+			
+			
+			//$evnts .= "<tr><td>" . date("d.m.Y H:i:s", $msg[time]) . "</td><td>" . $evnt_type . "</td><td>" . $msgo . "</td><td>" . $lnk . "</td><td>" . $st . "</td></tr>";	
+			if($xc >= $_GET[iDisplayStart] && $xc <= $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
+
+					$ajax_search["aaData"][] = array( date("d.m.Y H:i:s", $msg[time]), $evnt_type, $msgo, $lnk, $st);		//FIXME
+					$ajax_displayed_records++;
+				}
+				$xc++;
+			}
+
+
+			if(!is_array($ajax_search["aaData"])) $ajax_search["aaData"]=array();
+			$json_ret["iTotalRecords"] = count($msg_array);
+			$json_ret["iTotalDisplayRecords"] = count($msg_array);
+			$json_ret["sEcho"] = (int)$_GET[sEcho];
+			$json_ret["aaData"]=$ajax_search["aaData"];
+
+			echo json_encode($json_ret);
+
+			exit;
+		
+
+
+	}
 
 
 }
 
 
 //Check if profiling is enabled
-	$evnts = '<table class="datat1able table table-bordered table-striped table-condensed">
+	$evnts = '<table class="event_log_table table table-bordered table-striped table-condensed">
 							  <thead>
 								  <tr>
 								  	
@@ -134,76 +227,7 @@ if($_GET[datatables_output] == 1) {
 									  
 								  </tr>
 							  </thead>   ';
-	$msg_array=array();
-	for($x=128; $x>=0; $x--) {
-		$msg=bartlby_event_fetch($btl->RES, $x);
-		
-		if($msg[id] == 0) {
-			continue;	
-		}
-		$msg_array[$msg[time] + $msg[id]]=$msg;
-		
-		
-	}
-
-	krsort($msg_array);
-
-	foreach($msg_array as $msg) {
-
-		switch($msg[id]) {
-			case 2:
-				$evnt_type="STATE CHANGE";
-			break;
-			case 3:
-				$evnt_type="TRIGGER";
-			break;
-			default:
-				$evnt_type=$msg[id];	
-			break;
-		}
-		$replaced_msg=str_replace("\\dbr", "\\n",$msg[message]);
-		/*
-		$replaced_msg=str_replace("}", "",$replaced_msg);
-		$replaced_msg=str_replace("{", "",$replaced_msg);
-		*/
-		//$replaced_msg = utf8_encode($replaced_msg);
-		$replaced_msg = trim($replaced_msg);	
-		
-		$replaced_msg = preg_replace( '/\s+/', ' ', $replaced_msg );
-		$evnt_object = json_decode($replaced_msg,true);
-		
-		
-		$svc_color=$btl->getColor($evnt_object[current_state]);
-		$svc_state=$btl->getState($evnt_object[current_state]);
-		
-					$ajax_lbl = "label-default";
-					if($svc_color == "green") {
-							$ajax_lbl = "label-success";
-					}
-				
-					if($svc_color == "orange") {
-							$ajax_lbl = "label-warning";
-					}
-					if($svc_color == "red") {
-							$ajax_lbl = "label-important";
-					}
-					
-		
-		
-		$output = $evnt_object[type] . " <br>";
-		//$output = (" . $evnt_object[service_id] . ")  - ";
-		//$output .=  $evnt_object[current_state] . " <br>";
-		$output .=  $evnt_object[current_output] . " <br>";
-
-		$msgo = $evnt_object[current_output];
-		$st = "<span class='label " . $ajax_lbl  . "'>" . $svc_state . "</span>";
-		$lnk =  "<a href='service_detail.php?service_id=" .$evnt_object[service_id] . "'>" .  $evnt_object[server_and_service_name] . " </a>";
 	
-		
-		
-		
-		$evnts .= "<tr><td>" . date("d.m.Y H:i:s", $msg[time]) . "</td><td>" . $evnt_type . "</td><td>" . $msgo . "</td><td>" . $lnk . "</td><td>" . $st . "</td></tr>";	
-	}
 
 	
 	$evnts .="</table>";
@@ -222,10 +246,24 @@ $(".notify_log_table").dataTable({
 			    "bProcessing": true,
 			    "sDom": "<\'row-fluid\'<\'span6\'l><\'span6\'f>r>t<\'row-fluid\'<\'span12\'i><\'span12 center\'p>>",
 			    "oLanguage": {
-			    	"sEmptyTable": "No Services found",
+			    	"sEmptyTable": "No Notifications found",
             "sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
         	}
         	});
+
+$(".event_log_table").dataTable({
+			    "sPaginationType": "bootstrap",
+			    "sAjaxSource": "event_queue.php?table=event_log&datatables_output=1",
+			    "bServerSide": true,
+			    "bFilter": false,
+			    "bProcessing": true,
+			    "sDom": "<\'row-fluid\'<\'span6\'l><\'span6\'f>r>t<\'row-fluid\'<\'span12\'i><\'span12 center\'p>>",
+			    "oLanguage": {
+			    	"sEmptyTable": "No Events found",
+            "sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
+        	}
+        	});
+
 });
 </script>
 

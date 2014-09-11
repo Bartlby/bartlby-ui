@@ -112,6 +112,7 @@ $not_log  = '<table class="dat1atable table table-bordered table-striped table-c
 									  <th style="width:100px">Trigger</th>
 									  <th style="width:100px">Type</th>
 									  <th style="width:100px">Aggregated</th>
+									  <th style="width:100px">Received Via</th>
 									  
 								  </tr>
 							  </thead>   ';
@@ -141,11 +142,30 @@ foreach($not_log_array as $el) {
 	if($svc_color == "red") {
 		$ajax_lbl = "label-important";
 	}
-	if($el[type] == 0) {
-		$el_type = "normal/re-notify";
-	} else {
-		$el_type="standby - escalation";		
+	switch($el[type]) {
+		case 0:
+			$el_type = "normal";
+		break;
+		case 2:
+			$el_type = "renotify";
+		break;
+		case 1:
+			$el_type="escalation";		
+		break;
 	}
+
+	switch($el[received_via]) {
+		case 1:
+			$el_via =  "Local";
+		break;
+		case 2:
+			$el_via  = "Upstream";
+		break;
+
+
+	}
+
+
 
 	$btl->worker_list_loop(function($wrk, $idx) use (&$el_worker, &$el) {
 			if($wrk[worker_id] == $el[worker_id]) {
@@ -161,7 +181,9 @@ foreach($not_log_array as $el) {
 				return LOOP_BREAK;
 			}
 	});
-
+	if(!$el_service) {
+		$el_service = "Not found local - ID: " . $el[service_id];
+	}
 	if($el[aggregation_interval] > 0) {
 		$el_agg = "<font color=red>no</font>";
 		if($el[aggregated] == 1) {
@@ -171,7 +193,7 @@ foreach($not_log_array as $el) {
 		$el_agg = "not aggregatable";
 	}
 	$el_state = "<span class='label " . $ajax_lbl  . "'>" . $svc_state . "</span>";
-	$not_log .= "<tr><td>" . date("d.m.Y H:i:s", $el[time]) . "</td><td>" . $el_worker . "</td><td>" . $el_service . "</td><td>" . $el_state . "</td><td>" . $el[trigger_name] . "</td><td>" . $el_type . "</td><td>" . $el_agg. "</td></tr>";
+	$not_log .= "<tr><td>" . date("d.m.Y H:i:s", $el[time]) . "</td><td>" . $el_worker . "</td><td>" . $el_service . "</td><td>" . $el_state . "</td><td>" . $el[trigger_name] . "</td><td>" . $el_type . "</td><td>" . $el_agg. "</td><td>" . $el_via. "</td></tr>";
 
 }
 

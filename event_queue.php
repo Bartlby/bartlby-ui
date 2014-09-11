@@ -124,7 +124,7 @@ if($_GET[datatables_output] == 1) {
 	$evnts = '<table class="datat1able table table-bordered table-striped table-condensed">
 							  <thead>
 								  <tr>
-								  	<th style="width:20px">ID</th>
+								  	
 									  <th style="width:150px">Date</th>
 									  <th style="width:100px">Type</th>
 									  <th style="width:100px">Output</th>
@@ -231,6 +231,7 @@ $(".notify_log_table").dataTable({
 <table class="notify_log_table table table-bordered table-striped table-condensed">
 							  <thead>
 								  <tr>
+								  		<th style="width:20px">ID</th>
 									  <th style="width:50px">Date</th>
 									  <th style="width:100px">Worker</th>
 									  <th style="width:100px">Service</th>

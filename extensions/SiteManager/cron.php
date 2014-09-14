@@ -114,15 +114,21 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 				if($row[mode] == "push") {
 					$db_sync="true";
 				}
-				$ui_cfg  .= '
-						$a[file] = "' . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg" .  '";
-						$a[remote] = true;
-						$a[db_sync] = ' . $db_sync . ';
-						$a[display_name] = "' .  $row[remote_alias] . '";
-						$a[uniq_id] = ' . $row[id] . ';		
-						array_push($confs, $a);			
-				';
 
+
+				if($row[mode] != "orch-node") {
+					$ui_cfg  .= '
+							$a[file] = "' . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg" .  '";
+							$a[remote] = true;
+							$a[db_sync] = ' . $db_sync . ';
+							$a[display_name] = "' .  $row[remote_alias] . '";
+							$a[uniq_id] = ' . $row[id] . ';		
+							array_push($confs, $a);			
+					';
+				} else {
+					$ui_cfg .= '$orch_nodes[]=array(orch_id=>' . $row[id] . ', orch_alias=>"' . $row[remote_alias] . '");';
+					
+				}
 
 				echo $c("bartlby.cfg  for Node $row[remote_alias]  generated\n")->green;		
 			break;

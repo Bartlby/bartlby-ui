@@ -83,7 +83,8 @@
 				<select name=mode id=mode>
 					<option value='pull'>(read only) - PULL</option>
 					<option value='push'>(read write) - PUSH</option>
-					<option value='arch-ind-pull'>(read only) - ARCH indend (EXPERIMENTIAL)</option>
+					<option value='arch-ind-pull'>(read only) - ARCH independant pull (EXPERIMENTIAL)</option>
+					<option value='orch-node'>Orchestra Node</option>
 					
 				</select>
 			</td>

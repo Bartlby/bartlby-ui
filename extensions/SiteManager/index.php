@@ -80,6 +80,9 @@
 	$layout->Tab("Orchestra", '<p>
 <button  class="sm_orch_shuffle_btn btn"   >Shuffle</button>
 <button  class="sm_orch_restart_btn btn"   >Restart</button>
+<div id=sm_terminal style="overflow: auto">
+
+</div>
 
 </p>');
 	//$layout->Tab("Sync", $layout->disp_box("sm_sync"), "sm_sync");

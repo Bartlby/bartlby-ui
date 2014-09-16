@@ -68,6 +68,7 @@ global $Bartlby_CONF_IDX;
 	<link href='themes/classic/css/jquery.iphone.toggle.css' rel='stylesheet'>
 	<link href='themes/classic/css/opa-icons.css' rel='stylesheet'>
 	<link href='themes/classic/css/uploadify.css' rel='stylesheet'>
+	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
 
 
 	<!-- jQuery -->
@@ -149,7 +150,7 @@ global $Bartlby_CONF_IDX;
 	<script src="themes/classic/js/jquery.history.js"></script>
 	<!-- application script for Charisma demo -->
 	<script src="themes/classic/js/charisma.js"></script>
-	
+	<script src="themes/classic/js/jquery.terminal-0.8.8.min.js"></script>	
 	
 	
 

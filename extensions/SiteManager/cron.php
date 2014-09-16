@@ -1,4 +1,5 @@
 <?
+
 // php automated.php \
 //   	username=admin \
 //   	password=password \
@@ -40,7 +41,7 @@ $_GLO[debug_commands]=true;
 	include "bartlby-ui.class.php";
 	
 	include "extensions/SiteManager/SiteManager.class.php";
-	
+
 	$btl=new BartlbyUi($Bartlby_CONF);
 	$btl->hasRight("sitemanager");
 	$sm = new SiteManager();
@@ -54,6 +55,7 @@ $_GLO[debug_commands]=true;
 	$sync = $_GET[sync];
 	if(!$sync) $sync="SHM";
 	$r = $sm->db->query("select * from sm_remotes where sync_active = 1");
+	
 	foreach($r as $row) {
 		$key_file=$row[ssh_key];
 		$user=$row[ssh_username];
@@ -522,6 +524,8 @@ class Color
      */
     public function isSupported()
     {
+    	global $_GET;
+    	if($_GET[force_color] == 1) return true;
         if (DIRECTORY_SEPARATOR === '\\') {
             return false !== getenv('ANSICON');
         }

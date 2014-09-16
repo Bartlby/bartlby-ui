@@ -207,7 +207,7 @@ class OcL {
 		global $layout;
 		
 		
-	$sql = "select * from logbook order by ocl_date desc limit 30";
+	$sql = "select * from logbook order by id desc limit 30";
 	$r = $this->db_logbook->query($sql);
 	$cur_box_content  = '<button onClick="document.location.href=\'extensions_wrap.php?script=OcL/add.php\'" class="sm_add_new_btn btn  btn-success">Add New Entry</button>';
 	$cur_box_content .= ' <ol class="discussion">';

@@ -126,7 +126,7 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 							array_push($confs, $a);			
 					';
 				} else {
-					$ui_cfg .= '$orch_nodes[]=array(orch_id=>' . $row[id] . ', orch_alias=>"' . $row[remote_alias] . '");';
+					$ui_cfg .= '$_BARTLBY[orch_nodes][]=array(orch_id=>' . $row[id] . ', orch_alias=>"' . $row[remote_alias] . '");';
 					
 				}
 

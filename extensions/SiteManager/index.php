@@ -47,7 +47,7 @@
 	$layout->create_box("Core Settings", $sm_form, "sm_add");
 	$layout->create_box("Remote DB", $sm_form_remote, "sm_form_remote");
 	$layout->create_box("Local DB", $sm_form_local, "sm_form_local");
-	$layout->create_box("Orchestra Settings", $sm_form_orch_settings, "sm_orch_settings");
+	//$layout->create_box("Orchestra Settings", $sm_form_orch_settings, "sm_orch_settings");
 	$layout->create_box("Additional Folders", $sm_form_add_folders, "sm_form_addfolders");
 	$layout->create_box("Action", $sm_form_end, "sm_form_end");
 
@@ -69,7 +69,7 @@
 	$frm_tab .= "</div>";
 
 	$frm_tab .=  "<div style='clear: both;'></div>";
-	$frm_tab .= $layout->disp_box("sm_orch_settings");
+	//$frm_tab .= $layout->disp_box("sm_orch_settings");
 	$frm_tab .= $layout->disp_box("sm_form_addfolders");
 	$frm_tab .= $layout->disp_box("sm_form_end");
 
@@ -77,6 +77,11 @@
 
 	$layout->Tab("Manage", $layout->disp_box("sm_manage"), "sm_manage");
 	$layout->Tab("Add/Modify",$frm_tab, "sm_add");
+	$layout->Tab("Orchestra", '<p>
+<button  class="sm_orch_shuffle_btn btn"   >Shuffle</button>
+<button  class="sm_orch_restart_btn btn"   >Restart</button>
+
+</p>');
 	//$layout->Tab("Sync", $layout->disp_box("sm_sync"), "sm_sync");
 
 

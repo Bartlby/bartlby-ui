@@ -51,6 +51,19 @@ class SiteManager {
 
 
 	}
+	function sm_restart_node() {
+		global $_GET;
+		$re = new XajaxResponse();
+		$id = $_GET[xajaxargs][2];
+		$sql = "update sm_remotes set node_restart_outstanding=1 where id=" . (int)$id;
+		$this->db->exec($sql);
+
+		$re->AddScript('noty({"text":"[SITEMANAGER] Node Restart Scheduled! (' . $values[ssh_key] . ')","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})'); //Notify User
+		$re->AddScript('btl_force_reload_ui();'); // Force Reload
+		$re->AddScript('sm_show_tab("sm_manage");'); // Change to Manage Tab
+		
+		return $re;
+	}	
 	function sm_delete_node() {
 		global $_GET;
 		$re = new XajaxResponse();
@@ -111,7 +124,7 @@ class SiteManager {
 			$_GET[xajaxargs][2] == CORE PATH
 			*/
 			
-			$re->AddScript("sm_local_settings_update('" . $this->local_ui_path . "','" . $this->local_core_path .  "', '" .  $this->local_core_replication_path . "', '" . $this->local_ui_replication_path . "');");
+			$re->AddScript("sm_local_settings_update(" . json_encode($this) . ");");
 			return $re;
 	}
 	function sm_save_node() {
@@ -178,6 +191,12 @@ class SiteManager {
 			/*
 			$_GET[xajaxargs][2] == UI PATH
 			$_GET[xajaxargs][3] == CORE PATH
+			$("#orch_ext_name").val(), 
+				$("#orch_db_user").val(),
+				$("#orch_db_pw").val(),
+				$("#orch_db_name").val()
+
+
 			*/
 
 			//FIXME FORM CHECK
@@ -186,6 +205,12 @@ class SiteManager {
 			$this->storage->save_key("local_core_path", $_GET[xajaxargs][3]);
 			$this->storage->save_key("local_core_replication_path", $_GET[xajaxargs][4]);
 			$this->storage->save_key("local_ui_replication_path", $_GET[xajaxargs][5]);
+			$this->storage->save_key("orch_ext_name", $_GET[xajaxargs][6]);
+			$this->storage->save_key("orch_db_user", $_GET[xajaxargs][7]);
+			$this->storage->save_key("orch_db_pw", $_GET[xajaxargs][8]);
+			$this->storage->save_key("orch_db_name", $_GET[xajaxargs][9]);
+
+			
 			$re->AddScript('noty({"text":"[SITEMANAGER] Settings saved - ' . $_GET[xajaxargs][4] . '","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 			return $re;
@@ -232,9 +257,16 @@ class SiteManager {
 		$this->local_ui_replication_path=$this->storage->load_key("local_ui_replication_path");
 		$this->local_core_replication_path=$this->storage->load_key("local_core_replication_path");
 
+		$this->orch_ext_name=$this->storage->load_key("orch_ext_name");
+		$this->orch_db_name=$this->storage->load_key("orch_db_name");
+		$this->orch_db_user=$this->storage->load_key("orch_db_user");
+		$this->orch_db_pw=$this->storage->load_key("orch_db_pw");
+		
 
 		//ADD Addditional fields
 		$this->db_has_field("reload_before_db_sync", "alter table sm_remotes add reload_before_db_sync integer default 0");
+		$this->db_has_field("node_restart_outstanding", "alter table sm_remotes add node_restart_outstanding integer default 0");
+		$this->db_has_field("node_dead", "alter table sm_remotes add node_dead integer default 0");
 	}
 	function _overview() {
 		global $layout, $Bartlby_CONF_isMaster;

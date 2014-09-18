@@ -44,7 +44,10 @@ if($row[node_dead] == 0){
 } else {
 	$flags .= "<li>DEAD";
 }
-
+$init_file="nodes/" . $row[id] . "/node.deployed";
+if(!file_exists($init_file)) {
+	$flags .= "<li>Init outstanding";
+}
 ?>
 	<tr>
 		<td><?=$row[remote_alias]?></td>

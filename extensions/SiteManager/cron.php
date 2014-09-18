@@ -52,6 +52,16 @@ $_GLO[debug_commands]=true;
 	$local_core_replication_path=$sm->storage->load_key("local_core_replication_path");
 	
 
+	$orch_ext_name=$sm->storage->load_key("orch_ext_name");
+	$orch_db_user=$sm->storage->load_key("orch_db_user");
+	$orch_db_pw=$sm->storage->load_key("orch_db_pw");
+	$orch_db_name=$sm->storage->load_key("orch_db_name");
+	$orch_master_pw=$sm->storage->load_key("orch_master_pw");
+	$orch_ext_port=$sm->storage->load_key("orch_ext_port");
+	
+
+	
+
 	$sync = $_GET[sync];
 	if(!$sync) $sync="SHM";
 	$r = $sm->db->query("select * from sm_remotes where sync_active = 1");
@@ -82,6 +92,54 @@ $_GLO[debug_commands]=true;
 
 
 		switch($sync) {
+			case "RESTART":
+			
+				if($row[node_restart_outstanding] == 1) {
+
+					runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup stop");					
+					runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup remove");					
+					runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup start");	
+					echo $c("Restarted node " . $row[id] . "\n")->red()->bold() . PHP_EOL;
+					$sql = "update sm_remotes set node_restart_outstanding=0 where id=" . $row[id];	
+					$sm->db->exec($sql);	
+				}
+			break;
+			case 'INIT':
+				if($row[mode] == "orch-node") {
+					$init_file=$local_ui_replication_path . "/" . $row[id] . "/node.deployed";
+					if(!file_exists($init_file)) {
+						echo $c("Doing node Deploy on " . $row[id] . "\n")->green()->bold() . PHP_EOL;
+						runSSHCMD($ssh_cmd_str, "grep -vE \"(orch_|mysql_)\" " . $row[remote_core_path] . "/etc/bartlby.cfg > " .  $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo orch_master_ip=" . $orch_ext_name . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo orch_master_port=" . $orch_ext_port . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo orch_master_pw=" . $orch_master_pw . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+
+						runSSHCMD($ssh_cmd_str, "echo orch_id=" . $row[id] . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						
+
+						runSSHCMD($ssh_cmd_str, "echo mysql_user=" . $orch_db_user . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						
+						runSSHCMD($ssh_cmd_str, "echo mysql_pw=" . $orch_db_pw . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo mysql_db=" . $orch_db_name . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo mysql_host=" . $orch_ext_name . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+
+						runSSHCMD($ssh_cmd_str, "mv " . $row[remote_core_path] . "/etc/bartlby_empty.cfg " . $row[remote_core_path] . "/etc/bartlby.cfg");
+						
+
+						//STOP RUNNING INSTANCES AND RESTART - FOR CFG REFRESH
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup stop");					
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup remove");					
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup start");					
+						
+
+
+						touch($init_file);
+					} else {
+						echo $c("Skipping already deployed node " . $row[id] . "\n")->red()->bold() . PHP_EOL;
+					}
+				}
+
+			break;
 			case "GENCONF":
 				//Does not matter if push or pull
 				if($row[mode] == "pull" || $row[mode] == "push") {
@@ -393,6 +451,7 @@ function runSSHCMD($str, $cmd) {
 		$rr .= $s;
 	}
 	pclose($fp);
+	echo $rr;
 	return $rr;
 
 }

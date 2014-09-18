@@ -10,6 +10,8 @@ function sm_local_settings_update(obj) {
 	$("#orch_db_name").val(obj.orch_db_name);
 	$("#orch_db_pw").val(obj.orch_db_pw);
 	$("#orch_db_user").val(obj.orch_db_user);
+	$("#orch_ext_port").val(obj.orch_ext_port);
+	$("#orch_master_pw").val(obj.orch_master_pw);
 	console.log(obj);
 }
 function sm_show_tab(t) {
@@ -117,6 +119,18 @@ $(document).ready(function() {
 			
 		}
 	});
+	$(document.body).on('click','.sm_orch_init_btn', function() {
+		c=confirm("Check if new nodes need to be initialized?");
+		if(c) {
+			$("#sm_terminal").terminal().echo("#############  STARTING INIT JOB ###########");
+			$.get("extensions_wrap.php?script=SiteManager/cron.php?sync=INIT&force_color=1", function(d) {
+				$("#sm_terminal").terminal().echo(d);
+			}).done(function() {
+				$("#sm_terminal").terminal().echo("#############  DONE INIT JOB ###########");	
+			});
+			
+		}
+	});
 
 	//Hide The form Tab
 	 sm_hide_tab("sm_add");
@@ -172,7 +186,10 @@ $(document).ready(function() {
 				$("#orch_ext_name").val(), 
 				$("#orch_db_user").val(),
 				$("#orch_db_pw").val(),
-				$("#orch_db_name").val());
+				$("#orch_db_name").val(),
+				$("#orch_ext_port").val(),
+				$("#orch_master_pw").val()
+				);
 			console.log(r);
 		}
 	);

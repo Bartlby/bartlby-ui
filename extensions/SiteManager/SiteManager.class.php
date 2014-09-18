@@ -209,6 +209,8 @@ class SiteManager {
 			$this->storage->save_key("orch_db_user", $_GET[xajaxargs][7]);
 			$this->storage->save_key("orch_db_pw", $_GET[xajaxargs][8]);
 			$this->storage->save_key("orch_db_name", $_GET[xajaxargs][9]);
+			$this->storage->save_key("orch_ext_port", $_GET[xajaxargs][10]);
+			$this->storage->save_key("orch_master_pw", $_GET[xajaxargs][11]);
 
 			
 			$re->AddScript('noty({"text":"[SITEMANAGER] Settings saved - ' . $_GET[xajaxargs][4] . '","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
@@ -261,7 +263,9 @@ class SiteManager {
 		$this->orch_db_name=$this->storage->load_key("orch_db_name");
 		$this->orch_db_user=$this->storage->load_key("orch_db_user");
 		$this->orch_db_pw=$this->storage->load_key("orch_db_pw");
-		
+
+		$this->orch_master_pw=$this->storage->load_key("orch_master_pw");
+		$this->orch_ext_port=$this->storage->load_key("orch_ext_port");
 
 		//ADD Addditional fields
 		$this->db_has_field("reload_before_db_sync", "alter table sm_remotes add reload_before_db_sync integer default 0");

@@ -80,6 +80,7 @@
 	$layout->Tab("Orchestra", '<p>
 <button  class="sm_orch_shuffle_btn btn"   >Shuffle</button>
 <button  class="sm_orch_restart_btn btn"   >Restart</button>
+<button  class="sm_orch_init_btn btn"   >Init Nodes</button>
 <div id=sm_terminal style="overflow: auto">
 
 </div>

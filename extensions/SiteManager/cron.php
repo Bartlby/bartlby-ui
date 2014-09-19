@@ -89,7 +89,13 @@ $_GLO[debug_commands]=true;
 			echo $c("Error on Node => " . $row[remote_alias] . " SSH PARAMS skipping!\n")->red()->bold() . PHP_EOL;
 			continue;
 		}
-
+		if(!nodeReachable($row[ssh_ip], 22) && $sync != "EVACUATE") {
+			$sql = "update sm_remotes set node_dead=1 where id=" . $row[id];	
+			$sm->db->exec($sql);
+			echo $c("Node " . $row[id] . " marked as DEAD\n")->red()->bold() . PHP_EOL;
+			//Evacuate objects
+			continue;
+		}
 
 		switch($sync) {
 			case "RESTART":
@@ -412,6 +418,19 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 			}
 		}		
 	}
+
+
+function nodeReachable($ip, $port = 22) {
+    $rdp_sock = fsockopen($ip, $port, $err, $err1, 3);
+    
+    if (!$rdp_sock) {
+        return false;
+    } else {
+        fclose($rdp_sock);
+        return true;
+    }
+}
+
 function setLastOutput($id, $str) {
 	global $sm;
 	$q = "update sm_remotes set last_output='" . $str . "' where id=" . $id;

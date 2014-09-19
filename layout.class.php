@@ -228,6 +228,20 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 		
 	}
+	function orchLable($orch_id) {
+		global $_BARTLBY;
+		$_BARTLBY[orch_nodes][]=array("orch_id"=>0, "orch_alias"=>"LOCAL");
+		for($x=0; $x<count($_BARTLBY[orch_nodes]); $x++) {
+			$f=true;
+			$sel="";
+			if($_BARTLBY[orch_nodes][$x][orch_id] == $orch_id) {
+				return $_BARTLBY[orch_nodes][$x][orch_alias];
+			}
+		}
+		return "UNKNOWN";
+
+
+	}
 	function orchDropdown($choosable=true, $selected) {
 		global $_BARTLBY;
 		$_BARTLBY[orch_nodes][]=array("orch_id"=>0, "orch_alias"=>"LOCAL");

@@ -588,7 +588,7 @@ $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Orchestra ID:",
-			1=>$layout->Field("orch_id", "text", $server_orch_id, "", "disabled") . "<small><i>Orchestra ID is bound to the server (on initial add -1 will be replaced by the servers orchestra id)</small></i>"
+			1=>$layout->orchDropdown(false, -1)
 		)
 	)
 ,true);

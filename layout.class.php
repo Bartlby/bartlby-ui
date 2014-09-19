@@ -228,6 +228,34 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 		
 	}
+	function orchDropdown($choosable=true, $selected) {
+		global $_BARTLBY;
+		$_BARTLBY[orch_nodes][]=array("orch_id"=>0, "orch_alias"=>"LOCAL");
+		if($choosable) {
+			$f=false;
+			for($x=0; $x<count($_BARTLBY[orch_nodes]); $x++) {
+				$f=true;
+				$sel="";
+				if($_BARTLBY[orch_nodes][$x][orch_id] == $selected) {
+					$sel = "selected";
+				}
+				$rdrop .= "<option value='" . $_BARTLBY[orch_nodes][$x][orch_id] . "' " . $sel . ">" . $_BARTLBY[orch_nodes][$x][orch_alias] . "</option>";
+			}
+
+			if($f == true) {
+				return "<select name=orch_id id=orch_id data-rel='chosen'>" . $rdrop . "</select>";				
+			} else {
+				return "<input type=hidden name=orch_id value=0>No Orchestra Node Configured defaulting to 0";
+			}
+
+
+
+
+		} else {
+			return "<select id=orch_id name=orch_id disabled><option value=-1>Orch id is inerhited</option></select>";
+		}
+
+	}
 	function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen', $default_preset = false) {
 		global $_GET;
 		

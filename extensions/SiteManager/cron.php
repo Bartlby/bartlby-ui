@@ -15,6 +15,12 @@
 //Removes demoted nodes
 //0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)
 
+
+//FOR ORCHES
+//*/5 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=INIT)
+//*/5 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=RESTART)
+	
+
 /* DEFAULT PULL folders
 /var/www/bartlby-ui/rights/:%UINODEPATH%/rights/
 /var/www/bartlby-ui/store/:%UINODEPATH%/store/
@@ -89,13 +95,15 @@ $_GLO[debug_commands]=true;
 			echo $c("Error on Node => " . $row[remote_alias] . " SSH PARAMS skipping!\n")->red()->bold() . PHP_EOL;
 			continue;
 		}
-		if(!nodeReachable($row[ssh_ip], 22) && $sync != "EVACUATE") {
+		if(!nodeReachable($row[ssh_ip], 22, $ssh_cmd_str) && $sync != "EVACUATE") {
 			$sql = "update sm_remotes set node_dead=1 where id=" . $row[id];	
 			$sm->db->exec($sql);
 			echo $c("Node " . $row[id] . " marked as DEAD\n")->red()->bold() . PHP_EOL;
 			//Evacuate objects
 			continue;
 		}
+		$sql = "update sm_remotes set node_dead=0 where id=" . $row[id];	
+		$sm->db->exec($sql);
 
 		switch($sync) {
 			case "RESTART":
@@ -420,13 +428,21 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 	}
 
 
-function nodeReachable($ip, $port = 22) {
+function nodeReachable($ip, $port = 22, $cmd_str) {
     $rdp_sock = fsockopen($ip, $port, $err, $err1, 3);
     
     if (!$rdp_sock) {
         return false;
     } else {
         fclose($rdp_sock);
+
+        $check=runSSHCMD($cmd_str, "date");					
+        if($check == "") {
+        	return false;
+        }
+					
+
+
         return true;
     }
 }

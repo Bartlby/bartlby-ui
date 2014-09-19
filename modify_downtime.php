@@ -97,7 +97,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Orchestra ID",
-			1=>$layout->Field("orch_id", "text", $default[orch_id])
+			1=>$layout->orchDropdown(true, $default[orch_id])
 		)
 	)
 ,true);

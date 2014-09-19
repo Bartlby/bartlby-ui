@@ -77,15 +77,7 @@
 
 	$layout->Tab("Manage", $layout->disp_box("sm_manage"), "sm_manage");
 	$layout->Tab("Add/Modify",$frm_tab, "sm_add");
-	$layout->Tab("Orchestra", '<p>
-<button  class="sm_orch_shuffle_btn btn"   >Shuffle</button>
-<button  class="sm_orch_restart_btn btn"   >Restart</button>
-<button  class="sm_orch_init_btn btn"   >Init Nodes</button>
-<div id=sm_terminal style="overflow: auto">
-
-</div>
-
-</p>');
+	
 	//$layout->Tab("Sync", $layout->disp_box("sm_sync"), "sm_sync");
 
 

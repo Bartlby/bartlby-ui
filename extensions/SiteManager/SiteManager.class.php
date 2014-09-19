@@ -285,11 +285,20 @@ class SiteManager {
 				$cnt .= "<div id=sm_system_health_" . $x . " style='width: 100%;  '></div>";
 				$cnt .= "</div>";
 			}
+			$cnt .= $this->getOrchStatus();
 			if($cnt != "") {
 				$layout->Tab("Sites", $cnt, "sm_sitetab");
 			}
 		}
 		return "";
+	}
+	function getOrchStatus() {
+		global $_BARTLBY;
+		for($x=0; $x<count($_BARTLBY[orch_nodes]); $x++) {
+			$cur=$_BARTLBY[orch_nodes][$x];
+			$r .= $cur[orch_alias] . "<br>";
+		}
+		return $r;
 	}
 	function _Menu() {
 		global $Bartlby_CONF_isMaster;

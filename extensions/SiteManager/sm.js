@@ -79,58 +79,9 @@ function sm_hide_tab(t) {
 $(document).ready(function() {
 
 
-	//Make Terminal
-	$('#sm_terminal').terminal(function(command, term) {
-        
-    }, {
-        greetings: '',
-        name: 'js_demo',
-        height: 300,
-        width: '100%',
-        prompt: ''});
+	
 
-	/*
-	window.setInterval(function() {
-		$('#sm_terminal').terminal().echo("OUTPUT");
-	}, 400);
-	*/
-
-	$(document.body).on('click','.sm_orch_shuffle_btn', function() {
-		c=confirm("Shuffle all servers uppon all orch-nodes?");
-		if(c) {
-			$("#sm_terminal").terminal().echo("#############  STARTING SHUFFLE JOB ###########");
-			$.get("extensions_wrap.php?script=SiteManager/cron.php?sync=SHUFFLE&force_color=1", function(d) {
-				$("#sm_terminal").terminal().echo(d);
-			}).done(function() {
-				$("#sm_terminal").terminal().echo("#############  DONE SHUFFLE JOB ###########");
-			});
-			
-		}
-	});
-	$(document.body).on('click','.sm_orch_restart_btn', function() {
-		c=confirm("Force RESTART job of scheduled-to-restart nodes?");
-		if(c) {
-			$("#sm_terminal").terminal().echo("#############  STARTING RESTART JOB ###########");
-			$.get("extensions_wrap.php?script=SiteManager/cron.php?sync=RESTART&force_color=1", function(d) {
-				$("#sm_terminal").terminal().echo(d);
-			}).done(function() {
-				$("#sm_terminal").terminal().echo("#############  DONE RESTART JOB ###########");	
-			});
-			
-		}
-	});
-	$(document.body).on('click','.sm_orch_init_btn', function() {
-		c=confirm("Check if new nodes need to be initialized?");
-		if(c) {
-			$("#sm_terminal").terminal().echo("#############  STARTING INIT JOB ###########");
-			$.get("extensions_wrap.php?script=SiteManager/cron.php?sync=INIT&force_color=1", function(d) {
-				$("#sm_terminal").terminal().echo(d);
-			}).done(function() {
-				$("#sm_terminal").terminal().echo("#############  DONE INIT JOB ###########");	
-			});
-			
-		}
-	});
+	
 
 	//Hide The form Tab
 	 sm_hide_tab("sm_add");

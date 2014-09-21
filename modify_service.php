@@ -76,6 +76,10 @@ if($_GET["new"] == "true") {
 	
 	$defaults[escalate_divisor]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.escalate_divisor");
 	$defaults[renotify_interval]=(int)bartlby_config(getcwd() . "/ui-extra.conf", "new.service.renotify_interval");
+	$defaults[prio]=50;
+	$defaults[notify_super_users]=1;
+	$defaults[usid]=substr(sha1(time()), 0, 15);
+	
 	$server_list_type="multiple";
 	$server_field_name="service_server[]";	
 	
@@ -584,6 +588,37 @@ $active_box_out .= $layout->Tr(
 		)
 	)
 ,true);
+
+
+
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Priority:",
+			1=>$layout->Field("prio", "text", $defaults[prio]) 
+		)
+	)
+,true);
+
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Uniqe Service Identifier:",
+			1=>$layout->Field("usid", "text", $defaults[usid]) 
+		)
+	)
+,true);
+
+$active_box_out .= $layout->Tr(
+	$layout->Td(
+		array(
+			0=>"Notify Super Users by default?",
+			1=>$layout->DropDown("notify_super_users", $notenabled)
+			
+		)
+	)
+,true);
+
 $active_box_out .= $layout->Tr(
 	$layout->Td(
 		array(
@@ -592,6 +627,7 @@ $active_box_out .= $layout->Tr(
 		)
 	)
 ,true);
+
 
 $active_box_out .= "</table>";
 

@@ -38,6 +38,11 @@ $editable_service_fields[] = array("snmp_objid", "SNMP OBJID");
 $editable_service_fields[] = array("snmp_version", "SNMP Version");
 $editable_service_fields[] = array("snmp_warning", "SNMP Warning");
 $editable_service_fields[] = array("snmp_critical", "SNMP Critical");
+
+$editable_service_fields[] = array("prio", "Priority");
+$editable_service_fields[] = array("usid", "Uniq Service Identfier");
+$editable_service_fields[] = array("notify_super_users", "Notify Super Users");
+
 $editable_service_fields[] = array("snmp_type", "SNMP Type");
 
 

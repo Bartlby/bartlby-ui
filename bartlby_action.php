@@ -655,7 +655,7 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-			
+			if(!$_GET[usid]) $_GET[usid]=substr(sha1(time()), 0, 15);
 			$srv=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
 			$global_msg=$srv;
 
@@ -688,6 +688,9 @@ switch($act) {
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
 					"handled" => $_GET[handled],
+					"usid" => $_GET[usid],
+					"prio" => $_GET[prio],
+					"notify_super_users" => $_GET[notify_super_users],
 					"orch_id" => $srv[orch_id]
 				);
 
@@ -758,7 +761,7 @@ switch($act) {
 					//FALLBACK
 					if($svc_type_to_use == "" || $svc_type_to_use == 0) $svc_type_to_use=1;
 				}
-
+				if(!$_GET[usid]) $_GET[usid]=substr(sha1(time()), 0, 15);
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -788,6 +791,9 @@ switch($act) {
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
 					"handled" => $_GET[handled],
+					"prio" => $_GET[prio],
+					"notify_super_users" => $_GET[notify_super_users],
+					"usid" => $_GET[usid],
 					"orch_id" => $srv_temp[orch_id]
 				);
 				
@@ -837,7 +843,19 @@ switch($act) {
 				if($triggerstr != "") {
 					$triggerstr = "|" . $triggerstr;
 				}
-				//$_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon], $_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds], $_GET["text_service_search1"], 
+				$exec_plan = "";
+				$df=false;
+				while(list($k, $v) = each($_GET[wdays_plan])) {
+					if($v != "") {
+						$df = true;		
+					}
+					$exec_plan .= $k . "=" . $v . "|";	
+				}
+			
+				if($df == false) {
+					$exec_plan="";	
+				}
+
 				$srv_obj = array(
 					"server_name" => $_GET[server_name],
 					"server_ip" => $_GET[server_ip],
@@ -852,6 +870,7 @@ switch($act) {
 					"server_dead" => $_GET[service_id],
 					"default_service_type" => $_GET[default_service_type],
 					"enabled_triggers" => $triggerstr,
+					"exec_plan" => $exec_plan,
 					"orch_id" => $_GET[orch_id]
 					
 					
@@ -1048,7 +1067,18 @@ switch($act) {
 				if($triggerstr != "") {
 					$triggerstr = "|" . $triggerstr;
 				}
-				//,  0,$_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr
+				$exec_plan = "";
+				$df=false;
+				while(list($k, $v) = each($_GET[wdays_plan])) {
+					if($v != "") {
+						$df = true;		
+					}
+					$exec_plan .= $k . "=" . $v . "|";	
+				}
+			
+				if($df == false) {
+					$exec_plan="";	
+				}
 				$srv_obj = array(
 					"server_name" => $_GET[server_name],
 					"server_ip" => $_GET[server_ip],
@@ -1061,6 +1091,7 @@ switch($act) {
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => 0,
+					"exec_plan" => $exec_plan,
 					"enabled_triggers" => $triggerstr,
 					"default_service_type" => $_GET[default_service_type],
 					"orch_id" => $_GET[orch_id]

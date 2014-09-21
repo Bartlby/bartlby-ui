@@ -19,6 +19,7 @@ $editable_service_fields[] = array("server_port", "Server Port");
 $editable_service_fields[] = array("server_enabled", "Enabled");
 $editable_service_fields[] = array("server_notify", "Notifications Enabled");
 $editable_service_fields[] = array("server_flap_seconds", "Flap Seconds");
+$editable_service_fields[] = array("exec_plan", "Execution Plan");
 $editable_service_fields[] = array("orch_id", "Orchestra ID");
 
 

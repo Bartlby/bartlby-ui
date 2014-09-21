@@ -10,6 +10,13 @@
 		<td>&nbsp;</td>     
 	</tr>
 	<tr>
+		<td width=150 class='font2'>Execution Plan:</td>
+		<td align=left ><?=$btl->resolveServicePlan($plcs[service][exec_plan])?></font></td> 
+		<td>&nbsp;</td>     
+
+		
+	</tr>
+	<tr>
 		<td width=150 class='font2'>Ip:</td>
 		<td align=left ><?=$plcs[service][server_ip]?>/<?=gethostbyname($plcs[service][server_ip])?></font></td>  
 		<td>&nbsp;</td>         
@@ -65,12 +72,13 @@
 		<td align=left ><?= $plcs[default_service_type]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
-	<tr>
+
+
+	
+		<tr>
 		<td width=150 class='font2'>Orchestra ID:</td>
 		<td align=left ><?=$layout->orchLable($plcs[service][orch_id])?></font></td> 
 		<td>&nbsp;</td>     
 	</tr>
-	
-	
 	
 </table>

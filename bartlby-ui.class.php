@@ -1867,6 +1867,9 @@ if($m[2] == "5724") {
 						"fires_events" => $re[$x][fires_events],
 						"renotify_interval" => $re[$x][renotify_interval],
 						"enabled_triggers" => $re[$x][enabled_triggers],
+						"prio" => $re[$x][prio],
+						"usid" => $re[$x][usid],
+						"notify_super_users" => $re[$x][notify_super_users],
 						"handled" => 0,
 						"orch_id" => $srv_temp[orch_id]
 					);

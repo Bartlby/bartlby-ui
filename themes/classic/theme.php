@@ -69,7 +69,8 @@ global $Bartlby_CONF_IDX;
 	<link href='themes/classic/css/opa-icons.css' rel='stylesheet'>
 	<link href='themes/classic/css/uploadify.css' rel='stylesheet'>
 	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
-
+	<link href='themes/classic/css/dataTables.tableTools.css' rel='stylesheet'>
+	
 
 	<!-- jQuery -->
 	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
@@ -108,6 +109,7 @@ global $Bartlby_CONF_IDX;
 	<script src='themes/classic/js/fullcalendar.min.js'></script>
 	<!-- data table plugin -->
 	<script src='themes/classic/js/jquery.dataTables.min.js'></script>
+	<script src='themes/classic/js/dataTables.tableTools.js'></script>
 
 	<!-- chart libraries start -->
 	<script src="themes/classic/js/excanvas.js"></script>

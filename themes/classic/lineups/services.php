@@ -10,6 +10,8 @@
 		window.service_list_timer = setInterval('window.oTable.fnDraw(false)', 20000);
 	});
 	</script>
+
+	
 <table class="table table-striped table-bordered " id='services_table'>
 						  <thead>
 							  <tr>

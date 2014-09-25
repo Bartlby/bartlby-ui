@@ -10,6 +10,7 @@
 		window.server_list_timer = setInterval('window.servers_table.fnDraw(false)', 20000);
 	});
 	</script>
+	
 <table class="table table-striped table-bordered " id='servers_table'>
 						  <thead>
 							  <tr>

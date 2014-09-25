@@ -374,7 +374,7 @@ $(document).ready(function() {
 					"aaSortingFixed": [[ 0, 'asc' ]],
 					"bSort": false,
 					"aaSorting": [[ 1, 'asc' ]],
-					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+					"sDom": "<'row-fluid'<'span6'Tl><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
 					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					//"sDom": '<"wrapper"lfptip>',
 					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
@@ -382,6 +382,16 @@ $(document).ready(function() {
 			    "sAjaxSource": s_url + s_char + "datatables_output=1",
 			    "bServerSide": true,
 			    "bProcessing": true,
+			    "oTableTools": {
+        	"sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+            "aButtons": [
+                {
+                    "sExtends":    "collection",
+                    "sButtonText": "Export",
+                    "aButtons":    [ "csv", "xls", "pdf" ]
+                }
+            ]
+        },
 			    "oLanguage": {
 			    	"sEmptyTable": "No Services found",
             "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
@@ -403,7 +413,8 @@ window.servers_table = $('#servers_table').dataTable({
 					"aaSortingFixed": [[ 0, 'asc' ]],
 					"bSort": false,
 					"aaSorting": [[ 1, 'asc' ]],
-					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+					"sDom": "<'row-fluid'<'span6'Tl><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+
 					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					//"sDom": '<"wrapper"lfptip>',
 					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
@@ -411,6 +422,17 @@ window.servers_table = $('#servers_table').dataTable({
 			    "sAjaxSource": server_ajax_url + server_char + "datatables_output=1",
 			    "bServerSide": true,
 			    "bProcessing": true,
+		
+        "oTableTools": {
+        	"sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+            "aButtons": [
+                {
+                    "sExtends":    "collection",
+                    "sButtonText": "Export",
+                    "aButtons":    [ "csv", "xls", "pdf" ]
+                }
+            ]
+        },
 			    "oLanguage": {
 			    	"sEmptyTable": "No Servers found",
             "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"

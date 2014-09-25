@@ -213,6 +213,12 @@ $(document).ready(function() {
 		$("#servers_bulk_edit_run").click(function() {
 			bulk_server_edit(1);
 		});
+		$("#servers_bulk_edit_delete").click(function() {
+			if(confirm("You really want to delete the selected services?")) {
+				bulk_server_edit(3);	
+			}
+			
+		});
 		//BULK EDIT SERVER
 		$("#servers_bulk_edit_dry_run").click(function() {
 			//Get Service id list

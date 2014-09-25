@@ -80,8 +80,8 @@ if($defaults["server_enabled"]==1) {
 	$server_en="false";
 }
 $triggers = "";
-if(strlen($defaults[server_enabled_triggers]) > 2) {
-	$tr_array = explode("|", $defaults[server_enabled_triggers]);
+if(strlen($defaults[enabled_triggers]) > 2) {
+	$tr_array = explode("|", $defaults[enabled_triggers]);
 	for($x=0; $x<count($tr_array); $x++) {
 			if($tr_array[$x] != "") {
 				$triggers .= $tr_array[$x] . ",";

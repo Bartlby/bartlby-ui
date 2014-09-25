@@ -226,7 +226,7 @@ while ($file = readdir ($dh)) {
        			$plugins[$optind][s]=1;	
        		}*/
        		
-       		if(strstr((string)$defaults[server_enabled_triggers],"|" . $file . "|")) {
+       		if(strstr((string)$defaults[enabled_triggers],"|" . $file . "|")) {
 				$triggers[$optind][s]=1;	
 			}
        		

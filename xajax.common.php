@@ -64,5 +64,6 @@ $xajax->registerFunction("bulkDisableChecks");
 $xajax->registerFunction("bulkDisableNotifys");
 
 $xajax->registerFunction("bulkEditValues");
+$xajax->registerFunction("bulkEditValuesServer");
 
 ?>

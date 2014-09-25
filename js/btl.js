@@ -152,6 +152,23 @@ function btl_call_refreshable_objects(data) {
 function btl_change(t) {
 		document.location.href='bartlby_action.php?set_instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }
+
+function bulk_server_edit(mode) {
+	servers_to_handle=new Array();
+			$('.server_checkbox').each(function() {
+				
+				if($(this).is(':checked')) {
+						servers_to_handle.push($(this).data("server_id"));
+				}
+			});
+			console.log("Handle Servers");
+			console.log(servers_to_handle);
+
+			xajax_bulkEditValuesServer(servers_to_handle, xajax.getFormValues("servers_bulk_form"), mode);
+
+}
+
+
 function bulk_service_edit(mode) {
 	services_to_handle=new Array();
 			$('.service_checkbox').each(function() {
@@ -192,6 +209,28 @@ $(document).ready(function() {
 			}
 			$('#myModal').modal('show');
 		});
+
+		$("#servers_bulk_edit_run").click(function() {
+			bulk_server_edit(1);
+		});
+		//BULK EDIT SERVER
+		$("#servers_bulk_edit_dry_run").click(function() {
+			//Get Service id list
+			bulk_server_edit(0);
+
+		});
+		$("#servers_bulk_edit").click(function() {
+			window.clearTimeout(window.server_list_timer); //Disable auto reload
+			if($('.server_checkbox').is(":checked") == false) {
+				if(!confirm("You have not selected any server if you continue - all your bulk actions will apply to EVERY server (system wide)!!")) {
+					return;
+				}
+			}
+			$('#myModal').modal('show');
+		});
+
+
+
 		$("#services_bulk_force").click(function() {
 		var force_services = new Array();
 			$('.service_checkbox').each(function() {
@@ -262,7 +301,14 @@ $(document).ready(function() {
 		}
 	});
 	
-	
+	$("#server_checkbox_select_all").click(function() {
+		if($(this).is(':checked')) {
+			console.log("check all");
+			$('.server_checkbox').attr("checked", "checked");
+		} else {
+			$('.server_checkbox').removeAttr("checked", "checked");
+		}
+	});
 	
 	//Service-DataTable
 		s_url = document.location.href.replace(/\/s.*\.php/, "/services.php");
@@ -271,6 +317,11 @@ $(document).ready(function() {
 			s_char = "&";
 		}
 		
+		server_ajax_url = document.location.href.replace(/\/s.*\.php/, "/servers.php");
+		server_char = "?";
+		if(server_ajax_url.match(/\?/)) {
+			server_char = "&";
+		}
 				
 	//$("#services_table").hide();
 	window.oTable = $('#services_table').dataTable({
@@ -339,7 +390,34 @@ $(document).ready(function() {
        
 				});
 				
-
+window.servers_table = $('#servers_table').dataTable({
+					"iDisplayLength": 50,
+					
+					"aoColumns": [
+						{ "sWidth": "1" },
+						{ "sWidth": "100" },
+						{ "sWidth": "100" },
+						{ "sWidth": "20" },
+						{ "sWidth": "150" }
+						],
+					"aaSortingFixed": [[ 0, 'asc' ]],
+					"bSort": false,
+					"aaSorting": [[ 1, 'asc' ]],
+					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
+					//"sDom": '<"wrapper"lfptip>',
+					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
+			    "sPaginationType": "bootstrap",
+			    "sAjaxSource": server_ajax_url + server_char + "datatables_output=1",
+			    "bServerSide": true,
+			    "bProcessing": true,
+			    "oLanguage": {
+			    	"sEmptyTable": "No Servers found",
+            "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
+        	}
+			    
+       
+				});
 		 
 		$("#toggle_reload").click(function() {
 			if(global_reload == 1) {
@@ -585,6 +663,8 @@ clearTimeout(delayhide)
 
 if (hidemenu_onclick=="yes")
 document.onclick=hidemenu
+
+
 
 
 

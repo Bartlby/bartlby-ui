@@ -64,6 +64,99 @@ function idToInt($ids) {
 	return $ids;
 }
 
+function bulkEditValuesServer($server_ids, $new_values, $mode = 0) {
+	global $btl;
+	$res = new xajaxresponse();
+	$output = "";
+	//FIXME check for <= 0 $service_ids
+	$btl->server_list_loop(function($svc, $shm) use(&$server_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
+		$f = in_array("" . $svc[server_id], $server_ids);
+		
+		if(count($server_ids) == 0) {
+			$f = true;
+		}
+		$doedit=0;
+		if($f) {
+		
+		
+			$output .= "Working on:  " . $svc[server_name] . "(" . $svc[server_id] . ")\n";
+			@reset($new_values);
+
+			if((int)$mode == 3) {
+				bartlby_delete_server($btl->RES, $svc[server_id]);
+				$output .= "<font color=red>Removed Server with id: " . $svc[server_id] . "</font>\n";
+			}	
+
+			while(list($k, $v) = @each($new_values)) {
+				
+				if(preg_match("/_typefield\$/i", $k)) {
+					continue;
+				}
+
+				if($new_values[$k . "_typefield"] != "unused") {
+					$newvalue= $v;
+					$oldvalue=$svc[$k];
+					switch($new_values[$k . "_typefield"]) {
+						case 'set':
+						break;
+						case 'regex':
+							$regex = explode("#", $newvalue);
+							$newvalue = preg_replace("#" . $regex[1] . "#i", $regex[2], $oldvalue);
+						break;
+						case 'add':
+							$newvalue = $oldvalue + $newvalue;
+						break;
+						case 'sub':
+							$newvalue = $oldvalue - $newvalue;
+						break;
+						case 'addrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue + $newrand;
+						break;
+						case 'subrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue - $newrand;
+						break;
+						case 'toggle':
+							//$newvalue = $oldvalue - $newvalue;
+							if($oldvalue == 0) $newvalue=1;
+							if($oldvalue == 1) $newvalue=0;
+						break;
+
+
+					}
+					if($oldvalue != $newvalue) {
+						$output .= "$k to <b>$newvalue</b> was:  $oldvalue \n";	
+						$svc[$k] = $newvalue;
+						$doedit=1;
+					}
+					
+					if((int)$mode == 1) {
+						//Real Mode:
+
+						if($doedit == 1) {
+							$ret=bartlby_modify_server($btl->RES,  $svc[server_id], $svc);
+							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
+						}
+					}
+
+					
+										
+
+				}
+			}
+		$output .= "-------------\n";	
+		}
+	});
+	
+	bartlby_reload($btl->RES);
+	$res->addAssign("servers_bulk_output", "innerHTML", "<pre>$output</pre>");
+	return $res;
+}
+
+
 function bulkEditValues($service_ids, $new_values, $mode = 0) {
 	global $btl;
 	$res = new xajaxresponse();

@@ -1819,6 +1819,8 @@ if($m[2] == "5724") {
 				for($x=0; $x<count($re); $x++) {
 					$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
 					
+					$srv_temp=bartlby_get_server_by_id($this->RES, $server);
+					
 					
 					$svc_type = $re[$x][service_type];
 					if($force_service_type != 0) { //Use selected type
@@ -1828,7 +1830,6 @@ if($m[2] == "5724") {
 					
 					if($force_service_type == -1) { //use server default type
 
-						$srv_temp=bartlby_get_server_by_id($this->RES, $server);
 					
 						$svc_type=$srv_temp[default_service_type];
 					}
@@ -1867,7 +1868,7 @@ if($m[2] == "5724") {
 						"renotify_interval" => $re[$x][renotify_interval],
 						"enabled_triggers" => $re[$x][enabled_triggers],
 						"handled" => 0,
-						"orch_id" => $re[$x][orch_id]
+						"orch_id" => $srv_temp[orch_id]
 					);
 				
 

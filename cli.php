@@ -2,13 +2,19 @@
 
 
 error_reporting(0);	
-	
+session_start();	
 	include "config.php";
 	include "layout.class.php";
 	include "bartlby-ui.class.php";
 
 	
 
+
+
+	if($argv[1]) {
+		$_SESSION["service_display_prio"]=$argv[1];
+
+	}
 	$uname=getenv("BARTLBY_USER");
     $pw=getenv("BARTLBY_PASSWORD");
         if(!$uname || !$pw) {
@@ -218,6 +224,8 @@ while(1){
 		}
 			
 	}
+
+
 
 //	unset($map);
 	//$map = @$btl->GetSVCMap();

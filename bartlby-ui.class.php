@@ -1557,9 +1557,12 @@ if($m[2] == "5724") {
 		}
 	}
 	function service_list_loop($fcn) {
+		global $_SESSION;
 
 		for($x=0; $x<$this->info[services]; $x++) {
+
 			$svc = bartlby_get_service($this->RES, $x);
+			if($_SESSION["service_display_prio"] && $svc[prio] < $_SESSION["service_display_prio"]) continue;
 			if($svc[is_gone] == 2) {
 				//Skip deleted services
 				continue;

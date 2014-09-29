@@ -185,6 +185,12 @@ function bulk_service_edit(mode) {
 }
 $(document).ready(function() {
 		btl_set_bars();
+
+		$("#service_prio_density").on("change", function() {
+			
+			xajax_setServiceDisplayPrio($("#service_prio_density").val());
+		});
+
 		$("#services_bulk_edit_delete").click(function() {
 			if(confirm("You really want to delete the selected services?")) {
 				bulk_service_edit(3);	

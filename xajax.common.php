@@ -65,5 +65,6 @@ $xajax->registerFunction("bulkDisableNotifys");
 
 $xajax->registerFunction("bulkEditValues");
 $xajax->registerFunction("bulkEditValuesServer");
+$xajax->registerFunction("setServiceDisplayPrio");
 
 ?>

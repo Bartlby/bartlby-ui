@@ -4,6 +4,8 @@
 */5 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=DB)
 */10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=GENCONF)
 */10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)
+*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=INIT)
+*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=RESTART)
 0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)
 0 2 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=daily)
 0 2 * * 7 (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=AutoReports/cron.php wich=weekly)

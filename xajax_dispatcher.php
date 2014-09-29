@@ -274,6 +274,19 @@ function bulkEnableChecks($ids) {
 	
 
 }
+function setServiceDisplayPrio($lv) {
+	global $_SESSION;
+	global $btl, $layout;
+	$res = new xajaxresponse();
+	
+
+	$_SESSION["service_display_prio"]=$lv;
+
+	$res->AddScript('noty({"text":"Service Display Prio Set to: ' . $lv . '","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	
+	return $res;
+
+}
 function bulkDisableChecks($ids) {
 	global $btl, $layout;
 	$res = new xajaxresponse();

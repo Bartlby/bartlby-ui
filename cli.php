@@ -13,7 +13,8 @@ session_start();
 
 	if($argv[1]) {
 		$_SESSION["service_display_prio"]=$argv[1];
-
+	} else {
+		$_SESSION["service_display_prio"]=50;
 	}
 	$uname=getenv("BARTLBY_USER");
     $pw=getenv("BARTLBY_PASSWORD");

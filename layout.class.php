@@ -136,7 +136,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$this->tabs[]=array(name=>$name, cnt=>$cnt, tab_name=>$tab_name);
 	}
 	function Table($proz="100%", $border=0) {
-		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
+		$this->deprecated("NO MORE TABLE");
+
+		//$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
 	}
 	function MetaRefresh($time=20) {
 		$this->OUT .= "<script>function ReloadME() {
@@ -148,7 +150,8 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		window.setTimeout('ReloadME()', " . $time . "000);</script>";	
 	}
 	function TableEnd() {
-		$this->OUT .= "</table>";	
+		$this->deprecated("NO MORE TABLE");
+		//$this->OUT .= "</table>";	
 	}
 	function DisplayHelp($msg=array()) {
 		for($x=0; $x<=count($msg);$x++) {
@@ -158,6 +161,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 
 	function Td($data=array()) {
+		$this->deprecated("NO MORE TD();");
 		for($x=0;$x<count($data);$x++) {
 			$width="";
 			$height="";
@@ -177,13 +181,17 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			
 			
 			//$disp=htmlspecialchars($disp);			
-			$r .= "<td $colspan  $align  valign=top $width $height $class>\n" . $disp . "\n</td>\n";	
+			//$r .= "<div $colspan  $align  valign=top $width $height $class>\n" . $disp . "\n</div>\n";	
+			$r .= "<div >\n" . $disp . "\n</div>\n";	
 		}
 		return $r;
 	}
 	
 	function Tr($td, $return = false) {
 		$data="<tr>\n$td\n</tr>\n";
+		$data='' . $td; // NO MORE TR
+		$this->deprecated("NO MORE TR();");
+		
 		if($return == true) {
 			return  $data;
 		} else {
@@ -193,7 +201,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	function Form($name,$action, $method='GET', $r = false) {
 		
-		$rr = "<form id='$name' name='$name' action='$action' method='POST'>\n";	
+		$rr = "<form id='$name' name='$name' class='form-horizontal' action='$action' method='POST'>\n";	
 		if($r) {
 			return $rr;	
 		} else {
@@ -211,7 +219,15 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	 
 	function TextArea($name, $def, $height=7, $width=100) {
-		return "<textarea name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
+		$r = "<textarea class=form-control name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
+		$r = '<div class="form-group">
+				    <label class="col-sm-2 control-label">' . $name . '</label>
+				   	 <div class="col-sm-10">
+				      ' . $r . '
+				      </div>
+				    
+				  </div>';
+		return $r;
 	}
 	
 	function Field($name, $type='text', $value='',$L='', $chkBox='', $help = array()) {
@@ -220,7 +236,21 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		if($help) {
 			$hIcon="<a href='help.php?msg[0]=$help&msg[1]=NULL' target='unten'><img src='layout/themes/classic/info.gif' border=0></A>";
 		}
-		$r="<input type='$type' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
+		$cl = "form-control";
+		if($type == "button" || $type == "submit") {
+			$cl = "btn btn-primary pull-right";
+		}
+		$r="<input type='$type' class='$cl' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
+
+		if($type != "hidden" && $type != "button" && $type != "submit") {
+			$r = '<div class="form-group">
+				    <label class="col-sm-2 control-label">' . $name . '</label>
+				   	 <div class="col-sm-10">
+				      ' . $r . '
+				      </div>
+				    
+				  </div>';
+		}
 		if ($L) {
 			$this->OUT .= $r;
 		} else {
@@ -333,6 +363,15 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			}
 		}		
 		$r .= "</select><div style='color:#ff0000' id='error_" . $name . "'></div>\n";
+
+
+		$r = '<div class="form-group">
+			    <label class="col-sm-2 control-label">' . $name . '</label>
+			   	 <div class="col-sm-10">
+			      ' . $r . '
+			    </div>
+			  </div>';
+
 		return $r;
 	}
 	function setTitle($str) {
@@ -345,31 +384,24 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 				
 	
 	function beginMenu() {
-		return '<div class="btn-group " xstyle="width:300px;">';
+		return '<div class="btn-group btn-group-justified"><div class="btn-group " >';
 		
-		return '<ul class="nav nav-tabs nav-stacked main-menu" xstyle="width:300px;">';	
+		
 	}
 	function addRoot($name) {
 		
-		return '<a style="width:190px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="" ></i><span style="width: 100%" xclass="hidden-phone" >' . $name . '</span>
-						<span class="caret" ></span>
-					</a><ul class="dropdown-menu" id="' . $root . '" style="width: 210px">';
+		return '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' .  $name . '<span class="caret" ></button>
+					<ul class="dropdown-menu" id="' . $root . '" >';
 
-		$r = "<table class=\"nopad\">	<tr><td class=\"nav_main\" onClick=\"doToggle('$name')\"><img id='" . $name . "_plus' src='themes/" . $this->theme . "/images/plus.gif' border=0> $name</td></tr><tr><td class=\"nav_place\">&nbsp;</td></tr></table><table class=\"nopad\" id='" . $name . "_sub' style='display:none;'>";
-		$r = '<li class="nav-header hidden-tablet">' . $name . '</li>';
 		
-		return $r;	
 	}
 	function addSub($root, $name, $link) {
 		return '<li> <a href="' . $link . '"> ' . $name . '</a>';
-		$r="<tr><td class=\"nav_sub\"><a href='" . $link . "' class=\"sub\">$name</A></td></tr><tr><td class=\"nav_place\">&nbsp;</td></tr>";
-		$r = '<li><a class="ajax-link" href="' . $link . '"><i class="icon-home"></i><span class="hidden-tablet"> ' . $name . '</span></a></li>';
-		return $r;	
+		
 	}
 	function endMenu() {
-		return '</ul></div>';
-		return "</ul>";	
+		return '</ul></div></div>';
+	
 	}
 	
 	function display($lineup_file="") {
@@ -546,13 +578,14 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		
 	
+		if(1==2) {
 		
-		
-		for($z=0; $z<count($this->deprecated); $z++) {
-			$depre .= '<div class="alert alert-error">
-							<button type="button" class="close" data-dismiss="alert">×</button>
-							Deprecated INFO: <strong>' .  $this->deprecated[$z] . '</strong>
-						</div>';
+			for($z=0; $z<count($this->deprecated); $z++) {
+				$depre .= '<div class="alert alert-error">
+								<button type="button" class="close" data-dismiss="alert">×</button>
+								Deprecated INFO: <strong>' .  $this->deprecated[$z] . '</strong>
+							</div>';
+			}
 		}
 
 		//Default LineUp

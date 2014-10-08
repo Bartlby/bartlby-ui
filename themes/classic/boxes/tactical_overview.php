@@ -26,7 +26,7 @@ $instance_id_fix="";
 
 				<? if($plcs[services_ok]>0) {?><a href='services.php?&expect_state=0<?=$instance_id_fix?>'><span class='label label-success'><?=$plcs[services_ok]?> OK's</A><? } ?>
 				<? if($plcs[services_warning]>0) {?><a href='services.php?&expect_state=1<?=$instance_id_fix?>'><span class='label label-warning'><?=$plcs[services_warning]?> Warnings</A><? } ?>
-				<? if($plcs[services_critical]>0) {?><a href='services.php?&expect_state=2<?=$instance_id_fix?>'><span class='label label-important'><?=$plcs[services_critical]?> Criticals</A><? } ?>
+				<? if($plcs[services_critical]>0) {?><a href='services.php?&expect_state=2<?=$instance_id_fix?>'><span class='label label-danger'><?=$plcs[services_critical]?> Criticals</A><? } ?>
 				<? if($plcs[services_unkown]>0) {?><a href='services.php?&expect_state=3<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_unkown]?>  Unkown</A><? } ?>
 				<? if($plcs[services_info]>0) {?><a href='services.php?&expect_state=4<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_info]?> Info</A><? } ?>
 				<? if($plcs[services_downtime]>0) {?><a href='services.php?&downtime=true<?=$instance_id_fix?>'><span class='label label-default'><?=$plcs[services_downtime]?> Downtime</A><? } ?>

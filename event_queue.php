@@ -43,7 +43,7 @@ if($_GET[datatables_output] == 1) {
 				$ajax_lbl = "label-warning";
 			}
 			if($svc_color == "red") {
-				$ajax_lbl = "label-important";
+				$ajax_lbl = "label-danger";
 			}
 			switch($el[type]) {
 				case 0:
@@ -168,7 +168,7 @@ if($_GET[datatables_output] == 1) {
 								$ajax_lbl = "label-warning";
 						}
 						if($svc_color == "red") {
-								$ajax_lbl = "label-important";
+								$ajax_lbl = "label-danger";
 						}
 						
 			

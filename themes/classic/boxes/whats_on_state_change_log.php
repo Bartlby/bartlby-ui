@@ -21,7 +21,7 @@ $(document).ready(function() {
 								  <th>Notifications</th>
 								  <th><span class="label label-success">OK Time</span></th>
 								  <th><span class="label label-warning">Warning Time</span></th>
-								  <th><span class="label label-important">Critical Time</span></th>
+								  <th><span class="label label-danger">Critical Time</span></th>
 							  </tr>
 		
 				  </thead>

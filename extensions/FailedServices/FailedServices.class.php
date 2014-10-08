@@ -50,7 +50,7 @@ class FailedServices {
 											$lbl = "label-warning";
 									}
 									if($svc_color == "red") {
-											$lbl = "label-important";
+											$lbl = "label-danger";
 									}
 								$r .= "<tr >";
 								$r .= "<td>";

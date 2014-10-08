@@ -195,12 +195,20 @@ global $Bartlby_CONF_IDX;
 	<!-- The fav icon -->
 	<link rel="shortcut icon" href="themes/classic/img/favicon.ico">
 		
+
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylsheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	
 	<?
 		echo $this->BTUI_SCRIPTS;
 	?>
 </head>
 
 <body>
+
+
+	
 	<?
 		if($Bartlby_CONF_IDX > 0) {
 	?>
@@ -215,86 +223,227 @@ global $Bartlby_CONF_IDX;
 
 
 
-<div class="navbar navbar-default">
-  
+<div id="cl-wrapper">
 
-  <div class="dropdown">
-            <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="/page.html">
-                <span class="icon-bar">Menu</span>
-      			
-            </a>
+  <div class="cl-sidebar">
+    <div class="cl-toggle"><i class="fa fa-bars"></i></div>
+    <div class="cl-navblock" style='background-color: #333; xwidth:241px'>
+      <div class="menu-space">
+        <div class="content">
+          <div class="sidebar-logo">
+            <div class="logo">BARTLBY
+                <a href="index2.html"></a>
+            </div>
+          </div>
+          <div class="side-user">
+            <div class="avatar"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/brad_frost/128.jpg" alt="Avatar" /></div>
+            <br>
+            <div class="info">
+              <p>40 <b>GB</b> / 100 <b>GB</b><span><a href="#"><i class="fa fa-plus"></i></a></span></p>
+              <div class="progress progress-user">
+                <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                  <span class="sr-only">50% Complete (success)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul class="cl-vnavigation">
+            <li><a href="#"><i class="fa fa-home"></i><span>Dashboard</span></a>
+              <ul class="sub-menu">
+                <li  ><a href="index.html">Version 1</a></li>
+                <li  ><a href="dashboard2.html"><span class="label label-primary pull-right">New</span>Version 2</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-desktop"></i><span>Layouts</span></a>
+              <ul class="sub-menu">
+                <li><a href="layout-boxed.html"><span class="label label-primary pull-right">New</span>Boxed Layout</a></li>
+                <li><a href="layout-topbar.html"><span class="label label-primary pull-right">New</span>Top Menu</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-smile-o"></i><span>UI Elements</span></a>
+              <ul class="sub-menu">
+                <li  ><a href="ui-elements.html">General</a></li>
+                <li  ><a href="ui-alerts.html">Alerts</a></li>
+                <li  ><a href="ui-porlets.html"><span class="label label-primary pull-right">New</span>Porlets</a></li>
+                <li  ><a href="ui-buttons.html">Buttons</a></li>
+                <li  ><a href="ui-modals.html">Modals</a></li>
+                <li  ><a href="ui-notifications.html">Notifications</a></li>
+                <li  ><a href="ui-tiles.html"><span class="label label-primary pull-right">New</span>Tiles</a></li>
+                <li  ><a href="ui-progress.html">Progress Bars</a></li>
+                <li  ><a href="ui-icons.html">Icons</a></li>
+                <li  ><a href="ui-grid.html">Grid</a></li>
+                <li  ><a href="ui-tabs-accordions.html">Tabs & Accordions</a></li>
+                <li  ><a href="ui-nestable-lists.html">Nestable Lists</a></li>
+                <li  ><a href="ui-treeview.html">Tree View</a></li>
+                <li  ><a href="ui-calendar.html"><span class="label label-primary pull-right">New</span>Calendar</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-list-alt"></i><span>Forms</span></a>
+              <ul class="sub-menu">
+                <li  ><a href="form-elements.html">Components</a></li>
+                <li  ><a href="form-multiselect.html"><span class="label label-primary pull-right">New</span>Multiselect</a></li>
+                <li  ><a href="form-validation.html">Validation</a></li>
+                <li  ><a href="form-wizard.html">Wizard</a></li>
+                <li  ><a href="form-masks.html">Input Masks</a></li>
+                <li  ><a href="form-wysiwyg.html">WYSIWYG Editor</a></li>
+                <li  ><a href="form-upload.html">Multi Upload</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-table"></i><span>Tables</span></a>
+              <ul class="sub-menu">
+                <li  ><a href="tables-general.html">General</a></li>
+                <li  ><a href="tables-datatables.html"><span class="label label-primary pull-right">New</span>Data Tables</a></li>
+                <li  ><a href="tables-xeditable.html"><span class="label label-primary pull-right">New</span>X-Editable</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-map-marker nav-icon"></i><span>Maps</span></a>
+              <ul class="sub-menu">
+                <li  ><a href="maps.html">Maps</a></li>
+                <li  ><a href="vector-maps.html">Vector Maps</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-envelope nav-icon"></i><span>Email</span></a>
+              <ul class="sub-menu">
+                <li  ><a href="email-inbox.html">Inbox</a></li>
+                <li  ><a href="email-read.html">Email Detail</a></li>
+                <li  ><a href="email-compose.html"><span class="label label-primary pull-right">New</span>Email Compose</a></li>
+              </ul>
+            </li>
+            <li  ><a href="typography.html"><i class="fa fa-text-height"></i><span>Typography</span></a></li>
+            <li  ><a href="charts.html"><i class="fa fa-bar-chart-o"></i><span>Charts</span></a></li>
+            <li><a href="#"><i class="fa fa-file"></i><span>Pages</span></a>
+              <ul class="sub-menu">
+                <li class="active" ><a href="pages-blank.html">Blank Page</a></li>
+                <li  ><a href="pages-blank-header.html">Blank Page Header</a></li>
+                <li  ><a href="pages-blank-aside.html">Blank Page Aside</a></li>
+                <li  ><a href="pages-blank-aside-header.html"><span class="label label-primary pull-right">New</span>Blank Page Aside Header</a></li>
+                <li  ><a href="pages-profile.html"><span class="label label-primary pull-right">New</span>Profile</a></li>
+                <li><a href="pages-login.html">Login</a></li>
+                <li><a href="pages-sign-up.html"><span class="label label-primary pull-right">New</span>Sign Up</a></li>
+                <li><a href="pages-forgot.html"><span class="label label-primary pull-right">New</span>Forgot Password</a></li>
+                <li><a href="pages-404.html">404 Page</a></li>
+                <li><a href="pages-500.html">500 Page</a></li>
+                <li  ><a href="pages-tour.html"><span class="label label-primary pull-right">New</span>Tour Guide</a></li>
+                <li  ><a href="pages-gallery.html">Gallery</a></li>
+                <li  ><a href="pages-search.html"><span class="label label-primary pull-right">New</span>Search</a></li>
+                <li  ><a href="pages-timeline.html">Timeline</a></li>
+                <li  ><a href="pages-code-editor.html">Code Editor</a></li>
+              </ul>
+            </li>
 
-   			
-   			<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-   				<?=$this->BTLEXTMENU?>
-   			</ul>
-   	</div>
-
-
-   	 <form class="navbar-form navbar-left">
-      <input type="text" class="form-control col-lg-8" placeholder="Search">
-    </form>
-
-    	<div class="pull-right" style='display:inline-block; padding-top: 8px;'><?=$this->BTL_INSTANCES?></div>
-				<div class="pull-right">
-					<button class="btn btn-default" onClick="document.location.href='bartlby_action.php?action=reload';"><i class="icon-refresh"></i> Reload</button>
-					<button class="btn btn-default" onClick="document.location.href='logout.php';"><i class="icon-remove"></i> Logout</button>
-					
-				</div>
-
-				<div class="pull-right" style="padding-top: 8px;">
-					<div  id="quick_look" style="z-index:100"><font size=1>Auto Refresh<input type='checkbox' id=toggle_reload checked  style='height:10px'>   <input type=range min=0 max=100 value=<?=$_SESSION["service_display_prio"]?> id=service_prio_density  class=vertical >   <input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>
-					
-				</div>
-
-				
+          </ul>
+        </div>
+      </div>
+      <div class="text-right collapse-button" style="padding:7px 9px;">
+        <input type="text" class="form-control search" placeholder="Search..." />
+        <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
+      </div>
+    </div>
   </div>
- 
-</div>
+	<div class="container-fluid" id="pcont">
+   <!-- TOP NAVBAR -->
+  <div id="head-nav" class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right user-nav">
+          <li class="dropdown profile_menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img alt="Avatar" src="images/avatar6-2.jpg" /><span>Jane Smith</span> <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">My Account</a></li>
+              <li><a href="#">Profile</a></li>
+              <li><a href="#">Messages</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Sign Out</a></li>
+            </ul>
+          </li>
+        </ul>			
+        <ul class="nav navbar-nav not-nav">
+          <li class="button dropdown">
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class=" fa fa-inbox"></i></a>
+            <ul class="dropdown-menu messages">
+              <li>
+                <div class="nano nscroller">
+                  <div class="content">
+                    <ul>
+                      <li>
+                        <a href="#">
+                          <img src="images/avatar2.jpg" alt="avatar" /><span class="date pull-right">13 Sept.</span> <span class="name">Daniel</span> Hey! How are you?
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <img src="images/avatar_50.jpg" alt="avatar" /><span class="date pull-right">20 Oct.</span><span class="name">Adam</span> Hi! Can you fix my phone?
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <img src="images/avatar4_50.jpg" alt="avatar" /><span class="date pull-right">2 Nov.</span><span class="name">Michael</span> Regards!
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <img src="images/avatar3_50.jpg" alt="avatar" /><span class="date pull-right">2 Nov.</span><span class="name">Lucy</span> Hello, my name is Lucy
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <ul class="foot"><li><a href="#">View all messages </a></li></ul>           
+              </li>
+            </ul>
+          </li>
+          <li class="button dropdown">
+            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe"></i><span class="bubble">2</span></a>
+            <ul class="dropdown-menu">
+              <li>
+                <div class="nano nscroller">
+                  <div class="content">
+                    <ul>
+                      <li><a href="#"><i class="fa fa-cloud-upload info"></i><b>Daniel</b> is now following you <span class="date">2 minutes ago.</span></a></li>
+                      <li><a href="#"><i class="fa fa-male success"></i> <b>Michael</b> commented on your link <span class="date">15 minutes ago.</span></a></li>
+                      <li><a href="#"><i class="fa fa-bug warning"></i> <b>Mia</b> commented on post <span class="date">30 minutes ago.</span></a></li>
+                      <li><a href="#"><i class="fa fa-credit-card danger"></i> <b>Andrew</b> sent you a request <span class="date">1 hour ago.</span></a></li>
+                    </ul>
+                  </div>
+                </div>
+                <ul class="foot"><li><a href="#">View all activity </a></li></ul>           
+              </li>
+            </ul>
+          </li>
+          <li class="button"><a class="toggle-menu menu-right push-body" href="javascript:;"><i class="fa fa-comments"></i></a></li>				
+        </ul>
 
+      </div><!--/.nav-collapse animate-collapse -->
+    </div>
+  </div>
+  
+    
+	<div class="cl-mcont">
 
-		<!-- <div id='bartlby_basket'></div> -->
+			<!-- <div id='bartlby_basket'></div> -->
 			
 	
-		 <div class="col-sm-12">
+		 	<div class=row-fluid>
 			
 			<?=$this->BTTABBAR?>
 			<?=$this->BTUIOUTSIDE?>
-			
+			</div>
 			    
-		</div><!--/fluid-row-->
-			
-		<hr>
-
-		<div class="modal hide fade" id="myModal">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">�</button>
-				<h3>Settings</h3>
-			</div>
-			<div class="modal-body">
-				<p>Here settings can be configured...</p>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn" data-dismiss="modal">Close</a>
-				<a href="#" class="btn btn-primary">Save changes</a>
-			</div>
-		</div>
-
-		<footer>
-				<center>
-										<table>
-											<tr>
-												<td>
-													
-													<font style='font-size:8pt; color:#000000'><a href='http://www.bartlby.org/' target='_blank'>bartlby</A> is a GPLv2 product of <a href='http://www.januschka.com/' target='_blank'>januschka.com</A><?=$this->RELNOT?></font>
-												</td>
-											</tr>
-										</table>
-										<div class="ui_performance1" id="reload"><font size=1>UI-Version: <font size=1><?=$this->UIVERSION?></font> Page Render:<?=$this->BTUITIME?> secs &nbsp; Memory Used: <?=$this->BTMEMUSAGE?>MB &nbsp;&nbsp;&nbsp;&nbsp;<?=$this->SERVERTIME?> &nbsp; &nbsp;&nbsp;&nbsp;</div>
-										</center>		
-		</footer>
 		
-	</div><!--/.fluid-container-->
+
+		
+	</div>
+	
+	</div> 
+	
+</div>
+<!-- Right Chat-->
+
+
+
+
+	
+		
 
 	<!-- external javascript
 	================================================== -->

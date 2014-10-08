@@ -99,7 +99,7 @@
 							$ajax_lbl = "label-warning";
 					}
 					if($svc[color] == "red") {
-							$ajax_lbl = "label-important";
+							$ajax_lbl = "label-danger";
 					}
 
 					$ajax_total_records++;

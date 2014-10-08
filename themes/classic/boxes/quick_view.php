@@ -33,7 +33,7 @@ $quick_view = "<table class='nopad' width=100%>";
 			
 			if($qck[$k][2]) {
 				$sf=true;
-				$qc="<tr><td><font size=1><a href='services.php?server_id=" . $qck[$k][10] . "&expect_state=2'><span class='label label-important'>" . $qck[$k][2] . " Criticals</A></span></td></tr>";
+				$qc="<tr><td><font size=1><a href='services.php?server_id=" . $qck[$k][10] . "&expect_state=2'><span class='label label-danger'>" . $qck[$k][2] . " Criticals</A></span></td></tr>";
 			}
 			
 			if($qck[$k][3]) {

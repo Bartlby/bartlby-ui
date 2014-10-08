@@ -369,7 +369,7 @@ li.gridst {
 												lbl = 'label-warning';
 											}
 												if(data.SVC_DETAIL.svc_color == 'red') {
-												lbl = 'label-important';
+												lbl = 'label-danger';
 											}
 								
 								

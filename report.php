@@ -121,7 +121,7 @@ if(!$_GET[report_service] || !$log_mask) {
 				$col="orange";
 			}
 			if($state == 2) {
-				 $lbl="label-important";
+				 $lbl="label-danger";
 				 $col="red";
 			}
 			if($state == 8) {
@@ -310,7 +310,7 @@ if(!$_GET[report_service] || !$log_mask) {
 					$lbl="";
 					if($ts[1] == 0) $lbl="label-success";
 					if($ts[1] == 1) $lbl="label-warning";
-					if($ts[1] == 2) $lbl="label-important";
+					if($ts[1] == 2) $lbl="label-danger";
 					$out .= "&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp; "  . date("d.m.Y H:i:s", $ts[0]) . " <span class='label " .  $lbl . "'>" . $btl->getState($ts[1]) . "</span><br>";
 				}
 			}
@@ -351,7 +351,7 @@ if(!$_GET[report_service] || !$log_mask) {
 			$lbl="";
 			if($state_array[$xy][lstate] == 0) $lbl="label-success";
 			if($state_array[$xy][lstate] == 1) $lbl="label-warning";
-			if($state_array[$xy][lstate] == 2) $lbl="label-important";
+			if($state_array[$xy][lstate] == 2) $lbl="label-danger";
 			if($state_array[$xy][lstate] == 8) $lbl="";
 			
 					$o1 .= "<tr>";

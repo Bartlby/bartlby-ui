@@ -419,7 +419,7 @@ class AutoDiscoverAddons {
 				}
 				function adaTabs() {
 					$re = "";
-																$re .= '<ul class="nav nav-tabs" id="myTab">';
+																$re .= '<ul class="nav nav-tabs nav-tabs-google" id="myTab">';
                         		    for($x=0; $x<count($this->images); $x++) {
                         		    	$re .= '<li><a href="#tab' . $x . '">' . $this->images_labels[$x] . '</a></li>';
                         		    }

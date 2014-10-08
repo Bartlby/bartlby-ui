@@ -1,14 +1,14 @@
 
 Perform Action on Selected services<br>
-<button class="btn btn-mini " id="services_bulk_force"><i class=" icon-refresh"></i>Force</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_force"><i class=" icon-refresh"></i>Force</button>&nbsp;
 
 
-<button class="btn btn-mini " id="services_bulk_enable_checks" data-rel="tooltip"><i class=" icon-ok-circle"></i>Enable Checks</button>&nbsp;
-<button class="btn btn-mini " id="services_bulk_disable_checks"><i class=" icon-ban-circle"></i>Disable Checks</button>&nbsp;
-<button class="btn btn-mini " id="services_bulk_enable_notifys"><i class=" icon-ok-circle"></i>Enable Notifications</button>&nbsp;
-<button class="btn btn-mini " id="services_bulk_disable_notifys"><i class=" icon-ban-circle"></i>Disable Notifications</button>&nbsp;
-<button class="btn btn-mini " id="services_bulk_refresh_table" onClick='window.oTable.fnDraw(false)'><i class=" icon-refresh"></i>Refresh Service Table</button>&nbsp;
-<button class="btn btn-mini " id="services_bulk_edit"><i class=" icon-edit"></i>Bulk Edit</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_enable_checks" data-rel="tooltip"><i class=" icon-ok-circle"></i>Enable Checks</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_disable_checks"><i class=" icon-ban-circle"></i>Disable Checks</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_enable_notifys"><i class=" icon-ok-circle"></i>Enable Notifications</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_disable_notifys"><i class=" icon-ban-circle"></i>Disable Notifications</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_refresh_table" onClick='window.oTable.fnDraw(false)'><i class=" icon-refresh"></i>Refresh Service Table</button>&nbsp;
+<button class="btn btn-default " id="services_bulk_edit"><i class=" icon-edit"></i>Bulk Edit</button>&nbsp;
 
 
 <?
@@ -49,13 +49,19 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
 
 ?>	
 
-<div class="modal hide fade" id="myModal" >
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">x</button>
-				<h3>Bulk Edit</h3>
-			</div>
-			<div class="modal-body" style='overflow-y:auto;'>
-				<div class="alert alert-warning" style='margin-bottom: 0px;'>WARNING beware what you are doing!!<br>
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Bulk Service Modify</h4>
+      </div>
+      <div class="modal-body" style='overflow-y:auto;height:300px;'>
+        	
+
+
+        	<div class="alert alert-warning" style='margin-bottom: 0px;'>WARNING beware what you are doing!!<br>
 <p class=well>
 	Regex Format: 
 	<code>
@@ -95,13 +101,28 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
 					?>
 					</form>
 				</table>
-			</div>
-			<div class="modal-footer">
-				
-				<button data-dismiss="modal"class="btn btn-success1"><i class="icon-ok"></i> Close</button>
+
+
+
+
+
+
+      </div>
+      <div class="modal-footer">
+       
+      	<button data-dismiss="modal"class="btn btn-primary"><i class="icon-ok"></i> Close</button>
 				
 				<button id=services_bulk_edit_dry_run class="btn btn-success"><i class="icon-eye-open"></i> Dry Run</button>
 				<button id=services_bulk_edit_run class="btn btn-warning"><i class="icon-fire"></i> Run</button>
 				<button id=services_bulk_edit_delete class="btn btn-danger"><i class="icon-trash"></i> Delete</button>
-			</div>
-		</div>
+
+
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+

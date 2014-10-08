@@ -386,11 +386,11 @@ $(document).ready(function() {
 					"aaSortingFixed": [[ 0, 'asc' ]],
 					"bSort": false,
 					"aaSorting": [[ 1, 'asc' ]],
-					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i>T<'span12 center'p>>",
+					//"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i>T<'span12 center'p>>",
 					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					//"sDom": '<"wrapper"lfptip>',
 					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
-			    "sPaginationType": "bootstrap",
+			    
 			    "sAjaxSource": s_url + s_char + "datatables_output=1",
 			    "bServerSide": true,
 			    "bProcessing": true,

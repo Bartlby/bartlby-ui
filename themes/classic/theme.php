@@ -37,7 +37,7 @@ global $Bartlby_CONF_IDX;
 	<meta name="author" content="Helmut Januschka">
 
 	<!-- The styles -->
-	<link id="bs-css" href="themes/classic/css/bootstrap-simplex.css" rel="stylesheet">
+	
 	
 	<?=$this->XAJAX?>
 	<style>
@@ -55,8 +55,13 @@ global $Bartlby_CONF_IDX;
 	  }
 	</style>
 	<link href="themes/classic/btl.css" rel="stylesheet">
-	<link href="themes/classic/css/bootstrap-responsive.css" rel="stylesheet">
-	<link href="themes/classic/css/charisma-app.css" rel="stylesheet">
+	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
+	
+	<xlink id="bs-css" href="themes/classic/css/bootstrap-theme.css" rel="stylesheet">
+	<link id="bs-css" href="themes/classic/css/todc-bootstrap.css" rel="stylesheet">
+	<link id="bs-css" href="themes/classic/css/docs.css" rel="stylesheet">
+
+	<xlink href="themes/classic/css/charisma-app.css" rel="stylesheet">
 	<link href="themes/classic/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
 	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
 	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
@@ -77,6 +82,9 @@ global $Bartlby_CONF_IDX;
 
 	<!-- jQuery -->
 	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
+
+	<script src="themes/classic/js/bootstrap.js"></script>
+
 	<!-- jQuery UI -->
 	<script src="themes/classic/js/jquery-ui-1.8.21.custom.min.js"></script>
 	<!-- transition / effect library -->
@@ -84,7 +92,7 @@ global $Bartlby_CONF_IDX;
 	<!-- alert enhancer library -->
 	<script src="themes/classic/js/bootstrap-alert.js"></script>
 	<!-- modal / dialog library -->
-	<script src="themes/classic/js/bootstrap-modal.js"></script>
+	<xscript src="themes/classic/js/bootstrap-modal.js"></script>
 	<!-- custom dropdown library -->
 	<script src="themes/classic/js/bootstrap-dropdown.js"></script>
 	<!-- scrolspy library -->
@@ -113,6 +121,7 @@ global $Bartlby_CONF_IDX;
 	<!-- data table plugin -->
 	<script src='themes/classic/js/jquery.dataTables.min.js'></script>
 	<script src='themes/classic/js/dataTables.tableTools.js'></script>
+	<script src='themes/classic/js/dataTables.bootstrap.js'></script>
 
 	<!-- chart libraries start -->
 	<script src="themes/classic/js/excanvas.js"></script>
@@ -194,22 +203,13 @@ global $Bartlby_CONF_IDX;
 	<?
 		}
 	?>
-		<!-- topbar starts -->
-	<div class="navbar">
-	
-		<div class="navbar-inner">
-				
-			<div class="container-fluid">
-				<a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</a>
-				<a  href="overview.php"> <img src="themes/classic/images/btl-logo.gif" /> </a>
-				<div class="pull-right" style='display:inline-block; padding-top: 8px;'><?=$this->BTL_INSTANCES?></div>
+
+
+		<nav class="navbar navbar-default  navbar-inverse" role="navigation">
+  			<div class="pull-right" style='display:inline-block; padding-top: 8px;'><?=$this->BTL_INSTANCES?></div>
 				<div class="pull-right">
-					<button class="btn btn-small" onClick="document.location.href='bartlby_action.php?action=reload';"><i class="icon-refresh"></i> Reload</button>
-					<button class="btn btn-small" onClick="document.location.href='logout.php';"><i class="icon-remove"></i> Logout</button>
+					<button class="btn btn-default" onClick="document.location.href='bartlby_action.php?action=reload';"><i class="icon-refresh"></i> Reload</button>
+					<button class="btn btn-default" onClick="document.location.href='logout.php';"><i class="icon-remove"></i> Logout</button>
 					
 				</div>
 
@@ -217,61 +217,18 @@ global $Bartlby_CONF_IDX;
 					<div  id="quick_look" style="z-index:100"><font size=1>Auto Refresh<input type='checkbox' id=toggle_reload checked  style='height:10px'>   <input type=range min=0 max=100 value=<?=$_SESSION["service_display_prio"]?> id=service_prio_density  class=vertical >   <input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" style="border:solid black 1px;font-size:10px; height:17px"><div id='quick_suggest' style='z-index: 1000; background-color: white;position:absolute;width:550px'></div></div>
 					
 				</div>
-				
-			
-				
-				
-				
-				<!-- user dropdown starts -->
-				
-				<!-- user dropdown ends -->
-				
-				<div class="top-nav nav-collapse">
-					<ul class="nav">
-						
-						
-					</ul>
-				</div><!--/.nav-collapse -->
-			</div>
-		</div>
-	</div>
-	<!-- topbar ends -->
+
+		</nav>	
+
 		<div class="container-fluid">
 
 		<div class="row-fluid">
-				
-			<!-- left menu starts -->
-			<div class="span2 main-menu-span" style='width: 218px;'>
-				
-				<div class="well nav-collapse sidebar-nav" style='width: 218px; padding-bottom:10px;'>
-					
-				<?=$this->BTLEXTMENU?>
-				
-				</div><!--/.well -->
-				<div id='bartlby_basket'></div>
-			</div><!--/span-->
-			<!-- left menu ends -->
-			
-			<noscript>
-				<div class="alert alert-block span10">
-					<h4 class="alert-heading">Warning!</h4>
-					<p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
-				</div>
-			</noscript>
-			
-			<div id="content" class="span10" style='margin-left: 5px !important;'>
-			<!-- content starts -->
-			
-			
-			
 			
 			<?=$this->BTTABBAR?>
 			<?=$this->BTUIOUTSIDE?>
 			    
-					<!-- content ends -->
-			</div><!--/#content.span10-->
-				</div><!--/fluid-row-->
-				
+		</div><!--/fluid-row-->
+			
 		<hr>
 
 		<div class="modal hide fade" id="myModal">
@@ -315,4 +272,51 @@ global $Bartlby_CONF_IDX;
 </body>
 </html>
 
+
+
+<!--
+THINGS TO RECOVER:
+			
+			<div class="span2 main-menu-span" style='width: 218px;'>
+				
+				<div class="well nav-collapse sidebar-nav" style='width: 218px; padding-bottom:10px;'>
+					
+				<?=$this->BTLEXTMENU?>
+				
+				</div>
+				<div id='bartlby_basket'></div>
+			</div>
+
+
+
+
+	<div class="navbar">
+	
+		<div class="navbar-inner">
+				
+			<div class="container-fluid">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<a  href="overview.php"> <img src="themes/classic/images/btl-logo.gif" /> </a>
+				
+				
+			
+				
+				
+				
+				
+				<div class="top-nav nav-collapse">
+					<ul class="nav">
+						
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	-->
 

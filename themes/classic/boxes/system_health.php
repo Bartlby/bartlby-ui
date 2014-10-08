@@ -21,8 +21,8 @@ if($plcs[color] == "yellow") {
 	$progress_css = "progress-warning";
 }
 
-$layout->setRefreshableVariable("system_health_perc", $plcs[prozent_float]);
-$layout->setRefreshableVariable("system_health_progress_css", $progress_css);
+//$layout->setRefreshableVariable("system_health_perc", $plcs[prozent_float]);
+//$layout->setRefreshableVariable("system_health_progress_css", $progress_css);
 
 ?>
 	
@@ -43,10 +43,24 @@ btl_add_refreshable_object(function(data) {
 	</script>
 		
 
-<div id='sys_health_base1' class='progress progress-success'>
-							<div data-perc='<?=$plcs[prozent_float][ok]?>'  data-rel="tooltip" title="OK: <?=$plcs[prozent_float][ok]?>%" id='sys_health_progress1' class='bar' style='width: <?=$plcs[prozent_float][ok]?>%;float:left;'></div>
-							<div data-perc='<?=$plcs[prozent_float][downtimes_and_infos]?>' data-rel="tooltip" title="Infos/Downtimes:<?=$plcs[prozent_float][downtimes_and_infos]?>%" id='sys_health_progress3' class='bar' style='float:left; width: <?=$plcs[prozent_float][downtimes_and_infos]?>%;background-image: -webkit-linear-gradient(top,  #e0e0e0, #e8e8e8);'></div>
-							<div data-perc='<?=$plcs[prozent_float][warning]?>' data-rel="tooltip" title="Warnings: <?=$plcs[prozent_float][warning]?>%" id='sys_health_progress2' class='bar' style='float:left; width: <?=$plcs[prozent_float][warning]?>%;background-image: -webkit-linear-gradient(top, #ff944d, #ff6600);'></div>
-							<div data-perc='<?=$plcs[prozent_float][criticals]?>' data-rel="tooltip" title="Critical: <?=$plcs[prozent_float][criticals]?>%"  id='sys_health_progress3' class='bar' style='float:left; width: <?=$plcs[prozent_float][criticals]?>%;background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);'></div>
+<?
+?>
+
+<div class="progress">
+  <div class="progress-bar progress-bar-success" style="width: <?=$plcs[prozent_float][ok]?>%">
+    <span class="sr-only1"><?=$plcs[prozent_float][ok]?>%</span>
+  </div>
+  <div class="progress-bar progress-bar-warning" style="width: <?=$plcs[prozent_float][warning]?>%">
+    <span class="sr-only1"><?=$plcs[prozent_float][warning]?>%</span>
+  </div>
+  <div class="progress-bar progress-bar-danger" style="width: <?=$plcs[prozent_float][criticals]?>%">
+    <span class="sr-only1"><?=$plcs[prozent_float][criticals]?>%</span>
+  </div>
+    <div class="progress-bar progress-bar-danger" style="width: <?=$plcs[prozent_float][downtimes_and_infos]?>%">
+    <span class="sr-only1"><?=$plcs[prozent_float][downtimes_and_infos]?>%</span>
+  </div>
 </div>
+
+
+
 <div style='clear:both;'></div>

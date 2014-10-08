@@ -578,7 +578,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->tabs[-1][tab_name]="ROOT";
 
 			$this->BTUIOUTSIDE='<div id="myTabContent" class="tab-content">';
-			$this->BTTABBAR='<ul class="nav nav-tabs" id="coreTabs">';
+			$this->BTTABBAR='<ul class="nav nav-tabs nav-tabs-google" id="coreTabs">';
 			for($x=-1; $x<$this->tab_count; $x++) {
 				if($this->tabs[$x][tab_name] != "") {
 					$ttname=$this->tabs[$x][tab_name];

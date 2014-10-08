@@ -66,6 +66,7 @@ global $Bartlby_CONF_IDX;
 	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
 	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
 	<link href='themes/classic/css/chosen.css' rel='stylesheet'>
+	<link href='themes/classic/css/chosen-bootstrap.css' rel='stylesheet'>
 	<link href='themes/classic/css/uniform.default.css' rel='stylesheet'>
 	<link href='themes/classic/css/colorbox.css' rel='stylesheet'>
 	<link href='themes/classic/css/jquery.cleditor.css' rel='stylesheet'>

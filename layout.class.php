@@ -316,7 +316,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			}
 		}
 		
-		$r = "<select name='$name' id='$name' $type $style data-rel='" . $custom_name . "'>\n";
+		$r = "<select name='$name' id='$name' $type $style data-rel='" . $custom_name . "' class='form-control chosen-select'>\n";
 		for ($x=0;$x<count($options); $x++) {
 			$sel="";
 			if ($options[$x][s] == 1) $sel="selected";

@@ -1,14 +1,14 @@
 
 Perform Action on Selected services<br>
-<button class="btn btn-default " id="services_bulk_force"><i class=" icon-refresh"></i>Force</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_force"><i class="fa fa-refresh"></i>&nbsp;Force</button>&nbsp;
 
 
-<button class="btn btn-default " id="services_bulk_enable_checks" data-rel="tooltip"><i class=" icon-ok-circle"></i>Enable Checks</button>&nbsp;
-<button class="btn btn-default " id="services_bulk_disable_checks"><i class=" icon-ban-circle"></i>Disable Checks</button>&nbsp;
-<button class="btn btn-default " id="services_bulk_enable_notifys"><i class=" icon-ok-circle"></i>Enable Notifications</button>&nbsp;
-<button class="btn btn-default " id="services_bulk_disable_notifys"><i class=" icon-ban-circle"></i>Disable Notifications</button>&nbsp;
-<button class="btn btn-default " id="services_bulk_refresh_table" onClick='window.oTable.fnDraw(false)'><i class=" icon-refresh"></i>Refresh Service Table</button>&nbsp;
-<button class="btn btn-default " id="services_bulk_edit"><i class=" icon-edit"></i>Bulk Edit</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_enable_checks" data-rel="tooltip"><i class="fa fa-check-circle"></i>&nbsp;Enable Checks</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_disable_checks"><i class="fa fa-ban"></i>&nbsp;Disable Checks</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_enable_notifys"><i class="fa fa-check-circle"></i>&nbsp;Enable Notifications</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_disable_notifys"><i class=" fa fa-ban"></i>&nbsp;Disable Notifications</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_refresh_table" onClick='window.oTable.fnDraw(false)'><i class=" fa fa-refresh"></i>&nbsp;Refresh Service Table</button>&nbsp;
+<button class="btn btn-default btn-xs" id="services_bulk_edit"><i class="fa fa-edit"></i>&nbsp;Bulk Edit</button>&nbsp;
 
 
 <?
@@ -110,11 +110,11 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
       </div>
       <div class="modal-footer">
        
-      	<button data-dismiss="modal"class="btn btn-primary"><i class="icon-ok"></i> Close</button>
+      	<button data-dismiss="modal"class="btn btn-primary"><i class="fa fa-close"></i> Close</button>
 				
-				<button id=services_bulk_edit_dry_run class="btn btn-success"><i class="icon-eye-open"></i> Dry Run</button>
-				<button id=services_bulk_edit_run class="btn btn-warning"><i class="icon-fire"></i> Run</button>
-				<button id=services_bulk_edit_delete class="btn btn-danger"><i class="icon-trash"></i> Delete</button>
+				<button id=services_bulk_edit_dry_run class="btn btn-success"><i class="fa fa-eye"></i> Dry Run</button>
+				<button id=services_bulk_edit_run class="btn btn-warning"><i class="fa fa-fire"></i> Run</button>
+				<button id=services_bulk_edit_delete class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
 
 
 

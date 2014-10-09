@@ -386,23 +386,42 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 				
 	
 	function beginMenu() {
-		return '<div class="btn-group btn-group-justified"><div class="btn-group " >';
+		return '<li class="dropdown-submenu">';
+		//return '<ul class="nav navbar-nav">';
 		
 		
 	}
+
+	/*
+	<li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li class="dropdown-header">Dropdown header</li>
+          <li><a href="#">Separated link</a></li>
+          <li><a href="#">One more separated link</a></li>
+        </ul>
+      </li>
+	*/
+
 	function addRoot($name) {
 		
-		return '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' .  $name . '<span class="caret" ></button>
-					<ul class="dropdown-menu" id="' . $root . '" >';
-
+		return ' <a tabindex="-1" href="#">' . $name . '</a> <ul class="dropdown-menu">';
+	
 		
 	}
 	function addSub($root, $name, $link) {
-		return '<li> <a href="' . $link . '"> ' . $name . '</a>';
+		//return '<li><a tabindex="-1" href="#">Second level</a></li>'
+		return '<li> <a href="' . $link . '"> ' . $name . '</a></li>';
 		
 	}
 	function endMenu() {
-		return '</ul></div></div>';
+		return '</ul></li>';
+	
+ 
 	
 	}
 	

@@ -58,7 +58,7 @@ global $Bartlby_CONF_IDX;
 	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
 	
 	<xlink id="bs-css" href="themes/classic/css/bootstrap-theme.css" rel="stylesheet">
-	<link id="bs-css" href="themes/classic/css/todc-bootstrap.css" rel="stylesheet">
+	<xlink id="bs-css" href="themes/classic/css/todc-bootstrap.css" rel="stylesheet">
 	<link id="bs-css" href="themes/classic/css/docs.css" rel="stylesheet">
 
 	<link href="themes/classic/btl.css" rel="stylesheet">
@@ -215,20 +215,27 @@ global $Bartlby_CONF_IDX;
 
 
 
+<div class="navbar navbar-default">
+  
+
+  <div class="dropdown">
+            <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="/page.html">
+                <span class="icon-bar">Menu</span>
+      			
+            </a>
+
+   			
+   			<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+   				<?=$this->BTLEXTMENU?>
+   			</ul>
+   	</div>
 
 
-		
-		<div class="container-fluid">
+   	 <form class="navbar-form navbar-left">
+      <input type="text" class="form-control col-lg-8" placeholder="Search">
+    </form>
 
-		
-		 <div class="row">
-
-
-
-		 	</div>
-		 	<div class="col-sm-12">
-		 		
-  				<div class="pull-right" style='display:inline-block; padding-top: 8px;'><?=$this->BTL_INSTANCES?></div>
+    	<div class="pull-right" style='display:inline-block; padding-top: 8px;'><?=$this->BTL_INSTANCES?></div>
 				<div class="pull-right">
 					<button class="btn btn-default" onClick="document.location.href='bartlby_action.php?action=reload';"><i class="icon-refresh"></i> Reload</button>
 					<button class="btn btn-default" onClick="document.location.href='logout.php';"><i class="icon-remove"></i> Logout</button>
@@ -241,33 +248,15 @@ global $Bartlby_CONF_IDX;
 				</div>
 
 				
+  </div>
+ 
+</div>
 
-			</div>
 
-
-		 </div>
-		 <div class="row">
-
-		 	<div class="col-sm-1 column margintop20">
-
-		 		<div class="navbar-header">
-				    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-				        <span class="sr-only">Toggle navigation</span>
-				        <span class="icon-bar"></span>
-				        <span class="icon-bar"></span>
-				        <span class="icon-bar"></span>
-				    </button>
-				</div>
-
-		 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		    		<?=$this->BTLEXTMENU?>
-				</div>
-
-				<div id='bartlby_basket'></div>
-			</div>
+		<!-- <div id='bartlby_basket'></div> -->
 			
 	
-		 <div class="col-sm-11">
+		 <div class="col-sm-12">
 			
 			<?=$this->BTTABBAR?>
 			<?=$this->BTUIOUTSIDE?>

@@ -253,7 +253,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$layout->DropDown("service_dead", $alive_indicator,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_dead\").find(\"option\").remove();$(\"#service_dead\").trigger(\"liszt:updated\");'>Remove</A></div>"
+			1=>$layout->DropDown("service_dead", $alive_indicator,"multiple","",false, "ajax_service_list_php") . ""
 		)
 	)
 ,true);

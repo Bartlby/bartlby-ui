@@ -24,7 +24,7 @@ $servers=array();
 $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out) {
 	global $_GET;
 	if($svc[is_gone] != 0) {
-	 continue;
+	 return LOOP_CONTINUE;
 	}
 
 	if(($_GET[dropdown_term] && @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $_GET[service_id]) {

@@ -34,7 +34,7 @@ $servers_out=array();
 $services_x=0;
 $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
 	if($svc[is_gone] != 0) {
-	 continue;
+	return LOOP_CONTINUE;
 	}
 	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[server_dead]) {
 		if(!is_array($servers_out[$svc[server_id]])) {
@@ -420,7 +420,7 @@ $ov .= $layout->Tr(
 	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_id\").find(\"option\").remove();$(\"#service_id\").trigger(\"liszt:updated\");'>Remove</A></div>"
+			1=>$layout->DropDown("service_id", $servers,"multiple","",false, "ajax_service_list_php") . ""
 		)
 	)
 ,true);

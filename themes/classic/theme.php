@@ -63,6 +63,8 @@ global $Bartlby_CONF_IDX;
 
 	<link href="themes/classic/btl.css" rel="stylesheet">
 
+	<link href="themes/classic/css/selectize.bootstrap3.css" rel="stylesheet">
+
 
 	<xlink href="themes/classic/css/charisma-app.css" rel="stylesheet">
 	<link href="themes/classic/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
@@ -88,6 +90,8 @@ global $Bartlby_CONF_IDX;
 	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
 
 	<script src="themes/classic/js/bootstrap.js"></script>
+
+	<script src="themes/classic/js/selectize.js"></script>
 
 	<!-- jQuery UI -->
 	<script src="themes/classic/js/jquery-ui-1.8.21.custom.min.js"></script>
@@ -308,9 +312,11 @@ global $Bartlby_CONF_IDX;
 	<!-- Placed at the end of the document so the pages load faster -->
 
 
-		<script>
-		
-			</script>
+
+
+
+
+
 </body>
 </html>
 

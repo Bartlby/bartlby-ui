@@ -138,7 +138,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function Table($proz="100%", $border=0) {
 		$this->deprecated("NO MORE TABLE");
 
-		//$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
+		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0 style='width: 100%;'>";
 	}
 	function MetaRefresh($time=20) {
 		$this->OUT .= "<script>function ReloadME() {
@@ -151,7 +151,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	function TableEnd() {
 		$this->deprecated("NO MORE TABLE");
-		//$this->OUT .= "</table>";	
+		$this->OUT .= "</table>";	
 	}
 	function DisplayHelp($msg=array()) {
 		for($x=0; $x<=count($msg);$x++) {
@@ -181,15 +181,16 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			
 			
 			//$disp=htmlspecialchars($disp);			
-			//$r .= "<div $colspan  $align  valign=top $width $height $class>\n" . $disp . "\n</div>\n";	
-			$r .= "<div >\n" . $disp . "\n</div>\n";	
+			
+			$r .= "<td $colspan  $align  valign=top $width $height $class>\n" . $disp . "\n</td>\n";
+			//$r .= "<div >\n" . $disp . "\n</div>\n";	
 		}
 		return $r;
 	}
 	
 	function Tr($td, $return = false) {
 		$data="<tr>\n$td\n</tr>\n";
-		$data='' . $td; // NO MORE TR
+		//$data='' . $td; // NO MORE TR
 		$this->deprecated("NO MORE TR();");
 		
 		if($return == true) {
@@ -221,7 +222,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function TextArea($name, $def, $height=7, $width=100) {
 		$r = "<textarea class=form-control name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
 		$r = '<div class="form-group">
-				    <label class="col-sm-2 control-label">' . $name . '</label>
+				    
 				   	 <div class="col-sm-10">
 				      ' . $r . '
 				      </div>
@@ -240,11 +241,12 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		if($type == "button" || $type == "submit") {
 			$cl = "btn btn-primary pull-right";
 		}
+		
 		$r="<input type='$type' class='$cl' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
 
 		if($type != "hidden" && $type != "button" && $type != "submit") {
 			$r = '<div class="form-group">
-				    <label class="col-sm-2 control-label">' . $name . '</label>
+				    
 				   	 <div class="col-sm-10">
 				      ' . $r . '
 				      </div>
@@ -366,7 +368,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		$r = '<div class="form-group">
-			    <label class="col-sm-2 control-label">' . $name . '</label>
+			    
 			   	 <div class="col-sm-10">
 			      ' . $r . '
 			    </div>

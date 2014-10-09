@@ -2,6 +2,16 @@ window.global_reload=1;
 window.refreshable_objects=new Array();
 window.auto_reloader=-1;
 
+
+
+
+
+
+
+
+
+
+
 $(window).blur(function() 
 {
 	if(window.auto_reloader != -1) {
@@ -185,6 +195,382 @@ function bulk_service_edit(mode) {
 }
 $(document).ready(function() {
 		btl_set_bars();
+
+
+
+
+/*
+SELECT BOXES
+*/
+
+
+//chosen - improves select
+
+	$('#report_start').datepicker();
+	$('#report_end').datepicker();
+
+	$('#downtime_from').datetimepicker();
+	$('#downtime_to').datetimepicker();
+
+	$('[data-rel="chosen"],[rel="chosen"]').selectize({
+    	create: false,
+    	plugins: ['remove_button', 'drag_drop'],
+    	sortField: 'text'
+	});
+
+
+	
+	
+	$('[data-rel="ajax_grp_service_id"]').selectize({
+		plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Servicegroup",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'grpstr.php?dropdown_search=1&dropdown_name=grp_service_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	return_items=new Array();
+            	for(x=0; x<res.length; x++) {
+            		return_items=return_items.concat(res[x].items);            		
+            		
+            	}
+            	
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
+
+
+	
+	
+
+	$('[data-rel="ajax_servergroup_list"]').selectize({
+		plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Servicegroup",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'servergroup_list.php?dropdown_search=1&dropdown_name=servergroup_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	return_items=new Array();
+            	for(x=0; x<res.length; x++) {
+            		return_items=return_items.concat(res[x].items);            		
+            		
+            	}
+            	
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
+
+
+	
+
+
+
+	
+	$('[data-rel="ajax_servicegroup_list"]').selectize({
+		plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Servicegroup",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'servicegroup_list.php?dropdown_search=1&dropdown_name=servicegroup_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	return_items=new Array();
+            	for(x=0; x<res.length; x++) {
+            		return_items=return_items.concat(res[x].items);            		
+            		
+            	}
+            	
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
+
+	
+
+	$('[data-rel="ajax_servicegroup_members"]').selectize({
+		plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Servicegroup Member",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'modify_servicegroup.php?dropdown_search=1&dropdown_name=servicegroup_members[]&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	return_items=new Array();
+            	for(x=0; x<res.length; x++) {
+            		return_items=return_items.concat(res[x].items);            		
+            		
+            	}
+            	
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
+
+	
+	$('[data-rel="ajax_package_services"]').selectize({
+		plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Service",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'package_create.php?dropdown_search=1&dropdown_name=services[]&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	return_items=new Array();
+            	for(x=0; x<res.length; x++) {
+            		return_items=return_items.concat(res[x].items);            		
+            		
+            	}
+            	
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+	
+
+		
+
+	
+	$('[data-rel="ajax_service_list_php"]').selectize({
+		plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Service",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'service_list.php?dropdown_search=1&dropdown_name=service_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	return_items=new Array();
+            	for(x=0; x<res.length; x++) {
+            		return_items=return_items.concat(res[x].items);            		
+            		
+            	}
+            	
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
+
+
+
+
+
+
+$('[data-rel="ajax_server_list_php"]').selectize({
+	plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Server",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'server_list.php?dropdown_search=1&dropdown_name=server_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+            	console.log("error");
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	console.log(res[0].items);
+                callback(res[0].items);
+            }
+        });
+    }
+});
+        
+
+
+if(typeof(global_worker_id) == "undefined") global_worker_id=0;
+
+
+
+$('[data-rel="ajax_modify_worker_services_permission"]').selectize({
+     valueField: 'value',
+     plugins: ['remove_button', 'drag_drop'],
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Select Some Services",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'permission_worker.php?dropdown_search=1&dropdown_name=worker_services[]&worker_id=' + global_worker_id + '&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+            	console.log("error");
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	console.log(res[0].items);
+                callback(res[0].items);
+            }
+        });
+    }
+});
+
+
+
+
+
+$('[data-rel="ajax_modify_worker_services"]').selectize({
+     valueField: 'value',
+     plugins: ['remove_button', 'drag_drop'],
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Select Some Services",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'modify_worker.php?dropdown_search=1&dropdown_name=worker_services[]&worker_id=' + global_worker_id + '&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+            	console.log("error");
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	console.log(res[0].items);
+                callback(res[0].items);
+            }
+        });
+    }
+});
+
+
+if(typeof($("#service_dead")[0]) != "undefined") {
+	$("#service_dead")[0].selectize.settings.maxItems=1;
+}
+if(typeof($("#service_id")[0]) != "undefined") {
+	$("#service_id")[0].selectize.settings.maxItems=1;
+}
+
+
+$('[data-rel="ajax_report_service"]').selectize({
+     valueField: 'value',
+     plugins: ['remove_button', 'drag_drop'],
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Select Some Services",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'create_report.php?dropdown_search=1&dropdown_name=report_service&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+            	console.log("error");
+                callback();
+            },
+            success: function(res) {
+            	if(res == null) return callback();
+            	console.log(res[0].items);
+                callback(res[0].items);
+            }
+        });
+    }
+});
+
+
+
+/*SELECT BOXES EBND*/
+
+
+
+
+       
 
 		$("#service_prio_density").on("change", function() {
 			
@@ -697,6 +1083,14 @@ clearTimeout(delayhide)
 
 if (hidemenu_onclick=="yes")
 document.onclick=hidemenu
+
+
+
+
+
+
+
+k=hidemenu
 
 
 

@@ -55,36 +55,29 @@ global $Bartlby_CONF_IDX;
 	  }
 	</style>
 	
+	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
+	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
+	
 	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
 	
-	<xlink id="bs-css" href="themes/classic/css/bootstrap-theme.css" rel="stylesheet">
-	<xlink id="bs-css" href="themes/classic/css/todc-bootstrap.css" rel="stylesheet">
-	<link id="bs-css" href="themes/classic/css/docs.css" rel="stylesheet">
-
+	<link href="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
+	
 	<link href="themes/classic/btl.css" rel="stylesheet">
 
 	<link href="themes/classic/css/selectize.bootstrap3.css" rel="stylesheet">
 
 
 	<xlink href="themes/classic/css/charisma-app.css" rel="stylesheet">
-	<link href="themes/classic/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
-	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
-	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
-	<link href='themes/classic/css/chosen.css' rel='stylesheet'>
-	<link href='themes/classic/css/chosen-bootstrap.css' rel='stylesheet'>
-	<link href='themes/classic/css/uniform.default.css' rel='stylesheet'>
-	<link href='themes/classic/css/colorbox.css' rel='stylesheet'>
-	<link href='themes/classic/css/jquery.cleditor.css' rel='stylesheet'>
+	
 	<link href='themes/classic/css/jquery.noty.css' rel='stylesheet'>
 	<link href='themes/classic/css/noty_theme_default.css' rel='stylesheet'>
-	<link href='themes/classic/css/elfinder.min.css' rel='stylesheet'>
-	<link href='themes/classic/css/elfinder.theme.css' rel='stylesheet'>
-	<link href='themes/classic/css/jquery.iphone.toggle.css' rel='stylesheet'>
-	<link href='themes/classic/css/opa-icons.css' rel='stylesheet'>
-	<link href='themes/classic/css/uploadify.css' rel='stylesheet'>
+	
 	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
 	<link href='themes/classic/css/dataTables.tableTools.css' rel='stylesheet'>
 	
+
+
+	<link href="themes/classic/css/skin.css" rel="stylesheet">
 
 	<!-- jQuery -->
 	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
@@ -94,7 +87,7 @@ global $Bartlby_CONF_IDX;
 	<script src="themes/classic/js/selectize.js"></script>
 
 	<!-- jQuery UI -->
-	<script src="themes/classic/js/jquery-ui-1.8.21.custom.min.js"></script>
+	<script src="themes/classic/js/jquery-ui.js"></script>
 	<!-- transition / effect library -->
 	<script src="themes/classic/js/bootstrap-transition.js"></script>
 	<!-- alert enhancer library -->

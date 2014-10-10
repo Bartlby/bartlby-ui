@@ -1133,7 +1133,7 @@ $('[data-rel="ajax_report_service"]').selectize({
 					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					//"sDom": '<"wrapper"lfptip>',
 					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
-			    
+			    "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
 			    "sAjaxSource": s_url + s_char + "datatables_output=1",
 			    "bServerSide": true,
 			    "bProcessing": true,
@@ -1149,7 +1149,7 @@ $('[data-rel="ajax_report_service"]').selectize({
         },
 			    "oLanguage": {
 			    	"sEmptyTable": "No Services found",
-            "sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
+            "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
         	}
 			    
        
@@ -1168,12 +1168,12 @@ window.servers_table = $('#servers_table').dataTable({
 					"aaSortingFixed": [[ 0, 'asc' ]],
 					"bSort": false,
 					"aaSorting": [[ 1, 'asc' ]],
-					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i>T<'span12 center'p>>",
-
+					//"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i>T<'span12 center'p>>",
+           "sDom": "<'row'<'col-sm-12'<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'iT><'pull-right'p><'clearfix'>>>",
 					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
 					//"sDom": '<"wrapper"lfptip>',
 					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
-			    "sPaginationType": "bootstrap",
+			    //"sPaginationType": "bootstrap",
 			    "sAjaxSource": server_ajax_url + server_char + "datatables_output=1",
 			    "bServerSide": true,
 			    "bProcessing": true,

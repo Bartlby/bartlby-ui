@@ -896,7 +896,7 @@ input::-webkit-input-speech-button {
   background-color: #F0F0F0;
   color: inherit;
   font-size: 13px;
-  font-weight: 200;
+  
   line-height: 21px;
   padding: 15px 30px 30px 30px;
   margin-top: 0;
@@ -991,7 +991,7 @@ input::-webkit-input-speech-button {
 }
 .cl-vnavigation > .parent > a:before {
   display: inline-block;
-  content: "ï„…";
+  content: "\f105";
   font-family: 'FontAwesome';
   float: right;
   -webkit-transition: rotate 250ms ease;

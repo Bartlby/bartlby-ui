@@ -386,7 +386,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 				
 	
 	function beginMenu() {
-		return '<li class="dropdown-submenu">';
+		return '<li class="">';
 		//return '<ul class="nav navbar-nav">';
 		
 		
@@ -409,7 +409,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 	function addRoot($name) {
 		
-		return ' <a tabindex="-1" href="#">' . $name . '</a> <ul class="dropdown-menu">';
+		return ' <a href="#"><i class="fa fa-desktop"></i><span>' . $name . '</span></a> <ul class="sub-menu">';
 	
 		
 	}

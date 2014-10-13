@@ -3,6 +3,63 @@
 
 /*SKIN*/
 
+/* iCheck plugin Flat skin, blue
+----------------------------------- */
+.icheckbox_flat-blue,
+.iradio_flat-blue {
+    display: inline-block;
+    *display: inline;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    background: url(css/blue.png) no-repeat;
+    border: none;
+    cursor: pointer;
+}
+
+.icheckbox_flat-blue {
+    background-position: 0 0;
+}
+    .icheckbox_flat-blue.checked {
+        background-position: -22px 0;
+    }
+    .icheckbox_flat-blue.disabled {
+        background-position: -44px 0;
+        cursor: default;
+    }
+    .icheckbox_flat-blue.checked.disabled {
+        background-position: -66px 0;
+    }
+
+.iradio_flat-blue {
+    background-position: -88px 0;
+}
+    .iradio_flat-blue.checked {
+        background-position: -110px 0;
+    }
+    .iradio_flat-blue.disabled {
+        background-position: -132px 0;
+        cursor: default;
+    }
+    .iradio_flat-blue.checked.disabled {
+        background-position: -154px 0;
+    }
+
+/* Retina support */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+       only screen and (-moz-min-device-pixel-ratio: 1.5),
+       only screen and (-o-min-device-pixel-ratio: 3/2),
+       only screen and (min-device-pixel-ratio: 1.5) {
+    .icheckbox_flat-blue,
+    .iradio_flat-blue {
+        background-image: url(css/blue@2x.png);
+        -webkit-background-size: 176px 22px;
+        background-size: 176px 22px;
+    }
+}
+
 /*!
  * Datetimepicker for Bootstrap
  *
@@ -126,7 +183,7 @@ html {
 body {
   position: relative;
   padding: 0;
-  background-color: #F0F0F0;
+  xbackground-color: #F0F0F0; //GBG
   font-size: 12px;
   
 }
@@ -827,7 +884,7 @@ body.boxed #cl-wrapper {
   position: relative;
   margin: 0 auto;
   overflow: hidden;
-  background-color: #F0F0F0;
+  xbackground-color: #F0F0F0;
 }
 /*Forms*/
 label {
@@ -1000,7 +1057,7 @@ input::-webkit-input-speech-button {
   display:block !important;
 }
 .cl-mcont {
-  background-color: #F0F0F0;
+  xbackground-color: #F0F0F0;
   color: inherit;
   font-size: 13px;
   
@@ -3290,25 +3347,7 @@ button::-moz-focus-inner {
 .btn-group .dropdown-menu {
   border-radius: 1px;
 }
-/*disable*/
-.btn-primary.disabled,
-.btn-primary[disabled],
-fieldset[disabled] .btn-primary,
-.btn-primary.disabled:hover,
-.btn-primary[disabled]:hover,
-fieldset[disabled] .btn-primary:hover,
-.btn-primary.disabled:focus,
-.btn-primary[disabled]:focus,
-fieldset[disabled] .btn-primary:focus,
-.btn-primary.disabled:active,
-.btn-primary[disabled]:active,
-fieldset[disabled] .btn-primary:active,
-.btn-primary.disabled.active,
-.btn-primary.active[disabled],
-fieldset[disabled] .btn-primary.active {
-  background-color: #4f397f;
-  border-color: #4f397f;
-}
+
 .fc-header {
   display: block;
 }
@@ -7756,7 +7795,7 @@ MultiLevel Dropdown
 }
 .discussion .avatar1  {
   display: block;
-  width: 60px;
+  width: 80px;
  
   
 }
@@ -7766,75 +7805,7 @@ MultiLevel Dropdown
   display: flex;
 }
 
-.notification {
-display: block;
-position: absolute;
-top: -10px;
-right: -5px;
-line-height: 16px;
-height: 16px;
-padding: 0 5px;
-font-family: Arial, sans-serif;
-color: white !important;
-text-shadow: 0 1px 
-hsla(0, 0%, 0%, 0.25);
-border-width: 1px;
-border-style: solid;
-border-radius: 10px;
--webkit-border-radius: 10px;
--moz-border-radius: 10px;
--webkit-box-shadow: 0 1px 1px 
-hsla(0, 0%, 0%, 0.08), inset 0 1px 
-hsla(0, 100%, 100%, 0.3);
--moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08), inset 0 1px rgba(255, 255, 255, 0.3);
-box-shadow: 0 1px 1px 
-hsla(0, 0%, 0%, 0.08), inset 0 1px 
-hsla(0, 100%, 100%, 0.3);
-}
 
-.notification {
-border-color: #2FABE9;
-background-color: #67C2EF;
-background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(200, 80%, 82%)), color-stop(100%, hsl(200, 81%, 67%)));
-background-image: -webkit-linear-gradient(top, hsl(200, 80%, 82%), hsl(200, 81%, 67%));
-background-image: -moz-linear-gradient(top, hsl(200, 80%, 82%), hsl(200, 81%, 67%));
-background-image: -ms-linear-gradient(top, hsl(200, 80%, 82%), hsl(200, 81%, 67%));
-background-image: -o-linear-gradient(top, hsl(200, 80%, 82%), hsl(200, 81%, 67%));
-background-image: linear-gradient(top, hsl(200, 80%, 82%), hsl(200, 81%, 67%));
-}
-
-.notification.green {
-border-color:   #5AAD34;
-background-color:   #78CD51;
-background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,  hsl(101, 54%, 71%)), color-stop(100%,   hsl(101, 55%, 56%)));
-background-image: -webkit-linear-gradient(top,  hsl(101, 54%, 71%),   hsl(101, 55%, 56%));
-background-image: -moz-linear-gradient(top,   hsl(101, 54%, 71%),   hsl(101, 55%, 56%));
-background-image: -ms-linear-gradient(top,  hsl(101, 54%, 71%),   hsl(101, 55%, 56%));
-background-image: -o-linear-gradient(top,   hsl(101, 54%, 71%),   hsl(101, 55%, 56%));
-background-image: linear-gradient(top,  hsl(101, 54%, 71%),   hsl(101, 55%, 56%));
-}
-
-.notification.yellow {
-border-color: #F4A506;
-background-color: #FABB3D;
-background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(40, 95%, 76%)), color-stop(100%, hsl(40, 95%, 61%)));
-background-image: -webkit-linear-gradient(top, hsl(40, 95%, 76%), hsl(40, 95%, 61%));
-background-image: -moz-linear-gradient(top, hsl(40, 95%, 76%), hsl(40, 95%, 61%));
-background-image: -ms-linear-gradient(top, hsl(40, 95%, 76%), hsl(40, 95%, 61%));
-background-image: -o-linear-gradient(top, hsl(40, 95%, 76%), hsl(40, 95%, 61%));
-background-image: linear-gradient(top, hsl(40, 95%, 76%), hsl(40, 95%, 61%));
-}
-
-.notification.red {
-border-color: #FA5833;
-background-color: #FA603D;
-background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(11, 95%, 76%)), color-stop(100%, hsl(11, 95%, 61%)));
-background-image: -webkit-linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
-background-image: -moz-linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
-background-image: -ms-linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
-background-image: -o-linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
-background-image: linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
-}
 
 
 
@@ -7858,11 +7829,11 @@ background-image: linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
   width: 100%;
 }
 .messages p {
-  font-size: 0.8rem;
+  font-size: 14px;
   margin: 0 0 0.2rem 0;
 }
 .messages time {
-  font-size: 0.7rem;
+  font-size: 12px;
   color: #ccc;
 }
 
@@ -7886,7 +7857,9 @@ background-image: linear-gradient(top, hsl(11, 95%, 76%), hsl(11, 95%, 61%));
     border-radius: 50%; /* read above */
 }
 
-
+.xl {
+  font-size: 20px !important;
+}
 
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
 .ui-timepicker-div dl { text-align: left; }

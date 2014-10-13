@@ -25,7 +25,6 @@ $Author: hjanuschka $
 */ 
 
 include_once("bartlbystorage.class.php");
-
 session_start();
 
 set_time_limit(0);
@@ -2201,46 +2200,88 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
 	}
 
-	function getserviceOptions($defaults, $layout) {
+	function getserviceOptions($defaults, $layout, $btn_size="btn-sm") {
 		if($defaults[service_active] == 1) {
-			$check = "<a data-rel='tooltip' title='Disable Checks for this Service' href='javascript:void(0);' onClick=\"xajax_toggle_service_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='service_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0 data-rel='tooltip'></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='service_" . $defaults[service_id] . "' title='Enable  Checks for this Service' border=0 data-rel='tooltip'></A>";
+			$check_show="inline";
 		}
 		if($defaults[notify_enabled] == 1) {
-			$notifys = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[service_id] . "' title='Disable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='trigger_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
 		if($defaults[is_downtime] == 1) {
-			$downtime="<img src='themes/" . $this->theme . "/images/icon_work.gif' data-rel='tooltip' title='Service is in downtime (" . date("d.m.Y H:i:s", $defaults[downtime_from])  . "-" . date("d.m.Y H:i:s", $servs[$x][downtime_to]) . "): " . $defaults[downtime_notice] . "'>";	
+			
+			$downtime = '<li><span><i>Downtimed</i></span></li>';
+			$btn_size .= " disabled";
 		} else {
-			$downtime="&nbsp;";
+			$downtime="";
 		}
 		if($defaults[current_state] != 0) {
 			if($defaults[handled] == 1) {
-				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/handled.png' id='handled_" . $defaults[service_id] . "' title='Unhandle this Service' border=0 data-rel='tooltip'></A>";
+				$handled_show="inline";
 			} else {
-				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='handled_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/unhandled.png' title='Handle this Service' border=0 data-rel='tooltip'></A>";
+				$handled_show="hide";
 			}
 		}			
 		
-		$modify = "<a href='modify_service.php?service_id=" . $defaults[service_id] . "'><img data-rel='tooltip' src='themes/" . $this->theme . "/images/modify.gif' title='Modify this Service' border=0 data-rel='tooltip'></A>";
-		$force = "<a href='javascript:void(0);' onClick=\"xajax_forceCheck('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img title='Force an immediate Check' src='themes/" . $this->theme . "/images/force.gif' border=0 data-rel='tooltip'></A>";
-		$comments="<a href='view_comments.php?service_id=" . $defaults[service_id] . "'><img title='Comments for this Service' src='themes/" . $this->theme . "/images/icon_comments.gif' border=0 data-rel='tooltip'></A>";
-		$logview= "<a href='logview.php?service_id=" . $defaults[service_id]. "' ><font size=1><img  title='View Events for this Service' src='themes/" . $this->theme . "/images/icon_view.gif' border=0 data-rel='tooltip'></A>";				
-		$reports = "<a href='create_report.php?service_id=" . $defaults[service_id]. "' ><font size=1><img  title='Create Report' src='themes/" . $this->theme . "/images/create_report.gif' border=0 data-rel='tooltip'></A>";				
-		if(file_exists($this->PERFDIR . "/" . $defaults[plugin])) {
-			$stat = "<a href='bartlby_action.php?service_id=" . $defaults[service_id] . "&server_id=" . $defaults[server_id] . "&action=perfhandler_graph'><img title='Graph collected perf handler data' src='themes/" . $this->theme . "/images/icon_stat.gif' border=0 data-rel='tooltip'></A>";				
-		} else {
-			$stat = "";
-		}
-		$copy = "<a href='modify_service.php?copy=true&service_id=" . $defaults[service_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Service' border=0 data-rel='tooltip'></A>";				
+		
+
+
+		
+
+
+		
+		$copy_link = "modify_service.php?copy=true&service_id=" . $defaults[service_id];
+		$modify_link="modify_service.php?service_id=" . $defaults[service_id];
+		$comments_link = "view_comments.php?service_id=" . $defaults[service_id];
+		$logview_link = "logview.php?service_id=" . $defaults[service_id];
+		$reports_link = "create_report.php?service_id=" . $defaults[service_id];
+		$delete_link = "delete_service.php?service_id=" . $defaults[service_id];
+		
+
+		$handled_onclick="xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+		$force_onclick="xajax_forceCheck('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+		$check_onclick="xajax_toggle_service_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+		$notify_onclick="xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+				
 
 		$is_gone=$this->is_gone($defaults[is_gone]);
-				
 		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat $handled";
 		
+
+		$ret = '<div class="btn-group">
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $force_onclick . '"><i  title="Force Check" class="fa fa-play-circle"></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=service_' . $defaults[service_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=trigger_' . $defaults[service_id] . '></i></span>
+					
+
+
+					 
+					<span class="hide btn btn-primary ' . $btn_size . ' ' . $handled_show . '" onClick="' . $handled_onclick . '" id=handled_' . $defaults[service_id] . '><i title="Service is handled" class="fa fa-stethoscope"></i></span>
+					
+					
+					<div class="btn-group  ">
+					  <span class="btn btn-primary ' . $btn_size . '  dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-user fa-cog"></i></span>
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $comments_link . '"><i class="fa fa-comment fa-fw"></i> Comments</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+					    <li><a href="' . $reports_link . '"><i class="fa fa-line-chart fa-fw"></i> Report</a></li>
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
 	
 		return $ret;
 	}

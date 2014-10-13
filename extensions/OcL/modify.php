@@ -70,7 +70,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Date:",
-				1=>$layout->Field("ocl_date", "textbox", $default[ocl_date])
+				1=>$layout->Field("ocl_date", "text", $default[ocl_date])
 			)
 		)
 
@@ -79,7 +79,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Subject:",
-				1=>$layout->Field("ocl_subject", "textbox",  $default[ocl_subject])
+				1=>$layout->Field("ocl_subject", "text",  $default[ocl_subject])
 			)
 		)
 
@@ -88,7 +88,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Duration:",
-				1=>$layout->Field("ocl_duration", "textbox",  $default[ocl_duration])
+				1=>$layout->Field("ocl_duration", "text",  $default[ocl_duration])
 			)
 		)
 
@@ -106,7 +106,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Caller:",
-				1=>$layout->Field("ocl_caller", "textbox", $default[ocl_caller])
+				1=>$layout->Field("ocl_caller", "text", $default[ocl_caller])
 			)
 		)
 

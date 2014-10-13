@@ -216,8 +216,8 @@ foreach($r as $row) {
 
 
 		//images/diabled.gif
-		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
-		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
+		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><span class='fa fa-remove xl'></span></A>";
+		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><span class='fa fa-edit xl'></span></A>";
 		$grp_str=$this->resolveGroupString($row[ocl_service_var]);
 		$gv="";
 		$btl->worker_list_loop(function($wrk, $shm) use (&$gv, &$layout, &$row){

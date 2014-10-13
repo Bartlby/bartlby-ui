@@ -336,7 +336,7 @@ $r=$btl->getExtensionsReturn("_serviceDetail", $layout);
 
 $defaults=$odefaults;
 
-$layout->OUT .= $btl->getserviceOptions($defaults, $layout);
+$layout->OUT .= $btl->getserviceOptions($defaults, $layout, "btn-lg");
 
 
 $defaults[svc_options]=$btl->getserviceOptions($defaults, $layout);

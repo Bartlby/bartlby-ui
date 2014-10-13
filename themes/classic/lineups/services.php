@@ -11,29 +11,30 @@
 	});
 	</script>
 
-	
-<table class="table table-striped table-bordered " id='services_table'>
-						  <thead>
-							  <tr>
-							  	<th><input type=checkbox id=service_checkbox_select_all></th>
-							  	<th>Server</th>
-								  <th>State</th>
-								  <th>LastCheck</th>
-								  <th>NextCheck</th>
-								  <th>Service</th>
-								  <th>Output</th>
-								  <th>Options</th>
-								  
-							  </tr>
-						  </thead>
-						    <tbody id=server_boxes_ajax>
+<div class="table-responsive">	
+	<table class="table hover table-bordered " id='services_table'>
+							  <thead >
+								  <tr>
+								  	<th><input type=checkbox class="icheck" id=service_checkbox_select_all></th>
+								  	<th>Server</th>
+									  <th>State</th>
+									  <th>CheckTime</th>
+									  
+									  <th>Service</th>
+									  <th>Output</th>
+									  <th>Options</th>
+									  
+								  </tr>
+							  </thead>
+							    <tbody id=server_boxes_ajax>
 
 
-<?=$this->disp_box("server_box_.*")?>
+	<?=$this->disp_box("server_box_.*")?>
 
-</tbody>
-</table>
+	</tbody>
+	</table>
 
+</div>
 
 <?=$this->disp_box("legend")?>
 <?=$this->disp_box("UNPLACED")?>

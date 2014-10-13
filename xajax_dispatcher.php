@@ -635,14 +635,12 @@ function toggle_server_notify_check($server_id, $service_id) {
 			$cur=bartlby_toggle_server_notify($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active
-				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 				
 				$res->AddScript("addAssignAllImg('server_trigger_" . $server_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
-				//$res->AddAssign("trigger_" . $server_id, "title", "disable notifications");
+				
 			} else {
-				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
 				$res->AddScript("addAssignAllImg('server_trigger_" . $server_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
-				//$res->AddAssign("trigger_" . $server_id, "title", "enable trigger");
+				
 			}
 			
 			
@@ -666,16 +664,13 @@ function toggle_service_handled($server_id, $service_id) {
 			$cur=bartlby_toggle_service_handled($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
-				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				//$res->AddAssign("handled_" . $service_id, "src", "themes/" . $layout->theme . "/images/handled.png");
-				$res->AddScript("addAssignAllImg('handled_" . $service_id . "', 'themes/" . $layout->theme . "/images/handled.png" . "');");
 				
-				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
+				$res->AddScript("addClassToAll('handled_" . $service_id . "', 'inline');");
 			} else { 
-				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddScript("addAssignAllImg('handled_" . $service_id . "', 'themes/" . $layout->theme . "/images/unhandled.png" . "');");
 				
-				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
+				
+				$res->AddScript("addClassToAll('handled_" . $service_id . "', 'hide');");
+				
 			}
 			
 			
@@ -698,15 +693,14 @@ function toggle_service_notify_check($server_id, $service_id) {
 			$cur=bartlby_toggle_service_notify($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
-				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 				
-				$res->AddScript("addAssignAllImg('trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
-				//$res->AddAssign("trigger_" . $service_id, "title", "disable notifications");
+				$res->AddScript("addClassToAll('trigger_" . $service_id . "', 'hide');");
+				
 			} else {
-				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
 				
-				$res->AddScript("addAssignAllImg('trigger_" . $service_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
-				//$res->AddAssign("trigger_" . $service_id, "title", "enable trigger");
+				
+				$res->AddScript("addClassToAll('trigger_" . $service_id . "', 'inline');");
+				
 			}
 			
 			
@@ -732,15 +726,10 @@ function toggle_service_check($server_id, $service_id) {
 			$cur=bartlby_toggle_service_active($btl->RES, $idx, 1);
 			
 			if($cur == 1) { //Active
-				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				
-				$res->AddScript("addAssignAllImg('service_" . $service_id . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
-				//$res->AddAssign("service_" . $service_id, "title", "Disable Checks");
+				$res->AddScript("addClassToAll('service_" . $service_id . "', 'hide');");
 			} else {
-				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				
-				$res->AddScript("addAssignAllImg('service_" . $service_id . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
-				//$res->AddAssign("service_" . $service_id, "title", "Enable Checks");
+						
+				$res->AddScript("addClassToAll('service_" . $service_id . "', 'inline');");
 			}
 			
 			

@@ -35,7 +35,7 @@ $Author: hjanuschka $
 	
 	$layout->set_menu("main");
 	//$layout->MetaRefresh(30);
-	$layout->Table("100%");
+
 	$lib=bartlby_lib_info($btl->RES);
 	$info=$btl->info;
 	
@@ -228,7 +228,7 @@ $Author: hjanuschka $
 	
 		}
 	} else {
-		$load_bar = "<font color=green>" . $info[current_running]  . "</font> Load: <font color=green>" . $curr_load[0] . " / " . $max_load . " </font>";	
+		$load_bar = "<font color=green>" . $info[current_running]  . "</font></b> Load: <b><font color=green>" . $curr_load[0] . " / " . $max_load . " </b></font>";	
 	}
 
 	$fin_last_sync =  "MASTER";
@@ -488,7 +488,7 @@ $Author: hjanuschka $
 
 	
 	$layout->boxes_placed[MAIN]=true;
-	$layout->TableEnd();
+	
 	$layout->display("overview");
 	
 	

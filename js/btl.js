@@ -6,6 +6,7 @@
 //# sourceMappingURL=jquery.nanoscroller.min.js.map
 
 
+
 $(function(){
   //Functions
   function toggleSideBar(_this){
@@ -384,6 +385,15 @@ $(window).focus(function() {
 	}
 });
 
+function addClassToAll(id, src) {
+    
+    $('[id=' + id + ']').removeClass("inline");
+    $('[id=' + id + ']').removeClass("hide");
+    $('[id=' + id + ']').addClass(src);
+  
+}
+
+
 function addAssignAllImg(id, src) {
 	$('[id=' + id + ']').attr("src", src);
 }
@@ -562,6 +572,11 @@ SELECT BOXES
 
 
 //chosen - improves select
+
+  $('.icheck').iCheck({
+          checkboxClass: 'icheckbox_flat-blue',
+          radioClass: 'iradio_flat-blue'
+   });
 
 	$('#report_start').datepicker();
 	$('#report_end').datepicker();
@@ -1046,13 +1061,18 @@ $('[data-rel="ajax_report_service"]').selectize({
 	
 	
 	
-	
+
+
+
 	$("#service_checkbox_select_all").click(function() {
 		if($(this).is(':checked')) {
 			console.log("check all");
 			$('.service_checkbox').attr("checked", "checked");
+      $('.service_checkbox').iCheck('check');
 		} else {
+      console.log("UNCHECK ALL");
 			$('.service_checkbox').removeAttr("checked", "checked");
+      $('.service_checkbox').iCheck('uncheck');
 		}
 	});
 	
@@ -1085,7 +1105,7 @@ $('[data-rel="ajax_report_service"]').selectize({
 					},
 					"iDisplayLength": 50,
 					"fnDrawCallback": function ( oSettings ) {
-						
+			       checkCheckBoxes();
 						if ( oSettings.aiDisplay.length == 0 )
 						{
 							return;
@@ -1117,22 +1137,19 @@ $('[data-rel="ajax_report_service"]').selectize({
 						{ "bVisible": false, "aTargets": [ 1 ] }
 					],
 					"aoColumns": [
-						{ "sWidth": "1" },
-						{ "sWidth": "1" },
-						{ "sWidth": "50" },
-						{ "sWidth": "100" },
-						{ "sWidth": "100" },
-						{ "sWidth": "150" },
-						{ "sWidth": "450" },
-						{ "sWidth": "320" },
+						{ "sWidth": "0%" },
+						{ "sWidth": "0%" },
+						{ "sWidth": "10%" },
+						{ "sWidth": "10%" },
+						{ "sWidth": "10%" },
+						{ "sWidth": "40%" },
+						{ "sWidth": "0%" },
+						
 					],
 					"aaSortingFixed": [[ 0, 'asc' ]],
 					"bSort": false,
 					"aaSorting": [[ 1, 'asc' ]],
-					//"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i>T<'span12 center'p>>",
-					//"sDom": '<"top"i>rt<"bottom"flp><"clear">',
-					//"sDom": '<"wrapper"lfptip>',
-					//"sDom": "<'row'<'span9'l><'span9'f>r>t<'row'<'span9'i><'span9'p>>",
+				
 			    "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
 			    "sAjaxSource": s_url + s_char + "datatables_output=1",
 			    "bServerSide": true,
@@ -1401,7 +1418,15 @@ dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offs
 
 return clickreturnvalue()
 }
-
+function checkCheckBoxes() {
+    $('.icheck').iCheck({
+          checkboxClass: 'icheckbox_flat-blue',
+          radioClass: 'iradio_flat-blue'
+   });
+   $("#service_checkbox_select_all").on('ifChecked', function(event){
+    $("#service_checkbox_select_all").click();
+  });
+}
 function clickreturnvalue(){
 if (ie4||ns6) return false
 else return true

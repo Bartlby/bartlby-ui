@@ -138,7 +138,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function Table($proz="100%", $border=0) {
 		$this->deprecated("NO MORE TABLE");
 
-		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0 style='width: 100%;'>";
+		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0 style='width: 100%;' class=' no-border'><tbody class='no-border-y'>";
 	}
 	function MetaRefresh($time=20) {
 		$this->OUT .= "<script>function ReloadME() {
@@ -151,7 +151,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	function TableEnd() {
 		$this->deprecated("NO MORE TABLE");
-		$this->OUT .= "</table>";	
+		$this->OUT .= "</tbody></table>";	
 	}
 	function DisplayHelp($msg=array()) {
 		for($x=0; $x<=count($msg);$x++) {

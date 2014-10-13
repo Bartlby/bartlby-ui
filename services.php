@@ -112,14 +112,14 @@
 
 
 							$server_ajax="<a href='server_detail.php?server_id=" . $svc[server_id] . "'><b>" . $svc[server_name]  . "</A> " . $btl->getServerOPtions($svc, $layout);
-							$ajax_checkbox='<div><input type=checkbox class="service_checkbox" data-service_id="' . $svc[service_id] .  '"></div>';
+							$ajax_checkbox='<div><input type=checkbox class="service_checkbox icheck" data-service_id="' . $svc[service_id] .  '"></div>';
 							$ajax_state='<a href="services.php?expect_state=' . $svc[current_state] . '"><span class="label ' . $ajax_lbl . '">' . $svc[state_readable] . '</span></A>';
 							$ajax_last_check=date("d.m.y H:i:s", $svc[last_check]);
 							$ajax_next_check=date("d.m.y H:i:s", $svc[last_check]+$svc[check_interval]);
 							$ajax_service_name='<a href="service_detail.php?service_place=' . $shm_place . '"><b>' . $svc[service_name] . '</A>';
 							$ajax_service_output=str_replace( "\\dbr","<br>", nl2br($svc[new_server_text]));												
 							$ajax_service_options=$btl->getserviceOptions($svc, $layout);
-							$ajax_search["aaData"][] = array($ajax_checkbox, $server_ajax,$ajax_state , $ajax_last_check, $ajax_next_check, $ajax_service_name, $ajax_service_output, $ajax_service_options);		//FIXME
+							$ajax_search["aaData"][] = array($ajax_checkbox, $server_ajax,$ajax_state , $ajax_last_check . "<br>" . $ajax_next_check, $ajax_service_name, $ajax_service_output, $ajax_service_options);		//FIXME
 							$ajax_search["rawService"][] = $svc;
 						}
 					
@@ -140,7 +140,7 @@
 											array("a"=>"b")				
 				,"service_list_mass_actions", false);
 	
-	$layout->create_box("Legend", $legend_content, "legend", array("a"=>"b"), "legend", true);
+	$layout->create_box("Legend", $legend_content, "legend", array("a"=>"b"), "legend", false);
 	
 	
 	$layout->Tr(

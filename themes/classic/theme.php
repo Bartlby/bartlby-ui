@@ -202,16 +202,7 @@ global $Bartlby_CONF_IDX;
 
 
 	
-	<?
-		if($Bartlby_CONF_IDX > 0) {
-	?>
-	<div class="alert alert-warning" style='margin-bottom: 0px;'>
-							<button type="button" class="close" data-dismiss="alert">×</button>
-							You are on a remote Node (<?=$Bartlby_CONF_DisplayName?>)!!
-						</div>
-	<?
-		}
-	?>
+
 
 
 
@@ -246,6 +237,18 @@ global $Bartlby_CONF_IDX;
    <!-- TOP NAVBAR -->
   <div id="head-nav" class="navbar navbar-default">
     <div class="container-fluid">
+    <?
+					if($Bartlby_CONF_IDX > 0 ) {
+				?>
+				<div class="alert alert-warning" style='margin-bottom: 0px;'>
+										<button type="button" class="close" data-dismiss="alert">×</button>
+										You are on a remote Node (<?=$Bartlby_CONF_DisplayName?>)!!
+									</div>
+				<?
+					}
+				?>
+				
+				
       <div class="navbar-collapse">
         <ul class="nav navbar-nav navbar-right user-nav">
           <li class="dropdown profile_menu">
@@ -315,6 +318,8 @@ global $Bartlby_CONF_IDX;
           <li class="button"><a class="toggle-menu menu-right push-body" href="javascript:;"><i class="fa fa-comments"></i></a></li>				
         </ul>
 
+
+
       </div><!--/.nav-collapse animate-collapse -->
     </div>
   </div>
@@ -322,6 +327,7 @@ global $Bartlby_CONF_IDX;
     
 	<div class="cl-mcont">
 
+				
 			<!-- <div id='bartlby_basket'></div> -->
 			
 	

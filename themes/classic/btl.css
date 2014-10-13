@@ -5673,11 +5673,8 @@ table td .progress {
 table.hover tbody tr:hover {
   background: #f3f3f3;
 }
-table td i {
-  font-size: 15px;
-  display: inline-block;
-  text-align: center;
-  width: 23px;
+table td b {
+  font-weight: 800;
 }
 table td:last-child {
   border-right: 1px solid #dadada;
@@ -5853,7 +5850,7 @@ table tbody td .btn-group .dropdown-menu li > a {
 .nav-tabs > li > a:hover,
 .nav-tabs > li > a:active {
   background: transparent;
-  border: 1px solid transparent;
+  
   color: #634d93;
   border-radius: 2px 2px 0 0;
   -webkit-border-radius: 2px 2px 0 0;
@@ -5880,8 +5877,7 @@ table tbody td .btn-group .dropdown-menu li > a {
   padding-bottom: 10px;
   padding-top: 8px;
   box-shadow: 1px -3px 4px -3px rgba(0, 0, 0, 0.08);
-  border-left: 1px solid #ECECEC;
-  border-right: 1px solid #ECECEC;
+  
   position: static;
 }
 .tab-content {

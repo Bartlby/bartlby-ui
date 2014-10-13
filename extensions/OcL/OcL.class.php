@@ -252,7 +252,7 @@ foreach($r as $row) {
     $ocnt++;
 	}
 	$cur_box_content .= "</ol>";
-	$layout->Tab("Recent On-Call Log <span class='notification blue' style='display:inline-block; font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif; position:relative;top: 0px;'>" . $ocnt . "</span>", $cur_box_content, "ocl_overview");
+	$layout->Tab("Recent On-Call Log <span class='badge badge-info'>" . $ocnt . "</span>", $cur_box_content, "ocl_overview");
 
 	
 

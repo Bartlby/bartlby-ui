@@ -17,8 +17,8 @@ $instance_id_fix="";
 
 ?>
 
-<table class='nopad' width='100%'>
-		
+<table class="no-border">
+	<tbody class="no-border-x no-border-y">	
 		<tr>
 			<td class='font1'>
 
@@ -41,5 +41,5 @@ $instance_id_fix="";
 			</td>
 			
 		</tr>
-		
+		</tbody>
 	</table>

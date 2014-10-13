@@ -1,6 +1,6 @@
-<table border=0>
-<tr>
 
+<div class=container-fluid>
+<div class="row">
 <?
 $c=0;
 	for($x=0; $x<count($plcs[groups]); $x++) {
@@ -9,7 +9,7 @@ $c=0;
 		if($grp[service_sum] == 0) {
 				continue;
 		}
-			$bar = "<div  style='width:80px;'><div class='progress'>
+			$bar = "<div  style='width:100%'><div class='progress'>
   <div class='progress-bar progress-bar-success' style='width: " . $grp[prozent_float][ok] . "%'>
     <span class='sr-only1'>" . $grp[prozent_float][ok] . "%</span>
   </div>
@@ -25,29 +25,28 @@ $c=0;
 </div>
 </div>
 ";
-			echo  "<td align=left valign=top width=300>";					
-			echo  "<table width='100%'><tr><td><b><a href='servergroup_detail.php?servergroup_id=" . $grp[servergroup_id] . "'>" . $grp[servergroup_name] . "</b></td><tr><tr><td >" . $bar . "</td></tr></table>";
+			//echo  "<td align=left valign=top width=300>";					
+			//echo  "<table width='100%'><tr><td><b><a href='servergroup_detail.php?servergroup_id=" . $grp[servergroup_id] . "'>" . $grp[servergroup_name] . "</b></td><tr><tr><td >" . $bar . "</td></tr></table>";
+			echo  "<div class=col-lg-1><b><a href='servergroup_detail.php?servergroup_id=" . $grp[servergroup_id] . "'>" . $grp[servergroup_name] . "</b></A><br>" . $bar . "</div>";
 
 			$c++;
 			
 			
 			
-			echo  "</td>";
+			//echo  "</td>";
 			if($c == 5) {
-				echo "</tr><tr>";
+			//	echo "</tr><tr>";
 				$c=0;	
 			}
 		
 	}
 	
 		while($c < 5) {
-			echo "<td>&nbsp;</td>";
+			//echo "<td>&nbsp;</td>";
 			$c++;	
 		}
 		
 ?>		
-</tr>
-<tr>
-<td colspan=4></td>
-</tr>
-</table>
+
+</div>
+</div>

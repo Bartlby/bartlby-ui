@@ -1671,7 +1671,7 @@ if($m[2] == "5724") {
 				$l = 'warning';
 			break;
 			case 2:
-				$l = 'important';
+				$l = 'danger';
 			break;
 			default:
 				$l = '';
@@ -2201,8 +2201,10 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		}
 		if($defaults[is_downtime] == 1) {
 			
-			$downtime = '<li><span><i>Downtimed</i></span></li>';
-			$btn_size .= " disabled";
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+
 		} else {
 			$downtime="";
 		}
@@ -2240,6 +2242,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 
 		$ret = '<div class="btn-group">
 					' . $is_gone . '
+					' . $downtime . '
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=server_' . $defaults[server_id] . '></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=server_trigger_' . $defaults[server_id] . '></i></span>
 					<div class="btn-group  ">
@@ -2290,8 +2293,8 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		}
 		if($defaults[is_downtime] == 1) {
 			
-			$downtime = '<li><span><i>Downtimed</i></span></li>';
-			$btn_size .= " disabled";
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
 		} else {
 			$downtime="";
 		}
@@ -2302,12 +2305,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 				$handled_show="hide";
 			}
 		}			
-		
-		
-
-
-		
-
+	
 
 		
 		$copy_link = "modify_service.php?copy=true&service_id=" . $defaults[service_id];
@@ -2329,6 +2327,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		
 
 		$ret = '<div class="btn-group">
+					' . $downtime . '
 					' . $is_gone . '
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $force_onclick . '"><i  title="Force Check" class="fa fa-play-circle"></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=service_' . $defaults[service_id] . '></i></span>

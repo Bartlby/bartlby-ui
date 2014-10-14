@@ -5769,9 +5769,11 @@ table td b {
 table td:last-child {
   border-right: 1px solid #dadada;
 }
+
 table tr:nth-child(2n) {
   background: #f8f8f8;
 }
+
 table.no-strip tr:nth-child(2n) {
   background: transparent;
 }
@@ -8311,3 +8313,13 @@ textarea,
   color: #666666;
 }
 /*SKIN*/
+div.legend > table > tbody > tr > td {
+  border: 0px;
+}
+div.legend > table > tbody {
+  border: none;
+}
+div.legend > table {
+  width: auto;
+  border: none;
+}

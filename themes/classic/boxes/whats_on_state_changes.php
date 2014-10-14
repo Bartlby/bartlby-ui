@@ -47,7 +47,8 @@ $(document).ready(function() {
 
 });
 </script>
-<table width=100%>
+<table width=100% class="no-border">
+	<tbody class="no-border-x no-border-y">
 <tr>
 <td class=font1 width=150>State Changes:</td>
 <td class=font2 align=left>
@@ -56,6 +57,7 @@ echo $plcs[whats_on][state_changes];
 ?>
 </td>
 </tr>
+</tbody>
 </table>
 
 <div id="state_change_flotchart" class="center" style="height:200px; width: 90%;"></div>

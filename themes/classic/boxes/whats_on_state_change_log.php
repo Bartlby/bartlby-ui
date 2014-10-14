@@ -1,9 +1,9 @@
 <script>
 $(document).ready(function() {
 	$('.datatable_whats_on').dataTable({
-			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
-			"sPaginationType": "bootstrap",
 			"aaSorting": [[ 6, "desc" ]],
+			"bFilter": false,
+			"bInfo" : false,
 			"oLanguage": {
 			"sLengthMenu": "_MENU_ records per page"
 			}
@@ -13,7 +13,7 @@ $(document).ready(function() {
 	$('#coreTabs a[href=#coretab0]').tab("show");
 });
 </script>
-<table class="table table-striped table-bordered datatable_whats_on"><thead>
+<table class="table table-bordered datatable_whats_on"><thead>
 							  <tr>
 								  <th>Service</th>
 								  <th>Actions</th>

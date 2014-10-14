@@ -97,7 +97,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>"Email RCPT:",
-				1=>$layout->Field("report_rcpt", "text", "") 
+				1=>$layout->Field("report_rcpt", "text", "","", "class='email_input form-control chosen-select selectized selectize'")
 			)
 		)
 

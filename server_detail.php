@@ -24,7 +24,7 @@ $btl->hasRight("main.server_detail");
 $layout= new Layout();
 	$layout->do_auto_reload=true;
 $layout->set_menu("main");
-$layout->setTitle("Services");
+$layout->setTitle("Actions");
 
 $defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 $btl->hasServerRight($_GET[server_id]);
@@ -195,7 +195,7 @@ $layout->create_box("Mass Actions", "", "mass_actions",
 
 $r=$btl->getExtensionsReturn("_serverDetail", $layout);
 
-$layout->OUT .= $btl->getServerOptions($defaults, $layout);
+$layout->OUT .= $btl->getServerOptions($defaults, $layout, "btn-lg");
 
 
 

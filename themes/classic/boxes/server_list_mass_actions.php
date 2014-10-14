@@ -1,8 +1,8 @@
 
 Perform Action on Selected Servers<br>
 
-<button class="btn btn-mini " id="servers_bulk_refresh_table" onClick='window.servers_table.fnDraw(false)'><i class=" icon-refresh"></i>Refresh Server Table</button>&nbsp;
-<button class="btn btn-mini " id="servers_bulk_edit"><i class=" icon-edit"></i>Bulk Edit</button>&nbsp;
+<button class="btn btn-default btn-xs " id="servers_bulk_refresh_table" onClick='window.servers_table.fnDraw(false)'><i class=" icon-refresh"></i>Refresh Server Table</button>&nbsp;
+<button class="btn btn-default btn-xs " id="servers_bulk_edit"><i class=" icon-edit"></i>Bulk Edit</button>&nbsp;
 
 
 <?
@@ -26,14 +26,19 @@ $editable_service_fields[] = array("orch_id", "Orchestra ID");
 
 ?>	
 
-<div class="modal hide fade" id="myModal" >
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">x</button>
-				<h3>Bulk Edit Servers</h3>
-			</div>
-			<div class="modal-body" style='overflow-y:auto;'>
-				<div class="alert alert-warning" style='margin-bottom: 0px;'>WARNING beware what you are doing!!<br>
-<p class=well>
+<div class="modal fade " id="myModal">
+  <div class="modal-dialog full-width">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Bulk Service Modify</h4>
+      </div>
+      <div class="modal-body" style='overflow-y:auto;height:600px;'>
+        	
+
+
+        	<div class="alert alert-warning" style='margin-bottom: 0px;'>WARNING beware what you are doing!!<br>
+<p class=xwell>
 	Regex Format: 
 	<code>
 	#(.+)disk#\1load#
@@ -41,44 +46,55 @@ $editable_service_fields[] = array("orch_id", "Orchestra ID");
 	replaces bartlby_disk with bartlby_load
 </p>
 				</div>
+				<form id="servers_bulk_form">
 				<div id=servers_bulk_output></div>
-				<table width=100% border=0>
-					<form id="servers_bulk_form">
-					<?
-						for($x=0; $x<count($editable_service_fields); $x++) {
-					?>
-					<tr>
-					<td><?=$editable_service_fields[$x][1]?>:</td>
-					<td>
-						<input  type=text name=<?=$editable_service_fields[$x][0]?>	
-					</td>
-					<td>
-						<select name=<?=$editable_service_fields[$x][0]?>_typefield>
-							<option value="unused">unused</option>
-							<option value="set">set</option>
-							<option value="regex">Regex (#SEARCH#REPLACE#)</option>
-							<option value="add">addition (only on int values)</option>
-							<option value="sub">subtraction (only on int values)</option>
+				
+				<?
+					for($x=0; $x<count($editable_service_fields); $x++) {
 
-							<option value="addrand">addition random (X,Y) is from, to (only on int values)</option>
-							<option value="subrand">subtraction random (X,Y) is from, to (only on int values)</option>
-							<option value="toggle">toggle (only for boleans)</option>
+
+				?>
+					<div class=row>
+						<div class=col-sm-12>
+
+					<div class="form-group">
+		                <label class="col-sm-3 control-label"><?=$editable_service_fields[$x][1]?></label>
+		                <div class="col-sm-6">
+		                  
+		                  <select class="form-control chosen-select" data-rel="chosen" name=<?=$editable_service_fields[$x][0]?>_typefield>
+							<option value="unused">unused</option>
+							<option value="set">=</option>
+							<option value="regex">~</option>
+							<option value="add">+=</option>
+							<option value="sub">-=</option>
+
+							<option value="addrand">+=rand(x,y)</option>
+							<option value="subrand">-=rand(x,y)</option>
+							<option value="toggle">toggle</option>
 							
 						</select>
-					</td>
-					</tr>
-					<?
-						}
-					?>
-					</form>
-				</table>
-			</div>
-			<div class="modal-footer">
+						<input  class=form-control type=text name=<?=$editable_service_fields[$x][0]?>>
+		                </div>
+		            </div>
+		           </div>
+		           </div>
+				<?
+					}
+				?>
 				
-				<button data-dismiss="modal"class="btn btn-success1"><i class="icon-ok"></i> Close</button>
+			</form>
+
+			</div><div class="modal-footer">
+       
+      	<button data-dismiss="modal"class="btn btn-primary"><i class="fa fa-close"></i> Close</button>
 				
-				<button id=servers_bulk_edit_dry_run class="btn btn-success"><i class="icon-eye-open"></i> Dry Run</button>
-				<button id=servers_bulk_edit_run class="btn btn-warning"><i class="icon-fire"></i> Run</button>
-				<button id=servers_bulk_edit_delete class="btn btn-danger"><i class="icon-trash"></i> Delete</button>
-			</div>
-		</div>
+				<button id=servers_bulk_edit_dry_run class="btn btn-success"><i class="fa fa-eye"></i> Dry Run</button>
+				<button id=servers_bulk_edit_run class="btn btn-warning"><i class="fa fa-fire"></i> Run</button>
+				<button id=servers_bulk_edit_delete class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
+
+
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

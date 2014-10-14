@@ -11,7 +11,7 @@
 	});
 	</script>
 	
-<table class="table table-striped table-bordered " id='servers_table'>
+<table class="table table-bordered " id='servers_table'>
 						  <thead>
 							  <tr>
 							  	<th><input type=checkbox id=server_checkbox_select_all></th>

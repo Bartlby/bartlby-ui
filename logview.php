@@ -11,11 +11,11 @@
 	$layout->Form("fm1", "logview.php");
 	
 	
-	$layout->OUT .= '<table class="table table-striped table-bordered ">';
+	$layout->OUT .= '<table class="table  table-bordered ">';
 	$layout->OUT .= '<thead>
 							  <tr>
 								  <th>Date</th>
-								  <th>State</th>
+								  <th width=1%>State</th>
 								  <th>Text</th>
 								  
 							  </tr>
@@ -46,14 +46,14 @@
 	}
 	
 	
-	$layout->OUT .= "<tr><td colspan=3><table width=100%>";
+	$layout->OUT .= "<tr><td colspan=3><table width=100% class='table borderd'>";
 	$layout->Tr(
 		$layout->Td(
 				Array(
 					0=>Array(
 						'colspan'=> 3,
 						'class'=>'header',
-						'show'=>"<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$servergroup_id&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time-86400)  . "'>&laquo;" . date("Y.m.d", $ch_time-86400) . "</A> <font color=black>Logfile ($logf)</font> <a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$srvgrpid&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time+86400)  . "'>&raquo;" . date("Y.m.d", $ch_time+86400) . "</A>  "  
+						'show'=>"<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$servergroup_id&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time-86400)  . "'>&laquo;" . date("Y.m.d", $ch_time-86400) . "</A> <font color=black>Logfile (" . basename($logf) . ")</font> <a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$srvgrpid&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time+86400)  . "'>&raquo;" . date("Y.m.d", $ch_time+86400) . "</A>  "  
 						)
 				)
 			)
@@ -63,7 +63,19 @@
 		$layout->Td(
 				Array(
 					0=>array("colspan" => 3, 
-						"show" => "Filter:" . $layout->Field("bartlby_filter", "text", $_GET["bartlby_filter"]) . $layout->Field("bartlby_sub", "submit", "Filter") . $svcM
+						"show" => '<div class="col-sm-12"> <div class="form-group">
+				    
+								   	 
+								   	 <label class="col-sm-1 control-label">Filter</label>
+								   	 <div class="col-sm-11">
+								     	' . $layout->Field("bartlby_filter", "text", $_GET["bartlby_filter"])  . '
+								     	' . $layout->Field("bartlby_sub", "submit", "Filter") . '
+								     	' . $svcM . '
+								     </div>
+								   </div>
+										    
+								  </div>'
+						//"show" => "Filter:" . $layout->Field("bartlby_filter", "text", $_GET["bartlby_filter"]) .  . $svcM
 					)
 				)
 			)
@@ -412,3 +424,4 @@ function cmpServiceIDHasServer($svc_id, $server_id) {
 
 
 ?>
+

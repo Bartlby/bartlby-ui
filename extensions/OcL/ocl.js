@@ -81,9 +81,11 @@ $(document).ready(function() {
 	$(".ocl_save_managed").click(function() {
 		xajax_ExtensionAjax("OcL", "ocl_save_managed", $("#worker_id").val());
 	});
-	$('[data-rel="ocl_chosen"]').chosen();
-	$('[data-rel="ocl_chosen"]').css("max-width", "300px");
-
+	$('[data-rel="ocl_chosen"],[rel="ocl_chosen"]').selectize({
+    	create: false,
+    	plugins: ['remove_button', 'drag_drop'],
+    	sortField: 'text'
+	});
 
 		$('#coreTabs a[href=#ocl_schedule_tab]').click(function() {
 			$("#ocl_calendar").fullCalendar('render');	

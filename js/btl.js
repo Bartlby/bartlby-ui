@@ -593,6 +593,19 @@ SELECT BOXES
 	$('.datetimepicker').datetimepicker({nextText:"&nbsp;", prevText:"&nbsp;", showButtonPanel: true});
 	
 
+  //tabs
+  $('#myTab a:first').tab('show');
+  $('#myTab a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
+  $('#coreTabs a:first').tab('show');
+  $('#coreTabs a').click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
+  
+  
 	$('[data-rel="chosen"],[rel="chosen"]').selectize({
     	create: false,
     	plugins: ['remove_button', 'drag_drop'],
@@ -604,6 +617,26 @@ SELECT BOXES
 
 
   //initialize the calendar
+    $('#external-events div.external-event').each(function() {
+
+    // it doesn't need to have a start or end
+    var eventObject = {
+      title: $.trim($(this).text()) // use the element's text as the event title
+    };
+    
+    // store the Event Object in the DOM element so we can get to it later
+    $(this).data('eventObject', eventObject);
+    
+    // make the event draggable using jQuery UI
+    $(this).draggable({
+      zIndex: 999,
+      revert: true,      // will cause the event to go back to its
+      revertDuration: 0  //  original position after the drag
+    });
+    
+  });
+
+
   $('#calendar').fullCalendar({
     header: {
       left: 'prev,next today',

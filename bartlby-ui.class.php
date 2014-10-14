@@ -1496,17 +1496,18 @@ if($m[2] == "5724") {
 			
 		
 	}
-	function is_gone($state) {
+	function is_gone($state, $sz="btn-sm") {
 		switch($state) {
 			case 1:
-				return "<img src='themes/" . $this->theme . "/images/emblem-generic.png' alt='Object changed you should reload' border=0>";
+				return '<span class="btn btn-danger ' . $sz . '"><i  title="Object changed you should reload" class="fa fa-exclamation"></i></span>';
 			case 2:
-				return "<img src='themes/" . $this->theme . "/images/emblem-important.png' alt='Object deleted you should reload' border=0>";
+				return '<span class="btn btn-danger ' . $sz . '"><i  title="Object Deleted" class="fa fa-trash"></i></span>';
 			case 3:
-				return "<img src='themes/" . $this->theme . "/images/emblem-timeout.gif' alt='Object has beend timed out' border=0>";
+				return '<span class="btn btn-danger ' . $sz . '"><i  title="Object ORCH sync timed out" class="fa fa-clock-o"></i></span>';
 			break;
 			default:
-				return "";
+				return '';
+				//return '<span class="btn btn-warning ' . $sz . '"><i  title="Object ORCH sync timed out" class="fa fa-clock-o"></i></span>';
 		}
 	}	
 	
@@ -2179,25 +2180,99 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
 
 	}
-	function getserveroptions($defaults, $layout) {
+	function getserveroptions($defaults, $layout, $btn_size="btn-sm") {
 		$defaults[service_id]="";
-		$modify = "<a href='modify_server.php?server_id=" . $defaults[server_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this server' border=0></A>";
-		$copy = "<a href='modify_server.php?copy=true&server_id=" . $defaults[server_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Server' border=0></A>";
-		$logview= "<a href='logview.php?server_id=" . $defaults[server_id]. "' ><font size=1><img  title='View Events for this Server' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
 		
+		
+		
+		
+
 		if($defaults[server_enabled] == 1) {
-			$check = "<a title='Disable Checks for this Server' href='javascript:void(0);' onClick=\"xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='server_" . $defaults[server_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='server_" . $defaults[server_id] . "' title='Enable  Checks for this Service' border=0></A>";
+			$check_show="inline";
 		}
 		if($defaults[server_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='server_trigger_" . $defaults[server_id] . "' title='Disable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='server_trigger_" . $defaults[server_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
-		$is_gone=$this->is_gone($defaults[server_gone]);
+		if($defaults[is_downtime] == 1) {
+			
+			$downtime = '<li><span><i>Downtimed</i></span></li>';
+			$btn_size .= " disabled";
+		} else {
+			$downtime="";
+		}
+		if($defaults[current_state] != 0) {
+			if($defaults[handled] == 1) {
+				$handled_show="inline";
+			} else {
+				$handled_show="hide";
+			}
+		}			
 		
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
+		
+
+
+		
+
+
+		
+		$copy_link = "modify_server.php?copy=true&server_id=" . $defaults[server_id];
+		$modify_link="modify_server.php?server_id=" . $defaults[server_id];
+		
+		$logview_link = "logview.php?server_id=" . $defaults[server_id];
+		$reports_link = "create_report.php?service_id=" . $defaults[server_id];
+		$delete_link = "delete_server.php?server_id=" . $defaults[server_id];
+		
+
+		
+		
+		$check_onclick="xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[server_id] . "')";
+		$notify_onclick="xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[server_id] . "')";
+				
+
+		$is_gone=$this->is_gone($defaults[server_gone], $btn_size);
+		
+
+		$ret = '<div class="btn-group">
+					' . $is_gone . '
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=server_' . $defaults[server_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=server_trigger_' . $defaults[server_id] . '></i></span>
+					<div class="btn-group  ">
+					  <span class="btn btn-primary ' . $btn_size . '  dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-user fa-cog"></i></span>
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
+	
+		return $ret;
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 
 	function getserviceOptions($defaults, $layout, $btn_size="btn-sm") {
@@ -2247,11 +2322,12 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		$notify_onclick="xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
 				
 
-		$is_gone=$this->is_gone($defaults[is_gone]);
+		$is_gone=$this->is_gone($defaults[is_gone], $btn_size);
 		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat $handled";
 		
 
 		$ret = '<div class="btn-group">
+					' . $is_gone . '
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $force_onclick . '"><i  title="Force Check" class="fa fa-play-circle"></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=service_' . $defaults[service_id] . '></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=trigger_' . $defaults[service_id] . '></i></span>

@@ -597,14 +597,11 @@ function toggle_server_check($server_id, $service_id) {
 			$cur=bartlby_toggle_server_active($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active
-				//$res->addAlert("Check enabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-				
-				$res->AddScript("addAssignAllImg('server_" . $server_id . "', 'themes/" . $layout->theme . "/images/enabled.gif" . "');");
-				//$res->AddAssign("server_" . $server_id, "title", "Disable Checks");
+				$res->AddScript("addClassToAll('server_" . $server_id . "', 'hide');");
 			} else {
-				//$res->addAlert("Check disabled on:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);	
-				$res->AddScript("addAssignAllImg('server_" . $server_id . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
-				//$res->AddAssign("server_" . $server_id, "title", "Enable Checks");
+				$res->AddScript("addClassToAll('server_" . $server_id . "', 'inline');");
+				
+				
 			}
 			
 			
@@ -636,10 +633,10 @@ function toggle_server_notify_check($server_id, $service_id) {
 			
 			if($cur == 1) { //Active
 				
-				$res->AddScript("addAssignAllImg('server_trigger_" . $server_id . "', 'themes/" . $layout->theme . "/images/trigger.gif" . "');");
+				$res->AddScript("addClassToAll('server_trigger_" . $server_id . "', 'hide');");
 				
 			} else {
-				$res->AddScript("addAssignAllImg('server_trigger_" . $server_id . "', 'themes/" . $layout->theme . "/images/notrigger.gif" . "');");
+				$res->AddScript("addClassToAll('server_trigger_" . $server_id . "', 'inline');");
 				
 			}
 			

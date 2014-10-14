@@ -36,7 +36,7 @@ array
 	
 	
 
-	$worker_drp = "<div style='width: 320px;'>Managed Workers: <select name='worker_id' id='worker_id'   data-rel='ocl_chosen' multiple>";
+	$worker_drp = "<div style='width: 320px;'>Managed Workers: <select class='form-control' name='worker_id' id='worker_id'   data-rel='ocl_chosen' multiple>";
 	$btl->worker_list_loop(function($wrk, $shm) use(&$worker_drp, &$ocl) {
 		$sel="";
 

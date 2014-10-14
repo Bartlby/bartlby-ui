@@ -67,54 +67,22 @@ global $Bartlby_CONF_IDX;
 	<link href="themes/classic/css/selectize.bootstrap3.css" rel="stylesheet">
 
 
-	<xlink href="themes/classic/css/charisma-app.css" rel="stylesheet">
 	
-	<link href='themes/classic/css/jquery.noty.css' rel='stylesheet'>
-	<link href='themes/classic/css/noty_theme_default.css' rel='stylesheet'>
 	
 	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
 	<link href='themes/classic/css/dataTables.tableTools.css' rel='stylesheet'>
 	
 
 
-	<link href="themes/classic/css/skin.css" rel="stylesheet">
 
 	<!-- jQuery -->
 	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
-
 	<script src="themes/classic/js/bootstrap.js"></script>
-
 	<script src="themes/classic/js/selectize.js"></script>
 
 	<!-- jQuery UI -->
 	<script src="themes/classic/js/jquery-ui.js"></script>
 	<!-- transition / effect library -->
-	<script src="themes/classic/js/bootstrap-transition.js"></script>
-	<!-- alert enhancer library -->
-	<script src="themes/classic/js/bootstrap-alert.js"></script>
-	<!-- modal / dialog library -->
-	<xscript src="themes/classic/js/bootstrap-modal.js"></script>
-	<!-- custom dropdown library -->
-	<script src="themes/classic/js/bootstrap-dropdown.js"></script>
-	<!-- scrolspy library -->
-	<script src="themes/classic/js/bootstrap-scrollspy.js"></script>
-	<!-- library for creating tabs -->
-	<script src="themes/classic/js/bootstrap-tab.js"></script>
-	<!-- library for advanced tooltip -->
-	<script src="themes/classic/js/bootstrap-tooltip.js"></script>
-	<!-- popover effect library -->
-	<script src="themes/classic/js/bootstrap-popover.js"></script>
-	<!-- button enhancer library -->
-	<script src="themes/classic/js/bootstrap-button.js"></script>
-	<!-- accordion library (optional, not used in demo) -->
-	<script src="themes/classic/js/bootstrap-collapse.js"></script>
-	<!-- carousel slideshow library (optional, not used in demo) -->
-	<script src="themes/classic/js/bootstrap-carousel.js"></script>
-	<!-- autocomplete library -->
-	<script src="themes/classic/js/bootstrap-typeahead.js"></script>
-	<!-- tour library -->
-	<script src="themes/classic/js/bootstrap-tour.js"></script>
-	<!-- library for cookie management -->
 	<script src="themes/classic/js/jquery.cookie.js"></script>
 	<script src="themes/classic/js/jquery-ui-timepicker-addon.js"></script>
 	<!-- calander plugin -->
@@ -135,36 +103,18 @@ global $Bartlby_CONF_IDX;
 	<script src="themes/classic/js/jquery.flot.tooltip.js"></script>
 	<!-- chart libraries end -->
   
-	<!-- select or dropdown enhancer -->
-	<script src="themes/classic/js/jquery.chosen.min.js"></script>
-	<script src="themes/classic/js/ajaxchosen.js"></script>
-	
+
+
 	<!--GAUGE-->
 	<script src="themes/classic/js/raphael-min.js"></script>
 	<script src="themes/classic/js/justgauge.js"></script>
 	
-	<!-- checkbox, radio, and file input styler -->
-	<script src="themes/classic/js/jquery.uniform.min.js"></script>
-	<!-- plugin for gallery image view -->
-	<script src="themes/classic/js/jquery.colorbox.min.js"></script>
-	<!-- rich text editor library -->
-	<script src="themes/classic/js/jquery.cleditor.min.js"></script>
 	<!-- notification plugin -->
 	<script src="themes/classic/js/jquery.noty.js"></script>
-	<!-- file manager library -->
-	<script src="themes/classic/js/jquery.elfinder.min.js"></script>
-	<!-- star rating plugin -->
-	<script src="themes/classic/js/jquery.raty.min.js"></script>
-	<!-- for iOS style toggle switch -->
-	<script src="themes/classic/js/jquery.iphone.toggle.js"></script>
-	<!-- autogrowing textarea plugin -->
-	<script src="themes/classic/js/jquery.autogrow-textarea.js"></script>
-	<!-- multiple file upload plugin -->
-	<script src="themes/classic/js/jquery.uploadify-3.1.min.js"></script>
-	<!-- history.js for cross-browser state change on ajax -->
-	<script src="themes/classic/js/jquery.history.js"></script>
+
+
 	<!-- application script for Charisma demo -->
-	<script src="themes/classic/js/charisma.js"></script>
+
 	<script src="themes/classic/js/jquery.terminal-0.8.8.min.js"></script>	
 	
 	

@@ -241,6 +241,10 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		if($type == "button" || $type == "submit") {
 			$cl = "btn btn-primary pull-right";
 		}
+		if(preg_match("/class=/", $chkBox)) {
+			preg_match("/class=['\"](.*?)['\"]/", $chkBox, $m);
+			$cl .= " " . $m[1];
+		}
 		
 		$r="<input type='$type' class='$cl' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
 

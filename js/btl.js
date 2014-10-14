@@ -578,11 +578,20 @@ SELECT BOXES
           radioClass: 'iradio_flat-blue'
    });
 
-	$('#report_start').datepicker();
-	$('#report_end').datepicker();
+  
+  $("#server_checkbox_select_all").click(function() {
+    if($(this).is(':checked')) {
+      console.log("check all");
+      $('.server_checkbox').attr("checked", "checked");
+    } else {
+      $('.server_checkbox').removeAttr("checked", "checked");
+    }
+  });
 
-	$('#downtime_from').datetimepicker();
-	$('#downtime_to').datetimepicker();
+
+	$('.datepicker').datepicker({nextText: "&nbsp;", prevText:"&nbsp;",showButtonPanel: true});
+	$('.datetimepicker').datetimepicker({nextText:"&nbsp;", prevText:"&nbsp;", showButtonPanel: true});
+	
 
 	$('[data-rel="chosen"],[rel="chosen"]').selectize({
     	create: false,
@@ -590,6 +599,32 @@ SELECT BOXES
     	sortField: 'text'
 	});
 
+
+
+
+
+  //initialize the calendar
+  $('#calendar').fullCalendar({
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,agendaWeek,agendaDay'
+    },
+    editable: false,
+    timeFormat: {
+        agenda: 'H:mm( - H:mm)' //h:mm{ - h:mm}'
+    },
+    axisFormat: 'H:mm( - H:mm)',
+    droppable: false, // this allows things to be dropped onto the calendar !!!
+    timeFormat: 'H:mm( - H:mm)' 
+  });
+  
+  
+  if(typeof window.addToCalendar == 'function') {
+    addToCalendar();
+  }
+  
+  
 
 	
 	
@@ -1064,26 +1099,7 @@ $('[data-rel="ajax_report_service"]').selectize({
 
 
 
-	$("#service_checkbox_select_all").click(function() {
-		if($(this).is(':checked')) {
-			console.log("check all");
-			$('.service_checkbox').attr("checked", "checked");
-      $('.service_checkbox').iCheck('check');
-		} else {
-      console.log("UNCHECK ALL");
-			$('.service_checkbox').removeAttr("checked", "checked");
-      $('.service_checkbox').iCheck('uncheck');
-		}
-	});
 	
-	$("#server_checkbox_select_all").click(function() {
-		if($(this).is(':checked')) {
-			console.log("check all");
-			$('.server_checkbox').attr("checked", "checked");
-		} else {
-			$('.server_checkbox').removeAttr("checked", "checked");
-		}
-	});
 	
 	//Service-DataTable
 		s_url = document.location.href.replace(/\/s.*\.php/, "/services.php");
@@ -1137,13 +1153,13 @@ $('[data-rel="ajax_report_service"]').selectize({
 						{ "bVisible": false, "aTargets": [ 1 ] }
 					],
 					"aoColumns": [
-						{ "sWidth": "0%" },
-						{ "sWidth": "0%" },
-						{ "sWidth": "10%" },
-						{ "sWidth": "10%" },
-						{ "sWidth": "10%" },
-						{ "sWidth": "40%" },
-						{ "sWidth": "0%" },
+						{ "sWidth": "10" , "sClass": "center_td" },
+						{ "sWidth": "10" , "sClass": "center_td" },
+						{ "sWidth": "90", "sClass": "center_td" },
+						{ "sWidth": "140", "sClass": "center_td" },
+						{ "sWidth": "10%", "sClass": "center_td" },
+						{ "sWidth": "50%" },
+						{ "sWidth": "160" },
 						
 					],
 					"aaSortingFixed": [[ 0, 'asc' ]],
@@ -1223,6 +1239,10 @@ window.servers_table = $('#servers_table').dataTable({
 			}
 		});	
 	});
+
+
+
+
 
 	
 	function downtime_type_selected() {
@@ -1423,9 +1443,19 @@ function checkCheckBoxes() {
           checkboxClass: 'icheckbox_flat-blue',
           radioClass: 'iradio_flat-blue'
    });
-   $("#service_checkbox_select_all").on('ifChecked', function(event){
-    $("#service_checkbox_select_all").click();
+  $("#service_checkbox_select_all").on('ifClicked',function() {
+    if(!$(this).is(':checked')) {
+      console.log("check all");
+      
+      $('.service_checkbox').iCheck('check');
+    } else {
+      console.log("UNCHECK ALL");
+    
+      $('.service_checkbox').iCheck('uncheck');
+    }
   });
+  
+   
 }
 function clickreturnvalue(){
 if (ie4||ns6) return false
@@ -1473,6 +1503,7 @@ document.onclick=hidemenu
 
 
 k=hidemenu
+
 
 
 

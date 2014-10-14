@@ -255,13 +255,13 @@ function bulkEnableChecks($ids) {
 	$ids=idToInt($ids);
 	
 	if(count($ids) == 0) {
-		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, theme: "bootstrapTheme", "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_active")) {
 		$counter = bartlby_bulk_service_active($btl->RES,$ids, 1,1);
 	}
-	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Enabled", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	for($x=0; $x<count($ids); $x++) {
 			//$res->AddAssign("service_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/enabled.gif");
@@ -282,7 +282,7 @@ function setServiceDisplayPrio($lv) {
 
 	$_SESSION["service_display_prio"]=$lv;
 
-	$res->AddScript('noty({"text":"Service Display Prio Set to: ' . $lv . '","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	$res->AddScript('noty({"text":"Service Display Prio Set to: ' . $lv . '", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	return $res;
 
@@ -293,13 +293,13 @@ function bulkDisableChecks($ids) {
 	$ids=idToInt($ids);
 	
 	if(count($ids) == 0) {
-		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, theme: "bootstrapTheme",  "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_active")) {
 		$counter=bartlby_bulk_service_active($btl->RES,$ids, 0,1);
 	}
-	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Disabled", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	for($x=0; $x<count($ids); $x++) {
 			$res->AddScript("addAssignAllImg('service_" . $ids[$x] . "', 'themes/" . $layout->theme . "/images/diabled.gif" . "');");
@@ -313,13 +313,13 @@ function bulkEnableNotifys($ids) {
 	$ids=idToInt($ids);
 	
 	if(count($ids) == 0) {
-		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, theme: "bootstrapTheme",  "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_notify")) {
 		$counter=bartlby_bulk_service_notify($btl->RES,$ids, 1,1);
 	}
-	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Enabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Enabled", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	for($x=0; $x<count($ids); $x++) {
 		//$res->AddAssign("trigger_" . $ids[$x], "src", "themes/" . $layout->theme . "/images/trigger.gif");
@@ -335,13 +335,13 @@ function bulkDisableNotifys($ids) {
 	$ids=idToInt($ids);
 	
 	if(count($ids) == 0) {
-		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center", theme: "bootstrapTheme","type":"warning","animateOpen": {"opacity": "show"}})');
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_service_notify")) {
 		$counter = bartlby_bulk_service_notify($btl->RES, $ids, 0,1);
 	}
-	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Disabled","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Notifications Disabled", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	
 	for($x=0; $x<count($ids); $x++) {
@@ -359,13 +359,13 @@ function bulkForce($ids) {
 	$res = new xajaxresponse();
 	
 	if(count($ids) == 0) {
-		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
+		$res->AddScript('noty({"text":"No Service Selected","timeout": 600, theme: "bootstrapTheme",  "layout":"center","type":"warning","animateOpen": {"opacity": "show"}})');
 		return $res;
 	}
 	if(function_exists("bartlby_bulk_force_services")) {
 		$counter=bartlby_bulk_force_services($btl->RES, $ids);
 	}
-	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	$res->AddScript('noty({"text":"(' . $counter . ') Selected Services Forced", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	return $res;	
 }
@@ -787,7 +787,7 @@ function forceCheck($server, $service) {
 					$idx=$btl->findSHMPlace($service);
 					$cur=bartlby_check_force($btl->RES, $idx);
 					//$res->addAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
-					$res->AddScript('noty({"text":"Check has been forced","timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+					$res->AddScript('noty({"text":"Check has been forced","timeout": 600,  theme: "bootstrapTheme", "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 				} else {
 					$res->addAlert("force on: " . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name] . " not possible because on orch-node");	
 				}

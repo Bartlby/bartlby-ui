@@ -50,19 +50,19 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
 ?>	
 
 
-<div class="modal fade" id="myModal">
-  <div class="modal-dialog">
+<div class="modal fade " id="myModal">
+  <div class="modal-dialog full-width">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title">Bulk Service Modify</h4>
       </div>
-      <div class="modal-body" style='overflow-y:auto;height:300px;'>
+      <div class="modal-body" style='overflow-y:auto;height:600px;'>
         	
 
 
         	<div class="alert alert-warning" style='margin-bottom: 0px;'>WARNING beware what you are doing!!<br>
-<p class=well>
+<p class=xwell>
 	Regex Format: 
 	<code>
 	#(.+)disk#\1load#
@@ -70,37 +70,46 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
 	replaces bartlby_disk with bartlby_load
 </p>
 				</div>
+				<form id="services_bulk_form">
 				<div id=services_bulk_output></div>
-				<table width=100% border=0>
-					<form id="services_bulk_form">
-					<?
-						for($x=0; $x<count($editable_service_fields); $x++) {
-					?>
-					<tr>
-					<td><?=$editable_service_fields[$x][1]?>:</td>
-					<td>
-						<input  type=text name=<?=$editable_service_fields[$x][0]?>	
-					</td>
-					<td>
-						<select name=<?=$editable_service_fields[$x][0]?>_typefield>
-							<option value="unused">unused</option>
-							<option value="set">set</option>
-							<option value="regex">Regex (#SEARCH#REPLACE#)</option>
-							<option value="add">addition (only on int values)</option>
-							<option value="sub">subtraction (only on int values)</option>
 
-							<option value="addrand">addition random (X,Y) is from, to (only on int values)</option>
-							<option value="subrand">subtraction random (X,Y) is from, to (only on int values)</option>
-							<option value="toggle">toggle (only for boleans)</option>
+				<?
+					for($x=0; $x<count($editable_service_fields); $x++) {
+
+
+				?>
+					<div class=row>
+						<div class=col-sm-12>
+
+					<div class="form-group">
+		                <label class="col-sm-3 control-label"><?=$editable_service_fields[$x][1]?></label>
+		                <div class="col-sm-6">
+		                  
+		                  <select class="form-control chosen-select" data-rel="chosen" name=<?=$editable_service_fields[$x][0]?>_typefield>
+							<option value="unused">unused</option>
+							<option value="set">=</option>
+							<option value="regex">~</option>
+							<option value="add">+=</option>
+							<option value="sub">-=</option>
+
+							<option value="addrand">+=rand(x,y)</option>
+							<option value="subrand">-=rand(x,y)</option>
+							<option value="toggle">toggle</option>
 							
 						</select>
-					</td>
-					</tr>
-					<?
-						}
-					?>
-					</form>
-				</table>
+						<input  class=form-control type=text name=<?=$editable_service_fields[$x][0]?>>
+		                </div>
+		            </div>
+		           </div>
+		           </div>
+				<?
+					}
+				?>
+
+				</form>
+				
+
+				
 
 
 
@@ -122,6 +131,7 @@ $editable_service_fields[] = array("snmp_type", "SNMP Type");
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 
 
 

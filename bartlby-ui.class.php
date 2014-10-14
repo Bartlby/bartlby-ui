@@ -1296,6 +1296,7 @@ if($m[2] == "5724") {
 		global $Bartlby_CONF_IDX;
 		global $Bartlby_CONF_single_sign_on;
 		global $confs;
+		global $_SESSION;
 		$auted=0;
 		if($a==false) {
 			$auted=1;
@@ -1321,7 +1322,8 @@ if($m[2] == "5724") {
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
 					$btl->user_id=$v[worker_id];
-					
+					$_SESSION[worker]=$v;
+					$_SESSION[worker][password]="";
 					return LOOP_BREAK;
 
 				}

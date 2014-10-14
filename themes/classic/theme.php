@@ -206,11 +206,11 @@ global $Bartlby_CONF_IDX;
       <div class="navbar-collapse">
         <ul class="nav navbar-nav navbar-right user-nav">
           <li class="dropdown profile_menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img alt="Avatar" src="images/avatar6-2.jpg" /><span>aa</span> <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img alt="Avatar" src="<?=$this->get_gravatar($_SESSION[worker][email],30)?>" /><span><?=$_SESSION[worker][name]?></span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="#">My Account</a></li>
-              <li><a href="#">Profile</a></li>
-              <li><a href="#">Messages</a></li>
+              <li><a href="modify_worker.php?worker_id=<?=$_SESSION[worker][worker_id]?>">My Account</a></li>
+              <li><a href="worker_detail.php?worker_id=<?=$_SESSION[worker][worker_id]?>">Profile</a></li>
+              
               <li class="divider"></li>
               <li><a href="bartlby_action.php?action=logout">Sign Out</a></li>
             </ul>

@@ -55,12 +55,15 @@ global $Bartlby_CONF_IDX;
 	  }
 	</style>
 	
+
+	<link href="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
+	
 	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
 	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
 	
 	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
 	
-	<link href="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
+	
 	
 	<link href='themes/classic/css/slider.css' rel='stylesheet'>
 	

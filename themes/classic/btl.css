@@ -8303,4 +8303,11 @@ MultiLevel Dropdown
   background: #E3E3E3;
 }
 
+input[type="text"],
+input[type="password"],
+.ui-autocomplete-input,
+textarea,
+.uneditable-input {
+  color: #666666;
+}
 /*SKIN*/

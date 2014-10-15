@@ -282,7 +282,7 @@ function setServiceDisplayPrio($lv) {
 
 	$_SESSION["service_display_prio"]=$lv;
 
-	$res->AddScript('noty({"text":"Service Display Prio Set to: ' . $lv . '", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
+	//$res->AddScript('noty({"text":"Service Display Prio Set to: ' . $lv . '", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 	
 	return $res;
 
@@ -912,23 +912,23 @@ function QuickLook($what) {
 	$_GET["servers"]=$servers;
 	
 	//Search Servers
-	$rq = '<table class="table table-bordered table-striped table-condensed" id=quick_look_table>
+	$rq = '<table class="table table-bordered" id=quick_look_table>
 							  <thead>
 								  <tr>
 									  <th>Group</th>
 									  <th>Element</th>
-									  <th>Options</th>
+									  <th width=20%>Options</th>
 									  
 									  
 								  </tr>
-							  </thead>   ';
+							  </thead>   <tbody class="no-border-y">';
 
 
 	$svcgrpfound=false;
 	$btl->worker_list_loop(function($wrk, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $wrk[name])) {
 			
-				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'><font size=1>" . $wrk[name] . "</A></font></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
+				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . $wrk[name] . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
 				$wrkfound=true;
 		}
 
@@ -942,7 +942,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $srv[server_name] )) {
-			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'><font size=1>" . $srv[server_name] . "</font></A>(<a href='services.php?server_id=" . $srv[server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
+			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'>" . $srv[server_name] . "</A>(<a href='services.php?server_id=" . $srv[server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
             $svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -959,7 +959,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
-			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'><font size=1>" . $svc[server_name] . "/" . $svc[service_name] . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
+			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'>" . $svc[server_name] . "/" . $svc[service_name] . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
 			$svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -973,7 +973,7 @@ function QuickLook($what) {
 	$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$srvgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servergroup_name])) {
 			
-				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'><font size=1>" . $srvgrp[servergroup_name] . "</A></font></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . $srvgrp[servergroup_name] . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
 				$srvgrpfound=true;
 		}
 
@@ -983,7 +983,7 @@ function QuickLook($what) {
 	$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servicegroup_name])) {
 			
-				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'><font size=1>" . $srvgrp[servicegroup_name] . "</A></font></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . $srvgrp[servicegroup_name] . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
 				$svcgrpfound=true;
 		}
 
@@ -993,7 +993,7 @@ function QuickLook($what) {
 	
 
 
-	$rq .= "</table>";
+	$rq .= "</tbody></table>";
 	$qckb = $rq;
 	
 	@reset($servers);
@@ -1002,7 +1002,7 @@ function QuickLook($what) {
 	if($rq == "") {
 		$rq = "<tr><td colspan=2><i>no extension returned results</i></td></tr>";	
 	}
-	$rq = "<table width=100%>" . $_GET[rq];
+	$rq = "<table width=100% class='no-border'>" . $_GET[rq];
 	$rq .= "</table>";
 	//Search Services	
 		
@@ -1010,7 +1010,7 @@ function QuickLook($what) {
 	//Search Workers
 	//Call n get return of Extensions
 	$output .=  $layout->create_box("Extensions", $rq, "search_extensions");
-	$cl_button = "<a href='javascript:void(0);' onClick=\"xajax_removeDIV('quick_suggest');\">close</A><br>";
+	$cl_button = "<span class='fa fa-close pull-right' style='font-size:20px;' onClick=\"xajax_removeDIV('quick_suggest');\"> close</span><br>";
 	
 	$output = $cl_button . $qckb . $layout->boxes[search_extensions];
 	

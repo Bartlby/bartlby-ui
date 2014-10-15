@@ -8040,4 +8040,267 @@ MultiLevel Dropdown
   color: #FFF;
 }
 
+
+/*Slider*/
+.slider.slider-vertical {
+  margin-right: 13px;
+}
+.slider-selection {
+  background: #4aa3df;
+  border: transparent;
+  box-shadow: none;
+}
+.slider-handle {
+  opacity: 1;
+  background-color: #FFFFFF;
+  background-image: linear-gradient(to bottom, #ffffff, #f9f9f9);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f9f9f9));
+  /* Chrome, Safari 4+ */
+  background-image: -webkit-linear-gradient(top, #ffffff, #f9f9f9);
+  /* Chrome 10-25, iOS 5+, Safari 5.1+ */
+  background-image: -moz-linear-gradient(top, #ffffff, #f9f9f9);
+  /* Firefox 3.6-15 */
+  background-image: -o-linear-gradient(top, #ffffff, #f9f9f9);
+  /* Opera 11.10-12.00 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.39);
+  height: 23px;
+  width: 23px;
+  transition: box-shadow 200ms ease-in-out;
+}
+.slider-handle:hover {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+}
+.slider.slider-horizontal .slider-handle {
+  margin-top: -7px;
+}
+.slider.slider-vertical .slider-handle {
+  margin-left: -6px;
+}
+.bootstrap-switch {
+  border: 0;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  min-width: 74px;
+  background-clip: padding-box;
+}
+.bootstrap-switch.bootstrap-switch-focused {
+  box-shadow: none;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
+  background: #4aa3df;
+}
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-default {
+  background: #E3E3E3;
+}
+.bootstrap-switch .bootstrap-switch-container {
+  position: relative;
+  z-index: 1;
+  -webkit-transform: none;
+}
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-container {
+  background: #4aa3df;
+}
+.bootstrap-switch.bootstrap-switch-on .bootstrap-switch-container {
+  background: #E3E3E3;
+}
+.bootstrap-switch .bootstrap-switch-label:after {
+  content: " ";
+  display: block;
+  width: 29px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 50%;
+  border: 3px solid #4aa3df;
+}
+.bootstrap-switch.bootstrap-switch-large {
+  min-width: 100px;
+}
+.bootstrap-switch.bootstrap-switch-large .bootstrap-switch-label:after {
+  width: 42px;
+  border-width: 4px;
+}
+.bootstrap-switch.bootstrap-switch-large.bootstrap-switch-on .bootstrap-switch-label:after {
+  border-width: 4px;
+}
+.bootstrap-switch.bootstrap-switch-small {
+  min-width: 60px;
+}
+.bootstrap-switch.bootstrap-switch-small .bootstrap-switch-label:after {
+  width: 25px;
+}
+.bootstrap-switch.bootstrap-switch-mini {
+  min-width: 44px;
+}
+.bootstrap-switch.bootstrap-switch-mini .bootstrap-switch-label:after {
+  width: 18px;
+}
+.bootstrap-switch.bootstrap-switch-on .bootstrap-switch-label {
+  background: #4aa3df;
+}
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-label {
+  background: #e3e3e3;
+}
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #e3e3e3;
+  left: 0;
+}
+.bootstrap-switch .bootstrap-switch-handle-on {
+  padding-left: 6px;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+}
+.bootstrap-switch .bootstrap-switch-handle-off {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+.bootstrap-switch.bootstrap-switch-on .bootstrap-switch-label {
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-label {
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+}
+.bootstrap-switch .bootstrap-switch-label {
+  margin-bottom: 0 !important;
+  position: relative;
+}
+/*ON Colors*/
+.bootstrap-switch.bootstrap-switch-onclr-success.bootstrap-switch-on .bootstrap-switch-handle-on {
+  background: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-onclr-success.bootstrap-switch-on .bootstrap-switch-label {
+  background: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-onclr-success.bootstrap-switch-on .bootstrap-switch-label:after {
+  border-color: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-onclr-success.bootstrap-switch-off .bootstrap-switch-container {
+  background: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-onclr-info.bootstrap-switch-on .bootstrap-switch-handle-on {
+  background: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-onclr-info.bootstrap-switch-on .bootstrap-switch-label {
+  background: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-onclr-info.bootstrap-switch-on .bootstrap-switch-label:after {
+  border-color: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-onclr-info.bootstrap-switch-off .bootstrap-switch-container {
+  background: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-onclr-warning.bootstrap-switch-on .bootstrap-switch-handle-on {
+  background: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-onclr-warning.bootstrap-switch-on .bootstrap-switch-label {
+  background: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-onclr-warning.bootstrap-switch-on .bootstrap-switch-label:after {
+  border-color: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-onclr-warning.bootstrap-switch-off .bootstrap-switch-container {
+  background: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-onclr-danger.bootstrap-switch-on .bootstrap-switch-handle-on {
+  background: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-onclr-danger.bootstrap-switch-on .bootstrap-switch-label {
+  background: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-onclr-danger.bootstrap-switch-on .bootstrap-switch-label:after {
+  border-color: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-onclr-danger.bootstrap-switch-off .bootstrap-switch-container {
+  background: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-onclr-default.bootstrap-switch-on .bootstrap-switch-handle-on {
+  background: #E3E3E3;
+}
+.bootstrap-switch.bootstrap-switch-onclr-default.bootstrap-switch-on .bootstrap-switch-label {
+  background: #E3E3E3;
+}
+.bootstrap-switch.bootstrap-switch-onclr-default.bootstrap-switch-on .bootstrap-switch-label:after {
+  border-color: #E3E3E3;
+}
+.bootstrap-switch.bootstrap-switch-onclr-default.bootstrap-switch-off .bootstrap-switch-container {
+  background: #E3E3E3;
+}
+/*Off Colors*/
+.bootstrap-switch.bootstrap-switch-offclr-primary.bootstrap-switch-off .bootstrap-switch-handle-off {
+  background: #4D90FD;
+}
+.bootstrap-switch.bootstrap-switch-offclr-primary.bootstrap-switch-off .bootstrap-switch-label {
+  background: #4D90FD;
+}
+.bootstrap-switch.bootstrap-switch-offclr-primary.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #4D90FD;
+}
+.bootstrap-switch.bootstrap-switch-offclr-primary.bootstrap-switch-on .bootstrap-switch-container {
+  background: #4D90FD;
+}
+.bootstrap-switch.bootstrap-switch-offclr-info.bootstrap-switch-off .bootstrap-switch-handle-off {
+  background: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-offclr-info.bootstrap-switch-off .bootstrap-switch-label {
+  background: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-offclr-info.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-offclr-info.bootstrap-switch-on .bootstrap-switch-container {
+  background: #2980b9;
+}
+.bootstrap-switch.bootstrap-switch-offclr-success.bootstrap-switch-off .bootstrap-switch-handle-off {
+  background: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-offclr-success.bootstrap-switch-off .bootstrap-switch-label {
+  background: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-offclr-success.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-offclr-success.bootstrap-switch-on .bootstrap-switch-container {
+  background: #5CB85C;
+}
+.bootstrap-switch.bootstrap-switch-offclr-warning.bootstrap-switch-off .bootstrap-switch-handle-off {
+  background: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-offclr-warning.bootstrap-switch-off .bootstrap-switch-label {
+  background: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-offclr-warning.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-offclr-warning.bootstrap-switch-on .bootstrap-switch-container {
+  background: #f16e3f;
+}
+.bootstrap-switch.bootstrap-switch-offclr-danger.bootstrap-switch-off .bootstrap-switch-handle-off {
+  background: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-offclr-danger.bootstrap-switch-off .bootstrap-switch-label {
+  background: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-offclr-danger.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-offclr-danger.bootstrap-switch-on .bootstrap-switch-container {
+  background: #ea6153;
+}
+.bootstrap-switch.bootstrap-switch-offclr-default.bootstrap-switch-off .bootstrap-switch-handle-off {
+  background: #E3E3E3;
+}
+.bootstrap-switch.bootstrap-switch-offclr-default.bootstrap-switch-off .bootstrap-switch-label {
+  background: #E3E3E3;
+}
+.bootstrap-switch.bootstrap-switch-offclr-default.bootstrap-switch-off .bootstrap-switch-label:after {
+  border-color: #E3E3E3;
+}
+.bootstrap-switch.bootstrap-switch-offclr-default.bootstrap-switch-on .bootstrap-switch-container {
+  background: #E3E3E3;
+}
+
 /*SKIN*/

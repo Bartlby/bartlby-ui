@@ -378,7 +378,7 @@ $(window).blur(function()
 	}
 });
 $(window).focus(function() {
-	if(window.auto_reloader != -1) {
+	if(window.auto_reloader != -1 && global_reload != 0) {
 		console.log("ENABLE AUTORELOAD VISIBLE");
 		btl_force_reload_ui();
 		btl_start_auto_reload();
@@ -560,6 +560,8 @@ function bulk_service_edit(mode) {
 			xajax_bulkEditValues(services_to_handle, xajax.getFormValues("services_bulk_form"), mode);
 
 }
+
+
 $(document).ready(function() {
 		btl_set_bars();
 
@@ -572,7 +574,12 @@ SELECT BOXES
 
 
 //chosen - improves select
-
+  /*Slider*/
+        $('.service_deepnes').slider().on('slide', function() {
+            
+            xajax_setServiceDisplayPrio($(this).val());
+        });     
+      
   $('.icheck').iCheck({
           checkboxClass: 'icheckbox_flat-blue',
           radioClass: 'iradio_flat-blue'
@@ -613,7 +620,12 @@ SELECT BOXES
 	});
 
 
+  //Typeahead
+  
 
+
+
+//Typeahead
 
 
   //initialize the calendar
@@ -1262,10 +1274,13 @@ window.servers_table = $('#servers_table').dataTable({
        
 				});
 		 
-		$("#toggle_reload").click(function() {
+		$("#toggle_reload").on('ifClicked', function() {
+      console.log("AUTO RELOAD TOOGLE");
 			if(global_reload == 1) {
 					global_reload=0;
 					window.clearInterval(window.auto_reloader);
+          window.auto_reloader=-1;
+          console.log("STOP");
 			} else {
 				global_reload=1;
 				btl_start_auto_reload();
@@ -1536,6 +1551,15 @@ document.onclick=hidemenu
 
 
 k=hidemenu
+
+
+
+
+
+
+
+
+=hidemenu
 
 
 

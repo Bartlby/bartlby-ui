@@ -62,6 +62,8 @@ global $Bartlby_CONF_IDX;
 	
 	<link href="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
 	
+	<link href='themes/classic/css/slider.css' rel='stylesheet'>
+	
 	<link href="themes/classic/btl.css" rel="stylesheet">
 
 	<link href="themes/classic/css/selectize.bootstrap3.css" rel="stylesheet">
@@ -71,6 +73,8 @@ global $Bartlby_CONF_IDX;
 	
 	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
 	<link href='themes/classic/css/dataTables.tableTools.css' rel='stylesheet'>
+
+	
 	
 
 
@@ -131,6 +135,8 @@ global $Bartlby_CONF_IDX;
 
     <script type="text/javascript" src="themes/classic/js/jquery.icheck.js"></script>
 
+    <script type="text/javascript" src="themes/classic/js/bootstrap-slider.js"></script>
+
 	<script type="text/javascript" src="js/btl.js"></script>
 
 
@@ -180,10 +186,24 @@ global $Bartlby_CONF_IDX;
 
           </ul>
         </div>
+        
       </div>
-      <div class="text-right collapse-button" style="padding:7px 9px;">
-        <input type="text" class="form-control search" placeholder="Search..." />
+      
+      <div class=" collapse-button" style="padding:7px 9px;">
+      	<div class=search style='background-color:transparent; margin-bottom: 20px;'>
+      		<div class="form-group">
+                <label style='padding-left: 5px;padding-bottom:10px;' class="col-sm-3 control-label">Service Density</label>
+                <div class="col-sm-6">
+                 <input  class="form-control service_deepnes" style='width:70%;' type="text"  data-slider-value="<?=$_SESSION["service_display_prio"]?>" data-slider-step="1" data-slider-max="100" data-slider-min="0" value="">
+                </div>
+              </div>
+      	</div>
+
+      	 
+
+      	<div class=pull-right>
         <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
+        </div>
       </div>
     </div>
   </div>
@@ -206,7 +226,7 @@ global $Bartlby_CONF_IDX;
       <div class="navbar-collapse">
         <ul class="nav navbar-nav navbar-right user-nav">
           <li class="dropdown profile_menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img alt="Avatar" src="<?=$this->get_gravatar($_SESSION[worker][email],30)?>" /><span><?=$_SESSION[worker][name]?></span> <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><div class=avatar style="height: 30px; width:30px;"><img alt="Avatar" src="<?=$this->get_gravatar($_SESSION[worker][mail],30)?>" /></div><span style='padding-left:10px;'><?=$_SESSION[worker][name]?></span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="modify_worker.php?worker_id=<?=$_SESSION[worker][worker_id]?>">My Account</a></li>
               <li><a href="worker_detail.php?worker_id=<?=$_SESSION[worker][worker_id]?>">Profile</a></li>
@@ -217,6 +237,9 @@ global $Bartlby_CONF_IDX;
           </li>
         </ul>			
         <ul class="nav navbar-nav not-nav">
+        <li class=button style='margin-top: 10px;'>
+        	Auto Refresh: <input type='checkbox' id=toggle_reload checked  style='height:10px' class=icheck>
+        </li>
          <li class="button dropdown">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bookmark"></i></a>
             <ul class="dropdown-menu" style='max-width: 400px;'>
@@ -236,19 +259,28 @@ global $Bartlby_CONF_IDX;
             </ul>
           </li>
           
-          <li class="button dropdown">
-            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class=" fa fa-inbox"></i></a>
-            <ul class="dropdown-menu messages">
-              <li>
-                
-                <ul class="foot"><li><a href="#">View all messages </a></li></ul>           
-              </li>
-            </ul>
-          </li>
-         
-          <li class="button"><a class="toggle-menu menu-right push-body" href="javascript:;"><i class="fa fa-comments"></i></a></li>				
+          
+  
         </ul>
+        
+                
+                
+        <div class="form-group" style="display:inline;">
+          <div class="input-group" style='padding: 11px 0;'>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+            
+            
 
+            <div  id="quick_look" style="z-index:100"><input onkeyup="buffer_suggest.modified('qlook', 'xajax_QuickLook');" id=qlook autocomplete='off' type=text name="qlook" class="form-control">
+            
+            <div id='quick_suggest' style='z-index: 1000; position:absolute; background-color:white; width: 100%;margin-top: 50px;' class=container-fluid></div>
+            
+            </div>
+            
+            
+          </div>
+          
+        </div>
 
 
       </div><!--/.nav-collapse animate-collapse -->

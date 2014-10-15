@@ -33,7 +33,7 @@ class PluginArgumentQuickLook {
 		global $_GET, $rq, $btl;
 		
 		$servers=$_GET["servers"];
-		
+		$rq .= "<tbody class='no-border-y'>";
 		$rq .= "<tr>";
 		$rq .= "<td colspan=2>";
 		$rq .= "<center><b>Plugin Argument</b></center>";
@@ -43,22 +43,25 @@ class PluginArgumentQuickLook {
 		$svcfound=false;
 		@reset($servers);
 		
-		while(list($k, $v) = @each($servers)) {
-			for($x=0; $x<count($v); $x++) {
+		$btl->service_list_loop(function($svc, $shm) use (&$svcfound, &$rq, &$btl) {
+				global $_GET;
 				
-				if(@preg_match("/" . $_GET[search] . "/i", $v[$x][plugin_arguments])) {
+				if(@preg_match("/" . $_GET[search] . "/i", $svc[plugin_arguments])) {
 				
 				
-					$rq .= "<tr><td><a href='service_detail.php?service_place=" . $v[$x][shm_place] . "'><font size=1>" . $v[$x][server_name] . "/" . $v[$x][service_name] . "</A></font></td><td>" . $btl->getServiceOptions($v[$x], $layout) . "</td>";	
+					$rq .= "<tr><td><a href='service_detail.php?service_place=" . $svc[shm_place] . "'>" . $svc[server_name] . "/" . $svc[service_name] . "</A></td><td width='20%'>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
 					$svcfound=true;
 				}
-			}
-		}
-		
-		@reset($servers);	
+			
+		});
+			
 		if($svcfound == false) {
 			$rq .= "<tr><td colspan=2><i>no argument line matched</i></td></tr>";
 		}
+
+
+		$rq .= "</table>";
+
 		$_GET[rq] = $rq; //damn return to extensCaller
 		return "";
 	}

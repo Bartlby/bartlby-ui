@@ -83,7 +83,10 @@ global $Bartlby_CONF_IDX;
 
 
 	<!-- jQuery -->
-	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+
 	<script src="themes/classic/js/bootstrap.js"></script>
 	<script src="themes/classic/js/selectize.js"></script>
 

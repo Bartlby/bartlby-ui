@@ -208,12 +208,7 @@ $(function(){
       });
 
       var domh = $("#pcont").height();
-      $(document).bind('DOMSubtreeModified', function(){
-        var h = $("#pcont").height();
-        if(domh != h) {
-          //updateHeight();
-        }
-      });
+  
       
       /*Return to top*/
       var offset = 220;
@@ -1227,12 +1222,12 @@ $('[data-rel="ajax_report_service"]').selectize({
 					},
 					"iDisplayLength": 50,
 					"fnDrawCallback": function ( oSettings ) {
-			       checkCheckBoxes();
+			       
 						if ( oSettings.aiDisplay.length == 0 )
 						{
 							return;
 						}
-						
+						checkCheckBoxes();
 						var nTrs = $('tbody tr', oSettings.nTable);
 						var iColspan = nTrs[0].getElementsByTagName('td').length;
 						var sLastGroup = "";

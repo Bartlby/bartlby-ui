@@ -12,7 +12,7 @@
 	</script>
 
 <div class="table-responsive">	
-	<table class="table hover table-bordered " id='services_table'>
+	<table class="table  table-bordered " id='services_table'>
 							  <thead >
 								  <tr>
 								  	<th><input type=checkbox class="icheck" id=service_checkbox_select_all></th>

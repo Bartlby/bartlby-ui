@@ -24,7 +24,7 @@ $(document).ready(function() {
 });
 </script>
 <div class=row>
-	<div class="col-sm-3">
+	<div class="col-lg-3">
 
 <table class="table table-bordered datatable_whats_on_notify"><thead>
 							  <tr>
@@ -55,7 +55,7 @@ while(list($k, $v) = @each($plcs[whats_on][notifications][worker])) {
 
 </div><!--COL-->
 
-<div class="col-sm-3">
+<div class="col-lg-3">
 <div id=service_detail_service_info_ajax >
 <table class="table table-bordered datatable_whats_on_notify"><thead>
 							  <tr>
@@ -90,7 +90,7 @@ while(list($k, $v) = @each($plcs[whats_on][notifications][trigger])) {
 </div><!--COL-->
 
 
-<div class=col-sm-6>
+<div class=col-lg-6>
 
 <div>
 <table class="table  table-bordered datatable_whats_on_notify1" id=tb1>

@@ -1561,7 +1561,7 @@ if($m[2] == "5724") {
 	function service_list_loop($fcn) {
 		global $_SESSION;
 
-for($y=0; $y<=80; $y++) {
+//for($y=0; $y<=800; $y++) {
 		for($x=0; $x<$this->info[services]; $x++) {
 
 			$svc = bartlby_get_service($this->RES, $x);
@@ -1576,7 +1576,7 @@ for($y=0; $y<=80; $y++) {
 			if($rtc == -2) continue;
 
 		}
-}		
+//}		
 	}
 
 

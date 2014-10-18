@@ -80,7 +80,7 @@ $(document).ready(function() {
 
 
 	
-
+	
 	
 
 	//Hide The form Tab
@@ -92,7 +92,10 @@ $(document).ready(function() {
 				
 				$("#sm_manage").html(data.boxes.sm_manage);
 				
-
+				 $('.icheck').iCheck({
+				          checkboxClass: 'icheckbox_flat-blue',
+				          radioClass: 'iradio_flat-blue'
+				   });
 
 	});
 	window.clearInterval(window.auto_reloader);
@@ -104,7 +107,7 @@ $(document).ready(function() {
 		sm_edit_node(id);
 
 	});
-	$(document.body).on('click','.sm_toggle_sync_btn', function() {
+	$(document.body).on('ifClicked','.sm_toggle_sync_btn', function() {
 		id=$(this).data("node-id");
 		
 		sm_toggle_sync_active(id);

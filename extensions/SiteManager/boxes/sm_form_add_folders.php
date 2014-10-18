@@ -1,21 +1,16 @@
+<div class=form-horizontal>
+<?
+	echo $layout->FormBox(array(
+				0=>"Additional-Folders - PULL",
+				1=>$layout->TextArea("additional_folders_pull") . "REMOTEPATH:LOCALPATH (on per Line)"
+			), true);
 
-<table>
-			<tr>
-			<td>
-				Additional-Folders - PULL:
-			</td>
-			<td>
-				<textarea style='width:300px; height:100px;' name=additional_folders_pull id=additional_folders_pull></textarea>
-				REMOTEPATH:LOCALPATH (on per Line)
-			</td>
-	</tr>
-	<tr>
-			<td>
-				Additional-Folders - PUSH:
-			</td>
-			<td>
-				<textarea style='width:300px; height:100px;' name=additional_folders_push id=additional_folders_push></textarea>
-				REMOTEPATH:LOCALPATH (on per line)
-			</td>
-	</tr>
-</table>
+		echo $layout->FormBox(array(
+				0=>"Additional-Folders - PUSH",
+				1=>$layout->TextArea("additional_folders_push") . "LOCALPATH:REMOTEPATH (on per Line)"
+			), true);
+
+
+?>
+
+</div>

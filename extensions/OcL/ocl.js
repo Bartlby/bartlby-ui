@@ -92,7 +92,7 @@ $(document).ready(function() {
 			
 		});
 
-		$("#ocl_schedule").append("Find Worker: <input type=text id=ocl_worker_filter style='width:140px; margin-top:10px;'><div id='wrap'><div id='ocl_external-events'></div><div id='ocl_calendar'></div></div>");
+		$("#ocl_schedule").append("Find Worker: <input type=text id=ocl_worker_filter style='margin-top:10px;'><div id='wrap'><div id='ocl_external-events'></div><div id='ocl_calendar'></div></div>");
 		xajax_ExtensionAjax("OcL", "ocl_get_worker_list");
 
 

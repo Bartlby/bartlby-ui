@@ -1,53 +1,34 @@
-<table>
 
+<div class=form-horizontal>
+
+
+	<?
+		echo $layout->FormBox(array(
+				0=>"External Name",
+				1=>$layout->Field("orch_ext_name", "text") . "to send uptstreams, and connect to DB"
+			), true);
+		echo $layout->FormBox(array(
+				0=>"DB User",
+				1=>$layout->Field("orch_db_user", "text") . "eg.: orch"
+			), true);
+		echo $layout->FormBox(array(
+				0=>"DB Password",
+				1=>$layout->Field("orch_db_pw", "text")
+			), true);
+		echo $layout->FormBox(array(
+				0=>"DB Name",
+				1=>$layout->Field("orch_db_name", "text") 
+			), true);
+		echo $layout->FormBox(array(
+				0=>"ORCH ext PORT",
+				1=>$layout->Field("orch_ext_port", "text") . " e.g.: 9031"
+			), true);
+		echo $layout->FormBox(array(
+				0=>"Orch Master-PW",
+				1=>$layout->Field("orch_master_pw", "text") . "to send uptstreams, and connect to DB"
+			), true);
+
+	?>
 	
-	<tr>
-			<td>
-				<b>External Name</b>:<br><small>to send uptstreams, and connect to DB</small>
-			</td>
-			<td>
-				<input type=text name=orch_ext_name id=orch_ext_name> <br>(e.g.: orch-master.com)
-			</td>
-	</tr>
-	<tr>
-			<td>
-				<b>DB User</b>:
-			</td>
-			<td>
-				<input type=text name=orch_db_user id=orch_db_user> <br>(e.g.: orch)
-			</td>
-	</tr>
-	<tr>
-			<td>
-				<b>DB Password</b>:
-			</td>
-			<td>
-				<input type=text name=orch_db_pw id=orch_db_pw><br> (e.g.: orch)
-			</td>
-</tr>
-	<tr>
-			<td>
-				<b>DB Name</b>:
-			</td>
-			<td>
-				<input type=text name=orch_db_name id=orch_db_name> <br>(e.g.: orch)
-			</td>
-</tr>
-	<tr>
-				<td>
-				<b>ORCH ext PORT (e.g.: 9031)</b>:
-			</td>
-			<td>
-				<input type=text name=orch_ext_port id=orch_ext_port> <br>(e.g.: orch)
-			</td>
-</tr>
-	<tr>
-				<td>
-				<b>Orch Master-PW:</b>:
-			</td>
-			<td>
-				<input type=text name=orch_master_pw id=orch_master_pw> <br>(e.g.: 123)
-			</td>
-	</tr>		
+</div>
 
-</table>

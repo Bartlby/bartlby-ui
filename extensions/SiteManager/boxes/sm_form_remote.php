@@ -1,37 +1,22 @@
-<table>
+<div class=form-horizontal>
 
-	
-	<tr>
-			<td>
-				Remote DB User:
-			</td>
-			<td>
-				<input type=text name=remote_db_user id=remote_db_user>
-			</td>
-	</tr>		
 
-	<tr>
-			<td>
-				Remote DB Password:
-			</td>
-			<td>
-				<input type=text name=remote_db_pass id=remote_db_pass>
-			</td>
-	</tr>
-	<tr>
-			<td>
-				Remote DB Name:
-			</td>
-			<td>
-				<input type=text name=remote_db_name id=remote_db_name>
-			</td>
-	</tr>	
-	<tr>
-			<td>
-				Remote DB Host:
-			</td>
-			<td>
-				<input type=text name=remote_db_host id=remote_db_host>
-			</td>
-	</tr>	
-</table>
+<?
+	echo $layout->FormBox(array(
+				0=>"Remote DB User",
+				1=>$layout->Field("remote_db_user", "text")
+			), true);
+	echo $layout->FormBox(array(
+				0=>"Remote DB Password",
+				1=>$layout->Field("remote_db_pass", "text")
+			), true);
+	echo $layout->FormBox(array(
+				0=>"Remote DB Name",
+				1=>$layout->Field("remote_db_name", "text")
+			), true);
+	echo $layout->FormBox(array(
+				0=>"Remote DB Host",
+				1=>$layout->Field("remote_db_host", "text")
+			), true);	
+?>
+</div>

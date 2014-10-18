@@ -40,17 +40,18 @@ class AutoReports {
 	}
 	function ar_set_form_fields($row) {
 		$re = new XajaxResponse();
-
-		$re->AddScript('$("#receipient").val("' . $row[receipient] . '")');
+		//$re->AddScript("alert('" . $row[receipient] . "')");
+		$re->AddScript('$("#receipient").val("' . $row[receipient] . '"); ');
 		$re->AddScript('$("#service_var").val("' . $row[service_var] . '")');
+		$re->AddScript('$("#alias").val("' . $row[alias] . '")');
 		
-		if($row[daily] == 1) $re->AddScript('$("#daily").attr("checked",true)');
-		if($row[weekly] == 1) $re->AddScript('$("#weekly").attr("checked",true)');
-		if($row[monthly] == 1)  $re->AddScript('$("#monthly").attr("checked",true)');
+		if($row[daily] == 1) $re->AddScript('$("#daily").iCheck("check")');
+		if($row[weekly] == 1) $re->AddScript('$("#weekly").iCheck("check")');
+		if($row[monthly] == 1)  $re->AddScript('$("#monthly").iCheck("check")');
 
-		if($row[daily] == 0) $re->AddScript('$("#daily").attr("checked",false)');
-		if($row[weekly] == 0) $re->AddScript('$("#weekly").attr("checked",false)');
-		if($row[monthly] == 0)  $re->AddScript('$("#monthly").attr("checked",false)');
+		if($row[daily] == 0) $re->AddScript('$("#daily").iCheck("uncheck")');
+		if($row[weekly] == 0) $re->AddScript('$("#weekly").iCheck("uncheck")');
+		if($row[monthly] == 0)  $re->AddScript('$("#monthly").iCheck("uncheck")');
 
 		return $re;
 	}
@@ -87,12 +88,13 @@ class AutoReports {
 		$e=0;
 
 		if($values[ar_edit_node_id] == "") {
-			$sql = "INSERT INTO autoreports (receipient, service_var, daily, weekly, monthly) VALUES(";
+			$sql = "INSERT INTO autoreports (receipient, service_var, daily, weekly, monthly, alias) VALUES(";
 			$sql .= "'" .  SQLite3::escapeString($values[receipient]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[service_var]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[daily]) . "',";
 			$sql .= "'" .  SQLite3::escapeString($values[weekly]) . "',";
-			$sql .= "'" .  SQLite3::escapeString($values[monthly]) . "')";
+			$sql .= "'" .  SQLite3::escapeString($values[monthly]) . "',";
+			$sql .= "'" .  SQLite3::escapeString($values[alias]) . "')";
 		} else {
 			$sql = "UPDATE autoreports set ";
 			$sql .= "receipient='" . SQLite3::escapeString($values[receipient]) . "',";
@@ -100,6 +102,7 @@ class AutoReports {
 			$sql .= "daily='" . SQLite3::escapeString($values[daily]) . "',";
 			$sql .= "weekly='" . SQLite3::escapeString($values[weekly]) . "',";
 			$sql .= "monthly='" . SQLite3::escapeString($values[monthly]) . "' ";
+			$sql .= "alias='" . SQLite3::escapeString($values[alias]) . "' ";
 			$sql .= " where id=" . (int)$values[ar_edit_node_id];
 				
 		}
@@ -138,6 +141,8 @@ class AutoReports {
 				last_send TEXT				
 				);";
 		$this->db = $this->storage->SQLDB($this->DBSTR);
+		$this->storage->db_has_field("alias","autoreports", "alter table autoreports add alias text default 'not-set'");
+	
 
 		//Load Local Conf
 		//local_core_path TEXT,
@@ -147,7 +152,7 @@ class AutoReports {
 	}
 	function _Menu() {
 		$r =  $this->layout->beginMenu();
-		$r .= $this->layout->addRoot("Auto Reports");
+		$r .= $this->layout->addRoot("Auto Reports", "fa fa-repeat");
 		$r .= $this->layout->addSub("Auto Reports", "Manage","extensions_wrap.php?script=AutoReports/index.php");
 		$r .= $this->layout->endMenu();
 		return $r;

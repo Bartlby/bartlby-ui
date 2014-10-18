@@ -8,7 +8,7 @@
 
 
 
-<table class="table table-bordered table-striped table-condensed" id=sm_list>
+<table class="table table-bordered table-condensed " id=sm_list>
 							  <thead>
 								  <tr>
 									  <th>Alias</th>
@@ -56,14 +56,14 @@ if(!file_exists($init_file)) {
 		<td><?=$row[last_output]?></td>
 		
 		<td>
-			<input type=checkbox name="sm_active_sync"  class="sm_toggle_sync_btn btn btn-mini btn-danger"  data-node-id="<?=$row[id]?>" <?=$accheck?> >
+			<input type=checkbox name="sm_active_sync"  class="sm_toggle_sync_btn btn btn-mini btn-danger icheck"  data-node-id="<?=$row[id]?>" <?=$accheck?> >
 		</td>
 		<td><?=$flags?></td>
 		<td>
-			<button  class="sm_modify_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Edit</button>
-			<button  class="sm_copy_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Copy</button>
-			<button  class="sm_restart_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Restart</button>
-			<button  class="sm_delete_btn btn btn-mini btn-danger"  data-node-id="<?=$row[id]?>" >Delete</button>
+			<button  class="sm_modify_btn btn btn-xs btn-default"  data-node-id="<?=$row[id]?>" >Edit</button>
+			<button  class="sm_copy_btn btn btn-xs btn-default"  data-node-id="<?=$row[id]?>" >Copy</button>
+			<button  class="sm_restart_btn btn btn-xs btn-default"  data-node-id="<?=$row[id]?>" >Restart</button>
+			<button  class="sm_delete_btn btn btn-xs btn-danger"  data-node-id="<?=$row[id]?>" >Delete</button>
 
 		</td>
 	</tr>

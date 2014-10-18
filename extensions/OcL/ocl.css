@@ -48,8 +48,9 @@
 		}
 	#ocl_calendar {
 		float: left;
-		
-		width: 900px;
+		margin-left: 10px;
+		margin-top: 25px;
+		height: 70%;
 		}
 .fc-fri { color:red; background-color: lightpink; } 
 .fc-sat { color:red; background-color: lightpink; }

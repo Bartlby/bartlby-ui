@@ -20,28 +20,34 @@
 	$layout->set_menu("Deploy");
 	$layout->setMainTabName("Master-Settings");
 
+
+	$layout->Form("fm1", "");
+
 	$layout->do_auto_reload=false;
 
 	/* Add Extension JS */
 
 	$layout->addScript('<script src="extensions/Deploy/dp.js" type="text/javascript"></script>');
 
-	$layout->OUT .= "<b>Deployment Settings</b><br>";
-	$layout->OUT .= "Agent Binary Base Path:<br>";
-	$layout->OUT .= "<input type=text value='' id=agent_binary_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_binary/) (arch will be added automatically)<br>";
-	
+	$layout->FormBox(array(
+			0=>"Agent Binary Base Path",
+			1=>$layout->Field("agent_binary_base_path", "text") . "(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_binary/) (arch will be added automatically)"
+		));
 
-	$layout->OUT .= "Plugin Base Path:<br>";
-	$layout->OUT .= "<input type=text value='' id=plugin_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_plugins/) (arch will be added automatically)<br>";
+	$layout->FormBox(array(
+			0=>"Plugin Base Path",
+			1=>$layout->Field("plugin_base_path", "text") . "(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_plugins/) (arch will be added automatically)"
+		));
 	
-	$layout->OUT .= "Agent Config Dir:<br>";
-	$layout->OUT .= "<input type=text value='' id=config_base_path>(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_config/) (arch will be added automatically)<br>";
+	$layout->FormBox(array(
+			0=>"Agent Config Dir",
+			1=>$layout->Field("config_base_path", "text") . "(e.g.:" . getcwd()  . "/store/Deploy/data_store/agent_config/) (arch will be added automatically)<br><br><input type=button value='Save' id=dp_save_local class='btn btn-success'>"
+		));
 	
-	$layout->OUT .= "<input type=button value='Save' id=dp_save_local><br>";
 
 	$archs=$dp->archs;
 
-	$agent_bin_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
+	$agent_bin_tab = "<table class='table table-bordered dataTable dp_table'>";
 	$agent_bin_tab .= "<thead>";
 	$agent_bin_tab .= "<tr>";
 	$agent_bin_tab .= "<td>Architecture</td>";
@@ -67,7 +73,7 @@
 	$agent_bin_tab .= "</tbody></table>";
 
 
-	$plugin_bin_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
+	$plugin_bin_tab = "<table class='table table-bordered dataTable dp_table'>";
 	$plugin_bin_tab .= "<thead>";
 	$plugin_bin_tab .= "<tr>";
 	$plugin_bin_tab .= "<td>Architecture</td>";
@@ -95,7 +101,7 @@
 	$plugin_bin_tab .= "</tbody></table>";
 
 
-	$config_tab = "<table class='table table-striped table-bordered dataTable dp_table'>";
+	$config_tab = "<table class='table table-bordered dataTable dp_table'>";
 	$config_tab .= "<thead>";
 	$config_tab .= "<tr>";
 	$config_tab .= "<td>Architecture</td>";
@@ -127,7 +133,7 @@
 
 
 
-	$sync_tab = "<table class='table table-striped table-bordered dataTable dp_table1'>";
+	$sync_tab = "<table class='table  table-bordered datatable'>";
 	$sync_tab .= "<thead>";
 	$sync_tab .= "<tr>";
 	$sync_tab .= "<td>Server</td>";
@@ -159,6 +165,9 @@
 	$layout->Tab("Config Files", $config_tab);
 
 	$layout->boxes_placed[MAIN]=false;
+
+	$layout->FormEnd();
+
 	$layout->display();
 	
 	

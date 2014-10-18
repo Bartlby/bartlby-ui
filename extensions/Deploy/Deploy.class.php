@@ -73,7 +73,7 @@ class Deploy {
 
 	function _Menu() {
 		$r =  $this->layout->beginMenu();
-		$r .= $this->layout->addRoot("Deploy");
+		$r .= $this->layout->addRoot("Deploy", "fa fa-taxi");
 		$r .= $this->layout->addSub("Deploy", "Manage","extensions_wrap.php?script=Deploy/index.php");
 	
 		$r .= $this->layout->endMenu();

@@ -33,7 +33,7 @@ array
 	
 		
 	//get all entrys via identifier
-	$identifier = date(".%m.%Y",$edate);
+	$identifier = date("m/%/Y",$edate);
 	$sql = "select * from logbook where ocl_date like '%" . $identifier . " %'";
 	$r = $ocl->db_logbook->query($sql);
 	foreach($r as $row) {

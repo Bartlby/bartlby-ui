@@ -16,7 +16,7 @@
 	error_reporting(E_ERROR);
 
 	$layout= new Layout();
-	$layout->setTitle("AutoReports");
+	$layout->setTitle("AutoReports - Main Settings");
 	$layout->set_menu("AutoReports");
 	$layout->setMainTabName("Master-Settings");
 $layout->do_auto_reload=false;
@@ -39,15 +39,21 @@ $layout->do_auto_reload=false;
 
 
 
-	$layout->OUT .= "<b>Mail Settings</b><br>";
-	$layout->OUT .= "SMTP-Host:<br>";
-	$layout->OUT .= "<input type=text value='' id=local_smtp_host>(e.g.:localhost)<br>";
-	$layout->OUT .= "Mail From address:<br>";
-	$layout->OUT .= "<input type=text value='' id=local_mail_from><br>";
+	$layout->OUT .= "<span class=form-horizontal>";
 
+	$layout->OUT .= $layout->FormBox(array(
+			0=>" SMTP Host",
+			1=> $layout->Field("local_smtp_host", "text")
+			), true);
+
+	$layout->OUT .= $layout->FormBox(array(
+			0=>" Mail From Address",
+			1=> $layout->Field("local_mail_from", "text") . "<input type=button value='Save' id=ar_save_local class='btn btn-success'>"
+			), true);
+	
 
 	
-	$layout->OUT .= "<input type=button value='Save' id=ar_save_local><br>";
+	$layout->OUT .= "</span>";
 
 
 	if($ar->db == false) $layout->OUT .= "<br>PHP SQLITE is not installed";
@@ -56,7 +62,7 @@ $layout->do_auto_reload=false;
 	
 	
 function ar_local_box_render($file, $plcs = array()) {
-	global $ar;
+	global $ar, $layout;
 	$boxes_path="extensions/AutoReports/boxes/" . $file;
 	ob_start();
 	include($boxes_path);

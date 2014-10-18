@@ -22,7 +22,7 @@
 	</script>";
 	$layout->set_menu("OcL");
 	$layout->Form("fm1", "extensions_wrap.php");
-	$layout->Table("100%");
+	
 	
 	
 	
@@ -44,108 +44,63 @@
 	$typos[2][v]="various";
 	
 
-$layout->Tr(
-	$layout->Td(
-			Array(
-				array("colspan" => 2, "show" => "<b>Add OnCall-Log-Entry</b>")
-			)
-		)
-
-);	
 
 
-$layout->Tr(
-	$layout->Td(
+
+$layout->FormBox(
 			Array(
 				0=>"Date:",
-				1=>$layout->Field("ocl_date", "text", date("d.m.Y H:i"))
+				1=>$layout->Field("ocl_date", "text", date("m/d/Y h:i"), "", "class='datetimepicker'")
 			)
-		)
-
 );	
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 			Array(
 				0=>"Subject:",
 				1=>$layout->Field("ocl_subject", "text", "")
 			)
-		)
-
 );	
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 			Array(
 				0=>"Duration:",
 				1=>$layout->Field("ocl_duration", "text", "")
 			)
-		)
-
 );	
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 			Array(
 				0=>"Type-of-Activation:",
 				1=>$layout->DropDown("ocl_type", $typos)
 			)
-		)
-
 );
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 			Array(
 				0=>"Caller:",
 				1=>$layout->Field("ocl_caller", "text", "")
 			)
-		)
-
 );		
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 			Array(
 				0=>"Worker:",
 				$btl->user
 			)
-		)
-
 );	
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 			Array(
 				0=>"Detailed description:",
 				$layout->TextArea("ocl_error_long", "",10,70) . $layout->Field("script", "hidden", "OcL/save.php")
 			)
-		)
-
 );
 
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
 		array(
 			0=>"Group definition",
-			
-			1=>$layout->Field("service_var", "hidden", "") . "<a href='javascript:GrpChk();'>Open Service selector</A>"
+			1=>$layout->Field("service_var", "hidden", "") . "<a class='btn btn-xs btn-primary' href='javascript:GrpChk();'>Open Service selector</A>" . $layout->Field("Subm", "button", "next->", "" ," onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_add_form\", xajax.getFormValues(\"fm1\"))'")
 			
 		)
-	)
 );
 
 
 
 
-
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "" ," onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_add_form\", xajax.getFormValues(\"fm1\"))'")
-					)
-			)
-		)
-
-);
 	$layout->FormEnd();
 	
-	$layout->TableEnd();
 	$layout->display();

@@ -3,10 +3,10 @@
 <button  class="ar_add_new_btn btn  btn-success"   >Add New Report</button>
 </p>
 
-<table class="table table-bordered table-striped table-condensed" id=sm_list>
+<table class="table table-bordered datatable" id=sm_list>
 							  <thead>
 								  <tr>
-									  
+									  <th>Alias</th>
 									  <th>Receipient</th>
 									  <th>Service(s)</th>
 									  <th>Interval</th>
@@ -48,18 +48,31 @@ foreach($r as $row) {
 	}
 
 	$interval_str .="</ul>";
+
+
+	$expl = explode(";", $row[receipient]);
+	
+	$rcpt_str="<ul>";
+	for($x=0; $x<count($expl);  $x++) {
+		$rcpt_str .= "<li>"  . $expl[$x] . "</li>";		
+	}
+	$rcpt_str .= "</ul>";
+
+
+
 ?>
 	<tr>
-		<td><?=$row[receipient]?></td>
+		<td><?=$row[alias]?></td>
+		<td><?=$rcpt_str?></td>
 		<td><?=$svc_str?></td>
 		<td><?=$interval_str?></td>
 		<td><?=$row[last_send]?></td>
 		<td>
-			<button  class="ar_modify_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Edit</button>
-			<button  class="ar_copy_btn btn btn-mini btn-default"  data-node-id="<?=$row[id]?>" >Copy</button>
-			<button  class="ar_delete_btn btn btn-mini btn-danger"  data-node-id="<?=$row[id]?>" >Delete</button>
+			<button  class="ar_modify_btn btn btn-mini btn-default  fa fa-edit"  data-node-id="<?=$row[id]?>" > Edit</button>
+			<button  class="ar_copy_btn btn btn-mini btn-default  fa fa-copy"  data-node-id="<?=$row[id]?>" > Copy</button>
+			<button  class="ar_delete_btn btn btn-mini btn-danger  fa fa-trash"  data-node-id="<?=$row[id]?>" > Delete</button>
 		</td>
-		<td></td>
+		
 	</tr>
 
 <?	

@@ -304,7 +304,7 @@ class SiteManager {
 		global $Bartlby_CONF_isMaster;
 		if($Bartlby_CONF_isMaster) {
 			$r =  $this->layout->beginMenu();
-			$r .= $this->layout->addRoot("Sites");
+			$r .= $this->layout->addRoot("Sites", "fa fa-sitemap");
 			$r .= $this->layout->addSub("Sites", "Manage","extensions_wrap.php?script=SiteManager/index.php");
 			$r .= $this->layout->endMenu();
 		}

@@ -1763,23 +1763,19 @@ if($m[2] == "5724") {
 							array_push($r, $ex);
 							
 							if(!file_exists("extensions/" . $file . ".disabled")) {
-								$endis="<tr><td colspan=2 align=right><a href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is enabled click to change'><img id='extension_img_$file' border=0 src='themes/" . $this->theme . "/images/extension_enable.gif'></A></td></tr>";
+								$endis="<a id=extension1_button_" . $ex[ex_name] . " class='fa fa-pause btn btn-danger' href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is enabled click to change'> Disable</A>";
 							} else {
-								$endis="<tr><td colspan=2 align=right><a href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is disabled click to change'><img id='extension_img_$file' border=0 src='themes/" . $this->theme . "/images/extension_disable.gif'></A></td></tr>";	
+								$endis="<a extension1_button_" . $ex[ex_name] . " class='fa fa-play btn btn-success' href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is disabled click to change'> Enable</A>";	
 							}
 							
 							
-							$info_box_title='Extension: ' . $this->wikiLink("ui-extensions:" . $ex[ex_name], $ex[ex_name]);  
+							$info_box_title=$ex[ex_name];  
 							// (<i>Logged in as:</i><font color="#000000"><b>' . $btl->user . '</b></font>) Uptime: <font color="#000000">' . $btl->intervall(time()-$btl->info[startup_time]) . '</font>'
-							$core_content = "<table  width='100%'>
-								<tr>
-									<td colspan=2>" . $ex[out] .  "</td> 
-								</tr>
-								$endis
+							$core_content = $ex[out] . 	"<div class=pull-right>" . $endis . "</div>";
 								
 								
 								
-							</table>";
+							
 							
 							
 							$layout->create_box($info_box_title, $core_content, "extension_" . $ex[ex_name]);

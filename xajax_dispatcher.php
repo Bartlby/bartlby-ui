@@ -418,17 +418,26 @@ function toggle_extension($ext) {
 	if(!file_exists($fn)) {
 		@touch($fn);
 		//enable	
-		$res->AddAssign("extension_img_" . $ext, "src", "themes/" . $layout->theme . "/images/extension_disable.gif");
 		
 		$res->AddAssign("extension_button_" . $ext, "className", "btn btn-mini btn-danger");
 		$res->AddAssign("extension_button_" . $ext, "innerHTML", "Disabled");
+
+
+		$res->AddAssign("extension1_button_" . $ext, "className", "btn btn-mini btn-success fa fa-play");
+		$res->AddAssign("extension1_button_" . $ext, "innerHTML", " Enable");
+		
+
 		//$res->AddAssign("extension_img_" . $ext, "title", "enable extension");
 	} else {
 		@unlink($fn);
-		$res->AddAssign("extension_img_" . $ext, "src", "themes/" . $layout->theme . "/images/extension_enable.gif");
+		
 		
 		$res->AddAssign("extension_button_" . $ext, "className", "btn btn-mini btn-success");
 		$res->AddAssign("extension_button_" . $ext, "innerHTML", "Enabled");
+
+		$res->AddAssign("extension1_button_" . $ext, "className", "btn btn-mini btn-danger fa fa-pause");
+		$res->AddAssign("extension1_button_" . $ext, "innerHTML", " Disable");
+		
 		//$res->AddAssign("extension_img_" . $ext, "title", "disable extension");
 		//disable extension_disable.gif
 	}

@@ -187,7 +187,21 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 		return $r;
 	}
-	
+	function FormBox($el = array(), $return=false) {
+
+		$data = '<div class="form-group">
+                <label class="col-sm-3 control-label">' . $el[0] . '</label>
+                <div class="col-sm-6">
+                 ' . $el[1] . '
+                </div>
+              </div>';
+             	if($return == true) {
+					return  $data;
+				} else {
+					$this->OUT .= $data;
+				}
+
+	}
 	function Tr($td, $return = false) {
 		$data="<tr>\n$td\n</tr>\n";
 		//$data='' . $td; // NO MORE TR
@@ -221,7 +235,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	 
 	function TextArea($name, $def, $height=7, $width=100) {
 		$r = "<textarea class=form-control name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
-		$r = '<div class="form-group">
+		$r = '<div class="form-group" id="fg_' . $name . '">
 				    
 				   	 <div class="col-sm-10">
 				      ' . $r . '
@@ -243,13 +257,17 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 		if(preg_match("/class=/", $chkBox)) {
 			preg_match("/class=['\"](.*?)['\"]/", $chkBox, $m);
-			$cl .= " " . $m[1];
+			if($m[1] == "switch") {
+				$cl = $m[1];
+			} else {
+				$cl .= " " . $m[1];
+			}
 		}
 		
 		$r="<input type='$type' class='$cl' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
 
 		if($type != "hidden" && $type != "button" && $type != "submit") {
-			$r = '<div class="form-group">
+			$r = '<div class="form-group" id="fg_' . $name . '">
 				    
 				   	 <div class="col-sm-10">
 				      ' . $r . '
@@ -371,7 +389,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$r .= "</select><div style='color:#ff0000' id='error_" . $name . "'></div>\n";
 
 
-		$r = '<div class="form-group">
+		$r = '<div class="form-group" id="fg_' . $name . '">
 			    
 			   	 <div class="col-sm-10">
 			      ' . $r . '

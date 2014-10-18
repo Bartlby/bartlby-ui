@@ -640,6 +640,8 @@ $('.email_input').selectize({
           checkboxClass: 'icheckbox_flat-blue',
           radioClass: 'iradio_flat-blue'
    });
+  /*Switch*/
+  $('.switch').bootstrapSwitch();  
 
   
   $("#server_checkbox_select_all").click(function() {

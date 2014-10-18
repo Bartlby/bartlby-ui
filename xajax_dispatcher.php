@@ -1122,30 +1122,38 @@ function AddModifyClient($aFormValues) {
 	
 	if(!bartlbize_field($av[server_name])) {
 		$res->addAssign("error_server_name", "innerHTML", "You must specify a correct server name");
+		$res->addScript("$('#fg_server_name').addClass('has-error');");
 		$al="1";
 	} else {
 		$res->addAssign("error_server_name", "innerHTML", "");
+		$res->addScript("$('#fg_server_name').removeClass('has-error');");
 	}
 		
 	if(!bartlbize_field($av[server_ip])) {
 		$al="1";
 		$res->addAssign("error_server_ip", "innerHTML", "You must specify a correct Server IP-Address");
+		$res->addScript("$('#fg_server_ip').addClass('has-error');");
 	}else{
 		$res->addAssign("error_server_ip", "innerHTML", "");
+		$res->addScript("$('#fg_server_ip').removeClass('has-error');");
 	}
 		
 	if(!bartlbize_int($av[server_flap_seconds])) {
 		$al="1";
 		$res->addAssign("error_server_flap_seconds", "innerHTML", "required field");
+		$res->addScript("$('#fg_server_flap_seconds').addClass('has-error');");
 	} else {
 		$res->addAssign("error_server_flap_seconds", "innerHTML", "");
+		$res->addScript("$('#fg_server_flap_seconds').removeClass('has-error');");
 	}
 	
 	if(!bartlbize_int($av[server_port])){
 		$al="1";
 		$res->addAssign("error_server_port", "innerHTML", "required field");
+		$res->addScript("$('#fg_server_port').addClass('has-error');");
 	} else {
 		$res->addAssign("error_server_port", "innerHTML", "");
+		$res->addScript("$('#fg_server_port').removeClass('has-error');");
 	}
 	if($al == "")  {
 		$res->addScript("document.fm1.submit()");

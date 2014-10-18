@@ -142,6 +142,7 @@ global $Bartlby_CONF_IDX;
     <script type="text/javascript" src="themes/classic/js/jquery.icheck.js"></script>
 
     <script type="text/javascript" src="themes/classic/js/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="themes/classic/js/bootstrap-switch.js"></script>
 
 	<script type="text/javascript" src="js/btl.js"></script>
 
@@ -252,7 +253,7 @@ global $Bartlby_CONF_IDX;
             	<li>
             			<ul class="foot"><li><a href="#">Favorites </a></li></ul>           
             	</li>
-              <li style='width: 400px;'>
+              <li style='width: 320px;'>
                 <div class="nano nscroller">
                   <div class="content" style='xwidth: 300px;'>
                     <ul style='list-style-type: none;' id=bartlby_basket>
@@ -333,6 +334,7 @@ global $Bartlby_CONF_IDX;
 
 
 </body>
+<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>
 </html>
 
 

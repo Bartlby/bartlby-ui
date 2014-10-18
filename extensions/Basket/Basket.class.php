@@ -127,19 +127,19 @@ class Basket {
        		$r = "<a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '$defaults[service_id]')\">Remove from Favorites</A>";
        	}
        	
-       	$this->_overview();
+        //$this->_overview();
        	return "<div id='basket_add_remove'>" . $r . "</div>";
        	
        		
        }
        function _logView() {
-       	return $this->_overview();	
+       	//return $this->_overview();	
        }
        function _services() {
-       	return $this->_overview();	
+       	//return $this->_overview();	
        }
        function _serverDetail() {
-       	return $this->_overview();	
+       	//return $this->_overview();	
        }
        function updateBasket() {
        	$re = new xajaxResponse();
@@ -150,7 +150,7 @@ class Basket {
        
        function _overview() {
        	global $layout;
-       	$layout->addScript("<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>");
+       	//$layout->addScript("<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>");
        }
        
 }

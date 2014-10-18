@@ -31,6 +31,7 @@ $(document).ready(function() {
 			  timeformat: "%d/%m/%y %h:%M"
 
 			},
+			colors: ['#2196f3'],
 			yaxis: {
 				
 			},

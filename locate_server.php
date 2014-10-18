@@ -65,7 +65,7 @@
 							"show" => $ips[$x],
 							"class" => "header1"
 							),
-						1=>"<input type='checkbox' checked name='scanip[]' value='" . $ips[$x] ."'>"
+						1=>"<input type='checkbox' class='icheck' checked name='scanip[]' value='" . $ips[$x] ."'>"
 						
 						
 					)
@@ -79,7 +79,7 @@
 							"show" => "127.0.0.1",
 							"class" => "header1"
 							),
-						1=>"<input type='checkbox' checked name='scanip[]' value='127.0.0.1'>"
+						1=>"<input type='checkbox' class='icheck' checked name='scanip[]' value='127.0.0.1'>"
 						
 						
 					)

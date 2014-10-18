@@ -42,7 +42,7 @@ class Dashboards {
       	
       	function _Menu() {
 					$r =  $this->layout->beginMenu();
-					$r .= $this->layout->addRoot("Dashboard");
+					$r .= $this->layout->addRoot("Dashboard", "fa fa-dashboard");
 					$r .= $this->layout->addSub("Dashboard", "View","extensions_wrap.php?script=Dashboards/gridster.php");
 					
 					

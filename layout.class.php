@@ -505,7 +505,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		//Create Menu.
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Monitoring", "fa fa-tachometer");
+		$this->ext_menu .= $this->addRoot("Monitoring", "fa fa-fighter-jet");
                 $this->ext_menu .= $this->addSub("Monitoring", "Overview","overview.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Servers","servers.php");

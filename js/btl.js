@@ -643,6 +643,12 @@ $('.email_input').selectize({
   /*Switch*/
   $('.switch').bootstrapSwitch();  
 
+  $('#grp_service_id').change(function(f) {
+          group_str_selected(f);
+  });
+  $('button[id^=\"remove_service_\"]').click(function(f) {
+        group_str_remove(f);
+  });
   
   $("#server_checkbox_select_all").click(function() {
     if($(this).is(':checked')) {
@@ -727,9 +733,70 @@ $('.email_input').selectize({
     addToCalendar();
   }
   
-  
+  $('[data-rel="ajax_plugin_search"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: true,
+    maxItems: 1,
+    placeholder: "Plugin",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'modify_service.php?new=true&dropdown_search=1&dropdown_name=service_plugin&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
-	
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
+	$('[data-rel="ajax_grp_service_id"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Servicegroup",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'grpstr.php?dropdown_search=1&dropdown_name=grp_service_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
 	
 	$('[data-rel="ajax_grp_service_id"]').selectize({
 		plugins: ['remove_button', 'drag_drop'],

@@ -237,7 +237,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$r = "<textarea class=form-control name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
 		$r = '<div class="form-group" id="fg_' . $name . '">
 				    
-				   	 <div class="col-sm-10">
+				   	 <div class="col-sm-12">
 				      ' . $r . '
 				      </div>
 				    
@@ -269,7 +269,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		if($type != "hidden" && $type != "button" && $type != "submit") {
 			$r = '<div class="form-group" id="fg_' . $name . '">
 				    
-				   	 <div class="col-sm-10">
+				   	 <div class="col-sm-12">
 				      ' . $r . '
 				      </div>
 				    
@@ -320,7 +320,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		} else {
-			return "<select id=orch_id name=orch_id disabled><option value=-1>Orch id is inerhited</option></select>";
+			return "<select id=orch_id name=orch_id disabled data-rel='chosen'><option value=-1>Orch id is inerhited</option></select>";
 		}
 
 	}
@@ -391,7 +391,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		$r = '<div class="form-group" id="fg_' . $name . '">
 			    
-			   	 <div class="col-sm-10">
+			   	 <div class="col-sm-12">
 			      ' . $r . '
 			    </div>
 			  </div>';

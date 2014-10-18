@@ -123,35 +123,25 @@ closedir($dh);
 
 //ACKS
 
-//Ack's
-$ack[0][c]="";
-$ack[0][v] = 0; //No
-$ack[0][k] = "No"; //No
-$ack[0][s]=0;
-
-$ack[1][c]="";
-$ack[1][v] = 1; //No
-$ack[1][k] = "Yes"; //No
-$ack[1][s]=0;
 
 
 //Notify Enabled
-$notenabled[0][c]="";
-$notenabled[0][v] = 0; //No
-$notenabled[0][k] = "No"; //No
-$notenabled[0][s]=0;
 
-$notenabled[1][c]="";
-$notenabled[1][v] = 1; //No
-$notenabled[1][k] = "Yes"; //No
-$notenabled[1][s]=0;
 
 if(is_int($defaults[notify_enabled]) && $defaults[notify_enabled] == 0) {
-	$notenabled[0][s]=1;	
+	$notenabled="";
 	
 } else {
 	
-	$notenabled[1][s]=1;
+	$notenabled="checked";
+}
+
+if(is_int($defaults[notify_super_users]) && $defaults[notify_super_users] == 0) {
+	$notsuperenabled="";
+	
+} else {
+	
+	$notsuperenabled="checked";
 }
 
 $handled[0][c]="";
@@ -207,34 +197,23 @@ if(is_int($defaults[fires_events]) && $defaults[fires_events] == 1) {
 }
 
 
-//Notify Enabled
-$servactive[0][c]="";
-$servactive[0][v] = 0; //No
-$servactive[0][k] = "No"; //No
-$servactive[0][s]=0;
 
-$servactive[1][c]="";
-$servactive[1][v] = 1; //No
-$servactive[1][k] = "Yes"; //No
-$servactive[1][s]=0;
 
 
 if(is_int($defaults[service_active]) && $defaults[service_active] == 0) {
-	$servactive[0][s]=1;	
-	
+	$servactive="";
 } else {
-
-	$servactive[1][s]=1;
+	$servactive="checked";
 }
 
 
 
 
 if(is_int($defaults[service_ack_enabled]) && $defaults[service_ack_enabled] == 0) {
-	$ack[0][s]=1;	
+	$ack="";
 } else {
 
-	$ack[1][s]=1;
+	$ack = "checked";
 }
 
 
@@ -316,6 +295,32 @@ if(!$defaults[service_type]) {
 	$types[0][s]=1;	
 }
 //Get plugins :))
+
+$plg_drop="";
+$plgs=bartlby_config($btl->CFG, "agent_plugin_dir");
+$dh=opendir($plgs);
+while ($file = readdir ($dh)) { 
+   if ($file != "." && $file != "..") { 
+	   	clearstatcache();
+	   	if(is_dir($plgs . "/" . $file)) continue;
+
+	   	if(($_GET[dropdown_term] && preg_match("/" . $_GET[dropdown_term] . "/", $file)) || $file == $defaults[plugin]) {
+	   			$el[c] =  "";
+	   			$el[v] = $file;
+	   			$el[k] = $file;
+	   			$el[s]=0;
+	   			if($defaults[plugin] == $file) {
+	   				$el[s]=1;
+	   			}
+	   			$plg_drop[]=$el;
+	   }
+	}
+}
+closedir($dh); 
+
+
+
+
 $layout->set_menu("services");
 
 
@@ -392,38 +397,33 @@ $layout->OUT .= "<script>
 		</script>
 ";
 
-$layout->Table("100%");
 
 
 
 
-$active_box_out .= "<table>";
 
-$active_box_out .=$layout->Tr(
-	$layout->Td(
+
+$active_box_out .=$layout->FormBox(
 		array(
-			0=>"Service Type",
-			1=>$layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"")  . "Use Server Default Type: " . $layout->Field("use_server_default_type", "checkbox", "1")
+			0=>"Type",
+			1=>$layout->Form("fm1", "bartlby_action.php", "POST", true) . $layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"")  . $layout->Field("use_server_default_type", "checkbox", "1", "" ,'class="icheck"') . "Use 'Server Default Type'"
+
+			
 		)
-	)
 , true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Name",
+			0=>"Name",
 			1=>$layout->Field("service_name", "text", $defaults[service_name]) . $layout->Field("action", "hidden", $fm_action)
 		)
-	)
 ,true);
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Server",
+			0=>"Server(s)",
 			1=>$layout->DropDown($server_field_name, $servers, $server_list_type,"",false, "ajax_server_list_php")
 			
 		)
-	)
 ,true);
 
 
@@ -446,7 +446,7 @@ for($x=0; $x<count($o); $x++) {
 	
 	
 }
-$plan_box = "<table>";
+$plan_box = "<table class='no-border'><tbody class='no-border-y'>";
 for($x=0; $x<=6; $x++) {
 	$chk="";
 	
@@ -456,255 +456,229 @@ for($x=0; $x<=6; $x++) {
 		$inv_check="checked";
 	}	
 		
-	$plan_box .= "<tr><td><font size=1>" .  $wdays[$x] . "</font></td><td><input type=text id='wdays_plan[" . $x . "]'  name='wdays_plan[" . $x . "]' value='" . $filled[$x][value] . "' style='font-size:10px; width:200px; height:20px'><input type=checkbox id='wdays_inv[" . $x . "]'  name='wdays_inv[" . $x . "]' $inv_check> invert</td></tr>";
+	$plan_box .= "<tr><td><font size=1>" .  $wdays[$x] . "</font></td><td><input type=text id='wdays_plan[" . $x . "]'  name='wdays_plan[" . $x . "]' value='" . $filled[$x][value] . "' style='font-size:10px; width:200px; height:20px'><input type=checkbox id='wdays_inv[" . $x . "]'  name='wdays_inv[" . $x . "]' $inv_check class=icheck> invert</td></tr>";
 	
 }
 $plan_box .= "<tr><td colspan=2><font size=1>Time ranges are seperated with ',' e.g.: 14:30-15:20,01:20-02:30 <a href='javascript:void(0);' onClick='modify_service_make_24();'>make 24h a day</a></font></td></tr>";
-$plan_box .= "</table>";
+$plan_box .= "</tbody></table>";
 
 
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Check Plan:",
+			0=>"Check Plan:",
 			1=>$plan_box
 			
 		)
-	)
 , true);
 
 
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$timing_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Check intervall",
+			0=>"Check intervall",
 			1=>$layout->Field("service_interval", "text", $defaults[check_interval]) . " Seconds"
 			
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Enabled?",
-			1=>$layout->DropDown("service_active", $servactive)
+			0=>"Checks Enabled?",
+			1=>$layout->Field("service_active", "checkbox", "1", "", "class='switch' " . $servactive)
 			
-		)
+			
 	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
 			0=>"Notification enabled",
-			1=>$layout->DropDown("notify_enabled", $notenabled)
+			1=>$layout->Field("notify_enabled", "checkbox", "1", "", "class='switch' " . $notenabled)
 			
-		)
+			
 	)
 ,true);
 
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
 			0=>"Fires Events?",
 			1=>$layout->DropDown("fires_events", $eventenabled)
 			
 		)
-	)
 ,true);
 
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
 			0=>"Problem Handled",
 			1=>$layout->DropDown("handled", $handled)
 			
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Acknowledgement",
-			1=>$layout->DropDown("service_ack_enabled", $ack)
+			0=>"Acknowledgement",
+			1=>$layout->Field("service_ack_enabled", "checkbox", "1", "", "class='switch' " . $ack)
+			
 			
 		)
-	)
 ,true);
 
 
 
-$active_box_out .=$layout->Tr(
-	$layout->Td(
+$timing_box_out .=$layout->FormBox(
 		array(
-			0=>"Service retain in status",
+			0=>"Retain Count",
 			1=>$layout->Field("service_retain", "text", $defaults[service_retain]) . " Times"
 			
 		)
-	)
 ,true);
-$active_box_out .=$layout->Tr(
-	$layout->Td(
+$timing_box_out .=$layout->FormBox(
 		array(
-			0=>"Service flap time threshold",
+			0=>"Flap time threshold",
 			1=>$layout->Field("flap_seconds", "text", $defaults[flap_seconds]) . " seconds"
 			
 		)
-	)
 ,true);
 
 
-$active_box_out .=$layout->Tr(
-	$layout->Td(
+$timing_box_out .=$layout->FormBox(
 		array(
-			0=>"Service Re-Notification",
+			0=>"Re-Notification",
 			1=>$layout->Field("renotify_interval", "text", $defaults[renotify_interval]) . " runs"
 			
 		)
-	)
 ,true);
 
-$active_box_out .=$layout->Tr(
-	$layout->Td(
+$timing_box_out .=$layout->FormBox(
 		array(
-			0=>"Service escalate",
+			0=>"Escalate",
 			1=>$layout->Field("escalate_divisor", "text", $defaults[escalate_divisor]) . " runs"
 			
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
 			0=>"Triggers:",
 			1=>$layout->DropDown("service_triggers[]", $triggers, "multiple") . " "
 		)
-	)
 ,true);
 
 
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
 			0=>"Priority:",
-			1=>$layout->Field("prio", "text", $defaults[prio]) 
+			1=>'<input  class="form-control service_deepnes" style="width:70%; type="text"  data-slider-value="' . $defaults[prio] . '" data-slider-step="1" data-slider-max="100" data-slider-min="0" value="">',
+			2=>$layout->Field("prio", "text", $defaults[prio]) 
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$orch_box_out .= $layout->FormBox(
+
 		array(
 			0=>"Uniqe Service Identifier:",
 			1=>$layout->Field("usid", "text", $defaults[usid]) 
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$toggle_box_out .= $layout->FormBox(
 		array(
 			0=>"Notify Super Users by default?",
-			1=>$layout->DropDown("notify_super_users", $notenabled)
+			1=>$layout->Field("notify_super_users", "checkbox", "1", "", "class='switch' " . $notsuperenabled)
+			
+			
 			
 		)
-	)
+
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$orch_box_out .= $layout->FormBox(
 		array(
 			0=>"Orchestra ID:",
 			1=>$layout->orchDropdown(false, -1)
 		)
-	)
 ,true);
 
 
-$active_box_out .= "</table>";
 
-$layout->push_outside($layout->create_box("Basic Settings", $active_box_out, "basic"));
+$layout->create_box("Basic Settings", '<span class="form-horizontal" role="form"> ' . $active_box_out . "</span>", "basic");
 
 
-$active_box_out = "<table>";
+$layout->create_box("Toggles", '<span class="form-horizontal" role="form"> ' . $toggle_box_out . "</span>", "toggles");
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$layout->create_box("Cluster/Orchestra Settings", '<span class="form-horizontal" role="form"> ' . $orch_box_out . "</span>", "orch");
+
+$layout->create_box("Timing Settings", '<span class="form-horizontal" role="form"> ' . $timing_box_out . "</span>", "timing");
+
+
+$active_box_out="";
+
+
+$active_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Timeout(either TCP or Local)",
+			0=>"Timeout",
 			1=>$layout->Field("service_check_timeout", "text", $defaults[service_check_timeout])
 			
 		)
-	)
 ,true);
 
-$active_box_out .=$layout->Tr(
-	$layout->Td(
+$active_box_out .=$layout->FormBox(
+
 		array(
-			0=>"Service Plugin",
-			1=>"<input type='text' value='" . $defaults[plugin] . "' id='service_plugin' onClick=\"buffer_suggest.makeRequest('service_plugin', 'xajax_PluginSearch');\" onkeyup=\"buffer_suggest.modified('service_plugin', 'xajax_PluginSearch');\"  name='service_plugin'  autocomplete='off' /> <div style='background-color:#ffffff; position:absolute' id='plugin_search_suggest'></div><a href='javascript:showPlgHelp();'>Show Help of Plugin</A>&nbsp;&nbsp;<a href='javascript:testPlg();'>Test It</A>"
+			0=>"Plugin",
+			//ajax_plugin_search
+			
+			1=>$layout->DropDown("service_plugin", $plg_drop, "multiple","",false, "ajax_plugin_search") . " " . "<a class='btn btn-primary' href='javascript:showPlgHelp();'><i class='fa fa-lightbulb-o'></i>Help</A>&nbsp;&nbsp;<a class='btn btn-success' href='javascript:testPlg();'><i class='fa fa-play'></i>  Test It</A>"
 		)
-	)
 ,true);
 
  $defaults[plugin_arguments]=str_replace("\n", "\\n",  $defaults[plugin_arguments]);
  $defaults[plugin_arguments]=str_replace("\r", "\\r",  $defaults[plugin_arguments]);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Plugin Arguments",
+			0=>"Arguments",
 			1=>$layout->Field("service_args", "text", $defaults[plugin_arguments])
 			
 		)
-	)
 ,true);
 
-$active_box_out .= "</table>";
-$layout->push_outside($layout->create_box("Active/Local Settings", $active_box_out, "active"));
+
+$layout->create_box("Active/Local Settings", '<span class="form-horizontal" role="form"> ' . $active_box_out . "</span>", "active");
 
 
-$active_box_out = "<table>";
+$active_box_out="";
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
-			0=>"Service Timeout",
+			0=>"Timeout",
 			1=>$layout->Field("service_passive_timeout", "text", $defaults[service_passive_timeout])
 			
 		)
-	)
 ,true);
 
 
 
-$active_box_out .= "</table>";
-$layout->push_outside($layout->create_box("Passive Settings", $active_box_out, "passive"));
-$active_box_out = "<table>";
+$layout->create_box("Passive Settings", '<span class="form-horizontal" role="form"> ' . $active_box_out . "</span>", "passive");
 
+$active_box_out="";
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
 			0=>"Group definition",
 			
 			1=>$layout->Field("service_var", "hidden", $defaults[service_var]) . "<a href='javascript:GrpChk();'>Open Group selector</A>"
 			
 		)
-	)
 ,true);
-$active_box_out .= "</table>";
-$layout->push_outside($layout->create_box("Group Settings", $active_box_out, "group"));
+$layout->create_box("Group Settings", '<span class="form-horizontal" role="form"> ' . $active_box_out . "</span>", "group");
 
-
+$active_box_out="";
 
 
 $snmptypes[0][c]="";
@@ -766,76 +740,66 @@ if($defaults[snmp_version] == 2) {
 	 $snmpversions[1][s]=1;
 }
 
-$active_box_out = "<table >";
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
+
 		array(
 			0=>"Community",
 			1=>$layout->Field("snmp_community", "text", $defaults[snmp_community])
 			
 		)
-	)
 ,true);
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
+
 		array(
 			0=>"OBJ ID",
 			1=>$layout->Field("snmp_objid", "text", $defaults[snmp_objid])
 			
 		)
-	)
 ,true);
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
 			0=>"Version",
 			1=>$layout->DropDown("snmp_version", $snmpversions, "") 
 			
 		)
-	)
 ,true);
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
 			0=>"Warning",
 			1=>$layout->Field("snmp_warning", "text", $defaults[snmp_warning])
 			
 		)
-	)
+
 ,true);
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
 			0=>"Critical",
 			1=>$layout->Field("snmp_critical", "text", $defaults[snmp_critical])
 			
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
+
 		array(
 			0=>"TextMatch",
 			1=>$layout->Field("snmp_textmatch", "text", $defaults[snmp_textmatch])
 			
 		)
-	)
 ,true);
 
-$active_box_out .= $layout->Tr(
-	$layout->Td(
+$active_box_out .= $layout->FormBox(
 		array(
 			0=>"MatchType",
 			1=>$layout->DropDown("snmp_type", $snmptypes, "") 
 			
 		)
-	)
 ,true);
-$active_box_out .= "</table>";
-$layout->push_outside($layout->create_box("SNMP Settings<form id='fm1' name='fm1' action='bartlby_action.php' method=POST>", $active_box_out, "snmp"));
 
+$layout->create_box("SNMP Settings", '<span class="form-horizontal" role="form"> ' . $active_box_out . "</span>", "snmp");
+
+$active_box_out="";
 
 if(!$_GET["copy"] && !$_GET["new"]) {
 	$idx=$btl->findSHMPlace($_GET[service_id]);
@@ -847,39 +811,27 @@ if(!$_GET["copy"] && !$_GET["new"]) {
 		$dounlock=$idx;
 			
 	
-	$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"left",
-					'show'=>"<input type=hidden name=unlock value='" . $dounlock . "'><font color=red>the service check has been disabled until you hit save, if you don't do this the service remains inactive</font>"
+	$layout->FormBox(
+			array(
+					0=>"",
+					1=>"<input type=hidden name=unlock value='" . $dounlock . "'><font color=red>the service check has been disabled until you hit save, if you don't do this the service remains inactive</font>"
 					)
-			)
-		)
-
-	);
+		);
 	}
 }
 
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyService(xajax.getFormValues(\"fm1\"))'") . $layout->Field("service_id", "hidden", $_GET[service_id])
-					)
+$layout->FormBox(
+			array(
+				0=>"",
+				1=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyService(xajax.getFormValues(\"fm1\"))'") . $layout->Field("service_id", "hidden", $_GET[service_id])
+				
 			)
-		)
-
 );
 
 
 	
 $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
 
-$layout->TableEnd();
 $layout->FormEnd();
-$layout->display();
+$layout->display("modify_service");
 

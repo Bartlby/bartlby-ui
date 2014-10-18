@@ -8,7 +8,7 @@ $layout= new Layout();
 
 $layout->setTitle("Select a package");
 $layout->Form("fm1", "bartlby_action.php");
-$layout->Table("100%");
+
 $layout->set_menu("packages");
 
 $optind=0;
@@ -86,63 +86,46 @@ closedir($dhl);
 
 
 
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Package:",
 				1=>$layout->DropDown("package_name", $packages) . $layout->Field("action", "hidden", "install_package")
 			)
-		)
-
+		
 );
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 		array(
 			0=>"Override Service Type",
 			1=>$layout->DropDown("force_service_type", $types,"") 
 		)
-	)
 );
 
 
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Force plugins update:",
-				1=>$layout->Field("force_plugins", "checkbox", "checked")
+				1=>$layout->Field("force_plugins", "checkbox", "checked", ""," class='icheck'")
 			)
-		)
-
 );
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Force perf Handlers update:",
-				1=>$layout->Field("force_perf", "checkbox", "checked")
+				1=>$layout->Field("force_perf", "checkbox", "checked", ""," class='icheck'") . $layout->Field("server_id", "hidden", $_GET[server_id]) . $layout->Field("Subm", "submit", "next->")
 			)
-		)
-
 );
 
 
 
 
 
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "submit", "next->") . $layout->Field("server_id", "hidden", $_GET[server_id])
-					)
-			)
-		)
-
-);
 
 
-$layout->TableEnd();
+
+
 
 $layout->FormEnd();
 $layout->display();

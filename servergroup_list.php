@@ -10,7 +10,6 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $layout= new Layout();
 $layout->setTitle("Select a Servergroup");
 $layout->Form("fm1", $_GET[script]);
-$layout->Table("100%");
 $layout->set_menu("client");
 
 if($_GET[pkey] && $_GET[pval]) {
@@ -32,32 +31,14 @@ $btl->servergroup_list_loop(function($grp, $shm) use(&$servergroups, &$optind) {
 	
 	
 	
-	$layout->Tr(
-		$layout->Td(
+	$layout->FormBox(
 				Array(
 					0=>"Servergroup:",
-					1=>$layout->DropDown("servergroup_id", $servergroups,"", "", false, "ajax_servergroup_list")  .  $passthrough
+					1=>$layout->DropDown("servergroup_id", $servergroups,"", "", false, "ajax_servergroup_list")  . $layout->Field("Subm", "submit", "next->") .  $passthrough
 				)
-			)
-	
 	);
 	
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"right",
-						'show'=>$layout->Field("Subm", "submit", "next->")
-						)
-				)
-			)
 	
-	);
-
-
-
-$layout->TableEnd();
 
 $layout->FormEnd();
 $layout->display();

@@ -659,6 +659,12 @@ switch($act) {
 			$srv=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
 			$global_msg=$srv;
 
+
+			$_GET[service_ack_enabled] = $_GET[service_ack_enabled] ? 1 : 0;
+			$_GET[notify_enabled] = $_GET[notify_enabled] ? 1 : 0;
+			$_GET[service_active] = $_GET[service_active] ? 1 : 0;
+			$_GET[notify_super_users] = $_GET[notify_super_users] ? 1 : 0;
+
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -762,6 +768,14 @@ switch($act) {
 					if($svc_type_to_use == "" || $svc_type_to_use == 0) $svc_type_to_use=1;
 				}
 				if(!$_GET[usid]) $_GET[usid]=substr(sha1(time()), 0, 15);
+
+
+				$_GET[service_ack_enabled] = $_GET[service_ack_enabled] ? 1 : 0;
+				$_GET[notify_enabled] = $_GET[notify_enabled] ? 1 : 0;
+				$_GET[service_active] = $_GET[service_active] ? 1 : 0;
+				$_GET[notify_super_users] = $_GET[notify_super_users] ? 1 : 0;
+
+
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -856,6 +870,9 @@ switch($act) {
 					$exec_plan="";	
 				}
 
+				$_GET[server_notify] = $_GET[server_notify] ? 1 : 0;
+				$_GET[server_enabled] = $_GET[server_enabled] ? 1 : 0;
+
 				$srv_obj = array(
 					"server_name" => $_GET[server_name],
 					"server_ip" => $_GET[server_ip],
@@ -899,7 +916,9 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-		
+			$_GET[servergroup_active] = $_GET[servergroup_active] ? 1 : 0;
+			$_GET[servergroup_notify] = $_GET[servergroup_notify] ? 1 : 0;
+			
 			
 			$srvgrp_obj = array(
 				"servergroup_name" => $_GET[servergroup_name],
@@ -1020,6 +1039,10 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+
+			$_GET[servergroup_active] = $_GET[servergroup_active] ? 1 : 0;
+			$_GET[servergroup_notify] = $_GET[servergroup_notify] ? 1 : 0;
+
 			$srvgrp_obj = array(
 				"servergroup_name" => $_GET[servergroup_name],
 				"servergroup_active" => $_GET[servergroup_active],
@@ -1079,6 +1102,12 @@ switch($act) {
 				if($df == false) {
 					$exec_plan="";	
 				}
+
+				$_GET[server_notify] = $_GET[server_notify] ? 1 : 0;
+				$_GET[server_enabled] = $_GET[server_enabled] ? 1 : 0;
+			
+
+
 				$srv_obj = array(
 					"server_name" => $_GET[server_name],
 					"server_ip" => $_GET[server_ip],

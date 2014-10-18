@@ -285,7 +285,7 @@ for($x=0; $x<count($o); $x++) {
 	
 	
 }
-$plan_box = "<table class='no-border table-striped'><tbody class='no-border-y'>";
+$plan_box = "<table class='no-border'><tbody class='no-border-y'>";
 for($x=0; $x<=6; $x++) {
 	$chk="";
 	
@@ -330,14 +330,14 @@ closedir($dhl);
 
 $ov .= $layout->FormBox(
 		array(
-			0=>"Server Name",
+			0=>"Name",
 			1=>$layout->Field("server_name", "text", $defaults[server_name]) . $layout->Field("action", "hidden", $fm_action) . "<a href=\"javascript:var w=window.open('locate_server.php','','width=353,height=421, scrollbar=yes, scrollbars=yes')\">Find Server Wizard!</A>"
 		)
 ,true);
 
 $ov .= $layout->FormBox(
 		array(
-			0=>"Server IP",
+			0=>"IP-Address",
 			1=>$layout->Field("server_ip", "text", $defaults[server_ip])
 		)
 ,true);
@@ -350,16 +350,16 @@ $ov .= $layout->FormBox(
 
 $ov .= $layout->FormBox(
 		array(
-			0=>"Server Enabled?",
-			1=>$layout->Field("server_enabled", "checkbox", "", "", "class='switch' " . $servchecked)
+			0=>"Enabled?",
+			1=>$layout->Field("server_enabled", "checkbox", "1", "", "class='switch' " . $servchecked)
 			
 		)
 ,true);
 
 $ov .= $layout->FormBox(
 		array(
-			0=>"Server Notify?",
-			1=>$layout->Field("server_notify", "checkbox", "", "", "class='switch' " . $notchecked)
+			0=>"Notify?",
+			1=>$layout->Field("server_notify", "checkbox", "1", "", "class='switch' " . $notchecked)
 			
 		)
 ,true);

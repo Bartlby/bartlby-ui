@@ -27,9 +27,9 @@ class FailedServices {
 						
 						//$_GET[pipe] = type (errors, all)
 						$l = new Layout();
-						$r = '<div style="height: 100%; min-height:190px"><table  width="100%">
+						$r = '<div style="height: 98%; min-height:170px"><table  width="100%" class="table">
 						  
-						    <tbody>';
+						    <tbody class="table ">';
 						 $found=0;
 						 $pipe=$_GET[pipe];
 					

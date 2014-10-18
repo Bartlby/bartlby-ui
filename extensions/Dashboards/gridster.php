@@ -200,6 +200,10 @@ img {
     position:relative;
 }
 
+.panel  {
+	margin: 10px;
+}
+
 .gridster > * {
     margin: 0 auto;
     -webkit-transition: height .4s;
@@ -371,7 +375,7 @@ li.gridst {
 								
  											st='<span class=\'label ' + lbl + '\'>' + data.SVC_DETAIL.svc_state + '</span>';
  												
- 												$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </h2><div class=\'box-icon\'></div></div><div class=\'box-content\' style=\'display:block; height:55px;\' >' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A><div class=\'clearfix\'></div></div></div>');
+ 												$('#' + id).html('<div class=\"panel panel-default\"><div class=\"panel-heading\"> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </div><div class=\"panel-body\">' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A></div></div>');
  								
  											});
  									} else {
@@ -442,7 +446,7 @@ li.gridst {
 		json = JSON.parse(in_data);
 		for(i=0; i<json.length; i++) {
 	   	 grid.add_widget(
-	       	 '<div style=\'overflow:auto\' data-params=\'' + json[i]['params'] + '\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', 
+	       	 '<div style=\'overflow:auto\' data-params=\'' + json[i]['params'] + '\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><i class=\"fa fa-spinner fa-spin\"></i></div>', 
 	        json[i]['size_x'], 
 	        json[i]['size_y'], 
 	        json[i]['col'], 

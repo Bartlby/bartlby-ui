@@ -628,6 +628,22 @@ $('.email_input').selectize({
     }
 });
 
+
+//tooltip
+  $('[rel="tooltip"],[data-rel="tooltip"]').tooltip({"placement":"bottom",delay: { show: 400, hide: 200 }});
+
+
+  //popover
+  $('[rel="popover"],[data-rel="popover"]').popover({ html : true });
+
+  
+
+  //datatable
+  $('.datatable').dataTable({
+        "iDisplayLength": 50,
+        
+    } );
+
 /* email input */
 //chosen - improves select
   /*Slider*/
@@ -1625,63 +1641,32 @@ function checkCheckBoxes() {
   
    
 }
-function clickreturnvalue(){
-if (ie4||ns6) return false
-else return true
+
+
+function modify_service_make_24() {
+      for(x=0; x<=6; x++) {
+        e = document.getElementById('wdays_plan[' + x + ']');
+        e.value='00:00-23:59';
+      }
+      
 }
 
-function contains_ns6(a, b) {
-while (b.parentNode)
-if ((b = b.parentNode) == a)
-return true;
-return false;
+function simulateTriggers() {
+      wname=document.fm1.worker_name.value;
+      wmail=document.fm1.worker_mail.value;
+      wicq=document.fm1.worker_icq.value;
+      TRR=document.fm1['worker_triggers[]'];
+      wstr='|';
+      for(x=0; x<=TRR.length-1; x++) {
+        
+        if(TRR.options[x].selected) {
+          
+          wstr =  wstr +  TRR.options[x].value + '|'; 
+        }
+        
+      }
+      window.open('trigger.php?user='+wname+'&mail='+wmail+'&icq='+wicq+'&trs=' + wstr, 'tr', 'width=600, height=600, scrollbars=yes');
 }
-
-function dynamichide(e){
-if (ie4&&!dropmenuobj.contains(e.toElement))
-delayhidemenu()
-else if (ns6&&e.currentTarget!= e.relatedTarget&& !contains_ns6(e.currentTarget, e.relatedTarget))
-delayhidemenu()
-}
-
-function hidemenu(e){
-if (typeof dropmenuobj!="undefined"){
-if (ie4||ns6)
-dropmenuobj.style.visibility="hidden"
-}
-}
-
-function delayhidemenu(){
-if (ie4||ns6)
-delayhide=setTimeout("hidemenu()",disappeardelay)
-}
-
-function clearhidemenu(){
-if (typeof delayhide!="undefined")
-clearTimeout(delayhide)
-}
-
-if (hidemenu_onclick=="yes")
-document.onclick=hidemenu
-
-
-
-
-
-
-
-k=hidemenu
-
-
-
-
-
-
-
-
-=hidemenu
-
-
 
 
 

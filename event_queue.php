@@ -214,7 +214,7 @@ if($_GET[datatables_output] == 1) {
 
 
 //Check if profiling is enabled
-	$evnts = '<table class="event_log_table table table-bordered table-striped table-condensed">
+	$evnts = '<table class="event_log_table table table-bordered ">
 							  <thead>
 								  <tr>
 								  	
@@ -239,35 +239,35 @@ $(document).ready(function() {
 
 
 $(".notify_log_table").dataTable({
-			    "sPaginationType": "bootstrap",
+			    
 			    "sAjaxSource": "event_queue.php?table=notify_log&datatables_output=1",
 			    "bServerSide": true,
 			    "bFilter": false,
 			    "bProcessing": true,
-			    "sDom": "<\'row-fluid\'<\'span6\'l><\'span6\'f>r>t<\'row-fluid\'<\'span12\'i><\'span12 center\'p>>",
 			    "oLanguage": {
 			    	"sEmptyTable": "No Notifications found",
-            "sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
+            		"sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
         	}
         	});
 
 $(".event_log_table").dataTable({
-			    "sPaginationType": "bootstrap",
+			    
 			    "sAjaxSource": "event_queue.php?table=event_log&datatables_output=1",
 			    "bServerSide": true,
 			    "bFilter": false,
 			    "bProcessing": true,
-			    "sDom": "<\'row-fluid\'<\'span6\'l><\'span6\'f>r>t<\'row-fluid\'<\'span12\'i><\'span12 center\'p>>",
 			    "oLanguage": {
 			    	"sEmptyTable": "No Events found",
-            "sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
+            		"sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
         	}
         	});
 
 });
-</script>
+</script>';
 
-<table class="notify_log_table table table-bordered table-striped table-condensed">
+
+
+$not_log .= '<table class="notify_log_table table table-bordered">
 							  <thead>
 								  <tr>
 								  		<th style="width:20px">ID</th>
@@ -290,7 +290,7 @@ $not_log .= "</table>";
 
 //$layout->AddScript("<script>$(document).ready(function() { $('.1').dataTable();});</script>");
 $layout->SetMainTabName("Event Queue");
-$layout->Tab("Notification Aggregation Queue", $not_log);
+$layout->Tab("Notification Aggregation Queue", "" . $not_log);
 $layout->OUT .= $evnts;
 
 

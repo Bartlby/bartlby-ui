@@ -5975,12 +5975,12 @@ table tbody td .btn-group .dropdown-menu li > a {
 .tab-content {
   background: #fff;
   padding: 20px;
-  border-bottom: 1px solid #E2E2E2;
-  border-left: 1px solid #ECECEC;
-  border-radius: 0 3px 3px;
-  -webkit-border-radius: 0 3px 3px;
-  border-right: 1px solid #ECECEC;
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04);
+  xborder-bottom: 1px solid #E2E2E2;
+  xborder-left: 1px solid #ECECEC;
+  xborder-radius: 0 3px 3px;
+  x-webkit-border-radius: 0 3px 3px;
+  xborder-right: 1px solid #ECECEC;
+  xbox-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04);
   margin-bottom: 40px;
 }
 .tab-content #picture .fileinput .thumbnail {

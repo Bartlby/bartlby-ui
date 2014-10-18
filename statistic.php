@@ -34,7 +34,7 @@ $layout->setMainTabName("Statistics");
 $layout->do_auto_reload=true;
 //function create_box($title, $content, $id="", $plcs="", $box_file="", $collapsed=false, $auto_reload=false) {
 $layout->setTitle("Core Performance");
-$layout->Table("100%");
+
 
 //Check if profiling is enabled
 	//$map = $btl->GetSVCMap();
@@ -79,8 +79,8 @@ $layout->Table("100%");
 				$delay_ms=0;	
 			}
 			
-			$service="<img src='server_icons/" . $servs[$x][server_icon] . "'><a href='service_detail.php?service_place=" . $servs[$x][shm_place] . "'>" .  $servs[$x][server_name] . "/" . $servs[$x][service_name] . "(" .   $servs[$x][plugin] . ")</A>";
-			$server="<img src='server_icons/" . $servs[$x][server_icon] . "'><a href='server_detail.php?server_id=" . $servs[$x][server_id] . "'>" . $servs[$x][server_name] . "</A>";
+			$service="<img src='server_icons/" . $servs[$x][server_icon] . "'><a href='service_detail.php?service_place=" . $shm . "'>" .  $servs[$x][server_name] . "/" . $servs[$x][service_name] . "(" .   $servs[$x][plugin] . ")</A>";
+			$server="<img src='server_icons/" . $servs[$x][server_icon] . "'><a href='server_detail.php?server_id=" . $svc[server_id] . "'>" . $servs[$x][server_name] . "</A>";
 			
 			//var_dump();
 			
@@ -201,35 +201,37 @@ $layout->Table("100%");
 		
 	
 	$info_box_title="Timing:";  
-	$layout->OUT .= "<table  width='100%'>
 	
-		<tr>
-			<td width=150 valign=top class='font2'>Average - Check Time:</td>
-			<td>$check_avg ms</td>
-			<td width=150 valign=top class='font2'>Average - Round Time:</td>
-			<td>$round_avg ms</td>
-			<td width=150 valign=top class='font2'>Average - Delay Time:</td>
-			<td>$delay_avg ms</td>
-		</tr>
-		
-		
-	</table>";
-	
+	$layout->OUT .="<div class=form-group><span class='form-horizontal'>";
+	$layout->OUT .= $layout->FormBox(array(
+											0=>"Avg. Check Time:",
+											1=>$check_avg . " ms"
+									));
+	$layout->OUT .= $layout->FormBox(array(
+											0=>"Avg. Round Time:",
+											1=>$round_avg . " ms"
+									));
+	$layout->OUT .= $layout->FormBox(array(
+											0=>"Avg. Delay Time:",
+											1=>$delay_avg . " ms"
+									));
 
 	
 
+	
+	$layout->OUT .="</span></div>";
 		$info_box_title="Options:";  
 	$core_content = "
 
-	<table  width='100%'>
-	
+	<table class='no-border'>
+						<tbody class=' no-border-y'>
 		<tr>
-			<td width=150 valign=top class='font2'>Max Num:</td>
-			<td><form name='f' action=statistic.php method=POST><input type=text name='maxn' value='$maxn'><input type='submit' value='Update..'><br>
-			<input type=radio name='sortorder' value='asc' $ascc >Ascending <input type=radio name='sortorder' value='desc' $descc >Descending
+			<td  valign=top class='font2'>Max Num:</td>
+			<td><form name='f' action=statistic.php method=POST><input type=text name='maxn' value='$maxn'><input type='submit' class='btn btn-success' value='Update'><br>
+			<input class=icheck type=radio name='sortorder' value='asc' $ascc >Ascending <input type=radio class=icheck name='sortorder' value='desc' $descc >Descending
 			</form></td>
 		</tr>
-		
+		</tbody>
 		
 	</table>";
 	
@@ -238,7 +240,7 @@ $layout->Table("100%");
 	
 
 $r=$btl->getExtensionsReturn("_processInfo", $layout);
-$layout->TableEnd();
+
 
 $layout->display();
 
@@ -274,16 +276,16 @@ function sort_table($plugin_table) {
 function make_html($info=array(), $key, $time_value, $time_short) {
 	global $maxn, $btl;
 	$have=0;
-	
-	$out = '<table class="table table-bordered table-striped table-condensed">
-							  <thead>
-								  <tr>
+
+	$out = '<table class="table table-bordered  table-condensed datatable">
+							  <thead  class="">
+								  <tr class="">
 									  <th>' . $key . '</th>
 									  <th>' . $time_value . '</th>
 									  
 									  
 								  </tr>
-							  </thead>   ';
+							  </thead>   <tbody class="no-border-y">';
 	
 
 	
@@ -307,6 +309,6 @@ function make_html($info=array(), $key, $time_value, $time_short) {
 		}
 	}
 	
-	$out .= "</table>";
+	$out .= "</tbody></table>";
 	return $out;
 }

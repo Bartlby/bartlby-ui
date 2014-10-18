@@ -135,23 +135,7 @@ function docReady(){
 	});
 
 	
-	//tooltip
-	$('[rel="tooltip"],[data-rel="tooltip"]').tooltip({"placement":"bottom",delay: { show: 400, hide: 200 }});
-
-
-	//popover
-	$('[rel="popover"],[data-rel="popover"]').popover();
-
 	
-
-	//datatable
-	$('.datatable').dataTable({
-			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
-			"sPaginationType": "bootstrap",
-			"oLanguage": {
-			"sLengthMenu": "_MENU_ records per page"
-			}
-		} );
 	$('.btn-close').click(function(e){
 		e.preventDefault();
 		$(this).parent().parent().parent().fadeOut();

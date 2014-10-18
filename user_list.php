@@ -8,16 +8,12 @@ $layout= new Layout();
 $layout->set_menu("worker");
 $layout->setTitle("Select a  Worker");
 $layout->Form("fm1", $_GET[script]);
-$layout->Table("100%");
 
 
 $servs=$btl->GetWorker();
 $optind=0;
 
 
-$ajaxed = bartlby_config(getcwd() . "/ui-extra.conf", "ajaxed");
-
-if($dropdownded != "true")  {
 
 	while(list($k, $v) = @each($servs)) {
 		
@@ -32,44 +28,13 @@ if($dropdownded != "true")  {
 	
 	
 	
-	$layout->Tr(
-		$layout->Td(
+	$layout->FormBox(
 				Array(
 					0=>"Worker:",
-					1=>$layout->DropDown("worker_id", $servers)
+					1=>$layout->DropDown("worker_id", $servers) . $layout->Field("Subm", "submit", "next->")
 				)
-			)
-	
 	);
 	
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"right",
-						'show'=>$layout->Field("Subm", "submit", "next->")
-						)
-				)
-			)
-	
-	);
-} else {
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"left",
-						'show'=>"Dropdown searches disabled in ui-extra config"
-						)
-				)
-			)
-	
-	);	
-}
-
-$layout->TableEnd();
 
 $layout->FormEnd();
 $layout->display();

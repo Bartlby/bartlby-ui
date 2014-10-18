@@ -204,119 +204,76 @@ if($defaults[active] == 2) {
 
 
 
-$layout->OUT .= "<script>
-		function modify_service_make_24() {
-			for(x=0; x<=6; x++) {
-				e = document.getElementById('wdays_plan[' + x + ']');
-				e.value='00:00-23:59';
-			}
-			
-		}
-		function simulateTriggers() {
-			wname=document.fm1.worker_name.value;
-			wmail=document.fm1.worker_mail.value;
-			wicq=document.fm1.worker_icq.value;
-			TRR=document.fm1['worker_triggers[]'];
-			wstr='|';
-			for(x=0; x<=TRR.length-1; x++) {
-				
-				if(TRR.options[x].selected) {
-					
-					wstr =  wstr +  TRR.options[x].value + '|';	
-				}
-				
-			}
-			window.open('trigger.php?user='+wname+'&mail='+wmail+'&icq='+wicq+'&trs=' + wstr, 'tr', 'width=600, height=600, scrollbars=yes');
-		}
-		</script>
-";
+
 
 
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
-$layout->Table("100%");
 
 if($defaults[is_super_user] == 1) $ss="checked";
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Is Super User",
-			1=>"<font size=1>" . "<input type=checkbox value=1 name=is_super_user $ss>"
+			1=>"<input type=checkbox value=1 class=icheck name=is_super_user $ss>"
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Name",
 			1=>$layout->Field("worker_name", "text", $defaults[name]) . $layout->Field("action", "hidden", $fm_action)
-		)
 	)
 , true);
-$ov .= $layout->Tr(
-	$layout->Td(
+
+$ov .= $layout->FormBox(
 		array(
 			0=>"Password:",
 			1=>$layout->Field("worker_password", "password", "")
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Repeat password:",
 			1=>$layout->Field("worker_password1", "password", "")
 		)
-	)
 ,true);
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Mail",
 			1=>$layout->Field("worker_mail", "text", $defaults[mail])
 		)
-	)
 ,true);
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"ICQ",
 			1=>$layout->Field("worker_icq", "text", $defaults[icq])
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Notification Limit",
 			1=>"<font size=1>" . $layout->Field("escalation_limit", "text", $defaults[escalation_limit]) . "notify's  per <br>" . $layout->Field("escalation_minutes", "text", $defaults[escalation_minutes]) .  " minutes</font>"
 		)
-	)
 ,true);
 
 
 if($defaults[notification_aggregation_interval] == 1) $aggcheck="checked";
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Aggregate Notifications:",
-			1=>"<font size=1>" . "<input type=checkbox value=1 name=notification_aggregation_interval $aggcheck>"
+			1=>"<font size=1>" . "<input type=checkbox value=1 name=notification_aggregation_interval $aggcheck class=icheck>"
 		)
-	)
 ,true);
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Notifications:",
 			1=>$layout->DropDown("worker_active", $act)
 		)
-	)
 ,true);
 
 
@@ -327,7 +284,7 @@ for($x=0; $x<count($o); $x++) {
 	$filled[$p[0]]=$p[1];
 	
 }
-$plan_box = "<table>";
+$plan_box = "<table class='no-border'><tbody class='no-border-y'>";
 for($x=0; $x<=6; $x++) {
 	$chk="";
 	if($filled[$x])
@@ -336,30 +293,26 @@ for($x=0; $x<=6; $x++) {
 	$plan_box .= "<tr><td><font size=1>" .  $wdays[$x] . "</font></td><td><input type=text id='wdays_plan[" . $x . "]'  name='wdays_plan[" . $x . "]' value='" . $filled[$x] . "' style='font-size:10px; width:200px; height:20px'></td></tr>";
 }
 $plan_box .= "<tr><td colspan=2><font size=1>Time ranges are seperated with ',' e.g.: 14:30-15:20,01:20-02:30 <a href='javascript:void(0);' onClick='modify_service_make_24();'>make 24h a day</a></font></td></tr>";
-$plan_box .= "</table>";
+$plan_box .= "</tbody></table>";
 
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Notify Plan:",
 			1=>$plan_box
 			
 		)
-	)
 , true);
 
 
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Services:",
 			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services")
 		)
-	)
 , true);
 
 if(strstr((string)$defaults[notify_levels], "|0|")) {
@@ -379,68 +332,54 @@ if(strstr((string)$defaults[notify_levels], "|8|")) {
 }
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Notifys:",
-			1=>"<input type=checkbox value=0 name=notify[] $chk0><font color=green>OK</font><input value=1 type=checkbox name=notify[] $chk1><font color=orange>Warning</font><input value=2 type=checkbox name=notify[] $chk2><font color=red>Critical</font> <input type=checkbox value=7 name=notify[] $chk7><font color=gray>Sirene</font><input type=checkbox value=8 name=notify[] $chk8><font color=gray>Downtime</font>" 
+			1=>"<label class='checkbox-inline' style='padding: 5px; font-size:14px;'><input type=checkbox value=0 class=icheck name=notify[] $chk0> " . $btl->getColorSpan(0) . "</label>" .
+			   "<label class='checkbox-inline' style='padding: 5px; font-size:14px;'><input value=1  class=icheck  type=checkbox name=notify[] $chk1> " . $btl->getColorSpan(1) . "</label>" .
+			   "<label class='checkbox-inline' style='padding: 5px; font-size:14px;'><input  class=icheck  value=2 type=checkbox name=notify[] $chk2> " . $btl->getColorSpan(2) . "</label>" .
+			   "<label class='checkbox-inline' style='padding: 5px; font-size:14px;'><input type=checkbox  class=icheck  value=7 name=notify[] $chk7> " . $btl->getColorSpan(-7, "Sirene") . "</label>" .
+			   "<label class='checkbox-inline' style='padding: 5px; font-size:14px;'><input type=checkbox class=icheck  value=8 name=notify[] $chk8> " . $btl->getColorSpan(-7, "Downtimes") . "</label>" 
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Triggers:",
-			1=>$layout->DropDown("worker_triggers[]", $triggers, "multiple") . " <a href='javascript:simulateTriggers();'>Simulate</A>"
+			1=>$layout->DropDown("worker_triggers[]", $triggers, "multiple") . " <a class='btn btn-default fa fa-play' href='javascript:simulateTriggers();'> Fire Simulated Message</a>"
 		)
-	)
 ,true);
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Orchestra ID:",
 			1=>$layout->orchDropdown(true, $defaults[orch_id])
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"left",
-					'show'=>"<a href='modify_worker.php?copy=true&worker_id=" . $_GET[worker_id] . "'><img src='themes/classic/images/edit-copy.gif' title='Copy (Create a similar) this worker' border=0></A>"
-					)
+				0=>"",
+				1=>"<a href='modify_worker.php?copy=true&worker_id=" . $_GET[worker_id] . "'><li class='btn btn-primary fa fa-copy'> Copy</li></A>" .
+				$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyWorker(xajax.getFormValues(\"fm1\"))'") . $layout->Field("worker_id", "hidden", $_GET[worker_id])
 			)
-		)
-
 ,true);
 
 $title="";  
-$content = "<table>" . $ov . "</table>";
-$layout->push_outside($layout->create_box($layout->BoxTitle, $content));
+$content = "<span class=form-horizontal>" . $ov . "</span>";
+$layout->create_box($layout->BoxTitle, $content);
 
 $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
 	
 
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyWorker(xajax.getFormValues(\"fm1\"))'") . $layout->Field("worker_id", "hidden", $_GET[worker_id])
-					)
-			)
-		)
-
-);
 
 
-$layout->TableEnd();
+
 $layout->FormEnd();
+
+//HIDE MAIN
+$layout->boxes_placed[MAIN]=true;
+
+
 $layout->display();

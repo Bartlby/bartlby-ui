@@ -20,7 +20,7 @@ $core_extensions="";
 $cnt = (int)bartlby_config($btl->CFG, "extension_count");
 
 if($cnt || $cnt == 0) {
-	$ext_table = '<table class="table table-bordered table-striped table-condensed">
+	$ext_table = '<table class="table table-bordered  table-condensed">
 							  <thead>
 								  <tr>
 									  <th>Extension</th>
@@ -66,7 +66,7 @@ $r=$btl->getExtensionsReturn("_About", $temp_layout, true);
 
 //FIXME create_box
 
-$ext_table = '<table class="table table-bordered table-striped table-condensed">
+$ext_table = '<table class="table table-bordered  table-condensed">
 							  <thead>
 								  <tr>
 									  <th>Extensions</th>

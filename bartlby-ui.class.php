@@ -1664,7 +1664,7 @@ if($m[2] == "5724") {
  		return $map; 
 			
 	}
-	function getColorSpan($state) {
+	function getColorSpan($state, $default="") {
 		switch($state) {
 			case 0:
 				$l = 'success';
@@ -1678,6 +1678,9 @@ if($m[2] == "5724") {
 			default:
 				$l = '';
 			break;
+		}
+		if($default != "") {
+			return '<span class="label label-default">' . $default . '</span>';	
 		}
 		return '<span class="label label-' . $l . '">'  . $this->getState($state) . '</span>';
 	}

@@ -12,7 +12,6 @@ $layout= new Layout();
 $layout->setTitle("Bartlby Action ($act)");
 
 
-$layout->Table("100%");
 
 function dnl($i) {
 	return sprintf("%02d", $i);
@@ -1193,35 +1192,15 @@ if($act != "edit_cfg" && @bartlby_config(getcwd() . "/ui-extra.conf", "ui_event_
 $f=$act;
 
 $msg=$btl->finScreen($f);
-$ov .=  $layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					'show'=>$msg
-					)
-			)
-		)
+$ov .=  '<div class=panel-body>' . $msg  . '</div>';
+$ov .=  '<div class=panel-body><a href="overview.php">Overview</A></div>';
 
-, true);
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					'show'=>"<a href='overview.php'>Overview</A>"
-					)
-			)
-		)
-
-);
-
-$content = "<table>" . $ov . "</table>";
+$content = "<span>" . $ov . "</span>";
 $layout->create_box($layout->BoxTitle, $content, "Message");
 
 $btl->getExtensionsReturn("_POST_" . $act, $layout);
 $layout->BoxTitle="";
 
 
-$layout->TableEnd();
+
 $layout->display("bartlby_action");

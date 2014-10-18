@@ -429,9 +429,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
       </li>
 	*/
 
-	function addRoot($name) {
+	function addRoot($name, $cl = "fa fa-gear") {
 		
-		return ' <a href="#"><i class="fa fa-desktop"></i><span>' . $name . '</span></a> <ul class="sub-menu">';
+		return ' <a href="#"><i class="' . $cl . '"></i><span>' . $name . '</span></a> <ul class="sub-menu">';
 	
 		
 	}
@@ -496,7 +496,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		//Create Menu.
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Monitoring");
+		$this->ext_menu .= $this->addRoot("Monitoring", "fa fa-tachometer");
                 $this->ext_menu .= $this->addSub("Monitoring", "Overview","overview.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Servers","servers.php");
@@ -504,7 +504,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Reporting");
+		$this->ext_menu .= $this->addRoot("Reporting", "fa fa-bar-chart");
                 $this->ext_menu .= $this->addSub("Reporting", "Report/s","create_report.php");
                 $this->ext_menu .= $this->addSub("Reporting", "Logfile","logview.php");
                 $this->ext_menu .= $this->addSub("Reporting", "Notifications","logview.php?bartlby_filter=@NOT@");
@@ -512,7 +512,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$this->ext_menu .= $this->endMenu();
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Server/s");
+		$this->ext_menu .= $this->addRoot("Server/s", "fa fa-rocket");
                 $this->ext_menu .= $this->addSub("Server/s", "Add","add_server.php");
                 $this->ext_menu .= $this->addSub("Server/s", "Modify","server_list.php?script=modify_server.php");
                 $this->ext_menu .= $this->addSub("Server/s", "Delete","server_list.php?script=delete_server.php");
@@ -521,7 +521,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Service/s");
+		$this->ext_menu .= $this->addRoot("Service/s", "fa  fa-paper-plane-o");
                 $this->ext_menu .= $this->addSub("Service/s", "Add","add_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Modify","service_list.php?script=modify_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Delete","service_list.php?script=delete_service.php");
@@ -530,7 +530,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Packages");
+		$this->ext_menu .= $this->addRoot("Packages", "fa fa-file-archive-o");
                 $this->ext_menu .= $this->addSub("Packages", "Install","server_list.php?script=install_pkg.php");
                 $this->ext_menu .= $this->addSub("Packages", "Uninstall","server_list.php?script=uninstall_pkg.php");
                 $this->ext_menu .= $this->addSub("Packages", "Create","package_create.php");
@@ -556,7 +556,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Downtime/s");
+		$this->ext_menu .= $this->addRoot("Downtime/s", "fa fa-pause");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Add","downtime_type_list.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Modify","downtime_list.php?script=modify_downtime.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Delete","downtime_list.php?script=delete_downtime.php");
@@ -564,7 +564,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Worker/s");
+		$this->ext_menu .= $this->addRoot("Worker/s", "fa fa-group");
                 $this->ext_menu .= $this->addSub("Worker/s", "Add","add_worker.php");
                 $this->ext_menu .= $this->addSub("Worker/s", "Modify","user_list.php?script=modify_worker.php");
                 $this->ext_menu .= $this->addSub("Worker/s", "Delete","user_list.php?script=delete_worker.php");
@@ -595,7 +595,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Core");
+		$this->ext_menu .= $this->addRoot("Core", "fa fa-database");
                 $this->ext_menu .= $this->addSub("Core", "Reload","bartlby_action.php?action=reload");
                 $this->ext_menu .= $this->addSub("Core", "Config","choose_config.php");
                 $this->ext_menu .= $this->addSub("Core", "Statistic","statistic.php");

@@ -378,9 +378,11 @@ function setWorkerState($worker_id, $worker_state) {
 		//get shm id
 		$servs=$btl->GetWorker();
 		$optind=0;
+		$nam="";
 		while(list($k, $v) = @each($servs)) {
 				if($v[worker_id] == $worker_id) {
 						$shm_place=$v[shm_place];
+						$nam=$v[name];
 				}
 		}
 		
@@ -403,8 +405,8 @@ function setWorkerState($worker_id, $worker_state) {
 		}
 		
 		
-		$res->AddAssign("wstate" . $worker_id, "innerHTML", "State set to: $hrstate ");
-		
+		//$res->AddAssign("wstate" . $worker_id, "innerHTML", "State set to: $hrstate ");
+		$res->AddScript('noty({"text":"' . $nam  . ' set to: ' . $hrstate . '", theme: "bootstrapTheme", "timeout": 600, "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 		return $res;
 }
 

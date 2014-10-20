@@ -11,7 +11,6 @@ $layout->setTitle("");
 $layout->set_menu("downtimes");
 
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
-$layout->Table("100%");
 
 
 
@@ -45,37 +44,21 @@ $downtime_type[$optind][v]=4;
 $optind++;
 
 
-$ov .= $layout->Tr(
-		$layout->Td(
+$ov .= $layout->FormBox(
 				Array(
 					0=>"Type:",
-					1=>$layout->DropDown("downtime_type", $downtime_type) 
+					1=>$layout->DropDown("downtime_type", $downtime_type)  . $layout->Field("Subm", "button", "next->", "" ,"onClick='downtime_type_selected();'")
 				)
-			)
 	
 	,true);
 
 
 $title="Select Downtime Type";  
-$content = "<table>" . $ov . "</table>";
-$layout->push_outside($layout->create_box($title, $content));
+$content = "<span class=form-horizontal>" . $ov . "</span>";
+$layout->create_box($title, $content);
 	
 
-
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "" ,"onClick='downtime_type_selected();'")
-					)
-			)
-		)
-
-,false);
-
-
-$layout->TableEnd();
 $layout->FormEnd();
+$layout->boxes_placed[MAIN]=true;
+
 $layout->display();

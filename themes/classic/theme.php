@@ -297,7 +297,16 @@ global $Bartlby_CONF_IDX;
     
 	<div class="cl-mcont">
 
-				
+<!-- HEADER + BREAD
+				<div class="page-head">
+			<h2><?=$this->BoxTitle?></h2>
+			<ol class="breadcrumb">
+			  <li><a href="#">Home</a></li>
+			  <li><a href="#">Category</a></li>
+			  <li class="active">Sub Category</li>
+			</ol>
+		</div>		
+-->
 			<!-- <div id='bartlby_basket'></div> -->
 			
 	

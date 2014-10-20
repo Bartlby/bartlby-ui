@@ -960,6 +960,12 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+
+			$_GET[servicegroup_active] = $_GET[servicegroup_active] ? 1 : 0;
+			$_GET[servicegroup_notify] = $_GET[servicegroup_notify] ? 1 : 0;
+			
+			
+
 			$svcgrp_obj = array(
 				"servicegroup_name" => $_GET[servicegroup_name],
 				"servicegroup_active" => $_GET[servicegroup_active],
@@ -997,7 +1003,9 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-			//$_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr
+			$_GET[servicegroup_active] = $_GET[servicegroup_active] ? 1 : 0;
+			$_GET[servicegroup_notify] = $_GET[servicegroup_notify] ? 1 : 0;
+			
 			$svcgrp_obj = array(
 				"servicegroup_name" => $_GET[servicegroup_name],
 				"servicegroup_active" => $_GET[servicegroup_active],

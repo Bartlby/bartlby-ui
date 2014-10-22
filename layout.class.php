@@ -31,7 +31,16 @@ class Layout {
 	var $box_count;
 
 
-
+function local_box_render($ext, $file, $plcs = array()) {
+	
+	$layout=$this;
+	$boxes_path="extensions/" . $ext . "/boxes/" . $file;
+	ob_start();
+	include($boxes_path);
+	$o = ob_get_contents();	
+	ob_end_clean();	
+	return $o;
+}	
 function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
     $url = 'http://www.gravatar.com/avatar/';
     $url .= md5( strtolower( trim( $email ) ) );
@@ -447,7 +456,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	
 	}
 	
-	function display($lineup_file="") {
+	function display($lineup_file="", $base_path=false) {
 	global $xajax;
 	global $confs;
 		if($lineup_file=="no") $lineup_file="";
@@ -637,6 +646,10 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 
 		$lineup_path="themes/" . $this->theme . "/lineups/" . $lineup_file . ".php";
+		if($base_path != false) {
+			$lineup_path = $base_path . "/" . $lineup_file;
+		}
+		
 		if(!file_exists($lineup_path)) {
 			$lineup_path="themes/classic/lineups/default.php";
 		}

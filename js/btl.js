@@ -456,10 +456,11 @@ function btl_force_reload_ui() {
 		
 			$.getJSON(u, function(data) {
 				btl_call_refreshable_objects(data);
-
-
+        btl_init_components();
 
 			});
+
+
 		
 			
 
@@ -557,18 +558,8 @@ function bulk_service_edit(mode) {
 }
 
 
-$(document).ready(function() {
-		btl_set_bars();
-
-
-
-
-/*
-SELECT BOXES
-*/
-
-
-/* email input */
+function btl_init_components() {
+  /* email input */
 window.REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
                   '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
 
@@ -676,9 +667,9 @@ $('.email_input').selectize({
   });
 
 
-	$('.datepicker').datepicker({nextText: "&nbsp;", prevText:"&nbsp;",showButtonPanel: true});
-	$('.datetimepicker').datetimepicker({nextText:"&nbsp;", prevText:"&nbsp;", showButtonPanel: true});
-	
+  $('.datepicker').datepicker({nextText: "&nbsp;", prevText:"&nbsp;",showButtonPanel: true});
+  $('.datetimepicker').datetimepicker({nextText:"&nbsp;", prevText:"&nbsp;", showButtonPanel: true});
+  
 
   //tabs
   $('#myTab a:first').tab('show');
@@ -693,11 +684,11 @@ $('.email_input').selectize({
   });
   
   
-	$('[data-rel="chosen"],[rel="chosen"]').selectize({
-    	create: false,
-    	plugins: ['remove_button', 'drag_drop'],
-    	sortField: 'text'
-	});
+  $('[data-rel="chosen"],[rel="chosen"]').selectize({
+      create: false,
+      plugins: ['remove_button', 'drag_drop'],
+      sortField: 'text'
+  });
 
 
   //Typeahead
@@ -782,7 +773,7 @@ $('.email_input').selectize({
     }
 });
 
-	$('[data-rel="ajax_grp_service_id"]').selectize({
+  $('[data-rel="ajax_grp_service_id"]').selectize({
     plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
@@ -813,9 +804,9 @@ $('.email_input').selectize({
         });
     }
 });
-	
-	$('[data-rel="ajax_grp_service_id"]').selectize({
-		plugins: ['remove_button', 'drag_drop'],
+  
+  $('[data-rel="ajax_grp_service_id"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -831,13 +822,13 @@ $('.email_input').selectize({
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	return_items=new Array();
-            	for(x=0; x<res.length; x++) {
-            		return_items=return_items.concat(res[x].items);            		
-            		
-            	}
-            	
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
 
                 callback(return_items);
@@ -848,11 +839,11 @@ $('.email_input').selectize({
 
 
 
-	
-	
+  
+  
 
-	$('[data-rel="ajax_servergroup_list"]').selectize({
-		plugins: ['remove_button', 'drag_drop'],
+  $('[data-rel="ajax_servergroup_list"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -868,13 +859,13 @@ $('.email_input').selectize({
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	return_items=new Array();
-            	for(x=0; x<res.length; x++) {
-            		return_items=return_items.concat(res[x].items);            		
-            		
-            	}
-            	
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
 
                 callback(return_items);
@@ -885,13 +876,13 @@ $('.email_input').selectize({
 
 
 
-	
+  
 
 
 
-	
-	$('[data-rel="ajax_servicegroup_list"]').selectize({
-		plugins: ['remove_button', 'drag_drop'],
+  
+  $('[data-rel="ajax_servicegroup_list"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -907,13 +898,13 @@ $('.email_input').selectize({
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	return_items=new Array();
-            	for(x=0; x<res.length; x++) {
-            		return_items=return_items.concat(res[x].items);            		
-            		
-            	}
-            	
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
 
                 callback(return_items);
@@ -923,10 +914,10 @@ $('.email_input').selectize({
 });
 
 
-	
+  
 
-	$('[data-rel="ajax_servicegroup_members"]').selectize({
-		plugins: ['remove_button', 'drag_drop'],
+  $('[data-rel="ajax_servicegroup_members"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -942,13 +933,13 @@ $('.email_input').selectize({
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	return_items=new Array();
-            	for(x=0; x<res.length; x++) {
-            		return_items=return_items.concat(res[x].items);            		
-            		
-            	}
-            	
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
 
                 callback(return_items);
@@ -958,9 +949,9 @@ $('.email_input').selectize({
 });
 
 
-	
-	$('[data-rel="ajax_package_services"]').selectize({
-		plugins: ['remove_button', 'drag_drop'],
+  
+  $('[data-rel="ajax_package_services"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -976,13 +967,13 @@ $('.email_input').selectize({
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	return_items=new Array();
-            	for(x=0; x<res.length; x++) {
-            		return_items=return_items.concat(res[x].items);            		
-            		
-            	}
-            	
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
 
                 callback(return_items);
@@ -990,13 +981,13 @@ $('.email_input').selectize({
         });
     }
 });
-	
+  
 
-		
+    
 
-	
-	$('[data-rel="ajax_service_list_php"]').selectize({
-		plugins: ['remove_button', 'drag_drop'],
+  
+  $('[data-rel="ajax_service_list_php"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -1012,13 +1003,13 @@ $('.email_input').selectize({
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	return_items=new Array();
-            	for(x=0; x<res.length; x++) {
-            		return_items=return_items.concat(res[x].items);            		
-            		
-            	}
-            	
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
 
 
                 callback(return_items);
@@ -1034,7 +1025,7 @@ $('.email_input').selectize({
 
 
 $('[data-rel="ajax_server_list_php"]').selectize({
-	plugins: ['remove_button', 'drag_drop'],
+  plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',
     searchField: 'text',
@@ -1047,12 +1038,12 @@ $('[data-rel="ajax_server_list_php"]').selectize({
             type: 'GET',
             dataType: 'json',
             error: function() {
-            	console.log("error");
+              console.log("error");
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	console.log(res[0].items);
+              if(res == null) return callback();
+              console.log(res[0].items);
                 callback(res[0].items);
             }
         });
@@ -1079,12 +1070,12 @@ $('[data-rel="ajax_modify_worker_services_permission"]').selectize({
             type: 'GET',
             dataType: 'json',
             error: function() {
-            	console.log("error");
+              console.log("error");
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	console.log(res[0].items);
+              if(res == null) return callback();
+              console.log(res[0].items);
                 callback(res[0].items);
             }
         });
@@ -1109,12 +1100,12 @@ $('[data-rel="ajax_modify_worker_services"]').selectize({
             type: 'GET',
             dataType: 'json',
             error: function() {
-            	console.log("error");
+              console.log("error");
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	console.log(res[0].items);
+              if(res == null) return callback();
+              console.log(res[0].items);
                 callback(res[0].items);
             }
         });
@@ -1123,10 +1114,14 @@ $('[data-rel="ajax_modify_worker_services"]').selectize({
 
 
 if(typeof($("#service_dead")[0]) != "undefined") {
-	$("#service_dead")[0].selectize.settings.maxItems=1;
+  if(typeof $("#service_dead")[0].selectize != "undefined") {
+   $("#service_dead")[0].selectize.settings.maxItems=1;
+  }
 }
 if(typeof($("#service_id")[0]) != "undefined") {
-	$("#service_id")[0].selectize.settings.maxItems=1;
+  if(typeof $("#service_id")[0].selectize != "undefined") {
+   $("#service_id")[0].selectize.settings.maxItems=1;
+  }
 }
 
 
@@ -1144,12 +1139,12 @@ $('[data-rel="ajax_report_service"]').selectize({
             type: 'GET',
             dataType: 'json',
             error: function() {
-            	console.log("error");
+              console.log("error");
                 callback();
             },
             success: function(res) {
-            	if(res == null) return callback();
-            	console.log(res[0].items);
+              if(res == null) return callback();
+              console.log(res[0].items);
                 callback(res[0].items);
             }
         });
@@ -1165,199 +1160,199 @@ $('[data-rel="ajax_report_service"]').selectize({
 
        
 
-		$("#service_prio_density").on("change", function() {
-			
-			xajax_setServiceDisplayPrio($("#service_prio_density").val());
-		});
+    $("#service_prio_density").on("change", function() {
+      
+      xajax_setServiceDisplayPrio($("#service_prio_density").val());
+    });
 
-		$("#services_bulk_edit_delete").click(function() {
-			if(confirm("You really want to delete the selected services?")) {
-				bulk_service_edit(3);	
-			}
-			
-		})
-		$("#services_bulk_edit_run").click(function() {
-			bulk_service_edit(1);
-		});
-		//BULK EDIT
-		$("#services_bulk_edit_dry_run").click(function() {
-			//Get Service id list
-			bulk_service_edit(0);
+    $("#services_bulk_edit_delete").click(function() {
+      if(confirm("You really want to delete the selected services?")) {
+        bulk_service_edit(3); 
+      }
+      
+    })
+    $("#services_bulk_edit_run").click(function() {
+      bulk_service_edit(1);
+    });
+    //BULK EDIT
+    $("#services_bulk_edit_dry_run").click(function() {
+      //Get Service id list
+      bulk_service_edit(0);
 
-		});
-		$("#services_bulk_edit").click(function() {
-			window.clearTimeout(window.service_list_timer); //Disable auto reload
-			if($('.service_checkbox').is(":checked") == false) {
-				if(!confirm("You have not selected any service if you continue - all your bulk actions will apply to EVERY services (system wide)!!")) {
-					return;
-				}
-			}
-			$('#myModal').modal('show');
-		});
+    });
+    $("#services_bulk_edit").click(function() {
+      window.clearTimeout(window.service_list_timer); //Disable auto reload
+      if($('.service_checkbox').is(":checked") == false) {
+        if(!confirm("You have not selected any service if you continue - all your bulk actions will apply to EVERY services (system wide)!!")) {
+          return;
+        }
+      }
+      $('#myModal').modal('show');
+    });
 
-		$("#servers_bulk_edit_run").click(function() {
-			bulk_server_edit(1);
-		});
-		$("#servers_bulk_edit_delete").click(function() {
-			if(confirm("You really want to delete the selected services?")) {
-				bulk_server_edit(3);	
-			}
-			
-		});
-		//BULK EDIT SERVER
-		$("#servers_bulk_edit_dry_run").click(function() {
-			//Get Service id list
-			bulk_server_edit(0);
+    $("#servers_bulk_edit_run").click(function() {
+      bulk_server_edit(1);
+    });
+    $("#servers_bulk_edit_delete").click(function() {
+      if(confirm("You really want to delete the selected services?")) {
+        bulk_server_edit(3);  
+      }
+      
+    });
+    //BULK EDIT SERVER
+    $("#servers_bulk_edit_dry_run").click(function() {
+      //Get Service id list
+      bulk_server_edit(0);
 
-		});
-		$("#servers_bulk_edit").click(function() {
-			window.clearTimeout(window.server_list_timer); //Disable auto reload
-			if($('.server_checkbox').is(":checked") == false) {
-				if(!confirm("You have not selected any server if you continue - all your bulk actions will apply to EVERY server (system wide)!!")) {
-					return;
-				}
-			}
-			$('#myModal').modal('show');
-		});
-
-
-
-		$("#services_bulk_force").click(function() {
-		var force_services = new Array();
-			$('.service_checkbox').each(function() {
-				if($(this).is(':checked')) {
-						force_services.push($(this).data("service_id"));
-				}
-			});
-			xajax_bulkForce(force_services);
-		
-	});
-	
-	
-	$("#services_bulk_enable_checks").click(function() {
-		var force_services = new Array();
-			$('.service_checkbox').each(function() {
-				if($(this).is(':checked')) {
-						force_services.push($(this).data("service_id"));
-				}
-			});
-			xajax_bulkEnableChecks(force_services);
-		
-	});
-	
-	$("#services_bulk_disable_checks").click(function() {
-		var force_services = new Array();
-			$('.service_checkbox').each(function() {
-				if($(this).is(':checked')) {
-						force_services.push($(this).data("service_id"));
-				}
-			});
-			xajax_bulkDisableChecks(force_services);
-		
-	});
-	
-	
-	$("#services_bulk_enable_notifys").click(function() {
-		var force_services = new Array();
-			$('.service_checkbox').each(function() {
-				if($(this).is(':checked')) {
-						force_services.push($(this).data("service_id"));
-				}
-			});
-			xajax_bulkEnableNotifys(force_services);
-		
-	});
-	
-	$("#services_bulk_disable_notifys").click(function() {
-		var force_services = new Array();
-			$('.service_checkbox').each(function() {
-				if($(this).is(':checked')) {
-						force_services.push($(this).data("service_id"));
-				}
-			});
-			xajax_bulkDisableNotifys(force_services);
-		
-	});
-	
-	
-	
-	
+    });
+    $("#servers_bulk_edit").click(function() {
+      window.clearTimeout(window.server_list_timer); //Disable auto reload
+      if($('.server_checkbox').is(":checked") == false) {
+        if(!confirm("You have not selected any server if you continue - all your bulk actions will apply to EVERY server (system wide)!!")) {
+          return;
+        }
+      }
+      $('#myModal').modal('show');
+    });
 
 
 
-	
-	
-	//Service-DataTable
-		s_url = document.location.href.replace(/\/s.*\.php/, "/services.php");
-		s_char = "?";
-		if(s_url.match(/\?/)) {
-			s_char = "&";
-		}
-		
-		server_ajax_url = document.location.href.replace(/\/s.*\.php/, "/servers.php");
-		server_char = "?";
-		if(server_ajax_url.match(/\?/)) {
-			server_char = "&";
-		}
-				
-	//$("#services_table").hide();
-	window.oTable = $('#services_table').dataTable({
-					"fnInitComplete": function() {
-						
-					},
-					"iDisplayLength": 50,
-					"fnDrawCallback": function ( oSettings ) {
-			       
-						if ( oSettings.aiDisplay.length == 0 )
-						{
-							return;
-						}
-						checkCheckBoxes();
-						var nTrs = $('tbody tr', oSettings.nTable);
-						var iColspan = nTrs[0].getElementsByTagName('td').length;
-						var sLastGroup = "";
-						for ( var i=0 ; i<nTrs.length ; i++ )
-						{
-							var iDisplayIndex = oSettings._iDisplayStart + i;
-							//var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
-							var sGroup = oSettings.aoData[ oSettings.aiDisplay[i] ]._aData[1];
-							if ( sGroup != sLastGroup )
-							{
-								var nGroup = document.createElement( 'tr' );
-								var nCell = document.createElement( 'td' );
-								nCell.colSpan = iColspan;
-								nCell.className = "group";
-								nCell.innerHTML = sGroup;
-								nGroup.appendChild( nCell );
-								nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
-								sLastGroup = sGroup;
-							}
-						}
-						//$("#services_table").show();
-					},
-					"aoColumnDefs": [
-						{ "bVisible": false, "aTargets": [ 1 ] }
-					],
-					"aoColumns": [
-						{ "sWidth": "10" , "sClass": "center_td" },
-						{ "sWidth": "10" , "sClass": "center_td" },
-						{ "sWidth": "90", "sClass": "center_td" },
-						{ "sWidth": "140", "sClass": "center_td" },
-						{ "sWidth": "10%", "sClass": "center_td" },
-						{ "sWidth": "50%" },
-						{ "sWidth": "160" },
-						
-					],
-					"aaSortingFixed": [[ 0, 'asc' ]],
-					"bSort": false,
-					"aaSorting": [[ 1, 'asc' ]],
-				
-			    "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
-			    "sAjaxSource": s_url + s_char + "datatables_output=1",
-			    "bServerSide": true,
-			    "bProcessing": true,
-			    "oTableTools": {
-        	"sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+    $("#services_bulk_force").click(function() {
+    var force_services = new Array();
+      $('.service_checkbox').each(function() {
+        if($(this).is(':checked')) {
+            force_services.push($(this).data("service_id"));
+        }
+      });
+      xajax_bulkForce(force_services);
+    
+  });
+  
+  
+  $("#services_bulk_enable_checks").click(function() {
+    var force_services = new Array();
+      $('.service_checkbox').each(function() {
+        if($(this).is(':checked')) {
+            force_services.push($(this).data("service_id"));
+        }
+      });
+      xajax_bulkEnableChecks(force_services);
+    
+  });
+  
+  $("#services_bulk_disable_checks").click(function() {
+    var force_services = new Array();
+      $('.service_checkbox').each(function() {
+        if($(this).is(':checked')) {
+            force_services.push($(this).data("service_id"));
+        }
+      });
+      xajax_bulkDisableChecks(force_services);
+    
+  });
+  
+  
+  $("#services_bulk_enable_notifys").click(function() {
+    var force_services = new Array();
+      $('.service_checkbox').each(function() {
+        if($(this).is(':checked')) {
+            force_services.push($(this).data("service_id"));
+        }
+      });
+      xajax_bulkEnableNotifys(force_services);
+    
+  });
+  
+  $("#services_bulk_disable_notifys").click(function() {
+    var force_services = new Array();
+      $('.service_checkbox').each(function() {
+        if($(this).is(':checked')) {
+            force_services.push($(this).data("service_id"));
+        }
+      });
+      xajax_bulkDisableNotifys(force_services);
+    
+  });
+  
+  
+  
+  
+
+
+
+  
+  
+  //Service-DataTable
+    s_url = document.location.href.replace(/\/s.*\.php/, "/services.php");
+    s_char = "?";
+    if(s_url.match(/\?/)) {
+      s_char = "&";
+    }
+    
+    server_ajax_url = document.location.href.replace(/\/s.*\.php/, "/servers.php");
+    server_char = "?";
+    if(server_ajax_url.match(/\?/)) {
+      server_char = "&";
+    }
+        
+  //$("#services_table").hide();
+  window.oTable = $('#services_table').dataTable({
+          "fnInitComplete": function() {
+            
+          },
+          "iDisplayLength": 50,
+          "fnDrawCallback": function ( oSettings ) {
+             
+            if ( oSettings.aiDisplay.length == 0 )
+            {
+              return;
+            }
+            checkCheckBoxes();
+            var nTrs = $('tbody tr', oSettings.nTable);
+            var iColspan = nTrs[0].getElementsByTagName('td').length;
+            var sLastGroup = "";
+            for ( var i=0 ; i<nTrs.length ; i++ )
+            {
+              var iDisplayIndex = oSettings._iDisplayStart + i;
+              //var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[0];
+              var sGroup = oSettings.aoData[ oSettings.aiDisplay[i] ]._aData[1];
+              if ( sGroup != sLastGroup )
+              {
+                var nGroup = document.createElement( 'tr' );
+                var nCell = document.createElement( 'td' );
+                nCell.colSpan = iColspan;
+                nCell.className = "group";
+                nCell.innerHTML = sGroup;
+                nGroup.appendChild( nCell );
+                nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                sLastGroup = sGroup;
+              }
+            }
+            //$("#services_table").show();
+          },
+          "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [ 1 ] }
+          ],
+          "aoColumns": [
+            { "sWidth": "10" , "sClass": "center_td" },
+            { "sWidth": "10" , "sClass": "center_td" },
+            { "sWidth": "90", "sClass": "center_td" },
+            { "sWidth": "140", "sClass": "center_td" },
+            { "sWidth": "10%", "sClass": "center_td" },
+            { "sWidth": "50%" },
+            { "sWidth": "160" },
+            
+          ],
+          "aaSortingFixed": [[ 0, 'asc' ]],
+          "bSort": false,
+          "aaSorting": [[ 1, 'asc' ]],
+        
+          "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
+          "sAjaxSource": s_url + s_char + "datatables_output=1",
+          "bServerSide": true,
+          "bProcessing": true,
+          "oTableTools": {
+          "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
             "aButtons": [
                 {
                     "sExtends":    "collection",
@@ -1366,34 +1361,34 @@ $('[data-rel="ajax_report_service"]').selectize({
                 }
             ]
         },
-			    "oLanguage": {
-			    	"sEmptyTable": "No Services found",
+          "oLanguage": {
+            "sEmptyTable": "No Services found",
             "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
-        	}
-			    
+          }
+          
        
-				});
-				
+        });
+        
 window.servers_table = $('#servers_table').dataTable({
-					"iDisplayLength": 50,
-					
-					"aoColumns": [
-						{ "sWidth": "1" },
-						{ "sWidth": "100" },
-						{ "sWidth": "100" },
-						{ "sWidth": "20" },
-						{ "sWidth": "150" }
-						],
-					"aaSortingFixed": [[ 0, 'asc' ]],
-					"bSort": false,
-					"aaSorting": [[ 1, 'asc' ]],
-					"sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
-			    "sAjaxSource": server_ajax_url + server_char + "datatables_output=1",
-			    "bServerSide": true,
-			    "bProcessing": true,
-		
+          "iDisplayLength": 50,
+          
+          "aoColumns": [
+            { "sWidth": "1" },
+            { "sWidth": "100" },
+            { "sWidth": "100" },
+            { "sWidth": "20" },
+            { "sWidth": "150" }
+            ],
+          "aaSortingFixed": [[ 0, 'asc' ]],
+          "bSort": false,
+          "aaSorting": [[ 1, 'asc' ]],
+          "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
+          "sAjaxSource": server_ajax_url + server_char + "datatables_output=1",
+          "bServerSide": true,
+          "bProcessing": true,
+    
         "oTableTools": {
-        	"sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+          "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
             "aButtons": [
                 {
                     "sExtends":    "collection",
@@ -1402,26 +1397,39 @@ window.servers_table = $('#servers_table').dataTable({
                 }
             ]
         },
-			    "oLanguage": {
-			    	"sEmptyTable": "No Servers found",
+          "oLanguage": {
+            "sEmptyTable": "No Servers found",
             "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
-        	}
-			    
+          }
+          
        
-				});
-		 
-		$("#toggle_reload").on('ifClicked', function() {
+        });
+     
+    $("#toggle_reload").on('ifClicked', function() {
       console.log("AUTO RELOAD TOOGLE");
-			if(global_reload == 1) {
-					global_reload=0;
-					window.clearInterval(window.auto_reloader);
+      if(global_reload == 1) {
+          global_reload=0;
+          window.clearInterval(window.auto_reloader);
           window.auto_reloader=-1;
           console.log("STOP");
-			} else {
-				global_reload=1;
-				btl_start_auto_reload();
-			}
-		});	
+      } else {
+        global_reload=1;
+        btl_start_auto_reload();
+      }
+    }); 
+}
+$(document).ready(function() {
+		btl_set_bars();
+
+
+
+
+/*
+SELECT BOXES
+*/
+
+
+    btl_init_components();
 	});
 
 

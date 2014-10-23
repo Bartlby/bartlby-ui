@@ -1,14 +1,22 @@
-<table  width='100%'>
-                <form name='pp' action='bartlby_action.php' method=POST>
-                
-                <tr>
-                        <td width=150 class='font2'>Submit manually:</td>
-                        <td align=left ><?=$plcs[state_dropdown]?><input type='hidden' name='action' value='submit_passive'><input type='hidden' name='service_id' value='<?=$plcs[service][service_id]?>'><input type='text' name='passive_text'><input type=submit value='store'></font></td>
-                        <td>&nbsp;</td>
-                </tr>
-		<tr>
-			<td colspan=3><i><font size=1>state is not permanent, next intervall may set the true value again</font></i></td>
-		</tr>
-                </form>
-        </table>
+<div class=form-horizontal>
+        <form name='pp' action='bartlby_action.php' method=POST>
+        <?
+              
+                echo $layout->FormBox(
+                                array(
+                                        0=>"State",
+                                        1=>$plcs[state_dropdown]
+                                        )
+                        ,true);
+      
+                   echo $layout->FormBox(
+                                array(
+                                        0=>"Text",
+                                        1=>$layout->Field("action", "hidden", "submit_passive") .                     $layout->Field("service_id", "hidden", $plcs[service][service_id]) .
+                                        $layout->Field("passive_text", "text") . $layout->Field("Submit", "submit", "Store") . "<br><i>state is not permanent, next intervall may set the true value again</i>"
+                                        )
+                        ,true);
+        ?>
+        </form>
+</div>
 

@@ -82,7 +82,11 @@ $cur_val[2]=$m[3];
 	<div id="g2" class="gauge" style='width:100px;height:100px;float:left'></div>
 	<div id="g3" class="gauge" style='width:100px;height:100px;float:left'></div>
 	
-	
+	<style>
+		tspan {
+				font-family:Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		}
+	</style>
   
 <?
 

@@ -8323,3 +8323,27 @@ div.legend > table {
   width: auto;
   border: none;
 }
+
+
+.borderless tbody tr td, .borderless thead tr th {
+    border: none;
+   
+}
+
+.no-borderless tbody tr td, .borderless thead tr th {
+    border: 0px;
+   
+}
+
+.borderless tbody tr td:nth-child(1), .borderless thead tr th {
+    font-weight: 600;
+   
+}
+
+.no-borderless tbody tr td:nth-child(1), .borderless thead tr th {
+    font-weight: normal;
+   
+}
+
+
+

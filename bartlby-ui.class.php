@@ -563,7 +563,7 @@ class BartlbyUi {
 			$filled[$x]{strlen($filled[$x][value])-1} = " ";
 			
 		}
-		$plan_box = "<table>";
+		$plan_box = "<table class='table no-borderless border' style=''>";
 		for($x=0; $x<=6; $x++) {
 			$chk="";
 			$vv = "<i>NO</i>";
@@ -580,7 +580,7 @@ class BartlbyUi {
 			} else {
 				$invinfo="";	
 			}
-			$plan_box .= "<tr><td><font size=1 " . $cl . ">" .  $wdays[$x] . $invinfo  . "</font></td><td><font size=1>" . $vv . "</font></td></tr>";
+			$plan_box .= "<tr><td width=20%><font size=1 " . $cl . ">" .  $wdays[$x] . $invinfo  . "</font></td><td><font size=1>" . $vv . "</font></td></tr>";
 		}
 		
 		$plan_box .= "</table>";
@@ -1676,7 +1676,7 @@ if($m[2] == "5724") {
 				$l = 'danger';
 			break;
 			default:
-				$l = '';
+				$l = 'default';
 			break;
 		}
 		if($default != "") {

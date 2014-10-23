@@ -33,18 +33,18 @@ if(!$btl->hasRight("view_service_output", false)) {
 
 
 $svc_color=$btl->getColor($defaults[current_state]);
-$svc_state=$btl->getState($defaults[current_state]);
+$svc_state=$btl->getColorSpan($defaults[current_state]);
 
 switch($defaults[service_ack_current]) {
 	
 	case 2:
-		$needs_ack="outstanding <input type=button value='Acknowledge this problem' onClick=\"document.location.href='ack_service.php?service_id=" . $defaults[service_id]  . "';\">";
+		$needs_ack="outstanding <input type=button class='btn btn-success' value='Acknowledge this problem' onClick=\"document.location.href='ack_service.php?service_id=" . $defaults[service_id]  . "';\">";
 	break;
 }
 if($defaults[service_ack_enabled] == 1) {
-		$needs_ack = "enabled $needs_ack";
+		$needs_ack = "<input type=checkbox class='switch'  disabled checked> $needs_ack";
 } else {
-	$needs_ack = "disabled";
+	$needs_ack = "<input type=checkbox class='switch'  disabled >";
 }
 
 
@@ -84,14 +84,14 @@ if($defaults[service_type] == 10) {
 }
 
 if($defaults["notify_enabled"]==1) {
-	$noti_en="true";
+	$noti_en="<input type=checkbox class='switch'  disabled checked>";
 } else {
-	$noti_en="false";
+	$noti_en="<input type=checkbox class='switch'  disabled>";
 }
 if($defaults["service_active"]==1) {
-	$serv_en="true";
+	$serv_en="<input type=checkbox class='switch'  disabled checked>";
 } else {
-	$serv_en="false";
+	$serv_en="<input type=checkbox class='switch'  disabled>";
 }
 
 switch($defaults["fires_events"]) {
@@ -197,37 +197,77 @@ if($defaults[handled] == 1) $handled = "HANDLED";
 
 if($triggers == "") $triggers = "all";
 
+
+$info_box_title='Timing';  
+$layout->create_box($info_box_title, $core_content, "service_detail_timing", array(
+											"service" => $defaults,
+											"service_ms" => $svcMS,
+											"service_delay" => $svcDEL,
+											"currently_running" => $currun,
+											"check_plan" => $plan_box
+											)
+											
+		, "service_detail_timing", false, true);
+
+
+$info_box_title='Notifications';  
+$layout->create_box($info_box_title, $core_content, "service_detail_notifications", array(
+											"service" => $defaults,
+											"renotify" => $renot_en,
+											"escalate" => $escal_en,
+											"server_notifications" => $server_noti_enabled,
+											"notify_enabled" => $noti_en,
+											"triggers" => $triggers
+										
+											
+											
+											)
+											
+		, "service_detail_notifications", false, true);
+
+$info_box_title='Orchestra/Cluster';  
+$layout->create_box($info_box_title, $core_content, "service_detail_orch", array(
+											"service" => $defaults,
+											"renotify" => $renot_en,
+											"escalate" => $escal_en,
+											"server_notifications" => $server_noti_enabled,
+											"notify_enabled" => $noti_en,
+											"triggers" => $triggers
+										
+											
+											
+											)
+											
+		, "service_detail_orch", false, true);
+
+
+
+
+
 $info_box_title='Service Info';  
 $layout->create_box($info_box_title, $core_content, "service_detail_service_info", array(
 											"service" => $defaults,
 											"service_type" => $svc_type,
 											"map" => $map,
 											"server_enabled" => $server_enabled,
-											"currently_running" => $currun,
-											"renotify" => $renot_en,
-											"escalate" => $escal_en,
-											"server_notifications" => $server_noti_enabled,
 											"server_enabled" => $server_enabled,
-											"service_ms" => $svcMS,
-											"service_delay" => $svcDEL,
 											"service_enabled" => $serv_en,
 											"fires_events" => $events_en,
-											"notify_enabled" => $noti_en,
+											
 											"needs_ack" => $needs_ack,
 											"color" => $svc_color,
 											"state" => $svc_state,
-											"check_plan" => $plan_box,
-											"triggers" => $triggers,
 											"handled" => $handled,
 											"dead_marker" => $btl->resolveDeadMarker($defaults[server_dead])
 											)
 											
 		, "service_detail_service_info", false, true);
-		
-if(is_array($defaults[groups])) {
+			
+if(is_array($defaults[servicegroups])) {
+
 	$info_box_title='Group Info';  
 	$layout->create_box($info_box_title, $core_content, "service_detail_group_info", array(
-												"service_groups" => $defaults[groups]
+												"service_groups" => $defaults[servicegroups]
 				)
 												
 			, "service_detail_group_info", false, true);
@@ -346,3 +386,4 @@ $layout->SVC_DETAIL=$defaults;
 
 
 $layout->display("service_detail");
+

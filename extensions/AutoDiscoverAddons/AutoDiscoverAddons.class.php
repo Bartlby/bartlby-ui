@@ -126,7 +126,7 @@ class AutoDiscoverAddons {
 						$this->images_labels[]="RRD Browser";
 						
 						
-						$this->_globExt($_GET[xajaxargs][2], $rrd_dir);
+						$this->_globExt($_GET[xajaxargs][2], $rrd_dir, "width=100% style='max-width: 700px;'");
 						
 						
 						if(count($this->images) > 0)  {
@@ -175,7 +175,7 @@ class AutoDiscoverAddons {
         	  	
         	  	
         	  </script>
-        	  <div id=AutoDiscoverAddonsHide style='display:none'><font color='red'><img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> reload in progress....</font></div><br>
+        	  <div id=AutoDiscoverAddonsHide style='display:none'> <font color='red'><i class='fa fa-spinner fa-spin'></i>  reload in progress....</font></div><br>
         	  <div id='autodiscoveraddons_layer' style='display:" . $this->disp .  ";'>";
         	  return $r;
        }
@@ -347,7 +347,7 @@ class AutoDiscoverAddons {
 																	  
 																	   function update_fname() {
 																																		        
-																	  			var dopts = {graph_width: "800px", graph_height: "300px", timezone: "+2", legend:"Bottom", "octets": ' . $is_octets . '};
+																	  			var dopts = {graph_width: "90%", graph_height: "300px", timezone: "+2", legend:"Bottom", "octets": ' . $is_octets . '};
 																	        // the rrdFlot object creates and handles the graph
 																	        var f=new rrdFlot("mygraph",rrd_data,null, null, dopts);
 																	      }
@@ -446,7 +446,7 @@ class AutoDiscoverAddons {
                         		
                         				$re .= $this->getRRDWidget();
                         		    $re .= $this->getJavascripts();
-                        		    $this->_globExt($svcid, $rrd_dir);
+                        		    $this->_globExt($svcid, $rrd_dir, "width=100% style='max-width: 700px;'");
                         		    
                         		    
                         		    

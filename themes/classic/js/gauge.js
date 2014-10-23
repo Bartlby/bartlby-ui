@@ -439,7 +439,7 @@
       lineWidth: 0.44,
       fontSize: 40,
       limitMax: false,
-      percentColors: [[0.0, "#a9d70b"], [0.50, "#f9c802"], [1.0, "#ff0000"]]
+      percentColors: [[0.0, "#2196f3"], [0.50, "#ff9800"], [1.0, "#e51c23"]]
     };
 
     function Gauge(canvas) {

@@ -24,8 +24,8 @@
 
 <div >
 						
-						<table class="no-border">
-						<tbody class=" no-border-y">
+						<table class="no-border no-strip borderless-thin">
+						<tbody class="">
 		<tr class="">
 			<td >
 		<?

@@ -114,19 +114,19 @@ if(!$_GET[report_service] || !$log_mask) {
 			$lbl="";
 			if($state == 0) {
 					 $lbl="label-success";
-					 $col="green";
+					 $col="#4caf50";
 			}
 			if($state == 1) {
 				$lbl="label-warning";
-				$col="orange";
+				$col="#ff9800";
 			}
 			if($state == 2) {
 				 $lbl="label-danger";
-				 $col="red";
+				 $col="#e51c23";
 			}
 			if($state == 8) {
 				 $lbl="";
-				 $col="grey";
+				 $col="#bbbbbb";
 			}
 			
 			$out .= "<tr>";
@@ -168,18 +168,18 @@ if(!$_GET[report_service] || !$log_mask) {
 					
 					threshold:  [{
 								below: 3,
-								color: "grey"
+								color: "#bbbbbb"
 							},{
 								below: 1,
-								color: "orange"
+								color: "#ff9800"
 							},{
 								below: 2,
-								color: "green"
+								color: "#4caf50"
 							},{
 								below: -1,
-								color: "red"
+								color: "#e51c23"
 							}],
-							color: "green",
+							color: "#4caf50",
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
@@ -198,18 +198,18 @@ if(!$_GET[report_service] || !$log_mask) {
 					
 					threshold:  [{
 								below: 3,
-								color: "grey"
+								color: "#bbbbbb"
 							},{
 								below: 1,
-								color: "orange"
+								color: "#ff9800"
 							},{
 								below: 2,
-								color: "green"
+								color: "#4caf50"
 							},{
 								below: -1,
-								color: "red"
+								color: "#e51c23"
 							}],
-							color: "green",
+							color: "#4caf50",
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
@@ -230,18 +230,18 @@ if(!$_GET[report_service] || !$log_mask) {
 					
 					threshold:  [{
 								below: 3,
-								color: "grey"
+								color: "#bbbbbb"
 							},{
 								below: 1,
-								color: "orange"
+								color: "#ff9800"
 							},{
 								below: 2,
-								color: "green"
+								color: "#4caf50"
 							},{
 								below: -1,
-								color: "red"
+								color: "#e51c23"
 							}],
-							color: "green",
+							color: "#4caf50",
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {

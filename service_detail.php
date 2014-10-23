@@ -130,13 +130,13 @@ if( $defaults[service_time_sum] > 0 && $defaults[service_time_count] > 0) {
 $server_enabled="";
 
 if($defaults[server_enabled] != 1) {
-	$server_enabled=";<i>server disabled</i>";	
+	$server_enabled="<span class='label label-primary'>server disabled</span>";	
 }
 
 $server_noti_enabled="";
 
 if($defaults[server_notify] != 1) {
-	$server_noti_enabled=";<i>disabled via server</i>";	
+	$server_noti_enabled="<span class='label label-primary'>disabled via server</span>";	
 }
 
 
@@ -256,7 +256,7 @@ $layout->create_box($info_box_title, $core_content, "service_detail_service_info
 											
 											"needs_ack" => $needs_ack,
 											"color" => $svc_color,
-											"state" => $svc_state,
+											"state" => "<span style='font-size:25px'>" . $svc_state . "</span>",
 											"handled" => $handled,
 											"dead_marker" => $btl->resolveDeadMarker($defaults[server_dead])
 											)

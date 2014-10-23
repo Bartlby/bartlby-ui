@@ -32,12 +32,7 @@
 		<td align=left id='service_status' name='service_status'><?=$plcs[service][service_retain_current]?> / <?=$plcs[service][service_retain]?> </font></td>
 		<td>&nbsp;</td>           
 	</tr>	
-	<tr>
-		<td width=150 class='font2'>Last State Change:</td>
-		<td align=left ><?=date("d.m.Y H:i:s",$plcs[service][last_state_change])?> (since:  <?=$btl->intervall(time()-$plcs[service][last_state_change])?>)</font></td>
-		<td>&nbsp;</td>           
-	</tr>	
-	
+
 
 
 	<tr>

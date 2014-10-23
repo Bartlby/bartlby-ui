@@ -40,7 +40,7 @@ if(!$defaults) {
 
 
 
-$isup="<font color='green'>UP</font>";	
+$isup="<span class='label label-success' style='font-size:25px;'>UP</span>";
 
 $services_assigned="";
 
@@ -60,24 +60,25 @@ $btl->service_list_loop(function($svc, $shm) use (&$dmp_info, &$server_service_c
 
 
 
-if($is_up_down < 0) 	$isup="<font color='red'>DOWN</font>";
+if($is_up_down < 0) 	$isup="<span class='label label-danger' class='font-size:25px;'>DOWN</span>";
 	
 	
 
 while(list($k, $v) = @each($dmp_info)) {
-		$services_assigned .= "<a href='services.php?server_id=" . $_GET[server_id] . "&expect_state=" . $k . "'><font color='" . $btl->getColor($k) . "'>" . $btl->getState($k) . "</font></A>:" . $v . ",";
+		if($v <= 0) continue;
+		$services_assigned .= "<a href='services.php?server_id=" . $_GET[server_id] . "&expect_state=" . $k . "'>" . $btl->getColorSpan($k) . "</A>: " .  $v . "<br>";
 }
 
 if($defaults["server_notify"]==1) {
-	$noti_en="true";
+	$noti_en="<input type=checkbox class=switch checked disabled>";
 } else {
-	$noti_en="false";
+	$noti_en="<input type=checkbox class=switch disabled>";
 }
 
 if($defaults["server_enabled"]==1) {
-	$server_en="true";
+	$server_en="<input type=checkbox class=switch checked disabled>";
 } else {
-	$server_en="false";
+	$server_en="<input type=checkbox class=switch disabled>";
 }
 $triggers = "";
 if(strlen($defaults[enabled_triggers]) > 2) {
@@ -131,12 +132,12 @@ if($defaults[default_service_type] == 10) {
 
 
 
-for($x=0; $x<count($defaults[groups]); $x++) {
-	if($defaults[groups][$x][servergroup_active] == 0) {
-		$server_en .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $defaults[groups][$x][servergroup_id] . "'>" . $defaults[groups][$x][servergroup_name] . "</A>)";
+for($x=0; $x<count($defaults[servergroups]); $x++) {
+	if($defaults[servergroups][$x][servergroup_active] == 0) {
+		$server_en .= " <span class='label label-primary'>servergroup disabled</span> (<a href='servergroup_detail.php?servergroup_id=" . $defaults[servergroups][$x][servergroup_id] . "'>" . $defaults[servergroups][$x][servergroup_name] . "</A>)";
 	}
-	if($defaults[groups][$x][servergroup_notify] == 0) {
-		$noti_en .= ";<i>servergroup disabled (<a href='servergroup_detail.php?servergroup_id=" . $defaults[groups][$x][servergroup_id] . "'>" . $defaults[groups][$x][servergroup_name] . "</A>)";
+	if($defaults[servergroups][$x][servergroup_notify] == 0) {
+		$noti_en .= " <span class='label label-primary'>servergroup disabled</span> (<a href='servergroup_detail.php?servergroup_id=" . $defaults[servergroups][$x][servergroup_id] . "'>" . $defaults[servergroups][$x][servergroup_name] . "</A>)";
 	}
 }
 
@@ -146,9 +147,7 @@ $info_box_title='Server Info';
 $layout->create_box($info_box_title, $core_content, "server_detail_server_info", array(
 										"service" => $defaults,
 										"isup" => $isup,
-										"notify_enabled" => $noti_en,
 										"server_enabled" => $server_en,
-										"triggers" => $triggers, 
 										"default_service_type" => $svc_type
 										),
 			"server_detail_server_info", false,true);
@@ -179,6 +178,53 @@ if(is_array($defaults[groups])) {
 				"server_detail_server_group_info", false,true);
 	
 }
+
+
+$info_box_title='Notifications';  
+$layout->create_box($info_box_title, $core_content, "server_detail_notifications", array(
+											"notify_enabled" => $noti_en,
+											
+											"triggers" => $triggers, 
+										
+											
+											
+											)
+											
+		, "server_detail_notifications", false, true);
+
+$info_box_title='Timing';  
+$layout->create_box($info_box_title, $core_content, "server_detail_timing", array(
+											"service" => $defaults,
+											"service_ms" => $svcMS,
+											"service_delay" => $svcDEL,
+											"currently_running" => $currun,
+											"check_plan" => $plan_box
+											)
+											
+		, "server_detail_timing", false, true);
+
+
+
+
+$info_box_title='Orchestra/Cluster';  
+$layout->create_box($info_box_title, $core_content, "server_detail_orch", array(
+											"service" => $defaults,
+											"renotify" => $renot_en,
+											"escalate" => $escal_en,
+											"server_notifications" => $server_noti_enabled,
+											"notify_enabled" => $noti_en,
+											"triggers" => $triggers
+										
+											
+											
+											)
+											
+		, "server_detail_orch", false, true);
+
+
+
+
+
 if($defaults[is_downtime] == 1) {
 	$info_box_title='Downtime';  
 	$core_content = "";

@@ -8325,6 +8325,11 @@ div.legend > table {
 }
 
 
+#quick_look_table  a {
+  font-size: 20px;
+  font-weight: 500;
+}
+
 
 .borderless-thin tbody tr td, .borderless thead tr th {
     border: none;
@@ -8358,6 +8363,8 @@ div.legend > table {
     font-weight: normal;
    
 }
+
+
 
 
 

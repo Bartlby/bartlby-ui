@@ -910,7 +910,10 @@ function PluginSearch($what) {
 
 
 
-
+function quickLookHighlight($in, $regex) {
+	$in = preg_replace("/" . $regex . "/i", "<span style='  background: rgba(255, 237, 40, 0.4);  -webkit-border-radius: 1px;  -moz-border-radius: 1px;  border-radius: 1px;'>$0</span>", $in);
+	return $in;
+}
 function QuickLook($what) {
 	global $btl, $layout, $rq;
 	//compat for extensions
@@ -939,7 +942,7 @@ function QuickLook($what) {
 	$btl->worker_list_loop(function($wrk, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $wrk[name])) {
 			
-				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . $wrk[name] . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
+				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . quickLookHighlight($wrk[name],$_GET[search]) . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
 				$wrkfound=true;
 		}
 
@@ -953,7 +956,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $srv[server_name] )) {
-			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'>" . $srv[server_name] . "</A>(<a href='services.php?server_id=" . $srv[server_id] . "'><font size=1>Services</font></A>)</td><td>" . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
+			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'>" . quickLookHighlight($srv[server_name], $_GET[search]) . "</A>  </td><td><a href='services.php?server_id=" . $srv[server_id] . "'>Services</font></A> " . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
             $svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -970,7 +973,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
-			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'>" . $svc[server_name] . "/" . $svc[service_name] . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
+			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'>" . $btl->getColorSpan($svc[current_state]) .  " " . quickLookHighlight($svc[server_name] . "/" . $svc[service_name], $_GET[search]) . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
 			$svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -984,7 +987,7 @@ function QuickLook($what) {
 	$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$srvgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servergroup_name])) {
 			
-				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . $srvgrp[servergroup_name] . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . quickLookHighlight($srvgrp[servergroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
 				$srvgrpfound=true;
 		}
 
@@ -994,7 +997,7 @@ function QuickLook($what) {
 	$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servicegroup_name])) {
 			
-				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . $srvgrp[servicegroup_name] . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . quickLookHighlight($srvgrp[servicegroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
 				$svcgrpfound=true;
 		}
 

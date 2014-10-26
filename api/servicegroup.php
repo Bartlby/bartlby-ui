@@ -33,22 +33,22 @@ $app->group("/v1", function() use($app) {
         //FIXME AUTH THIS REQUEST
         $app->group("/running", function() use($app) {
             //Running STUFF
-            $app->get("/service(/node/:node)", function($node=0) use($app) {
+            $app->get("/servicegroup(/node/:node)", function($node=0) use($app) {
                 $filter = $app->request->params();
                 if(!$filter[from]) $filter[from]=0;
                 if(!$filter[to]) $filter[to]=20;
 
-                api_v1_svc_list($filter, false, $node);
+                api_v1_svcgrp_list($filter, false, $node);
 
             });       
-            $app->get("/service(/node/:node)/:id", function($node=0, $id) use($app) {
+            $app->get("/servicegroup(/node/:node)/:id", function($node=0, $id) use($app) {
                 $filter = $app->request->params();
-                $filter[service_id]=$id;
+                $filter[servicegroup_id]=$id;
                 if(!$filter[from]) $filter[from]=0;
                 if(!$filter[to]) $filter[to]=20;
-                api_v1_svc_list($filter, false, $node);
+                api_v1_svcgrp_list($filter, false, $node);
             });
-            $app->post("/service(/node/:node)/:id/force", function($node=0, $id) use($app) {
+            $app->post("/servicegroup(/node/:node)/:id/force", function($node=0, $id) use($app) {
                 //Force Service at ID
                 ////FIXME
                 $btl=btl_api_load_node($node);
@@ -56,16 +56,16 @@ $app->group("/v1", function() use($app) {
 
 
                 $btl->service_list_loop(function($svc, $shm) use ($id, &$btl) {
-                    if($svc[service_id] == $id) {
+                    if($svc[servicegroup_id] == $id) {
                         bartlby_check_force($btl->RES, $shm);
                         return LOOP_BREAK;
                     }                    
                 });
                 $r[api][status_code]=0;
-                $r[api][status_msg]="Check forced";
+                $r[api][status_msg]="All Checks forced";
                 echo json_encode($r);                                
             });
-            $app->post("/service(/node/:node)/:id/trigger", function($node=0, $id) use($app) {
+            $app->post("/servicegroup(/node/:node)/:id/trigger", function($node=0, $id) use($app) {
                 //Force Service at ID
                 ////FIXME
                 $btl=btl_api_load_node($node);
@@ -73,9 +73,9 @@ $app->group("/v1", function() use($app) {
 
                 $input = $app->request->params();
                 $rcode=-1;
-                $btl->service_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
-                    if($svc[service_id] == $id) {
-                        $rcode=bartlby_toggle_service_notify($btl->RES, $shm, 1);
+                $btl->servicegroup_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
+                    if($svc[servicegroup_id] == $id) {
+                        $rcode=bartlby_toggle_servicegroup_notify($btl->RES, $shm, 1);
                         return LOOP_BREAK;
                     }                    
                 });
@@ -83,7 +83,7 @@ $app->group("/v1", function() use($app) {
                 $r[api][status_msg]="Toggled Notifications ";
                 echo json_encode($r);                                
             });
-            $app->post("/service(/node/:node)/:id/active", function($node=0, $id) use($app) {
+            $app->post("/servicegroup(/node/:node)/:id/active", function($node=0, $id) use($app) {
                 //Force Service at ID
                 ////FIXME
                 $btl=btl_api_load_node($node);
@@ -91,9 +91,9 @@ $app->group("/v1", function() use($app) {
 
                 $input = $app->request->params();
                 $rcode=-1;
-                $btl->service_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
-                    if($svc[service_id] == $id) {
-                        $rcode=bartlby_toggle_service_active($btl->RES, $shm, 1);
+                $btl->servicegroup_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
+                    if($svc[servicegroup_id] == $id) {
+                        $rcode=bartlby_toggle_servicegroup_active($btl->RES, $shm, 1);
                         return LOOP_BREAK;
                     }                    
                 });
@@ -101,7 +101,7 @@ $app->group("/v1", function() use($app) {
                 $r[api][status_msg]="Toggled Check";
                 echo json_encode($r);                                
             });
-            $app->post("/service(/node/:node)/:id/handle", function($node=0, $id) use($app) {
+            $app->post("/servicegroup(/node/:node)/:id/handle", function($node=0, $id) use($app) {
                 //Force Service at ID
                 ////FIXME
                 $btl=btl_api_load_node($node);
@@ -110,7 +110,7 @@ $app->group("/v1", function() use($app) {
                 $input = $app->request->params();
                 $rcode=-1;
                 $btl->service_list_loop(function($svc, $shm) use ($id, &$btl, &$input, &$rcode) {
-                    if($svc[service_id] == $id) {
+                    if($svc[servicegroup_id] == $id) {
                         $rcode=bartlby_toggle_service_handled($btl->RES, $shm, 1);
                         return LOOP_BREAK;
                     }                    
@@ -125,11 +125,11 @@ $app->group("/v1", function() use($app) {
             //Running STUFF
  
 
-            $app->post("/service(/node/:node)", function($node=0) use($app) {
+            $app->post("/servicegroup(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
                  $API = new Btl_api($btl->RES);
-                 $return = $API->add_service($app->request->getBody());
+                 $return = $API->add_servicegroup($app->request->getBody());
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully created";
@@ -141,11 +141,11 @@ $app->group("/v1", function() use($app) {
                  
                  
             });
-            $app->patch("/service(/node/:node)/:id", function($node=0, $id) use($app) {
+            $app->patch("/servicegroup(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
                  $API = new Btl_api($btl->RES);
-                 $return = $API->modify_service($id , $app->request->getBody());
+                 $return = $API->modify_servicegroup($id , $app->request->getBody());
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully modified";
@@ -156,11 +156,11 @@ $app->group("/v1", function() use($app) {
             });
 
 
-            $app->delete("/service(/node/:node)/:id", function($node=0, $id) use($app) {
+            $app->delete("/servicegroup(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
                  $API = new Btl_api($btl->RES);
-                 $return = $API->delete_service($id);
+                 $return = $API->delete_servicegroup($id);
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully deleted";
@@ -169,20 +169,20 @@ $app->group("/v1", function() use($app) {
                 }
                 echo json_format(json_encode($r));
             });
-            $app->get("/service(/node/:node)", function($node=0) use($app) {
+            $app->get("/servicegroup(/node/:node)", function($node=0) use($app) {
                 $filter = $app->request->params();
             
                 
                 if(!$filter[from]) $filter[from]=0;
                 if(!$filter[to]) $filter[to]=20;
 
-                api_v1_svc_list($filter, true, $node);
+                api_v1_svcgrp_list($filter, true, $node);
 
             }); 
             
-            $app->get("/service(/node/:node)/:id", function($node=0, $id) use($app) {
+            $app->get("/servicegroup(/node/:node)/:id", function($node=0, $id) use($app) {
                 $btl=btl_api_load_node($node);
-                $r=bartlby_get_service_by_id($btl->RES, $id);
+                $r=bartlby_get_servicegroup_by_id($btl->RES, $id);
                 if($r) {
                     $r[api][status_code]=0;
                     $r[api][status_msg]="Success";
@@ -203,8 +203,9 @@ $app->group("/v1", function() use($app) {
 $app->response['Content-Type'] = 'application/json';
 $app->run();
 
-function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) {
+function api_v1_svcgrp_list($filter=array(), $from_disk = false, $node_id = false) {
 
+    
     ////FIXME
     $btl=btl_api_load_node($node_id);
     
@@ -219,63 +220,21 @@ function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) 
     echo '"filter": ';
     echo json_encode($filter);
     echo ',';
-    echo '"services":[';
+    echo '"servicegroups":[';
     $rcnt =0;
     $avail=0;
-    $btl->service_list_loop(function($svc, $shm) use(&$filter, &$rcnt, &$avail, &$from_disk, &$btl) {
+    $btl->servicegroup_list_loop(function($svc, $shm) use(&$filter, &$rcnt, &$avail, &$from_disk, &$btl) {
+        if($filter[servicegroup_id] && (int)$svc[servicegroup_id] != (int)$filter[servicegroup_id]) return LOOP_CONTINUE;
+
         if($from_disk) {
-                $svc=bartlby_get_service_by_id($btl->RES, $svc[service_id]);
+                $svc=bartlby_get_servicegroup_by_id($btl->RES, $svc[servicegroup_id]);
         }
-        if($filter[service_id] && (int)$svc[service_id] != (int)$filter[service_id]) return LOOP_CONTINUE;
-        if($filter[server_id] && $filter[server_id] != $svc[server_id]) {
-                return LOOP_CONTINUE;   
-        }
-        if($filter[servergroup_id] && !isInServerGroup($svc, $filter[servergroup_id])) {
-            return LOOP_CONTINUE;   
-        }
-        if($filter[servicegroup_id] && !isInServiceGroup($svc, $filter[servicegroup_id])) {
-            return LOOP_CONTINUE;   
-        }
-        if($filter[service_id] != "" && $svc[service_id] != $filter[service_id]) {
-                    
-            return LOOP_CONTINUE;   
-        }
-        if($filter[downtime] == "" && $filter[invert] == "" && $filter[expect_state] != "" && $svc[current_state] != $filter[expect_state]) {
-            return LOOP_CONTINUE;   
-        }
-        if($filter[downtime] == "" &&  $filter[invert] && $filter[expect_state] != "" && $svc[current_state] == $filter[expect_state] ) {
-            return LOOP_CONTINUE;   
-        }
-        if($filter[invert] && $filter[expect_state] != "" && $svc[handled] == 1) {
-            return LOOP_CONTINUE;   
-        }       
-        if($filter[invert] && $filter[expect_state] != "" && $svc[current_state] == 4) {
-            return LOOP_CONTINUE;   
-        }
-        if($filter[downtime] && $svc[is_downtime] != 1) {
-            return LOOP_CONTINUE;               
-        }
-        if($filter[expect_state] != "" && $svc[is_downtime] == 1) {
-            return LOOP_CONTINUE;   
-        }
-        if($filter[expect_state] != "" && $svc[handled] == 1) {
-            return LOOP_CONTINUE;   
-        }
-        if(($filter[handled] == "yes"||$filter[handled] == true) && $svc[handled] != 1) {
-            return LOOP_CONTINUE;
-        }
-        if($filter[acks] == "yes" && $svc[service_ack_current] != 2) {
-            return LOOP_CONTINUE;   
-        }
+      
         if($filter[text_search] && !$btl->bartlby_service_matches_string($svc, $filter[text_search])) {
             return LOOP_CONTINUE;
         }
         
         if($shm >= $filter[from] && $rcnt <= $filter[to]) { 
-            
-            //get color and beauty state
-            
-            
             echo json_format(json_encode($svc));
             $rcnt++;
             echo ",";
@@ -286,7 +245,7 @@ function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) 
     });
     echo "null";
     echo '], ';
-    echo '"available_services": ' . $avail . '';
+    echo '"available_servicegroups": ' . $avail . '';
     echo '}';
 }
 

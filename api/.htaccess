@@ -2,3 +2,16 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)/service$ service.php [QSA,L]
 RewriteRule ^(.*)/service/(.*)$ service.php [QSA,L]
+
+
+RewriteRule ^(.*)/server$ server.php [QSA,L]
+RewriteRule ^(.*)/server/(.*)$ server.php [QSA,L]
+
+
+RewriteRule ^(.*)/servergroup$ servergroup.php [QSA,L]
+RewriteRule ^(.*)/servergroup/(.*)$ servergroup.php [QSA,L]
+
+
+
+RewriteRule ^(.*)/servicegroup$ servicegroup.php [QSA,L]
+RewriteRule ^(.*)/servicegroup/(.*)$ servicegroup.php [QSA,L]

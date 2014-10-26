@@ -35,6 +35,18 @@ class HMACAuth extends \Slim\Middleware
         $this->HMACAuth($req);
        
     }
+    function authFailed($msg) {
+        $res = $this->app->response();
+        $res->status(403);
+        echo "Auhorization failed\n";
+        //echo '"' .$content .  "/api" . $req->getPathInfo() . '"' . "\n";
+        echo $msg;
+        return;
+    }
+    function isValidPublicHash($publicHash) {
+            return true;
+            return true;
+    }
 
     /**
      * Form based authentication
@@ -51,21 +63,32 @@ class HMACAuth extends \Slim\Middleware
             //$res->status(403); -> BAD
             $publicHash  = $req->headers('X-Public');
             $contentHash = $req->headers('X-Hash');
+            $microTime = $req->headers('X-Microtime');
+            $local_microTime = microtime(true);
             $privateHash  = $config["privateHash"];
             $content     = $req->getBody();
 
-            $hash = hash_hmac('sha256', $content . $_SERVER[REQUEST_URI], $privateHash);
+            $hash = hash_hmac('sha256', $content . $_SERVER[REQUEST_URI] . $microTime, $privateHash);
 
+            if(!$this->isValidPublicHash($publicHash)) {
+                //Unkown Public Hash?
+                $this->authFailed("Invalid Public Hash");
+                return;
+            }
+            if(($local_microTime-$microTime) >= 10) {
+                //Replay attack?
+                $this->authFailed("Hash error");
+
+                return;
+            }
             if ($hash != $contentHash){
                 //MISSMATCH
-                $res = $this->app->response();
-                $res->status(403);
-                echo "Auhorization failed\n";
-                echo '"' .$content .  "/api" . $req->getPathInfo() . '"' . "\n";
+                $this->authFailed("hash error 2");
+                return;
                 
                 
             } else {
-                //CHECK If user hash is valid (public-hash)
+                
                 $this->next->call();
             }
 

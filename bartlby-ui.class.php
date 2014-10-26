@@ -24,8 +24,12 @@ $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */ 
 
+include "Session.class.php";
 include_once("bartlbystorage.class.php");
-session_start();
+
+SessionManager::sessionStart(gethostname());
+
+
 
 set_time_limit(0);
 if(function_exists("set_magic_quotes")) set_magic_quotes_runtime(0);
@@ -1313,12 +1317,8 @@ if($m[2] == "5724") {
 			$btl=$this;
 			$btl_to_use->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
 				global $_SERVER;
-				if($_SESSION[username] != "" && $_SESSION[password] != "") {
-					$_SERVER[PHP_AUTH_USER]=$_SESSION[username];
-					$_SERVER[PHP_AUTH_PW]=$_SESSION[password];
-				}
-				
-				if($_SERVER[PHP_AUTH_USER] == $v[name] && (md5($_SERVER[PHP_AUTH_PW]) == $v[password] || $_SERVER[PHP_AUTH_PW] == $v[password])) {
+			
+				if($_SESSION[username] == $v[name] && $_SESSION[password] == $v[password]) {
 					
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
@@ -1339,33 +1339,24 @@ if($m[2] == "5724") {
 	
 
 
-		if($auted == 0 && $_SESSION[username] != "") {
-			$this->redirectError("BARTLBY::LOGIN");
+	
+		if($auted == 0) {
+            session_destroy();
 			if(php_sapi_name() == "cli") {
-
 				return false;
+			} else {
+
+				header('HTTP/1.1 403 Authorization failed');
+				echo "Authorization failed - go to <a href=index.php>login</A>";
+				
+				exit(1);
 			}
-		}
-		if ($auted==0) { 
-			
-			 session_destroy();
-	      	@header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
-	      	@Header("HTTP/1.0 401 Unauthorized");
-	      	 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
-	      	 if(php_sapi_name() == "cli") {
 
-				return false;
-			 }
-			 $this->redirectError("BARTLBY::LOGIN");
-			 exit;
 		} else {
-			$this->user=$_SERVER[PHP_AUTH_USER];
-			$this->pw=$_SERVER[PHP_AUTH_PW];
-			
-			
-			
+			$this->user=$_SESSION[worker][name];
+			return true;
 		}
-		return true;
+		return false;
 	}
 	function _log($str) {
 		$logfile=bartlby_config($this->CFG, "logfile");

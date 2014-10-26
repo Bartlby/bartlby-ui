@@ -28,6 +28,10 @@ switch($act) {
 		Header("Location: " .  $_SERVER['HTTP_REFERER']);
 		
 	break;
+	case 'logout':
+		session_destroy();
+		header("Location: index.php");
+	break;
 	case 'save_permissions':
 	
 		while(list($k, $v) = each($_POST)) {
@@ -465,7 +469,7 @@ switch($act) {
 			if($df == false) {
 				$exec_plan="";	
 			}
-			$end_pw= md5($_GET[worker_password]);
+			$end_pw= sha1($_GET[worker_password]);
 			
 			$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 			if(!$_GET[worker_password]) {
@@ -588,7 +592,7 @@ switch($act) {
 				"services" => $svcstr,
 				"notify_levels" => $notifystr,
 				"active" => $_GET[worker_active],
-				"password" => md5($_GET[worker_password]),
+				"password" => sha1($_GET[worker_password]),
 				"enabled_triggers" => $triggerstr,
 				"escalation_limit" => $_GET[escalation_limit],
 				"escalation_minutes" => $_GET[escalation_minutes],

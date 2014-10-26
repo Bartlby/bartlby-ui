@@ -1,3 +1,4 @@
+
 <?
 include "config.php";
 if(count($confs) > 0) {
@@ -25,18 +26,19 @@ if(count($confs) > 0) {
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	
 	<meta charset="utf-8">
-	<title>Free HTML5 Bootstrap Admin Template</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
-	<meta name="author" content="Muhammad Usman">
-
-	<!-- The styles -->
-	<link id="bs-css" href="themes/classic/css/bootstrap-simplex.css" rel="stylesheet">
+	<title>Bartlby</title>
+	<style>
+		input.vertical { width: 50px;}
+	</style>
+	<script>
+		js_theme_name='classic';
+		</script>
 	<style type="text/css">
 	  body {
 		padding-bottom: 40px;
@@ -45,22 +47,99 @@ if(count($confs) > 0) {
 		padding: 9px 0;
 	  }
 	</style>
-	<link href="themes/classic/css/bootstrap-responsive.css" rel="stylesheet">
-	<link href="themes/classic/css/charisma-app.css" rel="stylesheet">
-	<link href="themes/classic/css/jquery-ui-1.8.21.custom.css" rel="stylesheet">
-	<link href='css/fullcalendar.css' rel='stylesheet'>
-	<link href='css/fullcalendar.print.css' rel='stylesheet'  media='print'>
-	<link href='css/chosen.css' rel='stylesheet'>
-	<link href='css/uniform.default.css' rel='stylesheet'>
-	<link href='css/colorbox.css' rel='stylesheet'>
-	<link href='css/jquery.cleditor.css' rel='stylesheet'>
-	<link href='css/jquery.noty.css' rel='stylesheet'>
-	<link href='css/noty_theme_default.css' rel='stylesheet'>
-	<link href='css/elfinder.min.css' rel='stylesheet'>
-	<link href='css/elfinder.theme.css' rel='stylesheet'>
-	<link href='css/jquery.iphone.toggle.css' rel='stylesheet'>
-	<link href='css/opa-icons.css' rel='stylesheet'>
-	<link href='css/uploadify.css' rel='stylesheet'>
+	
+	<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+
+	<link href="themes/classic/css/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
+	
+	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
+	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
+	
+	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
+	
+	
+	
+	<link href='themes/classic/css/slider.css' rel='stylesheet'>
+	
+	<link href="themes/classic/btl.css" rel="stylesheet">
+
+	<link href="themes/classic/css/selectize.bootstrap3.css" rel="stylesheet">
+
+
+	
+	
+	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
+	<link href='themes/classic/css/dataTables.tableTools.css' rel='stylesheet'>
+
+	
+	
+
+
+
+	<!-- jQuery -->
+	<script src="themes/classic/js/jquery-1.11.0.min.js"></script>
+
+
+	<script src="themes/classic/js/bootstrap.js"></script>
+	<script src="themes/classic/js/selectize.js"></script>
+
+	<!-- jQuery UI -->
+	<script src="themes/classic/js/jquery-ui.js"></script>
+	<!-- transition / effect library -->
+	<script src="themes/classic/js/jquery.cookie.js"></script>
+	<script src="themes/classic/js/jquery-ui-timepicker-addon.js"></script>
+	<!-- calander plugin -->
+	<script src='themes/classic/js/fullcalendar.min.js'></script>
+	<!-- data table plugin -->
+	<script src='themes/classic/js/jquery.dataTables.min.js'></script>
+	<script src='themes/classic/js/dataTables.tableTools.js'></script>
+	<script src='themes/classic/js/dataTables.bootstrap.js'></script>
+
+	<!-- chart libraries start -->
+	
+	<script src="themes/classic/js/jquery.flot.min.js"></script>
+	<script src="themes/classic/js/jquery.flot.pie.min.js"></script>
+	<script src="themes/classic/js/jquery.flot.stack.js"></script>
+	<script src="themes/classic/js/jquery.flot.resize.min.js"></script>
+	<script src="themes/classic/js/jquery.flot.threshold.js"></script>
+	<script src="themes/classic/js/jquery.flot.selection.js"></script>
+	<script src="themes/classic/js/jquery.flot.tooltip.js"></script>
+	<!-- chart libraries end -->
+  
+
+
+	<!--GAUGE-->
+	<script src="themes/classic/js/raphael-min.js"></script>
+	<script src="themes/classic/js/justgauge.js"></script>
+	
+	<!-- notification plugin -->
+	<script src="themes/classic/js/jquery.noty.js"></script>
+
+
+	<!-- application script for Charisma demo -->
+	
+
+	<script src="themes/classic/js/jquery.terminal-0.8.8.min.js"></script>	
+	
+	
+
+
+    <script type="text/javascript" src="./jsrrd/binaryXHR.js"></script>
+    <script type="text/javascript" src="./jsrrd/rrdFile.js"></script>
+
+    <!-- rrdFlot class needs the following four include files !-->
+    <script type="text/javascript" src="./jsrrd/rrdFlotSupport.js"></script>
+    <script type="text/javascript" src="./jsrrd/rrdFlot.js"></script>
+
+
+    <script type="text/javascript" src="themes/classic/js/jquery.icheck.js"></script>
+
+    <script type="text/javascript" src="themes/classic/js/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="themes/classic/js/bootstrap-switch.js"></script>
+
+	<script type="text/javascript" src="js/btl.js"></script>
+
+	<link href='themes/classic/css/sweet-alert.css' rel='stylesheet'>
 
 	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
 	<!--[if lt IE 9]>
@@ -68,147 +147,96 @@ if(count($confs) > 0) {
 	<![endif]-->
 
 	<!-- The fav icon -->
-	<link rel="shortcut icon" href="img/favicon.ico">
+	<link rel="shortcut icon" href="themes/classic/img/favicon.ico">
 		
+
+	<link href="themes/classic/css/font-awesome.min.css" rel="stylesheet">	
+
+
+	<script>
+	$(document).ready(function() {
+		$("#login_btn").click(function() {
+			var hash=CryptoJS.SHA1($("#password").val());
+			console.log(hash.toString());
+		
+			//$("#password").val();
+			$.post( "login.php", {
+					"login_username": $("#login_username").val(),
+					"password": hash.toString(),
+					"btl_instance_id": $('[name=btl_instance_id]').val()
+			})
+			.done(function() {
+				swal("OK", "Login Successfull", "success");
+				delay(function() {
+					document.location.href='overview.php';
+				}, 500);
+			})
+			.fail(function() {
+				swal("Error", "Login Failed", "error");	
+			});
+			 
+		});
+	});
+
+	</script>
+
 </head>
 
-<body>
+<body class="texture">
 
-<div class="box" id="MAIN" style="height:92%">
-					<div class="box-header well">
-						<h2><i class="xicon-info-sign"></i> Login</h2>
-						<div class="box-icon">
-							<a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
-						</div>
-					</div>
-					<div class="box-content" id="content_MAIN" style="display:block; ">
-						
-<div class="alert alert-info">
-						Please login with your Username and Password.
-					</div>
-<form class="form-horizontal" action="login.php" method="post">
-						<fieldset>
-							<div class="input-prepend" title="Username" data-rel="tooltip">
-								<span class="add-on"><i class="icon-user"></i></span><input autofocus class="input-large span10" name="login_username" id="username" type="text" value="admin" />
+<div id="cl-wrapper" class="login-container">
+
+	<div class="middle-login">
+		<div class="block-flat">
+			<div class="header">							
+				<h3 class="text-center">Bartlby</h3>
+			</div>
+			<div>
+				<form style="margin-bottom: 0px !important;" class="form-horizontal" action="login.php" id=lform method=POST>
+					<div class="content">
+						<h4 class="title">Login Access</h4>
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-user"></i></span>
+										<input type="text" name="login_username" id="login_username" placeholder="Username" class="form-control">
+									</div>
+								</div>
 							</div>
-							<div class="clearfix"></div>
-
-							<div class="input-prepend" title="Password" data-rel="tooltip">
-								<span class="add-on"><i class="icon-lock"></i></span><input class="input-large span10" name="password" id="login_password" type="password" value="admin123456" />
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+										<input type="password" name="password" id="password" placeholder="Password" id="password" class="form-control">
+									</div>
+								</div>
 							</div>
-							<div class="clearfix"></div>
-
-							<div class="input-prepend">
+							<div class="form-group">
+								<div class="col-sm-12">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-location-arrow"></i></span>
+										<?
+											echo $drpd;
+										?>	
+									</div>
+								</div>
+							</div>
 							
-							</div>
-
-							<div class="input-prepend" title="Instance" data-rel="tooltip">
-								Instance (if Single Sign on is enabled please use the credentials from the Master Node)
-							</div>
-							<div class="clearfix"></div>
-
-							<div class="input-prepend">
-								<?
-echo $drpd;
-								?>		
-							</div>
-
-
-
-
-
-
-
-							<div class="clearfix"></div>
-
-							<p class="center span5">
-							<button type="submit" class="btn btn-primary">Login</button>
-							</p>
-						</fieldset>
-					</form>
-					
-
-
-		<div class="clearfix"></div>
 					</div>
+					<div class="foot">
+						<button class="btn btn-primary" data-dismiss="modal" type="button" id=login_btn>Log me in</button>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+		<div class="text-center out-links"><a href="#">bartlby.org</a></div>
+	</div> 
+	
 </div>
 
 
-
-	<!-- external javascript
-	================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-
-	<!-- jQuery -->
-	<script src="themes/classic/js/jquery-1.7.2.min.js"></script>
-	<!-- jQuery UI -->
-	<script src="themes/classic/js/jquery-ui-1.8.21.custom.min.js"></script>
-	<!-- transition / effect library -->
-	<script src="themes/classic/js/bootstrap-transition.js"></script>
-	<!-- alert enhancer library -->
-	<script src="themes/classic/js/bootstrap-alert.js"></script>
-	<!-- modal / dialog library -->
-	<script src="themes/classic/js/bootstrap-modal.js"></script>
-	<!-- custom dropdown library -->
-	<script src="themes/classic/js/bootstrap-dropdown.js"></script>
-	<!-- scrolspy library -->
-	<script src="themes/classic/js/bootstrap-scrollspy.js"></script>
-	<!-- library for creating tabs -->
-	<script src="themes/classic/js/bootstrap-tab.js"></script>
-	<!-- library for advanced tooltip -->
-	<script src="themes/classic/js/bootstrap-tooltip.js"></script>
-	<!-- popover effect library -->
-	<script src="themes/classic/js/bootstrap-popover.js"></script>
-	<!-- button enhancer library -->
-	<script src="themes/classic/js/bootstrap-button.js"></script>
-	<!-- accordion library (optional, not used in demo) -->
-	<script src="themes/classic/js/bootstrap-collapse.js"></script>
-	<!-- carousel slideshow library (optional, not used in demo) -->
-	<script src="themes/classic/js/bootstrap-carousel.js"></script>
-	<!-- autocomplete library -->
-	<script src="themes/classic/js/bootstrap-typeahead.js"></script>
-	<!-- tour library -->
-	<script src="themes/classic/js/bootstrap-tour.js"></script>
-	<!-- library for cookie management -->
-	<script src="themes/classic/js/jquery.cookie.js"></script>
-	<!-- calander plugin -->
-	<script src='js/fullcalendar.min.js'></script>
-	<!-- data table plugin -->
-	<script src='js/jquery.dataTables.min.js'></script>
-
-	<!-- chart libraries start -->
-	<script src="themes/classic/js/excanvas.js"></script>
-	<script src="themes/classic/js/jquery.flot.min.js"></script>
-	<script src="themes/classic/js/jquery.flot.pie.min.js"></script>
-	<script src="themes/classic/js/jquery.flot.stack.js"></script>
-	<script src="themes/classic/js/jquery.flot.resize.min.js"></script>
-	<!-- chart libraries end -->
-
-	<!-- select or dropdown enhancer -->
-	<script src="themes/classic/js/jquery.chosen.min.js"></script>
-	<!-- checkbox, radio, and file input styler -->
-	<script src="themes/classic/js/jquery.uniform.min.js"></script>
-	<!-- plugin for gallery image view -->
-	<script src="themes/classic/js/jquery.colorbox.min.js"></script>
-	<!-- rich text editor library -->
-	<script src="themes/classic/js/jquery.cleditor.min.js"></script>
-	<!-- notification plugin -->
-	<script src="themes/classic/js/jquery.noty.js"></script>
-	<!-- file manager library -->
-	<script src="themes/classic/js/jquery.elfinder.min.js"></script>
-	<!-- star rating plugin -->
-	<script src="themes/classic/js/jquery.raty.min.js"></script>
-	<!-- for iOS style toggle switch -->
-	<script src="themes/classic/js/jquery.iphone.toggle.js"></script>
-	<!-- autogrowing textarea plugin -->
-	<script src="themes/classic/js/jquery.autogrow-textarea.js"></script>
-	<!-- multiple file upload plugin -->
-	<script src="themes/classic/js/jquery.uploadify-3.1.min.js"></script>
-	<!-- history.js for cross-browser state change on ajax -->
-	<script src="themes/classic/js/jquery.history.js"></script>
-	<!-- application script for Charisma demo -->
-	<script src="themes/classic/js/charisma.js"></script>
-	
-		
 </body>
 </html>
+
+

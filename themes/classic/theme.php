@@ -76,6 +76,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 	
 	
 	<link href='themes/classic/css/jquery.terminal.css' rel='stylesheet'>
+	<link href='themes/classic/css/sweet-alert.css' rel='stylesheet'>
 	<link href='themes/classic/css/dataTables.tableTools.css' rel='stylesheet'>
 
 	
@@ -103,7 +104,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 	<script src='themes/classic/js/dataTables.bootstrap.js'></script>
 
 	<!-- chart libraries start -->
-	<script src="themes/classic/js/excanvas.js"></script>
+	
 	<script src="themes/classic/js/jquery.flot.min.js"></script>
 	<script src="themes/classic/js/jquery.flot.pie.min.js"></script>
 	<script src="themes/classic/js/jquery.flot.stack.js"></script>
@@ -156,9 +157,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 	<link rel="shortcut icon" href="themes/classic/img/favicon.ico">
 		
 
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylsheet' type='text/css'>
-	<link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
-	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="themes/classic/css/font-awesome.min.css" rel="stylesheet">
 	
 	<?
 		echo $this->BTUI_SCRIPTS;

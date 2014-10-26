@@ -23,7 +23,6 @@ $HeadURL: http://bartlby.svn.sourceforge.net/svnroot/bartlby/trunk/bartlby-core/
 $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */
-session_start();
 
 
 	$Bartlby_SOFT_selected_instance=-1;

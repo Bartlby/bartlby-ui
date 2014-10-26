@@ -1467,13 +1467,16 @@ $('[data-rel="ajax_report_service"]').selectize({
         
 window.servers_table = $('#servers_table').dataTable({
           "iDisplayLength": 50,
-          
+          "fnDrawCallback": function ( oSettings ) {
+            checkCheckBoxes();
+          },
           "aoColumns": [
-            { "sWidth": "1" },
-            { "sWidth": "100" },
-            { "sWidth": "100" },
-            { "sWidth": "20" },
-            { "sWidth": "150" }
+            { "sWidth": "1" , "sClass": "center_td" },
+            { "sWidth": "10" , "sClass": "" },
+            { "sWidth": "1", "sClass": "" },
+            { "sWidth": "90", "sClass": "" },
+            { "sWidth": "90", "sClass": "" }
+          
             ],
           "aaSortingFixed": [[ 0, 'asc' ]],
           "bSort": false,
@@ -1713,6 +1716,19 @@ function checkCheckBoxes() {
       console.log("UNCHECK ALL");
     
       $('.service_checkbox').iCheck('uncheck');
+    }
+  });
+
+
+  $("#server_checkbox_select_all").on('ifClicked',function() {
+    if(!$(this).is(':checked')) {
+      console.log("check all");
+      
+      $('.server_checkbox').iCheck('check');
+    } else {
+      console.log("UNCHECK ALL");
+    
+      $('.server_checkbox').iCheck('uncheck');
     }
   });
   

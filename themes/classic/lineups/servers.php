@@ -16,7 +16,7 @@
 <table class="table table-bordered " id='servers_table'>
 						  <thead>
 							  <tr>
-							  	<th><input type=checkbox id=server_checkbox_select_all></th>
+							  	<th><input type=checkbox id=server_checkbox_select_all class=icheck></th>
 							  		<th>Name</th>
 							  	  <th>IP</th>
 								  <th>Port</th>

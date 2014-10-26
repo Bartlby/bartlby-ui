@@ -46,7 +46,7 @@ btl_add_refreshable_object(function(data) {
 <?
 ?>
 
-<div class="progress">
+<div class="progress big">
   <div class="progress-bar progress-bar-success" style="width: <?=$plcs[prozent_float][ok]?>%">
     <span class="sr-only1"><?=$plcs[prozent_float][ok]?>%</span>
   </div>

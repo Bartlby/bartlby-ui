@@ -84,7 +84,7 @@
 						$ajax_displayed_records++;
 						if($xc >= $_GET[iDisplayStart] && $xc <= $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
 
-							$ajax_checkbox='<div><input type=checkbox class="server_checkbox" data-server_id="' . $svc[server_id] .  '"></div>';
+							$ajax_checkbox='<div><input type=checkbox class="server_checkbox icheck" data-server_id="' . $svc[server_id] .  '"></div>';
 							$ajax_server_options=$btl->getserverOptions($svc, $layout);
 							$ajax_search["aaData"][] = array($ajax_checkbox,"<a href=server_detail.php?server_id=" . $svc[server_id] . ">" . $svc[server_name] . "</A>", $svc[server_ip], $svc[server_port], $ajax_server_options);		//FIXME
 							$ajax_search["rawService"][] = $svc;

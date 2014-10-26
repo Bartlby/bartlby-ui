@@ -238,6 +238,9 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 				
       <div class="navbar-collapse">
         <ul class="nav navbar-nav navbar-right user-nav">
+         <li>
+        	<a href="bartlby_action.php?action=reload"><i class="fa fa-refresh"></i></a>
+        </li>
           <li class="dropdown profile_menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><div class=avatar style="height: 30px; width:30px;"><img alt="Avatar" src="<?=$this->get_gravatar($_SESSION[worker][mail],30)?>" /></div><span style='padding-left:10px;'><?=$_SESSION[worker][name]?></span> <b class="caret"></b></a>
             <ul class="dropdown-menu">
@@ -253,6 +256,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
         <li class=button style='margin-top: 10px;'>
         	Auto Refresh: <input type='checkbox' id=toggle_reload checked  style='height:10px' class=icheck>
         </li>
+      
          <li class="button dropdown">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bookmark"></i></a>
             <ul class="dropdown-menu" style='max-width: 400px;'>

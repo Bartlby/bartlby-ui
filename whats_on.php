@@ -44,7 +44,7 @@ if(!$_GET[json]) {
 
 		$whats_on_tab .= "</div></div>";
 
-		$layout->Tab("Whats On <span class='badge badge-warning'>" . $whats_on[state_changes] . "</span>", $whats_on_tab);
+		$layout->Tab("Whats On <span class='badge badge-primary'>" . $whats_on[state_changes] . "</span>", $whats_on_tab);
 }
 $layout->boxes_placed[MAIN]=true;
 $layout->display("no");

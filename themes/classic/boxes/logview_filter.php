@@ -23,7 +23,12 @@
 					s=>$is_selected
 				));			
 		}
-
+		$ch_time=time();
+		if($plcs["FILTER"][date_filter]) {
+			$tt=explode("/",$_GET[date_filter]);
+			//var_dump($tt);
+			$ch_time=mktime(0,0,0,$tt[0],$tt[1],$tt[2]);	
+		}
 		 echo $layout->Form("fm1", "logview.php", "GET", true);
 		 echo $layout->FormBox(
                                 array(
@@ -34,7 +39,7 @@
 		  echo $layout->FormBox(
 							array(
 								0=>"Date:",
-								1=>$layout->Field("date_filter", "text", date("m/d/Y",time()), "", "class='datepicker'") 
+								1=>$layout->Field("date_filter", "text", date("m/d/Y",$ch_time), "", "class='datepicker'") 
 								)
 			, true);
 		  

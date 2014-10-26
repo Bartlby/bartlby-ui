@@ -27,7 +27,7 @@ $c=0;
 ";
 			//echo  "<td align=left valign=top width=300>";					
 			//echo  "<table width='100%'><tr><td><b><a href='servergroup_detail.php?servergroup_id=" . $grp[servergroup_id] . "'>" . $grp[servergroup_name] . "</b></td><tr><tr><td >" . $bar . "</td></tr></table>";
-			echo  "<div class=col-lg-1><b><a href='servergroup_detail.php?servergroup_id=" . $grp[servergroup_id] . "'>" . $grp[servergroup_name] . "</b></A><br>" . $bar . "</div>";
+			echo  "<div class=col-lg-3><b><a href='servergroup_detail.php?servergroup_id=" . $grp[servergroup_id] . "'><span style='text-overflow: ellipsis;'>" . $grp[servergroup_name] . "</span></b></A><br>" . $bar . "</div>";
 
 			$c++;
 			

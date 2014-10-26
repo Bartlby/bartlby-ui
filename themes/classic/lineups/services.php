@@ -11,7 +11,9 @@
 	});
 	</script>
 
-<div class="table-responsive">	
+
+<div class="panel panel-default">
+  <div class="panel-body">
 	<table class="table  table-bordered " id='services_table'>
 							  <thead >
 								  <tr>
@@ -34,6 +36,7 @@
 	</tbody>
 	</table>
 
+</div>
 </div>
 
 <?=$this->disp_box("legend")?>

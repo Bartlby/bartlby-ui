@@ -1,9 +1,13 @@
-<table  width='100%'>
-	<tr>
-		<td width=150 class='font2' colspan=3>
-			<div class="avatar">
+<div style="text-align: center">
+			<div class="avatar" style='text-align:center'>
 				<img src='<?=$this->get_gravatar($plcs[worker][mail]);?>'>
 			</div>
+</div>
+
+<table  width='100%' class="table no-strip borderless">
+	<tr>
+		<td  class='font2' colspan=3 aalign=center>
+			
 		</td>     
 	</tr>
 	<tr>

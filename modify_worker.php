@@ -255,7 +255,7 @@ $ov .= $layout->FormBox(
 $ov .= $layout->FormBox(
 		array(
 			0=>"Notification Limit",
-			1=>"<font size=1>" . $layout->Field("escalation_limit", "text", $defaults[escalation_limit]) . "notify's  per <br>" . $layout->Field("escalation_minutes", "text", $defaults[escalation_minutes]) .  " minutes</font>"
+			1=>"" . $layout->Field("escalation_limit", "text", $defaults[escalation_limit]) . "notify's  per <br>" . $layout->Field("escalation_minutes", "text", $defaults[escalation_minutes]) .  " minutes"
 		)
 ,true);
 
@@ -264,7 +264,7 @@ if($defaults[notification_aggregation_interval] == 1) $aggcheck="checked";
 $ov .= $layout->FormBox(
 		array(
 			0=>"Aggregate Notifications:",
-			1=>"<font size=1>" . "<input type=checkbox value=1 name=notification_aggregation_interval $aggcheck class=icheck>"
+			1=>"" . "<input type=checkbox value=1 name=notification_aggregation_interval $aggcheck class=icheck>"
 		)
 ,true);
 
@@ -290,9 +290,9 @@ for($x=0; $x<=6; $x++) {
 	if($filled[$x])
 		$chk="checked";
 		
-	$plan_box .= "<tr><td><font size=1>" .  $wdays[$x] . "</font></td><td><input type=text id='wdays_plan[" . $x . "]'  name='wdays_plan[" . $x . "]' value='" . $filled[$x] . "' style='font-size:10px; width:200px; height:20px'></td></tr>";
+	$plan_box .= "<tr><td>" .  $wdays[$x] . "</td><td><input type=text id='wdays_plan[" . $x . "]'  name='wdays_plan[" . $x . "]' value='" . $filled[$x] . "' style='font-size:10px; width:200px; height:20px'></td></tr>";
 }
-$plan_box .= "<tr><td colspan=2><font size=1>Time ranges are seperated with ',' e.g.: 14:30-15:20,01:20-02:30 <a href='javascript:void(0);' onClick='modify_service_make_24();'>make 24h a day</a></font></td></tr>";
+$plan_box .= "<tr><td colspan=2>Time ranges are seperated with ',' e.g.: 14:30-15:20,01:20-02:30 <a href='javascript:void(0);' onClick='modify_service_make_24();'>make 24h a day</a></td></tr>";
 $plan_box .= "</tbody></table>";
 
 

@@ -16,7 +16,13 @@ class SMS {
         }
         
         function mobile_nr_field($nr) {
-        	return "<table width=100%><tr><td>Mobile Nummer:</td><td><input type='text' name='SMSextension_mobile_nr' value='$nr'></td></tr></table>";	
+        	return $this->layout->FormBox(array(
+        			0=>"Mobile Nummer:",
+        			1=>$this->layout->Field("SMSextension_mobile_nr", "text", $nr)
+        		), true);
+
+
+        	
        }
         function _PRE_add_worker() {
 		global $layout, $defaults, $btl;

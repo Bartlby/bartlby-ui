@@ -2119,62 +2119,179 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 	}
 	
 	
-	function getServiceGroupOptions($defaults, $layout) {
+	function getServiceGroupOptions($defaults, $layout, $btn_size = "btn-xs") {
 		$defaults[service_id]="";
-		$modify = "<a href='modify_servicegroup.php?servicegroup_id=" . $defaults[servicegroup_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this servicegroup' border=0></A>";
-		$copy = "<a href='modify_servicegroup.php?copy=true&servicegroup_id=" . $defaults[servicegroup_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Servicegroup' border=0></A>";
-		$logview= "<a href='logview.php?servicegroup_id=" . $defaults[servicegroup_id]. "' ><font size=1><img  title='View Events for this Servicegroup' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
-		
-		
+
+
+
 		if($defaults[servicegroup_active] == 1) {
-			$check = "<a title='Disable Checks for this ServiceGroup' href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[service_id] . "')\"><img id='servicegroup_" . $defaults[servicegroup_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='servicegroup_" . $defaults[servicegroup_id] . "' title='Enable  Checks for this ServiceGroup' border=0></A>";
+			$check_show="inline";
 		}
 		if($defaults[servicegroup_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='servicegroup_trigger_" . $defaults[servicegroup_id] . "' title='Disable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img id='servicegroup_trigger_" . $defaults[servicegroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
-		//$is_gone=$this->is_gone($defaults[service_gone]);
 		if($defaults[is_downtime] == 1) {
-			$downtime="<img src='themes/" . $this->theme . "/images/icon_work.gif' data-rel='tooltip' title='Service is in downtime (" . date("d.m.Y H:i:s", $defaults[downtime_from])  . "-" . date("d.m.Y H:i:s", $servs[$x][downtime_to]) . "): " . $defaults[downtime_notice] . "'>";	
+			
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+
 		} else {
-			$downtime="&nbsp;";
+			$downtime="";
 		}
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview . " " . $downtime;
 		
+		$copy_link = "modify_servicegroup.php?copy=true&servicegroup_id=" . $defaults[servicegroup_id];
+		$modify_link="modify_servicegroup.php?servicegroup_id=" . $defaults[servicegroup_id];
+		
+		$logview_link = "logview.php?servicegroup_id=" . $defaults[servicegroup_id];
+		
+		$delete_link = "delete_servicegroup.php?server_id=" . $defaults[servicegroup_id];
+		
+
+		
+		
+		$check_onclick="xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[server_id] . "')";
+		$notify_onclick="xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[server_id] . "')";
+				
+
+
+
+		$ret = '<div class="btn-group">
+					' . $downtime . '
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=servicegroup_' . $defaults[servicegroup_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=servicegroup_trigger_' . $defaults[servicegroup_id] . '></i></span>
+					<div class="btn-group  ">
+					  
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
+	
+		return $ret;
 	}
 	
 	
-	function getServerGroupOptions($defaults, $layout) {
+	function getServerGroupOptions($defaults, $layout, $btn_size="btn-xs") {
 		$defaults[service_id]="";
-		$modify = "<a href='modify_servergroup.php?servergroup_id=" . $defaults[servergroup_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this servergroup' border=0></A>";
-		$copy = "<a href='modify_servergroup.php?copy=true&servergroup_id=" . $defaults[servergroup_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Servergroup' border=0></A>";
-		$logview= "<a href='logview.php?servergroup_id=" . $defaults[servergroup_id]. "' ><font size=1><img  title='View Events for this Servergroup' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
-		
-		
+
+
+
 		if($defaults[servergroup_active] == 1) {
-			$check = "<a title='Disable Checks for this ServerGroup' href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[service_id] . "')\"><img id='servergroup_" . $defaults[servergroup_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='servergroup_" . $defaults[servergroup_id] . "' title='Enable  Checks for this ServerGroup' border=0></A>";
+			$check_show="inline";
 		}
 		if($defaults[servergroup_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='servergroup_trigger_" . $defaults[servergroup_id] . "' title='Disable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img id='servergroup_trigger_" . $defaults[servergroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
-		//$is_gone=$this->is_gone($defaults[server_gone]);
 		if($defaults[is_downtime] == 1) {
-			$downtime="<img src='themes/" . $this->theme . "/images/icon_work.gif' data-rel='tooltip' title='Service is in downtime (" . date("d.m.Y H:i:s", $defaults[downtime_from])  . "-" . date("d.m.Y H:i:s", $servs[$x][downtime_to]) . "): " . $defaults[downtime_notice] . "'>";	
+			
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+
 		} else {
-			$downtime="&nbsp;";
+			$downtime="";
 		}
 		
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview . " " .  $downtime;
+		$copy_link = "modify_servergroup.php?copy=true&servergroup_id=" . $defaults[servergroup_id];
+		$modify_link="modify_servergroup.php?servergroup_id=" . $defaults[servergroup_id];
 		
+		$logview_link = "logview.php?servergroup_id=" . $defaults[servergroup_id];
+		
+		$delete_link = "delete_servergroup.php?server_id=" . $defaults[servergroup_id];
+		
+
+		
+		
+		$check_onclick="xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[server_id] . "')";
+		$notify_onclick="xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[server_id] . "')";
+				
+
+
+
+		$ret = '<div class="btn-group">
+					' . $downtime . '
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=servergroup_' . $defaults[servergroup_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=servergroup_trigger_' . $defaults[servergroup_id] . '></i></span>
+					<div class="btn-group  ">
+					  
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
+	
+		return $ret;	
+	
+
+
+
 	}
-	function getWorkerOptionsBTN($defaults, $layout) {
+	function getWorkerOptionsBTN($defaults, $layout, $btn_size="btn-xs") {
+		$defaults[service_id]="";
+
+
+
+		
+		$copy_link = "modify_worker.php?copy=true&worker_id=" . $defaults[worker_id];
+		$modify_link="modify_worker.php?worker_id=" . $defaults[worker_id];
+		
+		$logview_link = "logview.php?worker_id=" . $defaults[worker_id];
+		
+		$delete_link = "delete_worker.php?worker_id=" . $defaults[worker_id];
+		
+
+		
+		
+				
+
+
+
+		$ret = '<div class="btn-group">
+					
+					 <span onClick="document.location.href=\'' .  $modify_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="edit" class="fa fa-pencil "></i></span>
+					 <span onClick="document.location.href=\'' .  $copy_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="copy" class="fa fa-copy "></i></span>
+					 <span onClick="document.location.href=\'' .  $delete_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="delete" class="fa fa-trash "></i></span>
+					 
+					
+					 
+				</div>';
+	
+		return $ret;
+
+
 		$defaults[service_id]="";
 		$modify = "<a href='modify_worker.php?worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this  Worker' border=0></A>";
 		$copy = "<a href='modify_worker.php?copy=true&worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Worker' border=0></A>";
@@ -2247,7 +2364,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=server_' . $defaults[server_id] . '></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=server_trigger_' . $defaults[server_id] . '></i></span>
 					<div class="btn-group  ">
-					  <span class="btn btn-primary ' . $btn_size . '  dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-user fa-cog"></i></span>
+					  
 					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
 					    <span class="fa fa-caret-down"></span></span>
 					  <ul class="dropdown-menu">
@@ -2330,7 +2447,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		$ret = '<div class="btn-group">
 					' . $downtime . '
 					' . $is_gone . '
-					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $force_onclick . '"><i  title="Force Check" class="fa fa-play-circle"></i></span>
+					<span class="btn btn-primary hidden-xs ' . $btn_size . '" onClick="' . $force_onclick . '"><i  title="Force Check" class="fa fa-play-circle"></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=service_' . $defaults[service_id] . '></i></span>
 					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=trigger_' . $defaults[service_id] . '></i></span>
 					
@@ -2341,7 +2458,7 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					
 					
 					<div class="btn-group  ">
-					  <span class="btn btn-primary ' . $btn_size . '  dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-user fa-cog"></i></span>
+					  
 					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
 					    <span class="fa fa-caret-down"></span></span>
 					  <ul class="dropdown-menu">

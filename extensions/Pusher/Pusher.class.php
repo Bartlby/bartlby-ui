@@ -16,7 +16,11 @@ class Pusher {
         }
         
         function PushAPIKey($nr) {
-        	return "<table width=100%><tr><td>API-Key (used in prowl/nma):</td><td><input type='text' name='PusherAPIKey' value='$nr'></td></tr></table>";	
+        	return $this->layout->FormBox(array(
+        			0=>"API Key (used in Prowl/NMA):",
+        			1=>$this->layout->Field("PusherAPIKey", "text", $nr)
+        		), true);
+        	//return "<table width=100% class='table no-strip borderless'><tr><td>API-Key (used in prowl/nma):</td><td><input type='text' name='PusherAPIKey' value='$nr' class=></td></tr></table>";	
        }
         function _PRE_add_worker() {
 					global $layout, $defaults, $btl;

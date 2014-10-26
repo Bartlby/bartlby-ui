@@ -35,6 +35,7 @@ function local_box_render($ext, $file, $plcs = array()) {
 	
 	$layout=$this;
 	$boxes_path="extensions/" . $ext . "/boxes/" . $file;
+	
 	ob_start();
 	include($boxes_path);
 	$o = ob_get_contents();	
@@ -139,9 +140,13 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function addScript($sc) {
 		$this->BTUI_SCRIPTS .= $sc;
 	}
-	function Tab($name, $cnt, $tab_name="") {
+	function Tab($name, $cnt, $tab_name="", $default_box=false) {
 		$this->tab_count++;
 		
+
+		if($default_box != false) {
+			$cnt = '<div class=row><div class="col-md-12"><div class="panel panel-default"><div class="panel-heading">' . $name . '</div><div class="panel-body">' . $cnt . "</div></div></div></div>";
+		}
 		$this->tabs[]=array(name=>$name, cnt=>$cnt, tab_name=>$tab_name);
 	}
 	function Table($proz="100%", $border=0) {

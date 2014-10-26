@@ -157,12 +157,12 @@
 
 
 
-	$layout->Tab("Synchronization State", $sync_tab);
+	$layout->Tab("Synchronization State", $sync_tab, "dp_sync", true);
 
-	$layout->Tab("Agent Binarys", $agent_bin_tab);
-	$layout->Tab("Plugin Binarys", $plugin_bin_tab);
+	$layout->Tab("Agent Binarys", $agent_bin_tab, "dp_binarys", true);
+	$layout->Tab("Plugin Binarys", $plugin_bin_tab, "dp_plugins", true);
 
-	$layout->Tab("Config Files", $config_tab);
+	$layout->Tab("Config Files", $config_tab, "dp_config", true);
 
 	$layout->boxes_placed[MAIN]=false;
 

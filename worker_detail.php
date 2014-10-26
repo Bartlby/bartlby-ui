@@ -51,19 +51,19 @@ if($triggers == "") $triggers = "all";
 
 
 if(strstr((string)$defaults[notify_levels], "|0|")) {
-	$levels .= "OK,";	
+	$levels .= $btl->getColorSpan(0)  . ",";
 }
 if(strstr((string)$defaults[notify_levels], "|1|")) {
-	$levels .= "Warning,";
+	$levels .= $btl->getColorSpan(1)  . ",";
 }
 if(strstr((string)$defaults[notify_levels], "|2|")) {
-	$levels .= "Critical,";
+	$levels .= $btl->getColorSpan(2)  . ",";
 }
 if(strstr((string)$defaults[notify_levels], "|7|")) {
-	$levels .= "Downtime,";
+	$levels .= $btl->getColorSpan(7, "Downtime") . ",";
 }
 if(strstr((string)$defaults[notify_levels], "|8|")) {
-	$levels .= "Sirene,";
+	$levels .= $btl->getColorSpan(8, "Sirene") . ",";
 }
 if($levels == "") $levels="ALL";
 
@@ -87,7 +87,7 @@ $layout->create_box($info_box_title, $core_content, "worker_detail_info", array(
 
 
 
-$layout->OUT .= $btl->GetWorkerOptionsBTN($defaults, $layout);
+$layout->OUT .= $btl->GetWorkerOptionsBTN($defaults, $layout, "btn-lg");
 
 $title="Notification Status";  
 $content = "asdf";

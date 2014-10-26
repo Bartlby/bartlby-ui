@@ -17,8 +17,13 @@ RewriteRule ^(.*)/servicegroup$ servicegroup.php [QSA,L]
 RewriteRule ^(.*)/servicegroup/(.*)$ servicegroup.php [QSA,L]
 
 
+
 RewriteRule ^(.*)/downtime$ downtime.php [QSA,L]
 RewriteRule ^(.*)/downtime/(.*)$ downtime.php [QSA,L]
 
 RewriteRule ^(.*)/core$ core.php [QSA,L]
 RewriteRule ^(.*)/core/(.*)$ core.php [QSA,L]
+
+
+RewriteRule ^(.*)/worker$ worker.php [QSA,L]
+RewriteRule ^(.*)/worker/(.*)$ worker.php [QSA,L]

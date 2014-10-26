@@ -31,8 +31,7 @@ $_GLO[debug_commands]=true;
 	$local_smtp_host=$ar->storage->load_key("local_smtp_host");
 	$local_mail_from=$ar->storage->load_key("local_mail_from");
 	
-    var_dump($_SESSION);
-    exit;
+
 
 	switch($_GET[wich]) {
         case 'convert-ars':

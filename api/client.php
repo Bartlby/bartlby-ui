@@ -1,19 +1,23 @@
 <?php
 //Example call
 // client.php /api/v1/running/service/1
+include "BTL_API.php";
+
 $uri = $argv[1];
 
 
 $publicHash = '3441df0babc2a2dda551d7cd39fb235bc4e09cd1e4556bf261bb49188f548348';
 $privateHash = 'e249c439ed7697df2a4b045d97d4b9b7e1854c3ff8dd668c779013653913572';
 $microtime = microtime(true);
-
+$cipher = new Cipher($privateHash);
 
 
 
 $content    = json_encode(array(
     'server1_id' => '4'
 ));
+
+$content = $cipher->encrypt($content);
 
 
 echo "OUT: '" . $content . $uri . "'\n";
@@ -41,6 +45,10 @@ $header_info = curl_getinfo($ch,CURLINFO_HEADER_OUT); //Where $header_info conta
 
 curl_close($ch);
 
-echo "RESULT\n======\n".print_r($result, true)."\n\n";
+
+
+
+echo print_r($cipher->decrypt($result), true) . "\n\n";
+//echo "RESULT\n======\n".print_r($result, true)."\n\n";
 
 ?>

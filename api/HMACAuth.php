@@ -1,5 +1,5 @@
 <?
-
+include_once "BTL_API.php";
 class HMACAuth extends \Slim\Middleware
 {
     /**
@@ -18,7 +18,9 @@ class HMACAuth extends \Slim\Middleware
      */
     public function __construct(array $config = array(), \Strong\Strong $strong = null)
     {
+
         $this->config = array_merge($this->settings, $config);
+        $this->Cipher = new Cipher($this->config['privateHash']);
         
     }
 
@@ -33,6 +35,21 @@ class HMACAuth extends \Slim\Middleware
 
         // Authentication Initialised
         $this->HMACAuth($req);
+
+        
+        $res = $this->app->response;
+        $body=$res->getBody();
+
+        //This One Crypts the Result
+        $res->setBody($this->Cipher->encrypt($body));
+        
+
+        //This Decrypts the input BODY
+        
+        //$env['slim.input_original'] = $env['slim.input'];
+
+         
+      
        
     }
     function authFailed($msg) {
@@ -88,6 +105,9 @@ class HMACAuth extends \Slim\Middleware
                 
                 
             } else {
+               $env = $this->app->environment;
+               $env['slim.input'] = $this->Cipher->decrypt($env['slim.input']);
+                
                 
                 $this->next->call();
             }

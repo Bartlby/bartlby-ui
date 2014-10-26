@@ -24,10 +24,15 @@ $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */ 
 
-include "Session.class.php";
+if(php_sapi_name() != "cli") {
+	include "Session.class.php";
+	SessionManager::sessionStart(gethostname());
+} else {
+	session_start();
+}	
 include_once("bartlbystorage.class.php");
 
-SessionManager::sessionStart(gethostname());
+
 
 
 
@@ -1343,6 +1348,8 @@ if($m[2] == "5724") {
 		if($auted == 0) {
             session_destroy();
 			if(php_sapi_name() == "cli") {
+				echo "AUTH Failed";
+				exit;
 				return false;
 			} else {
 

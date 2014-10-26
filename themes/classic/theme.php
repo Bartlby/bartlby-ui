@@ -57,7 +57,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 	</style>
 	
 
-	<link href="//cdnjs.cloudflare.com/ajax/libs/jquery-ui-bootstrap/0.5pre/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
+	<link href="themes/classic/css/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
 	
 	<link href='themes/classic/css/fullcalendar.css' rel='stylesheet'>
 	<link href='themes/classic/css/fullcalendar.print.css' rel='stylesheet'  media='print'>
@@ -84,8 +84,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 
 
 	<!-- jQuery -->
-	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="themes/classic/js/jquery-1.11.0.min.js"></script>
 
 
 	<script src="themes/classic/js/bootstrap.js"></script>

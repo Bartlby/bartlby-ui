@@ -924,7 +924,7 @@ function QuickLook($what) {
 	$btl->worker_list_loop(function($wrk, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $wrk[name])) {
 			
-				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . quickLookHighlight($wrk[name],$_GET[search]) . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
+				$rq .= "<tr><td>Worker</td><td><a class=ql href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . quickLookHighlight($wrk[name],$_GET[search]) . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
 				$wrkfound=true;
 		}
 
@@ -938,7 +938,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $srv[server_name] )) {
-			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'>" . quickLookHighlight($srv[server_name], $_GET[search]) . "</A>  </td><td><a href='services.php?server_id=" . $srv[server_id] . "'>Services</font></A> " . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
+			$rq .= "<tr><td>Server</td><td><a class=ql href='server_detail.php?server_id=" . $srv[server_id] . "'>" . quickLookHighlight($srv[server_name], $_GET[search]) . "</A>  </td><td><a href='services.php?server_id=" . $srv[server_id] . "'>Services</font></A> " . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
             $svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -955,7 +955,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
-			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'>" . $btl->getColorSpan($svc[current_state]) .  " " . quickLookHighlight($svc[server_name] . "/" . $svc[service_name], $_GET[search]) . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
+			$rq .= "<tr><td>Service</td><td><a class=ql href='service_detail.php?service_place=" . $shm . "'>" . $btl->getColorSpan($svc[current_state]) .  " " . quickLookHighlight($svc[server_name] . "/" . $svc[service_name], $_GET[search]) . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
 			$svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -969,7 +969,7 @@ function QuickLook($what) {
 	$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$srvgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servergroup_name])) {
 			
-				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . quickLookHighlight($srvgrp[servergroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServerGroup</td><td><a class=ql href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . quickLookHighlight($srvgrp[servergroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
 				$srvgrpfound=true;
 		}
 
@@ -979,7 +979,7 @@ function QuickLook($what) {
 	$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servicegroup_name])) {
 			
-				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . quickLookHighlight($srvgrp[servicegroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServiceGroup</td><td><a class=ql href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . quickLookHighlight($srvgrp[servicegroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
 				$svcgrpfound=true;
 		}
 

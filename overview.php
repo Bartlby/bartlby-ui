@@ -346,10 +346,10 @@ $Author: hjanuschka $
 
 			
 		
-			$oks=($all[0] * 100 / $service_sum);
-			$downtimes_infos=(($all[8]+$all[4]) * 100 / $service_sum);
-			$warnings=($all[1] * 100 / $service_sum);
-			$criticals=($all[2] * 100 / $service_sum);
+			$oks=@($all[0] * 100 / $service_sum);
+			$downtimes_infos=@(($all[8]+$all[4]) * 100 / $service_sum);
+			$warnings=@($all[1] * 100 / $service_sum);
+			$criticals=@($all[2] * 100 / $service_sum);
 
 			$proz=100-$criticals;
 	

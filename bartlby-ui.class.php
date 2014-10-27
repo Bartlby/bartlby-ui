@@ -267,7 +267,7 @@ class BartlbyUi {
 			bartlby_new($this->CFG);
 		}
 	}
-	function resolveDeadMarker($start_id, $map) {
+	function resolveDeadMarker($start_id, $map="") {
 		
 		$rr=0;
 		

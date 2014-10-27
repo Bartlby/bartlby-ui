@@ -909,6 +909,8 @@ switch($act) {
 					
 					
 				);
+
+				
 				
 				$mod_server=bartlby_modify_server($btl->RES, $_GET[server_id], $srv_obj);
 				$defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);

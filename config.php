@@ -99,12 +99,65 @@ define("API_PORTIER_HOST", "localhost");
 define("API_PORTIER_PORT", "9031");
 
 
-/*
-
-	$Bartlby_CONF="/opt/bartlby/etc/bartlby.cfg";
+if(!function_exists("bartlby_audit")) {
 	
+	function bartlby_audit($res, $type, $id, $action, $folder) {
+
+		if((int)$_SESSION[worker][worker_id] < 0)  {
+			echo "ASDF";
+			return false;
+		}
+		//readable
+		switch($action) {
+			case BARTLBY_AUDIT_ACTION_ADD:
+			$readable_action="ADD";
+			break;
+			case BARTLBY_AUDIT_ACTION_DELETE:
+			$readable_action="DELETE";
+			break;
+			case BARTLBY_AUDIT_ACTION_MODIFY:
+			$readable_action="MODIFY";
+			break;
+		}
+		
+		switch($type) {
+			case BARTLBY_AUDIT_TYPE_SERVICE:
+			$readable_type="SERVICE";
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVER:
+			$readable_type="SERVER";
+			break;
+			case BARTLBY_AUDIT_TYPE_WORKER:
+			$readable_type="WORKER";
+			break;
+			case BARTLBY_AUDIT_TYPE_DOWNTIME:
+			$readable_type="DOWNTIME";
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVERGROUP:
+			$readable_type="SERVERGROUP";
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVICEGROUP:
+			$readable_type="SERVICEGROUP";
+			break;
+		
+		}
+		//echo "AUDIT: type: " . $readable_type . " ACTION:" . $readable_action . " ID:" . $id . "\n<br>";
+		/*
+		
+		//" Type=>" . $type . " ID=>" . $id . " action=>" . $action . " folder: " . $folder . "\n<br>";
+		
+		*/
+		/*
+		$fp = fopen("/var/log/bartlby_audit.log", "a");
+		fwrite($fp, "AUDIT: Type=>" . $type . " ID=>" . $id . " action=>" . $action . " folder: " . $folder . "\n");
+		fclose($fp);
+		*/
+        return true;
+	}
 
 
-$Bartlby_CONF="/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
-*/
+
+
+}
+
 ?>

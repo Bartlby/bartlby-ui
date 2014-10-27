@@ -17,7 +17,12 @@ class BTL_User_Auth {
            if($r) {
                 $this->WORKER=$r;
                 $this->ALLOWED=$r[api_enabled];
+                $_SESSION[worker][worker_id]=$r[worker_id]; //REQUIRED FOR AUDIT CALLS
 
+           } else {
+                @session_destroy();
+                $this->WORKER=false;
+                $this->ALLOWED=0;
            }
         }
         

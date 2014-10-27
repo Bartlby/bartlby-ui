@@ -3,6 +3,7 @@
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
 
+
 error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
 
@@ -150,7 +151,6 @@ $app->group("/v1", function() use($app) {
             $app->patch("/server(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 
                  $return = bartlby_modify_server($btl->RES, $id , json_decode($app->request->getBody(), true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {

@@ -101,7 +101,7 @@ define("API_PORTIER_PORT", "9031");
 
 if(!function_exists("bartlby_audit")) {
 	
-	function bartlby_audit($res, $type, $id, $action, $folder) {
+	function bartlby_audit($res, $type, $id, $action) {
 
 		if((int)$_SESSION[worker][worker_id] < 0)  {
 			echo "ASDF";
@@ -141,7 +141,24 @@ if(!function_exists("bartlby_audit")) {
 			break;
 		
 		}
-		//echo "AUDIT: type: " . $readable_type . " ACTION:" . $readable_action . " ID:" . $id . "\n<br>";
+		if(class_exists("BartlbyStorage")) {
+			include_once "bartlbystorage.class.php";
+		}
+		$storage = new BartlbyStorage("CORE-Audit");
+		
+		$DBSTR = "CREATE TABLE autoreports (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
+				receipient TEXT,
+				service_var TEXT,
+				daily INTEGER DEFAULT 0, 
+				weekly INTEGER DEFAULT 0, 
+				monthly INTEGER DEFAULT 0, 
+				last_send TEXT				
+				);";
+		$db = $storage->SQLDB($DBSTR, "core-audit.db");
+		
+
+
+		echo "AUDIT: type: " . $readable_type . " ACTION:" . $readable_action . " ID:" . $id . "\n<br>";
 		/*
 		
 		//" Type=>" . $type . " ID=>" . $id . " action=>" . $action . " folder: " . $folder . "\n<br>";

@@ -25,6 +25,7 @@ modify_all_workers=false
 main.overview=true
 main.services=true
 log.report=true
+core.api_access=false;
 log.logview=true
 action.add_server=true
 action.delete_server=true

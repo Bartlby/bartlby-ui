@@ -1735,7 +1735,32 @@ if($m[2] == "5724") {
 		if($name=="") $name="classic";
 		$this->theme=$name;	
 	}
-	
+
+	function getOneExtensionReturn($ext, $func, $base_dir="") {
+			
+			if(!file_exists($base_dir . "extensions/$ext/" .$ext . ".class.php")) {
+				return "Extenstion Not Found";
+			}
+			include_once($base_dir . "extensions/$ext/" .$ext . ".class.php");
+			//eval("\$clh = new " . $ext . "();");
+			$clh = new $ext();
+
+			$fcn_name = "api_" . $func;
+			
+				
+			if(method_exists($clh, $fcn_name)) {
+				
+				$o = $clh->$fcn_name();
+				$ex[ex_name]=$ext;
+				$ex[out]=$o;
+				$ex[fcn]=$func;
+				$ex[method]=$_SERVER['REQUEST_METHOD'];
+				return $ex;
+			} else {
+				return "Method Not Found";
+			}
+					
+	}	
 	function getExtensionsReturn($method, $layout, $ign=false) {
 		$r=array();
 		$dhl = opendir("extensions");
@@ -1748,9 +1773,9 @@ if($m[2] == "5724") {
 				
 				
 				if (class_exists($file)) {
-					eval("\$clh = new " . $file . "();");
+					$clh = new $file();
 					if(method_exists($clh, $method)) {
-						eval("\$o = \$clh->" . $method . "();");
+						$o = $clh->$method();
 						$ex[ex_name]=$file;
 						$ex[out] = $o;
 						

@@ -25,6 +25,15 @@ class Dashboards {
       		
       		return $res;
   			}
+        function api_fcn() {
+            global $_GET; //HOLDS "?query string";
+            global $app;
+            $r = $app->environment["slim.input"]; //UNCRYPTED HTTP BODY
+            //$_SERVER['REQUEST_METHOD']; == "METHOD", GET,POST,DELETE, PATCH
+            
+            
+            return array("k1"=>"v2", "k3"=>"v3", "method"=>$_SERVER['REQUEST_METHOD'], "body"=>$r);
+        }
       	function storeDashboard() {
       		//xajax_ExtensionAjax('Dashboards', 'storeDashboard');
       		global $_GET, $btl;
@@ -55,3 +64,4 @@ class Dashboards {
 }
 
 ?>
+

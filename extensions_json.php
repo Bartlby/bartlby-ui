@@ -15,14 +15,9 @@
 	$ext = $_GET[extension];
 	$func = $_GET[action];
 	
-	include_once("extensions/$ext/" .$ext . ".class.php");
-	eval("\$clh = new " . $ext . "();");
 
-	if(method_exists($clh, $func)) {
-		eval("\$o = \$clh->" . $func. "();");
-		echo json_encode($o);
-	}
-	
-	
+
+	 $i=$btl->getOneExtensionReturn($ext, $func);
+	 echo json_encode($i[out]);
 	
 ?>

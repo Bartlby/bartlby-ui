@@ -3,10 +3,7 @@
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
 include "BTL_API.php";
-
 error_reporting(E_ALL);
-
-
 \Slim\Slim::registerAutoloader();
 
 ini_set("display_errors", "true");
@@ -14,18 +11,27 @@ include "HMACAuth.php";
 
 $app = new \Slim\Slim();
 
-$app->add(new HMACAuth());
+include "bartlby_api_global.php";
+
+//AS LOADING UI STUFF IS PATH DEPENDAND MOVE OUT OF API FOLDER - FROM HERE :)
+chdir("../");
+$btl = btl_api_load_node(0); // ATTACH TO API-NODE (this is the one you auth against)
+
+$app->add(new HMACAuth(array(
+                            "userAuth"=>new BTL_User_Auth($btl, $_SERVER["HTTP_X_PUBLIC"])
+                       )));
+
+
 $app->notFound(function () {
     $r[api][status_code]=-404;
-    $r[api][status_msg]="Call not found";
+    $r[api][status_msg]="Call not found1";
     echo json_format(json_encode($r));
     exit;
 });
-
+ 
 error_reporting(E_ERROR);
 ini_set("display_errors", "true");
 
-include "bartlby_api_global.php";
 
 
 $app->group("/v1", function() use($app) {

@@ -494,7 +494,9 @@ switch($act) {
 				"visible_services" => $wrk1[visible_services],
 				"is_super_user" => $_GET[is_super_user],
 				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
-				"orch_id" => $_GET[orch_id]
+				"orch_id" => $_GET[orch_id],
+				"api_pubkey" => $_GET[api_pubkey],
+				"api_privkey" => $_GET[api_privkey]
 				
 				
 				
@@ -603,7 +605,9 @@ switch($act) {
 				"visible_services" => $selected_services,
 				"is_super_user" => $_GET[is_super_user],
 				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
-				"orch_id" => $_GET[orch_id]
+				"orch_id" => $_GET[orch_id],
+				"api_pubkey" => $_GET[api_pubkey],
+				"api_privkey" => $_GET[api_privkey]
 				
 			);
 			

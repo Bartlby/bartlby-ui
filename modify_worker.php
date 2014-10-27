@@ -49,10 +49,22 @@ if($defaults == false && $_GET["new"] != "true" && !$_GET[dropdown_search]) {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
+
 if(!$defaults) {
 	$defaults[escalation_limit]=50;
 	$defaults[escalation_minutes]=3;
 	$defaults["notify_plan"] = "0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59";
+	$defaults[api_privkey]=substr(sha1(time()), 0, 40);
+	$defaults[api_pubkey]=substr(sha1(time()), 0, 40);
+}
+
+
+if(!$defaults[api_privkey]) {
+	$defaults[api_privkey]=substr(sha1(time()), 0, 40);
+	
+}
+if(!$defaults[api_pubkey]) {
+	$defaults[api_pubkey]=substr(sha1(time()), 0, 40);
 }
 
 //$map = $btl->GetSVCMap();
@@ -358,6 +370,12 @@ $ov .= $layout->FormBox(
 		)
 ,true);
 
+
+
+
+
+
+
 $ov .= $layout->FormBox(
 			Array(
 				0=>"",
@@ -366,9 +384,39 @@ $ov .= $layout->FormBox(
 			)
 ,true);
 
+
+
+$api_box .= $layout->FormBox(
+		array(
+			0=>"Public Key:<br>",
+			1=>$layout->Field("api_pubkey", "text", $defaults[api_pubkey], "", "disabled")
+		)
+,true);
+
+
+
+$api_box .= $layout->FormBox(
+		array(
+			0=>"Private Key:<br>",
+			1=>$layout->Field("api_privkey", "text", $defaults[api_privkey], "", "disabled") .  "<input type=button onClick='xajax_regen_keys()' value='Regenerate' class='btn btn-danger'> <span class='label label-warning'>Only Super-Users can access the REST-API</span>"
+		)
+,true);
+
+
+
+
+$title="API Security";  
+$content = "<span class=form-horizontal>" . $api_box . "</span>";
+$layout->create_box($title, $content);
+
 $title="";  
 $content = "<span class=form-horizontal>" . $ov . "</span>";
 $layout->create_box($layout->BoxTitle, $content);
+
+
+
+
+
 
 $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
 	

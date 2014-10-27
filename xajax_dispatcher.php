@@ -64,6 +64,14 @@ function idToInt($ids) {
 	return $ids;
 }
 
+
+function regen_keys() {
+		$res = new xajaxresponse();
+		$res->AddAssign("api_privkey","value", substr(sha1(microtime(true)), 0, 40));
+		$res->AddAssign("api_pubkey","value", substr(sha1(microtime(true)), 0, 40));
+		return $res;
+}
+
 function bulkEditValuesServer($server_ids, $new_values, $mode = 0) {
 	global $btl;
 	$res = new xajaxresponse();

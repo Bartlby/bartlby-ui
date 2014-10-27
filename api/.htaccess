@@ -27,3 +27,7 @@ RewriteRule ^(.*)/core/(.*)$ core.php [QSA,L]
 
 RewriteRule ^(.*)/worker$ worker.php [QSA,L]
 RewriteRule ^(.*)/worker/(.*)$ worker.php [QSA,L]
+
+
+RewriteRule ^(.*)/extension$ extension.php [QSA,L]
+RewriteRule ^(.*)/extension/(.*)$ extension.php [QSA,L]

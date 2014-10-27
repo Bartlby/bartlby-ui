@@ -1,10 +1,49 @@
 <?
 
+error_reporting(E_ERROR);
+class BTL_User_Auth {
+        public function __construct($btl, $pub)
+        {
+
+           $r=false;
+           $btl->worker_list_loop(function($wrk, $shm) use(&$r, $pub)  {
+      
+                    if($wrk[api_pubkey] == $pub && strlen($pub)>10) {
+                              
+                        $r=$wrk;
+                        return LOOP_BREAK;
+                    }
+           });
+           if($r) {
+                $this->WORKER=$r;
+                $this->ALLOWED=$r[is_super_user];
+
+           }
+        }
+        
+        public function getPrivateKey() {
+            
+            return $this->WORKER[api_privkey];
+        }
+        public function isValidPublicKey($pubkey) {
+            if($this->WORKER) {
+                return true;
+            }
+        }
+        public function isAllowToUseAPI() {
+            if($this->ALLOWED != 1) {
+                return false;
+            }
+            return true;
+        }
+
+}
+
+
 function btl_api_load_node($node_id) {
     if(!$node_id) $node_id=0;
     $_GET[instance_id]=(int)$node_id;
-    include "../config.php";
-    chdir("../");
+    include "config.php";
     $btl=new BartlbyUi($Bartlby_CONF, false);
     return $btl;
 }

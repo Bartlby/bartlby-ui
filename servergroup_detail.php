@@ -131,9 +131,7 @@ $layout->create_box("Mass Actions", "", "mass_actions",
 $r=$btl->getExtensionsReturn("_servergroupDetails", $layout);
 
 
-if($_GET[all_servers] != 1) {
-	$layout->OUT .= $btl->getServerGroupOptions($defaults, $layout);
-}
+$layout->OUT .= $btl->getServerGroupOptions($defaults, $layout, "btn-lg");
 
 
 

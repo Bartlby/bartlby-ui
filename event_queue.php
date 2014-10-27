@@ -246,7 +246,7 @@ $(".notify_log_table").dataTable({
 			    "bProcessing": true,
 			    "oLanguage": {
 			    	"sEmptyTable": "No Notifications found",
-            		"sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
+            		"sProcessing": \'<i class="fa fa-spinner fa-spin"></i> Loading\'
         	}
         	});
 
@@ -258,7 +258,7 @@ $(".event_log_table").dataTable({
 			    "bProcessing": true,
 			    "oLanguage": {
 			    	"sEmptyTable": "No Events found",
-            		"sProcessing": \'<img src="extensions/AutoDiscoverAddons/ajax-loader.gif"> Loading\'
+            		"sProcessing": \'<i class="fa fa-spinner fa-spin"></i> Loading\'
         	}
         	});
 
@@ -290,7 +290,7 @@ $not_log .= "</table>";
 
 //$layout->AddScript("<script>$(document).ready(function() { $('.1').dataTable();});</script>");
 $layout->SetMainTabName("Event Queue");
-$layout->Tab("Notification Aggregation Queue", "" . $not_log);
+$layout->Tab("Notification Aggregation Queue", "" . $not_log, "ev_not_log", true);
 $layout->OUT .= $evnts;
 
 

@@ -25,6 +25,7 @@ $Author: hjanuschka $
 <?
 global $Bartlby_CONF_DisplayName;
 global $Bartlby_CONF_IDX;
+if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -186,6 +187,9 @@ global $Bartlby_CONF_IDX;
                 <a href="index2.html"></a>
             </div>
           </div>
+          <!--<div class="side-user">
+           
+          </div>-->
          
           <ul class="cl-vnavigation">
           
@@ -197,7 +201,9 @@ global $Bartlby_CONF_IDX;
       </div>
       
       <div class=" collapse-button" style="padding:7px 9px;">
+      	<div class=search style='color: black;'> <?=$this->BTL_INSTANCES?></div>
       	<div class=search style='background-color:transparent; margin-bottom: 20px;'>
+      		
       		<div class="form-group">
                 <label style='padding-left: 5px;padding-bottom:10px;' class="col-sm-3 control-label">Service Density</label>
                 <div class="col-sm-6">
@@ -314,6 +320,8 @@ global $Bartlby_CONF_IDX;
 			
 			<?=$this->BTTABBAR?>
 			<?=$this->BTUIOUTSIDE?>
+
+			
 			</div>
 			    
 		
@@ -393,4 +401,5 @@ THINGS TO RECOVER:
 	</div>
 	
 	-->
+	
 

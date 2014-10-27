@@ -448,6 +448,13 @@ function quick_look_group() {
 				});
 	
 }
+var delay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
 
 function btl_force_reload_ui() {
 			console.log("FORCE LOAD");
@@ -1337,6 +1344,52 @@ $('[data-rel="ajax_report_service"]').selectize({
     $(this).tab('show');
   });
 
+  if(typeof(log_filter_query) != "undefined") {
+    $("#text_filter").keydown(function() {
+      console.log($(this).val());
+      var search_for=$(this).val();
+         delay(function(){
+          console.log("AAA");
+            window.logTable.fnFilter( $("#text_filter").val() );
+          }, 1000 );
+        
+    });
+    window.logTable = $('#logview_table_load').dataTable({
+            "fnInitComplete": function() {
+              
+            },
+            "iDisplayLength": 50,
+            "aoColumns": [
+              { "sWidth": "1" , "sClass": "center_td" },
+              { "sWidth": "1" , "sClass": "center_td" },
+              { "sWidth": "90", "sClass": "" },
+            ],
+            "aaSortingFixed": [[ 0, 'asc' ]],
+            "bSort": false,
+            "aaSorting": [[ 1, 'asc' ]],
+          
+            "sDom": "<'row'<'col-sm-12'<'pull-right form-group' T><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
+            "sAjaxSource": "logview.php?" + log_filter_query + "&datatables_output=1",
+            "bServerSide": true,
+            "bProcessing": true,
+            "oTableTools": {
+            "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+              "aButtons": [
+                  {
+                      "sExtends":    "collection",
+                      "sButtonText": "Export",
+                      "aButtons":    [ "csv", "xls", "pdf" ]
+                  }
+              ]
+          },
+            "oLanguage": {
+              "sEmptyTable": "No Entries found",
+              "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
+            }
+            
+         
+          });
+  }
 
   //$("#services_table").hide();
   window.oTable = $('#services_table').dataTable({

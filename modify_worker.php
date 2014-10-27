@@ -222,12 +222,17 @@ if($defaults[active] == 2) {
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
 
 if($defaults[is_super_user] == 1) $ss="checked";
-$ov .= $layout->FormBox(
-		array(
-			0=>"Is Super User",
-			1=>"<input type=checkbox value=1 class=icheck name=is_super_user $ss>"
-		)
-,true);
+if($defaults[api_enabled] == 1) $api_enabled="checked"; 
+
+
+if($btl->isSuperUser()) {
+	$ov .= $layout->FormBox(
+			array(
+				0=>"Is Super User",
+				1=>"<input type=checkbox value=1 class=icheck name=is_super_user $ss>"
+			)
+	,true);
+}
 
 $ov .= $layout->FormBox(
 		array(
@@ -403,7 +408,14 @@ $api_box .= $layout->FormBox(
 ,true);
 
 
-
+if($btl->isSuperUser()) {
+	$api_box .= $layout->FormBox(
+			array(
+				0=>"API allowed",
+				1=>"<input type=checkbox value=1 class=icheck name=api_enabled $api_enabled>"
+			)
+	,true);
+}
 
 $title="API Security";  
 $content = "<span class=form-horizontal>" . $api_box . "</span>";
@@ -430,4 +442,4 @@ $layout->FormEnd();
 $layout->boxes_placed[MAIN]=true;
 
 
-$layout->display();
+$layout->display("modify_worker");

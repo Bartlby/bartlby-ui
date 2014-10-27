@@ -16,7 +16,7 @@ class BTL_User_Auth {
            });
            if($r) {
                 $this->WORKER=$r;
-                $this->ALLOWED=$r[is_super_user];
+                $this->ALLOWED=$r[api_enabled];
 
            }
         }

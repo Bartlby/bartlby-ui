@@ -440,6 +440,7 @@ switch($act) {
 			$selected_services .= ",";
 			
 			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[api_enabled]) $_GET[api_enabled]=0;
 			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			
@@ -496,13 +497,16 @@ switch($act) {
 				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
 				"orch_id" => $_GET[orch_id],
 				"api_pubkey" => $_GET[api_pubkey],
-				"api_privkey" => $_GET[api_privkey]
+				"api_privkey" => $_GET[api_privkey],
+				"api_enabled" => $_GET[api_enabled]
 				
 				
 				
 			
 			);
 			
+			
+
 
 			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);
@@ -552,6 +556,7 @@ switch($act) {
 			$msg = "wa:" .  $_GET[worker_active] . "\n";
 			
 			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[api_enabled]) $_GET[api_enabled]=0;
 			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			for($x=0;$x<count($_GET[worker_services]); $x++) {
@@ -607,7 +612,8 @@ switch($act) {
 				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
 				"orch_id" => $_GET[orch_id],
 				"api_pubkey" => $_GET[api_pubkey],
-				"api_privkey" => $_GET[api_privkey]
+				"api_privkey" => $_GET[api_privkey],
+				"api_enabled" => $_GET[api_enabled]
 				
 			);
 			

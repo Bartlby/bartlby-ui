@@ -2,7 +2,7 @@
 
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
-include "BTL_API.php";
+
 error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
 
@@ -134,8 +134,8 @@ $app->group("/v1", function() use($app) {
             $app->post("/servicegroup(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->add_servicegroup($app->request->getBody());
+                 
+                 $return = bartlby_add_servicegroup($btl->RES,json_decode($app->request->getBody(), true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully created";
@@ -150,8 +150,8 @@ $app->group("/v1", function() use($app) {
             $app->patch("/servicegroup(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->modify_servicegroup($id , $app->request->getBody());
+                 
+                 $return = bartlby_modify_servicegroup($btl->RES, $id , json_decode($app->request->getBody(),true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully modified";
@@ -165,8 +165,8 @@ $app->group("/v1", function() use($app) {
             $app->delete("/servicegroup(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->delete_servicegroup($id);
+                 
+                 $return = bartlby_delete_servicegroup($btl->RES,$id);
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully deleted";

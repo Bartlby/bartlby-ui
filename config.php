@@ -93,6 +93,12 @@ if($do_not_merge_post_get != true) {
 			}
 		}
 
+
+
+define("API_PORTIER_HOST", "localhost");
+define("API_PORTIER_PORT", "9031");
+
+
 /*
 
 	$Bartlby_CONF="/opt/bartlby/etc/bartlby.cfg";

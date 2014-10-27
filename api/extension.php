@@ -2,7 +2,7 @@
 
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
-include "BTL_API.php";
+
 error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
 

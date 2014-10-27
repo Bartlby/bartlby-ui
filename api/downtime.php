@@ -1,8 +1,7 @@
 <?
-
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
-include "BTL_API.php";
+
 error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
 
@@ -64,8 +63,8 @@ $app->group("/v1", function() use($app) {
             $app->post("/downtime(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->add_downtime($app->request->getBody());
+                 
+                 $return = bartlby_add_downtime($btl->RES, json_decode($app->request->getBody(), true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully created";
@@ -80,8 +79,8 @@ $app->group("/v1", function() use($app) {
             $app->patch("/downtime(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->modify_downtime($id , $app->request->getBody());
+                 
+                 $return = bartlby_modify_downtime($btl->RES, $id , json_decode($app->request->getBody(), true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully modified";
@@ -95,8 +94,8 @@ $app->group("/v1", function() use($app) {
             $app->delete("/downtime(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->delete_downtime($id);
+                 
+                 $return = bartlby_delete_downtime($btl->RES,$id);
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully deleted";

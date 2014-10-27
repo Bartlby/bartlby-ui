@@ -1,5 +1,5 @@
 <?
-include_once "BTL_API.php";
+
 class HMACAuth extends \Slim\Middleware
 {
     /**

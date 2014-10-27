@@ -2,7 +2,7 @@
 
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
-include "BTL_API.php";
+
 error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
 
@@ -24,7 +24,7 @@ $app->add(new HMACAuth(array(
 
 $app->notFound(function () {
     $r[api][status_code]=-404;
-    $r[api][status_msg]="Call not found1";
+    $r[api][status_msg]="Call not found21";
     echo json_format(json_encode($r));
     exit;
 });
@@ -69,11 +69,43 @@ $app->group("/v1", function() use($app) {
                     echo json_format(json_encode($i));
             });   
 
-            
+
             
 
         });
-       
+        $app->group("/portier", function() use($app) {
+            $app->post("/cmd", function($node=0) use($app) {
+                $input = $app->request->getBody();
+                
+                $sock = @fsockopen(API_PORTIER_HOST, API_PORTIER_PORT);
+                if(!$sock) {
+                      $r[api][status_code]=-1;
+                      $r[api][status_msg]="Connect to backend-portier failed!!";
+                      echo json_format(json_encode($r));
+                      return;
+                }
+
+                fwrite($sock, $input . "\n");
+                $ret = fgets($sock, 1024);
+                fclose($sock);
+                $ret_parsed = json_decode($ret);
+                if($ret_parsed->error_code != 0) {
+                    $r[api][status_code]=-2;
+                    $r[api][status_msg]="Portier Call failed";
+                    $r[output]=$ret_parsed;
+                    echo json_format(json_encode($r));
+                    return;
+                }
+
+                $r[api][status_code]=-2;
+                $r[api][status_msg]="Portier Call Success";
+                $r[output]=$ret_parsed;
+                echo json_format(json_encode($r));
+
+                
+            });
+
+        });
 
 });
 

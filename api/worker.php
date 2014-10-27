@@ -2,7 +2,7 @@
 
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
-include "BTL_API.php";
+
 error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
 
@@ -56,7 +56,7 @@ $app->group("/v1", function() use($app) {
             });
           
             $app->post("/worker(/node/:node)/:id/activity", function($node=0, $id) use ($app) {
-                $filter = $app->request->getBody();
+                $filter = json_decode($app->request->getBody());
                 $filter = json_decode($filter, true);
                
                 $btl=btl_api_load_node($node);
@@ -88,8 +88,8 @@ $app->group("/v1", function() use($app) {
             $app->post("/worker(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->add_worker($app->request->getBody());
+                 
+                 $return = bartlby_add_worker($btl->RES,json_decode($app->request->getBody(), true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully created";
@@ -104,8 +104,8 @@ $app->group("/v1", function() use($app) {
             $app->patch("/worker(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->modify_worker($id , $app->request->getBody());
+                 
+                 $return = bartlby_modify_worker($btl->RES, $id , json_decode($app->request->getBody(),true));
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully modified";
@@ -119,8 +119,8 @@ $app->group("/v1", function() use($app) {
             $app->delete("/worker(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api($btl->RES);
-                 $return = $API->delete_worker($id);
+                 
+                 $return = bartlby_delete_worker($btl->RES,$id);
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully deleted";

@@ -1,7 +1,7 @@
 <?php
 //Example call
 // client.php /api/v1/running/service/1
-include "BTL_API.php";
+include "bartlby_api_global.php";
 
 $uri = $argv[1];
 
@@ -18,6 +18,14 @@ $cipher = new Cipher($privateHash);
 $content    = json_encode(array(
     'worker_state' => '2'
 ));
+
+$portier_content = json_encode(array(
+	"method" => "set_passive",
+	"service_id" => 1, 
+	"state" =>2,
+	"passive_text" => "asdsasddsa"
+	));
+$content=$portier_content;
 
 $content = $cipher->encrypt($content);
 
@@ -45,7 +53,7 @@ $result = curl_exec($ch);
 
 $header_info = curl_getinfo($ch,CURLINFO_HEADER_OUT); //Where $header_info contains the HTTP Request information
 
-
+echo $result;
 
 
 curl_close($ch);

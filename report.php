@@ -111,7 +111,7 @@ if(!$_GET[report_service] || !$log_mask) {
 			
 			$perc =   (($hun-$time) * 100 / $hun);
 			$perc =100-$perc;
-			$lbl="";
+			$lbl="label-default";
 			if($state == 0) {
 					 $lbl="label-success";
 					 $col="#4caf50";
@@ -124,7 +124,7 @@ if(!$_GET[report_service] || !$log_mask) {
 				 $lbl="label-danger";
 				 $col="#e51c23";
 			}
-			if($state == 8 || $lbl == "") {
+			if($state == 8 ) {
 				 $lbl="label-default";
 				 $col="#bbbbbb";
 			}
@@ -350,7 +350,7 @@ if(!$_GET[report_service] || !$log_mask) {
 				if($state_array[$xy][lstate] == 2) $st_r = -2;
 				if($state_array[$xy][lstate] == 8) $st_r = 2;
 				
-			$lbl="";
+			$lbl="label-default";
 			if($state_array[$xy][lstate] == 0) $lbl="label-success";
 			if($state_array[$xy][lstate] == 1) $lbl="label-warning";
 			if($state_array[$xy][lstate] == 2) $lbl="label-danger";

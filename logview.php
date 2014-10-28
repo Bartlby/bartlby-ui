@@ -311,8 +311,8 @@ function cmpServiceIDHasServer($svc_id, $server_id) {
 	
 	$found = false;
 
-	$btl->server_list_loop(function($svc, $shm) use(&$found, &$server_id) {
-			if($svc[server_id] == $server_id) {
+	$btl->service_list_loop(function($svc, $shm) use(&$found, &$server_id, &$svc_id) {
+			if($svc[service_id] == $svc_id && $svc[server_id] == $server_id) {
 				$found=true;
 				return LOOP_BREAK;
 			}

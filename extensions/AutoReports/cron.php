@@ -84,6 +84,7 @@ $_GLO[debug_commands]=true;
 	$lstate=0;
 
 	foreach($r as $row) {
+			if($_GET[only_id] && $_GET[only_id] != $row[id]) continue;
 			echo "sending report to:" . $row[receipient] . " \n";
 
 			$svcel = explode("|", $row[service_var]);

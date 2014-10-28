@@ -114,7 +114,8 @@ class BartlbyUi {
 	}
 	function html_report_header() {
 		return "<html><head><style>" . 
-		file_get_contents("themes/classic/css/bootstrap-simplex.css") 
+		file_get_contents("themes/classic/css/bootstrap.css")  .
+		file_get_contents("themes/css/btl.css") 
 		 . "</style></head><body>";
 	}
 	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report") {

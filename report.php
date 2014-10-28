@@ -124,11 +124,13 @@ if(!$_GET[report_service] || !$log_mask) {
 				 $lbl="label-danger";
 				 $col="#e51c23";
 			}
-			if($state == 8) {
+			if($state == 8 || $lbl == "") {
 				 $lbl="label-default";
 				 $col="#bbbbbb";
 			}
 			
+
+
 			$out .= "<tr>";
 			$out .= "<td width=200><span class='label " .  $lbl . "'>" . $btl->getState($state) . "</span><br>";
 			
@@ -352,7 +354,7 @@ if(!$_GET[report_service] || !$log_mask) {
 			if($state_array[$xy][lstate] == 0) $lbl="label-success";
 			if($state_array[$xy][lstate] == 1) $lbl="label-warning";
 			if($state_array[$xy][lstate] == 2) $lbl="label-danger";
-			if($state_array[$xy][lstate] == 8) $lbl="";
+			if($state_array[$xy][lstate] == 8) $lbl="label-default";
 			
 					$o1 .= "<tr>";
 					$o1 .= "<td>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";

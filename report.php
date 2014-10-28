@@ -112,6 +112,7 @@ if(!$_GET[report_service] || !$log_mask) {
 			$perc =   (($hun-$time) * 100 / $hun);
 			$perc =100-$perc;
 			$lbl="label-default";
+			$col="#bbbbbb";
 			if($state == 0) {
 					 $lbl="label-success";
 					 $col="#4caf50";

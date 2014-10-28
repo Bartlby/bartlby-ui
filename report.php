@@ -125,7 +125,7 @@ if(!$_GET[report_service] || !$log_mask) {
 				 $col="#e51c23";
 			}
 			if($state == 8) {
-				 $lbl="";
+				 $lbl="label-default";
 				 $col="#bbbbbb";
 			}
 			

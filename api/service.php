@@ -2,10 +2,25 @@
 
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
+include "BTL_API.php";
+
+error_reporting(E_ALL);
+
 
 \Slim\Slim::registerAutoloader();
 
+ini_set("display_errors", "true");
+include "HMACAuth.php";
+
 $app = new \Slim\Slim();
+
+$app->add(new HMACAuth());
+$app->notFound(function () {
+    $r[api][status_code]=-404;
+    $r[api][status_msg]="Call not found";
+    echo json_format(json_encode($r));
+    exit;
+});
 
 error_reporting(E_ERROR);
 ini_set("display_errors", "true");
@@ -111,25 +126,55 @@ $app->group("/v1", function() use($app) {
             $app->post("/service(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
+                 $API = new Btl_api();
+                 $return = $API->add_service($btl, $app->request->getBody());
+                 $r[api][status_code]=$return;
+                 if($return >= 0) {
+                    $r[api][status_msg]="Successfully created";
+                    $r[api][new_id]=$return;
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
+                 
+                 
             });
             $app->patch("/service(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
+                 $API = new Btl_api();
+                 $return = $API->modify_service($btl, $id , $app->request->getBody());
+                 $r[api][status_code]=$return;
+                 if($return >= 0) {
+                    $r[api][status_msg]="Successfully modified";
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
             });
-            $app->get("/service(/node/:node)", function($node=0) use($app) {
-                $filter = $app->request->params();
-                if(!$filter[from]) $filter[from]=0;
-                if(!$filter[to]) $filter[to]=20;
 
-                api_v1_svc_list($filter, true, $node);
-
-            });       
+            $app->delete("/service(/node/:node)/:id", function($node=0, $id) use($app) {
+                 $btl=btl_api_load_node($node);
+                //MODIFY
+                 $API = new Btl_api();
+                 $return = $API->delete_service($btl, $id);
+                 $r[api][status_code]=$return;
+                 if($return >= 0) {
+                    $r[api][status_msg]="Successfully deleted";
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
+            });
+            
             $app->get("/service(/node/:node)/:id", function($node=0, $id) use($app) {
-                $filter = $app->request->params();
-                $filter[service_id]=$id;
-                if(!$filter[from]) $filter[from]=0;
-                if(!$filter[to]) $filter[to]=20;
-                api_v1_svc_list($filter, true, $node);
+                $btl=btl_api_load_node($node);
+                $r=bartlby_get_service_by_id($btl->RES, $id);
+                $r[api][status_code]=0;
+                $r[api][status_msg]="Success";
+                echo json_format(json_encode($r));
+
+                 
             });
 
         });

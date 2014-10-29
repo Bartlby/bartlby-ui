@@ -5,7 +5,7 @@ function btl_api_load_node($node_id) {
     $_GET[instance_id]=(int)$node_id;
     include "../config.php";
     chdir("../");
-    $btl=new BartlbyUi($Bartlby_CONF);
+    $btl=new BartlbyUi($Bartlby_CONF, false);
     return $btl;
 }
 function array_has_keys($array = array(), $keys = array()) {

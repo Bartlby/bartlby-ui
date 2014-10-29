@@ -282,7 +282,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
                 
         <div class="form-group" style="display:inline;">
           <div class="input-group" style='padding: 11px 0;'>
-            <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+            <span class="input-group-addon"><span class="fa fa-search"></span></span>
             
             
 

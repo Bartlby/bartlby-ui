@@ -54,7 +54,7 @@ class HMACAuth extends \Slim\Middleware
             $privateHash  = $config["privateHash"];
             $content     = $req->getBody();
 
-            $hash = hash_hmac('sha256', $content . "/api" . $req->getPathInfo(), $privateHash);
+            $hash = hash_hmac('sha256', $content . $_SERVER[REQUEST_URI], $privateHash);
 
             if ($hash != $contentHash){
                 //MISSMATCH
@@ -62,6 +62,7 @@ class HMACAuth extends \Slim\Middleware
                 $res->status(403);
                 echo "Auhorization failed\n";
                 echo '"' .$content .  "/api" . $req->getPathInfo() . '"' . "\n";
+                
                 
             } else {
                 //CHECK If user hash is valid (public-hash)

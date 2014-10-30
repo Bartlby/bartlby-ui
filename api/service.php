@@ -123,11 +123,13 @@ $app->group("/v1", function() use($app) {
         });
         $app->group("/stored", function() use($app) {
             //Running STUFF
+ 
+
             $app->post("/service(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
-                 $API = new Btl_api();
-                 $return = $API->add_service($btl, $app->request->getBody());
+                 $API = new Btl_api($btl->RES);
+                 $return = $API->add_service($app->request->getBody());
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully created";
@@ -142,8 +144,8 @@ $app->group("/v1", function() use($app) {
             $app->patch("/service(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api();
-                 $return = $API->modify_service($btl, $id , $app->request->getBody());
+                 $API = new Btl_api($btl->RES);
+                 $return = $API->modify_service($id , $app->request->getBody());
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully modified";
@@ -153,11 +155,12 @@ $app->group("/v1", function() use($app) {
                 echo json_format(json_encode($r));
             });
 
+
             $app->delete("/service(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
-                 $API = new Btl_api();
-                 $return = $API->delete_service($btl, $id);
+                 $API = new Btl_api($btl->RES);
+                 $return = $API->delete_service($id);
                  $r[api][status_code]=$return;
                  if($return >= 0) {
                     $r[api][status_msg]="Successfully deleted";
@@ -166,12 +169,27 @@ $app->group("/v1", function() use($app) {
                 }
                 echo json_format(json_encode($r));
             });
+            $app->get("/service(/node/:node)", function($node=0) use($app) {
+                $filter = $app->request->params();
+            
+                
+                if(!$filter[from]) $filter[from]=0;
+                if(!$filter[to]) $filter[to]=20;
+
+                api_v1_svc_list($filter, true, $node);
+
+            }); 
             
             $app->get("/service(/node/:node)/:id", function($node=0, $id) use($app) {
                 $btl=btl_api_load_node($node);
                 $r=bartlby_get_service_by_id($btl->RES, $id);
-                $r[api][status_code]=0;
-                $r[api][status_msg]="Success";
+                if($r) {
+                    $r[api][status_code]=0;
+                    $r[api][status_msg]="Success";
+                } else {
+                    $r[api][status_code]=-1;
+                    $r[api][status_msg]="Failed to Fetch Service";
+                }
                 echo json_format(json_encode($r));
 
                  

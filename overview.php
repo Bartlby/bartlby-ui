@@ -91,6 +91,7 @@ $Author: hjanuschka $
 
 			global $reload_status, $hosts_down, $hosts_up, $services_critical, $services_critical, $services_info, $services_ok, $services_warning, $services_unkown, $services_downtime, $all_services, $acks_outstanding, $gdelay_sum, $gdelay_count, $service_state_a, $server_state_a;
 			global $services_handled;
+			global $qck;
 
 			$gdelay_sum += $v[service_delay_sum];
 			$gdelay_count += $v[service_delay_count];
@@ -477,6 +478,7 @@ $Author: hjanuschka $
 	$layout->setTitle("QuickView");
 	$r=$btl->getExtensionsReturn("_overview", $layout);
 	
+
 	if($quickview_disabled != "false") {
 		$qv_title='Quick View';  
 		$layout->create_box($qv_title, $qv_content,"quick_view", array(

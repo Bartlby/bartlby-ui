@@ -49,6 +49,30 @@ $app->group("/v1", function() use($app) {
                 api_v1_worker_list($filter, false, $node);
             });
           
+            $app->post("/worker(/node/:node)/:id/activity", function($node=0, $id) use ($app) {
+                $filter = $app->request->getBody();
+                $filter = json_decode($filter, true);
+               
+                $btl=btl_api_load_node($node);
+                $rtc = -1;
+                $btl->worker_list_loop(function($wrk, $shm) use (&$rtc, $id, $filter, $btl) {
+                        if($wrk[worker_id] == $id) {
+                            if($filter[worker_state]) {
+                                $rtc=bartlby_set_worker_state($btl->RES, $shm, $filter[worker_state]); 
+                            } else {
+                                $rtc = -1;
+                            }
+                            return LOOP_BREAK;           
+                        }
+                });
+                
+                if($rtc >= 0) {
+                    $r[api][status_msg]="Worker Activity set to:" . $filter[worker_state];
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
+            });
 
         });
         $app->group("/stored", function() use($app) {

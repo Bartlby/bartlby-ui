@@ -12,7 +12,7 @@ $microtime = microtime(true);
 
 
 $content    = json_encode(array(
-    'server1_id' => '4'
+    'worker_state' => '2'
 ));
 
 
@@ -30,7 +30,7 @@ curl_setopt($ch, CURLOPT_VERBOSE, true);
 curl_setopt($ch,CURLOPT_HTTPHEADER,$headers);
 curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 curl_setopt($ch,CURLOPT_POSTFIELDS,$content);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 
 
 

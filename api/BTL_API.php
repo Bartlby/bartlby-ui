@@ -102,7 +102,30 @@ class BTL_API {
        };
        return $rtc;
     }  
-
+    //WORKER
+    function add_worker($options) {
+       $options_array = json_decode($options, true);
+       $rtc=bartlby_add_worker($this->RESOURCE, $options_array);
+       if(!$rtc) {
+          $rtc =-1;
+       };
+       return $rtc;
+    }
+    function modify_worker($svc_id, $options) {
+       $options_array = json_decode($options, true);
+       $rtc=bartlby_modify_worker($this->RESOURCE,  $svc_id, $options_array);
+       if(!$rtc) {
+          $rtc =-1;
+       };
+       return $rtc;
+    }    
+    function delete_worker($svc_id) {
+       $rtc=bartlby_delete_worker($this->RESOURCE,  $svc_id);
+       if(!$rtc) {
+          $rtc =-1;
+       };
+       return $rtc;
+    }  
 
 
 

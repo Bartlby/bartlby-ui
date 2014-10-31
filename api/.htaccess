@@ -15,3 +15,7 @@ RewriteRule ^(.*)/servergroup/(.*)$ servergroup.php [QSA,L]
 
 RewriteRule ^(.*)/servicegroup$ servicegroup.php [QSA,L]
 RewriteRule ^(.*)/servicegroup/(.*)$ servicegroup.php [QSA,L]
+
+
+RewriteRule ^(.*)/worker$ worker.php [QSA,L]
+RewriteRule ^(.*)/worker/(.*)$ worker.php [QSA,L]

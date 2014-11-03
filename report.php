@@ -94,7 +94,7 @@ if(!$_GET[report_service] || !$log_mask) {
 						    <tbody>";
 		$out .= "";
 		
-		$hun=$svc[0]+$svc[1]+$svc[2];
+		$hun=$svc[0]+$svc[1]+$svc[2]+$svc[8];
 		$flash[0]="0";
 		$flash[1]="0";
 		$flash[2]="0";

@@ -389,7 +389,7 @@ $ov .= $layout->FormBox(
 $api_box .= $layout->FormBox(
 		array(
 			0=>"Public Key:<br>",
-			1=>$layout->Field("api_pubkey", "text", $defaults[api_pubkey], "", "disabled")
+			1=>$layout->Field("api_pubkey", "text", $defaults[api_pubkey], "", "readonly")
 		)
 ,true);
 
@@ -398,7 +398,7 @@ $api_box .= $layout->FormBox(
 $api_box .= $layout->FormBox(
 		array(
 			0=>"Private Key:<br>",
-			1=>$layout->Field("api_privkey", "text", $defaults[api_privkey], "", "disabled") .  "<input type=button onClick='xajax_regen_keys()' value='Regenerate' class='btn btn-danger'> <span class='label label-warning'>Only Super-Users can access the REST-API</span>"
+			1=>$layout->Field("api_privkey", "text", $defaults[api_privkey], "", "readonly") .  "<input type=button onClick='xajax_regen_keys()' value='Regenerate' class='btn btn-danger'> <span class='label label-warning'>Only Super-Users can access the REST-API</span>"
 		)
 ,true);
 

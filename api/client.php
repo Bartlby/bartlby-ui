@@ -6,8 +6,9 @@ include "BTL_API.php";
 $uri = $argv[1];
 
 
-$publicHash = '02e229d268a16d40605933b82f5e8acb2c6288161';
-$privateHash = '5ef8ae34695c0cee752a305fd7ad38e8a3b305f7';
+$publicHash = 'cbafc69f1134e866d8ac291d23c45e46d21f70b2';
+//a85529e5e4abd47169d0db2e6ad630ae19946597';
+$privateHash = '30391def8ac1bf34310ad32f2edf929a7ae642fc';
 $microtime = microtime(true);
 $cipher = new Cipher($privateHash);
 

@@ -68,7 +68,7 @@ function idToInt($ids) {
 function regen_keys() {
 		$res = new xajaxresponse();
 		$res->AddAssign("api_privkey","value", substr(sha1(microtime(true)), 0, 40));
-		$res->AddAssign("api_pubkey","value", substr(sha1(microtime(true)), 0, 40));
+		$res->AddAssign("api_pubkey","value", substr(sha1(microtime(true)+time()), 0, 40));
 		return $res;
 }
 

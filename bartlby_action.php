@@ -18,10 +18,14 @@ function dnl($i) {
 }
 
 
-if($act != "delete_package_ask" && $act != "logout") {
+if($act != "delete_package_ask" && $act != "logout" && $act != "poll_session") {
 	$btl->hasRight("action." . $act);
 }
 switch($act) {
+	case 'poll_session':
+	echo "OK";
+	exit;
+	break;
 	case 'set_instance_id':
 		$_SESSION["instance_id"] = $_GET[set_instance_id];
 		

@@ -588,7 +588,11 @@ $('.switch').bootstrapSwitch();
 $(document).ready(function() {
 		btl_set_bars();
 
-
+		//SESSION POLLER 
+		window.setInterval(function() {
+			console.log("POLL SESSION");
+			$.get("bartlby_action.php?action=poll_session");
+		}, 10000);
 
 
 /*
@@ -598,6 +602,9 @@ SELECT BOXES
 
     btl_init_components();
     btl_init_one_time_components(); //like tabs
+
+
+
 
 	});
 

@@ -889,7 +889,8 @@ if($m[2] == "5724") {
 		return $r;
 	}
 	function isSuperUser() {
-		if($this->rights[super_user][0] != "true") {
+		
+		if($this->rights[super_user] != 1) {
 			return false;
 		}else {
 			return true;	
@@ -1038,7 +1039,7 @@ if($m[2] == "5724") {
 		return $r;
 	}
 	function hasServerorServiceRight($svcid, $do_redir=true) {
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			return true;	
 		}
 		
@@ -1077,7 +1078,7 @@ if($m[2] == "5724") {
 	}
 	function hasServerRight($srvid, $do_redir=true) {
 		
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			return true;	
 		}
 		
@@ -1102,7 +1103,7 @@ if($m[2] == "5724") {
 		}
 	}
 	function hasRight($k,$do_redir=true) {
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			
 			return true;	
 		}
@@ -1227,6 +1228,7 @@ if($m[2] == "5724") {
 			$wrk = bartlby_get_worker_by_id($this->RES, $this->user_id);
 
 			$this->rights[services] = explode(",", $wrk[visible_services]);
+			$this->rights[super_user] = $wrk[is_super_user];
 			$this->rights[servers] = explode(",", $wrk[visible_servers]);
 			$this->rights[selected_services] = explode(",", $wrk[selected_services]);
 			$this->rights[selected_servers] = explode(",", $wrk[selected_servers]);
@@ -1287,11 +1289,11 @@ if($m[2] == "5724") {
 		
 		// if is super_user ALL services and servers are allowed
 		
-		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user][0] == "true") {
+		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user] == 1) {
 		
 				$this->rights[services]=null;
 				$this->rights[servers]=null;
-				$this->rights[super_user][0]=true;
+				
 		}
 		
 	}

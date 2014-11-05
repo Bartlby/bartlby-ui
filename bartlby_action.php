@@ -18,7 +18,7 @@ function dnl($i) {
 }
 
 
-if($act != "delete_package_ask") {
+if($act != "delete_package_ask" && $act != "logout") {
 	$btl->hasRight("action." . $act);
 }
 switch($act) {

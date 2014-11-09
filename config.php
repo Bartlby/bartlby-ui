@@ -100,13 +100,45 @@ define("API_PORTIER_PORT", "9031");
 
 
 if(!function_exists("bartlby_audit")) {
-	
+	function btl_audit_get_last($r, $id, $type) {
+
+		$re="";
+		switch($type) {
+			case BARTLBY_AUDIT_TYPE_SERVICE:
+			$re = bartlby_get_service_by_id($r, $id);
+			
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVER:
+			$re = bartlby_get_server_by_id($r, $id);
+			
+			break;
+			case BARTLBY_AUDIT_TYPE_WORKER:
+			$re = bartlby_get_worker_by_id($r, $id);
+			
+			break;
+			case BARTLBY_AUDIT_TYPE_DOWNTIME:
+			$re = bartlby_get_downtime_by_id($r, $id);
+			
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVERGROUP:
+			$re = bartlby_get_servergroup_by_id($r, $id);
+			
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVICEGROUP:
+			$re = bartlby_get_servicegroup_by_id($r, $id);
+			break;
+		
+		}
+		
+		return json_encode($re, true);		
+	}
 	function bartlby_audit($res, $type, $id, $action) {
 
 		if((int)$_SESSION[worker][worker_id] < 0)  {
-			echo "ASDF";
+			
 			return false;
 		}
+		$prev_object="";
 		//readable
 		switch($action) {
 			case BARTLBY_AUDIT_ACTION_ADD:
@@ -114,11 +146,14 @@ if(!function_exists("bartlby_audit")) {
 			break;
 			case BARTLBY_AUDIT_ACTION_DELETE:
 			$readable_action="DELETE";
+			$prev_object=btl_audit_get_last($res, $id, $type);
 			break;
 			case BARTLBY_AUDIT_ACTION_MODIFY:
 			$readable_action="MODIFY";
+			$prev_object=btl_audit_get_last($res, $id, $type);
 			break;
 		}
+
 		
 		switch($type) {
 			case BARTLBY_AUDIT_TYPE_SERVICE:
@@ -146,19 +181,22 @@ if(!function_exists("bartlby_audit")) {
 		}
 		$storage = new BartlbyStorage("CORE-Audit");
 		
-		$DBSTR = "CREATE TABLE autoreports (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
-				receipient TEXT,
-				service_var TEXT,
-				daily INTEGER DEFAULT 0, 
-				weekly INTEGER DEFAULT 0, 
-				monthly INTEGER DEFAULT 0, 
-				last_send TEXT				
+		$DBSTR = "CREATE TABLE bartlby_object_audit (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
+				type INTEGER,
+				action INTEGER,
+				utime INTEGER,
+				worker_id INTEGER,
+				object_id INTEGER,
+				prev_object TEXT
 				);";
-		$db = $storage->SQLDB($DBSTR, "core-audit.db");
+		$db = $storage->SQLDB($DBSTR, "core-audit_v4.db");
 		
 
-
-		echo "AUDIT: type: " . $readable_type . " ACTION:" . $readable_action . " ID:" . $id . "\n<br>";
+		$sql = "insert into bartlby_object_audit (type, action, utime, worker_id, object_id, prev_object) values(" . $type . "," . $action . ", " . time() . ", " . $_SESSION[worker][worker_id] . ", " . $id . ", '" .  SQLite3::escapeString($prev_object) . "')";
+		$r = $db->query($sql);
+		
+		
+		return true;
 		/*
 		
 		//" Type=>" . $type . " ID=>" . $id . " action=>" . $action . " folder: " . $folder . "\n<br>";

@@ -16,6 +16,9 @@ if($_GET[service_id]) {
 	$_GET[service_place] = $btl->findSHMPlace($_GET[service_id]);	
 }
 
+
+
+
 $defaults=bartlby_get_service($btl->RES, $_GET[service_place]);
 
 
@@ -108,6 +111,12 @@ switch($defaults["fires_events"]) {
 			$events_en="true (HARD|SOFT)";
 		break;
 }
+
+
+
+
+
+
 
 
 //echo $defaults[last_notify_send] . "<br>";

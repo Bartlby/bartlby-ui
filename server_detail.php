@@ -25,7 +25,7 @@ $layout= new Layout();
 	$layout->do_auto_reload=true;
 $layout->set_menu("main");
 $layout->setTitle("Actions");
-
+$layout->setMainTabName("Details");
 $defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 $btl->hasServerRight($_GET[server_id]);
 

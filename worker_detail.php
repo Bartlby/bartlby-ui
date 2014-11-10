@@ -11,7 +11,7 @@ $btl->hasRight("main.servergroup_detail");
 $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("Actions");
-
+$layout->setMainTabName("Details");
 
 
 $defaults=array();

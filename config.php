@@ -176,24 +176,15 @@ if(!function_exists("bartlby_audit")) {
 			break;
 		
 		}
-		if(class_exists("BartlbyStorage")) {
-			include_once "bartlbystorage.class.php";
+		if(!class_exists("Audit")) {
+			include_once "extensions/Audit/Audit.class.php";
 		}
-		$storage = new BartlbyStorage("CORE-Audit");
+		$ad = new Audit();
 		
-		$DBSTR = "CREATE TABLE bartlby_object_audit (id INTEGER PRIMARY  KEY AUTOINCREMENT, 
-				type INTEGER,
-				action INTEGER,
-				utime INTEGER,
-				worker_id INTEGER,
-				object_id INTEGER,
-				prev_object TEXT
-				);";
-		$db = $storage->SQLDB($DBSTR, "core-audit_v4.db");
 		
 
 		$sql = "insert into bartlby_object_audit (type, action, utime, worker_id, object_id, prev_object) values(" . $type . "," . $action . ", " . time() . ", " . $_SESSION[worker][worker_id] . ", " . $id . ", '" .  SQLite3::escapeString($prev_object) . "')";
-		$r = $db->query($sql);
+		$r = $ad->db->query($sql);
 		
 		
 		return true;

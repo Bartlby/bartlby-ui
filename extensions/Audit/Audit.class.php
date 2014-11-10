@@ -52,13 +52,24 @@ class Audit {
 		return "";
 	}
 
-		function _servergroupDetails() {
+	function _servergroupDetails() {
 		global $layout;
 		global $defaults;
 		$layout->Tab("Audit", $this->output_table($layout,BARTLBY_AUDIT_TYPE_SERVERGROUP, $defaults[servergroup_id]));
 		return "";
 	}
-
+	function _servicegroupDetails() {
+		global $layout;
+		global $defaults;
+		$layout->Tab("Audit", $this->output_table($layout,BARTLBY_AUDIT_TYPE_SERVICEGROUP, $defaults[servicegroup_id]));
+		return "";
+	}
+	function _workerDetails() {
+		global $layout;
+		global $defaults;
+		$layout->Tab("Audit", $this->output_table($layout,BARTLBY_AUDIT_TYPE_WORKER, $defaults[worker_id]));
+		return "";
+	}
 }
 
 ?>

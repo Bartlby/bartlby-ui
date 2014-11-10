@@ -167,56 +167,37 @@
     while ( $aRow = $rResult->fetch(PDO::FETCH_ASSOC) )
     {
       $row = array();
-      for ( $i=0 ; $i<count($aColumns) ; $i++ )
-      {
-        /* if $aColumns[$i] is space is not data */
-        if ( $aColumns[$i] != ' ' )
-        {
-        	switch($i) {
-        		case 0:
-        			$row[] = date("d.m.Y H:i:s", $aRow[ $aColumns[$i] ]);
-        		break;
-        		case 1:
-        			$wrk_out="";
-        			$id=$aRow[ $aColumns[$i] ];
-        			$btl->worker_list_loop(function($wrk, $shm) use (&$wrk_out, $id) {
-        				
-        				if($wrk[worker_id] == $id) {
-        					$wrk_out = $wrk[name];
-        					
-        					return LOOP_BREAK;
-        				}
-        			});
-        			$row[] = $wrk_out;
-        		break;
-        		case 2:
-        			$readable_action="UNKW";
-        			switch( $aRow[ $aColumns[$i] ]) {
-        				case BARTLBY_AUDIT_ACTION_ADD:
-						$readable_action="<span class='label label-primary'>ADD</span>";
-						break;
-						case BARTLBY_AUDIT_ACTION_DELETE:
-						$readable_action="<span class='label label-danger'>DELETED</span>";
-						$prev_object=btl_audit_get_last($res, $id, $type);
-						break;
-						case BARTLBY_AUDIT_ACTION_MODIFY:
-						$readable_action="<span class='label label-default'>MODIFIED</span>";
-						$prev_object=btl_audit_get_last($res, $id, $type);
-						break;
-        			}
-        			$row[] = $readable_action;
-        		break;
-        		case 4:
-        			$row[] = $aRow[ $aColumns[$i] ];
-        		break;
-	       		default:
-        			//$row[] = $aRow[ $aColumns[$i] ];
-        		break;
+      $row[] = date("d.m.Y H:i:s", $aRow["utime"]);
+      $wrk_out="";
+      $id=$aRow["worker_id"];
+      $btl->worker_list_loop(function($wrk, $shm) use (&$wrk_out, $id) {
+        if($wrk[worker_id] == $id) {
+          $wrk_out = $wrk[name];
+                  
+          return LOOP_BREAK;
+       }
+      });
+      $row[] = $wrk_out;
 
-        	}
+
+
+      $readable_action="UNKW(" . $aRow["action"] . ")";
+      switch( $aRow["action"]) {
+        case BARTLBY_AUDIT_ACTION_ADD:
+          $readable_action="<span class='label label-primary'>ADD</span>";
+        break;
+        case BARTLBY_AUDIT_ACTION_DELETE:
+          $readable_action="<span class='label label-danger'>DELETED</span>";
+           
+        break;
+        case BARTLBY_AUDIT_ACTION_MODIFY:
+          $readable_action="<span class='label label-default'>MODIFIED</span>";
           
-        }
+        break;
       }
+      $row[] = $readable_action;
+      $row[] = $aRow["prev_object"];
+
       $output['aaData'][] = $row;
     }
      

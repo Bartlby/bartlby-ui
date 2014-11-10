@@ -10,6 +10,551 @@
 
 
 //SHA1
+/*!
+ * jQuery JSONView
+ * Licensed under the MIT License. 
+ */
+(function(jQuery) {
+  var $, Collapser, JSONFormatter, JSONView;
+  JSONFormatter = (function() {
+    function JSONFormatter(options) {
+      if (options == null) {
+        options = {};
+      }
+      this.options = options;
+    }
+
+    JSONFormatter.prototype.htmlEncode = function(html) {
+      if (html !== null) {
+        return html.toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      } else {
+        return '';
+      }
+    };
+
+    JSONFormatter.prototype.jsString = function(s) {
+      s = JSON.stringify(s).slice(1, -1);
+      return this.htmlEncode(s);
+    };
+
+    JSONFormatter.prototype.decorateWithSpan = function(value, className) {
+      return "<span class=\"" + className + "\">" + (this.htmlEncode(value)) + "</span>";
+    };
+
+    JSONFormatter.prototype.valueToHTML = function(value, level) {
+      var valueType;
+      if (level == null) {
+        level = 0;
+      }
+      valueType = Object.prototype.toString.call(value).match(/\s(.+)]/)[1].toLowerCase();
+      return this["" + valueType + "ToHTML"].call(this, value, level);
+    };
+
+    JSONFormatter.prototype.nullToHTML = function(value) {
+      return this.decorateWithSpan('null', 'null');
+    };
+
+    JSONFormatter.prototype.numberToHTML = function(value) {
+      return this.decorateWithSpan(value, 'num');
+    };
+
+    JSONFormatter.prototype.stringToHTML = function(value) {
+      var multilineClass, newLinePattern;
+      if (/^(http|https|file):\/\/[^\s]+$/i.test(value)) {
+        return "<a href=\"" + (this.htmlEncode(value)) + "\"><span class=\"q\">\"</span>" + (this.jsString(value)) + "<span class=\"q\">\"</span></a>";
+      } else {
+        multilineClass = '';
+        value = this.jsString(value);
+        if (this.options.nl2br) {
+          newLinePattern = /([^>\\r\\n]?)(\\r\\n|\\n\\r|\\r|\\n)/g;
+          if (newLinePattern.test(value)) {
+            multilineClass = ' multiline';
+            value = (value + '').replace(newLinePattern, '$1' + '<br />');
+          }
+        }
+        return "<span class=\"string" + multilineClass + "\">\"" + value + "\"</span>";
+      }
+    };
+
+    JSONFormatter.prototype.booleanToHTML = function(value) {
+      return this.decorateWithSpan(value, 'bool');
+    };
+
+    JSONFormatter.prototype.arrayToHTML = function(array, level) {
+      var collapsible, hasContents, index, numProps, output, value, _i, _len;
+      if (level == null) {
+        level = 0;
+      }
+      hasContents = false;
+      output = '';
+      numProps = array.length;
+      for (index = _i = 0, _len = array.length; _i < _len; index = ++_i) {
+        value = array[index];
+        hasContents = true;
+        output += '<li>' + this.valueToHTML(value, level + 1);
+        if (numProps > 1) {
+          output += ',';
+        }
+        output += '</li>';
+        numProps--;
+      }
+      if (hasContents) {
+        collapsible = level === 0 ? '' : ' collapsible';
+        return "[<ul class=\"array level" + level + collapsible + "\">" + output + "</ul>]";
+      } else {
+        return '[ ]';
+      }
+    };
+
+    JSONFormatter.prototype.objectToHTML = function(object, level) {
+      var collapsible, hasContents, numProps, output, prop, value;
+      if (level == null) {
+        level = 0;
+      }
+      hasContents = false;
+      output = '';
+      numProps = 0;
+      for (prop in object) {
+        numProps++;
+      }
+      for (prop in object) {
+        value = object[prop];
+        hasContents = true;
+        output += "<li><span class=\"prop\"><span class=\"q\">\"</span>" + (this.jsString(prop)) + "<span class=\"q\">\"</span></span>: " + (this.valueToHTML(value, level + 1));
+        if (numProps > 1) {
+          output += ',';
+        }
+        output += '</li>';
+        numProps--;
+      }
+      if (hasContents) {
+        collapsible = level === 0 ? '' : ' collapsible';
+        return "{<ul class=\"obj level" + level + collapsible + "\">" + output + "</ul>}";
+      } else {
+        return '{ }';
+      }
+    };
+
+    JSONFormatter.prototype.jsonToHTML = function(json) {
+      return "<div class=\"jsonview\">" + (this.valueToHTML(json)) + "</div>";
+    };
+
+    return JSONFormatter;
+
+  })();
+  (typeof module !== "undefined" && module !== null) && (module.exports = JSONFormatter);
+  Collapser = {
+    bindEvent: function(item, collapsed) {
+      var collapser;
+      collapser = document.createElement('div');
+      collapser.className = 'collapser';
+      collapser.innerHTML = collapsed ? '+' : '-';
+      collapser.addEventListener('click', (function(_this) {
+        return function(event) {
+          return _this.toggle(event.target);
+        };
+      })(this));
+      item.insertBefore(collapser, item.firstChild);
+      if (collapsed) {
+        return this.collapse(collapser);
+      }
+    },
+    expand: function(collapser) {
+      var ellipsis, target;
+      target = this.collapseTarget(collapser);
+      ellipsis = target.parentNode.getElementsByClassName('ellipsis')[0];
+      target.parentNode.removeChild(ellipsis);
+      target.style.display = '';
+      return collapser.innerHTML = '-';
+    },
+    collapse: function(collapser) {
+      var ellipsis, target;
+      target = this.collapseTarget(collapser);
+      target.style.display = 'none';
+      ellipsis = document.createElement('span');
+      ellipsis.className = 'ellipsis';
+      ellipsis.innerHTML = ' &hellip; ';
+      target.parentNode.insertBefore(ellipsis, target);
+      return collapser.innerHTML = '+';
+    },
+    toggle: function(collapser) {
+      var target;
+      target = this.collapseTarget(collapser);
+      if (target.style.display === 'none') {
+        return this.expand(collapser);
+      } else {
+        return this.collapse(collapser);
+      }
+    },
+    collapseTarget: function(collapser) {
+      var target, targets;
+      targets = collapser.parentNode.getElementsByClassName('collapsible');
+      if (!targets.length) {
+        return;
+      }
+      return target = targets[0];
+    }
+  };
+  $ = jQuery;
+  JSONView = {
+    collapse: function(el) {
+      if (el.innerHTML === '-') {
+        return Collapser.collapse(el);
+      }
+    },
+    expand: function(el) {
+      if (el.innerHTML === '+') {
+        return Collapser.expand(el);
+      }
+    },
+    toggle: function(el) {
+      return Collapser.toggle(el);
+    }
+  };
+  return $.fn.JSONView = function() {
+    var args, defaultOptions, formatter, json, method, options, outputDoc;
+    args = arguments;
+    if (JSONView[args[0]] != null) {
+      method = args[0];
+      return this.each(function() {
+        var $this, level;
+        $this = $(this);
+        if (args[1] != null) {
+          level = args[1];
+          return $this.find(".jsonview .collapsible.level" + level).siblings('.collapser').each(function() {
+            return JSONView[method](this);
+          });
+        } else {
+          return $this.find('.jsonview > ul > li > .collapsible').siblings('.collapser').each(function() {
+            return JSONView[method](this);
+          });
+        }
+      });
+    } else {
+      json = args[0];
+      options = args[1] || {};
+      defaultOptions = {
+        collapsed: false,
+        nl2br: false
+      };
+      options = $.extend(defaultOptions, options);
+      formatter = new JSONFormatter({
+        nl2br: options.nl2br
+      });
+      if (Object.prototype.toString.call(json) === '[object String]') {
+        json = JSON.parse(json);
+      }
+      outputDoc = formatter.jsonToHTML(json);
+      return this.each(function() {
+        var $this, item, items, _i, _len, _results;
+        $this = $(this);
+        $this.html(outputDoc);
+        items = $this[0].getElementsByClassName('collapsible');
+        _results = [];
+        for (_i = 0, _len = items.length; _i < _len; _i++) {
+          item = items[_i];
+          if (item.parentNode.nodeName === 'LI') {
+            _results.push(Collapser.bindEvent(item.parentNode, options.collapsed));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      });
+    }
+  };
+})(jQuery);
+
+var objectDiff = typeof exports != 'undefined' ? exports : {};
+
+/**
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object}
+ */
+objectDiff.diff = function diff(a, b) {
+
+	if (a === b) {
+		return {
+			changed: 'equal',
+			value: a
+		}
+	}
+
+	var value = {};
+	var equal = true;
+
+	for (var key in a) {
+		if (key in b) {
+			if (a[key] === b[key]) {
+				value[key] = {
+					changed: 'equal',
+					value: a[key]
+				}
+			} else {
+				var typeA = typeof a[key];
+				var typeB = typeof b[key];
+				if (a[key] && b[key] && (typeA == 'object' || typeA == 'function') && (typeB == 'object' || typeB == 'function')) {
+					var valueDiff = diff(a[key], b[key]);
+					if (valueDiff.changed == 'equal') {
+						value[key] = {
+							changed: 'equal',
+							value: a[key]
+						}
+					} else {
+						equal = false;
+						value[key] = valueDiff;
+					}
+				} else {
+					equal = false;
+					value[key] = {
+						changed: 'primitive change',
+						removed: a[key],
+						added: b[key]
+					}
+				}
+			}
+		} else {
+			equal = false;
+			value[key] = {
+				changed: 'removed',
+				value: a[key]
+			}
+		}
+	}
+
+	for (key in b) {
+		if (!(key in a)) {
+			equal = false;
+			value[key] = {
+				changed: 'added',
+				value: b[key]
+			}
+		}
+	}
+
+	if (equal) {
+		return {
+			changed: 'equal',
+			value: a
+		}
+	} else {
+		return {
+			changed: 'object change',
+			value: value
+		}
+	}
+};
+
+
+/**
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object}
+ */
+objectDiff.diffOwnProperties = function diffOwnProperties(a, b) {
+
+	if (a === b) {
+		return {
+			changed: 'equal',
+			value: a
+		}
+	}
+
+	var diff = {};
+	var equal = true;
+	var keys = Object.keys(a);
+
+	for (var i = 0, length = keys.length; i < length; i++) {
+		var key = keys[i];
+		if (b.hasOwnProperty(key)) {
+			if (a[key] === b[key]) {
+				diff[key] = {
+					changed: 'equal',
+					value: a[key]
+				}
+			} else {
+				var typeA = typeof a[key];
+				var typeB = typeof b[key];
+				if (a[key] && b[key] && (typeA == 'object' || typeA == 'function') && (typeB == 'object' || typeB == 'function')) {
+					var valueDiff = diffOwnProperties(a[key], b[key]);
+					if (valueDiff.changed == 'equal') {
+						diff[key] = {
+							changed: 'equal',
+							value: a[key]
+						}
+					} else {
+						equal = false;
+						diff[key] = valueDiff;
+					}
+				} else {
+					equal = false;
+					diff[key] = {
+						changed: 'primitive change',
+						removed: a[key],
+						added: b[key]
+					}
+				}
+			}
+		} else {
+			equal = false;
+			diff[key] = {
+				changed: 'removed',
+				value: a[key]
+			}
+		}
+	}
+
+	keys = Object.keys(b);
+
+	for (i = 0, length = keys.length; i < length; i++) {
+		key = keys[i];
+		if (!a.hasOwnProperty(key)) {
+			equal = false;
+			diff[key] = {
+				changed: 'added',
+				value: b[key]
+			}
+		}
+	}
+
+	if (equal) {
+		return {
+			value: a,
+			changed: 'equal'
+		}
+	} else {
+		return {
+			changed: 'object change',
+			value: diff
+		}
+	}
+};
+
+
+(function() {
+
+	/**
+	 * @param {Object} changes
+	 * @return {string}
+	 */
+	objectDiff.convertToXMLString = function convertToXMLString(changes) {
+		var properties = [];
+
+		var diff = changes.value;
+		if (changes.changed == 'equal') {
+			return inspect(diff);
+		}
+
+		for (var key in diff) {
+			var changed = diff[key].changed;
+			switch (changed) {
+				case 'equal':
+					properties.push(stringifyObjectKey(escapeHTML(key)) + '<span>: </span>' + inspect(diff[key].value));
+					break;
+
+				case 'removed':
+					properties.push('<del class="diff">' + stringifyObjectKey(escapeHTML(key)) + '<span>: </span>' + inspect(diff[key].value) + '</del>');
+					break;
+
+				case 'added':
+					properties.push('<ins class="diff">' + stringifyObjectKey(escapeHTML(key)) + '<span>: </span>' + inspect(diff[key].value) + '</ins>');
+					break;
+
+				case 'primitive change':
+					var prefix = stringifyObjectKey(escapeHTML(key)) + '<span>: </span>';
+					properties.push(
+						'<del class="diff diff-key">' + prefix + inspect(diff[key].removed) + '</del><span>,</span>\n' +
+						'<ins class="diff diff-key">' + prefix + inspect(diff[key].added) + '</ins>');
+					break;
+
+				case 'object change':
+					properties.push(stringifyObjectKey(key) + '<span>: </span>' + convertToXMLString(diff[key]));
+					break;
+			}
+		}
+
+		return '<span>{</span>\n<div class="diff-level">' + properties.join('<span>,</span>\n') + '\n</div><span>}</span>';
+	};
+
+	/**
+	 * @param {string} key
+	 * @return {string}
+	 */
+	function stringifyObjectKey(key) {
+		return /^[a-z0-9_$]*$/i.test(key) ?
+			key :
+			JSON.stringify(key);
+	}
+
+	/**
+	 * @param {string} string
+	 * @return {string}
+	 */
+	function escapeHTML(string) {
+		return string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	}
+
+	/**
+	 * @param {Object} obj
+	 * @return {string}
+	 */
+	function inspect(obj) {
+
+		return _inspect('', obj);
+
+		/**
+		 * @param {string} accumulator
+		 * @param {object} obj
+		 * @see http://jsperf.com/continuation-passing-style/3
+		 * @return {string}
+		 */
+		function _inspect(accumulator, obj) {
+			switch(typeof obj) {
+				case 'object':
+					if (!obj) {
+						accumulator += 'null';
+						break;
+					}
+					var keys = Object.keys(obj);
+					var length = keys.length;
+					if (length === 0) {
+						accumulator += '<span>{}</span>';
+					} else {
+						accumulator += '<span>{</span>\n<div class="diff-level">';
+						for (var i = 0; i < length; i++) {
+							var key = keys[i];
+							accumulator = _inspect(accumulator + stringifyObjectKey(escapeHTML(key)) + '<span>: </span>', obj[key]);
+							if (i < length - 1) {
+								accumulator += '<span>,</span>\n';
+							}
+						}
+						accumulator += '\n</div><span>}</span>'
+					}
+					break;
+
+				case 'string':
+					accumulator += JSON.stringify(escapeHTML(obj));
+					break;
+
+				case 'undefined':
+					accumulator += 'undefined';
+					break;
+
+				default:
+					accumulator += escapeHTML(String(obj));
+					break;
+			}
+			return accumulator;
+		}
+	}
+})();
+
+
+/*!
+ * jQuery JSONView
+ * Licensed under the MIT License. 
+ */
 
 
 $(function(){

@@ -1,4 +1,6 @@
-
+<?
+echo $this->Form("fm1", "bartlby_action.php", "POST", true);
+?>
 <div class="row">
 	<div class="col-sm-6">
 		<?=$this->disp_box("basic")?>
@@ -31,3 +33,5 @@
 		</div>
 	</div>
 </div>
+
+</form>

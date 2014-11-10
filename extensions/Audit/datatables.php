@@ -26,7 +26,7 @@
     /* Array of database columns which should be read and sent back to DataTables. Use a space where
      * you want to insert a non-database field (for example a counter or static image)
      */
-    $aColumns = array( 'utime', 'worker_id', 'action', 'type', 'prev_object');
+    $aColumns = array( 'utime', 'worker_id', 'action', 'type', 'prev_object', 'id', 'object_id');
      
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = "id";
@@ -98,6 +98,9 @@
     }
     if((int)$_GET[id]) {
     	$sWhere = "WHERE object_id = " . (int)$_GET[id] . " and type =" . (int)$_GET[type] . " ";   
+    }
+    if((int)$_GET[force_id]) {
+      $sWhere = "WHERE id = " . (int)$_GET[force_id]; 
     }
     /* Individual column filtering */
     for ( $i=0 ; $i<count($aColumns) ; $i++ )
@@ -196,8 +199,57 @@
         break;
       }
       $row[] = $readable_action;
-      $row[] = $aRow["prev_object"];
+      $prev="";
+      if($aRow["prev_object"] != "") {
+        $prev = '<span class="btn btn-primary btn-xs fa fa-eye" onClick="audit_inspect(' . $aRow["id"] . ');"> Inspect</span>';
+      }
+      $row[]=$prev;
 
+
+
+      if($_GET[force_id]) {
+        $ad->db=null;
+        switch($aRow["type"]) {
+          case BARTLBY_AUDIT_TYPE_SERVICE:
+          $re = bartlby_get_service_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) bartlby_modify_service($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));  
+          break;
+          case BARTLBY_AUDIT_TYPE_SERVER:
+          $re = bartlby_get_server_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) bartlby_modify_server($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));
+          
+          break;
+          case BARTLBY_AUDIT_TYPE_WORKER:
+          //$re = bartlby_get_worker_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) bartlby_modify_worker($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));
+          
+          break;
+          case BARTLBY_AUDIT_TYPE_DOWNTIME:
+          $re = bartlby_get_downtime_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) bartlby_modify_downtime($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));
+          
+          break;
+          case BARTLBY_AUDIT_TYPE_SERVERGROUP:
+          $re = bartlby_get_servergroup_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) bartlby_modify_servergroup($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));
+          
+          break;
+          case BARTLBY_AUDIT_TYPE_SERVICEGROUP:
+          $re = bartlby_get_servicegroup_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) bartlby_modify_servicegroup($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));
+          break;
+        
+        }
+        
+
+        $rowa[current]=$re;
+        $rowa[prev]=json_decode($aRow[prev_object]);
+        $rowa[date] = date("d.m.Y H:i:s", $aRow["utime"]);
+        echo json_encode($rowa);
+        exit;
+        
+        break;
+      }
       $output['aaData'][] = $row;
     }
      

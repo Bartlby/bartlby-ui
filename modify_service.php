@@ -406,7 +406,7 @@ $layout->OUT .= "<script>
 $active_box_out .=$layout->FormBox(
 		array(
 			0=>"Type",
-			1=>$layout->Form("fm1", "bartlby_action.php", "POST", true) . $layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"")  . $layout->Field("use_server_default_type", "checkbox", "1", "" ,'class="icheck"') . "Use 'Server Default Type'"
+			1=> $layout->DropDown("service_type", $types,"onChange=\"CheckTables()\"")  . $layout->Field("use_server_default_type", "checkbox", "1", "" ,'class="icheck"') . "Use 'Server Default Type'"
 
 			
 		)
@@ -832,6 +832,6 @@ $layout->FormBox(
 	
 $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
 
-$layout->FormEnd();
+
 $layout->display("modify_service");
 

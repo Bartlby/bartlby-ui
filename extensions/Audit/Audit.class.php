@@ -17,10 +17,11 @@ class Audit {
 				utime INTEGER,
 				worker_id INTEGER,
 				object_id INTEGER,
-				prev_object TEXT
+				prev_object TEXT,
+				label TEXT
 				);";
 
-		$this->db = $this->storage->SQLDB($this->DBSTR, "core-audit_v4.db");
+		$this->db = $this->storage->SQLDB($this->DBSTR, "core-audit_v5.db");
 		echo $this->db->db_path;
 
 		
@@ -70,6 +71,14 @@ class Audit {
 		$layout->Tab("Audit", $this->output_table($layout,BARTLBY_AUDIT_TYPE_WORKER, $defaults[worker_id]));
 		return "";
 	}
+
+	function _overview() {
+		global $layout;
+		global $defaults;
+		$layout->Tab("Audit", $this->output_table($layout,"", ""));
+		return "";
+	}
+
 }
 
 ?>

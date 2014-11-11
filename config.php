@@ -103,34 +103,38 @@ if(!function_exists("bartlby_audit")) {
 	function btl_audit_get_last($r, $id, $type) {
 
 		$re="";
+		$label="";
 		switch($type) {
 			case BARTLBY_AUDIT_TYPE_SERVICE:
 			$re = bartlby_get_service_by_id($r, $id);
-			
+			$label=$re[server_name] . "/" . $re[service_name];
 			break;
 			case BARTLBY_AUDIT_TYPE_SERVER:
 			$re = bartlby_get_server_by_id($r, $id);
-			
+			$label=$re[server_name];
 			break;
 			case BARTLBY_AUDIT_TYPE_WORKER:
 			$re = bartlby_get_worker_by_id($r, $id);
-			
+			$label=$re[name];
 			break;
 			case BARTLBY_AUDIT_TYPE_DOWNTIME:
 			$re = bartlby_get_downtime_by_id($r, $id);
-			
+			$label=$re[downtime_notice];
 			break;
 			case BARTLBY_AUDIT_TYPE_SERVERGROUP:
 			$re = bartlby_get_servergroup_by_id($r, $id);
-			
+			$label=$re[servergroup_name];
 			break;
 			case BARTLBY_AUDIT_TYPE_SERVICEGROUP:
 			$re = bartlby_get_servicegroup_by_id($r, $id);
+			$label=$re[servicegroup_name];
 			break;
 		
 		}
 		
-		return json_encode($re, true);		
+		$ret[json]=json_encode($re, true);
+		$ret[label]=$label;
+		return $ret;		
 	}
 	function bartlby_audit($res, $type, $id, $action) {
 
@@ -139,18 +143,32 @@ if(!function_exists("bartlby_audit")) {
 			return false;
 		}
 		$prev_object="";
+		$label="";
 		//readable
 		switch($action) {
 			case BARTLBY_AUDIT_ACTION_ADD:
 			$readable_action="ADD";
+			
+			$o=btl_audit_get_last($res, $id, $type);
+			$prev_object=$o[json];
+			$label=$o[label];
+
 			break;
 			case BARTLBY_AUDIT_ACTION_DELETE:
 			$readable_action="DELETE";
-			$prev_object=btl_audit_get_last($res, $id, $type);
+			
+			$o=btl_audit_get_last($res, $id, $type);
+			$prev_object=$o[json];
+			$label=$o[label];
+
 			break;
 			case BARTLBY_AUDIT_ACTION_MODIFY:
 			$readable_action="MODIFY";
-			$prev_object=btl_audit_get_last($res, $id, $type);
+			
+			$o=btl_audit_get_last($res, $id, $type);
+			$prev_object=$o[json];
+			$label=$o[label];
+
 			break;
 		}
 
@@ -183,9 +201,11 @@ if(!function_exists("bartlby_audit")) {
 		
 		
 
-		$sql = "insert into bartlby_object_audit (type, action, utime, worker_id, object_id, prev_object) values(" . $type . "," . $action . ", " . time() . ", " . $_SESSION[worker][worker_id] . ", " . $id . ", '" .  SQLite3::escapeString($prev_object) . "')";
+		$sql = "insert into bartlby_object_audit (type, action, utime, worker_id, object_id, prev_object, label) values(" . $type . "," . $action . ", " . time() . ", " . $_SESSION[worker][worker_id] . ", " . $id . ", '" .  SQLite3::escapeString($prev_object) . "', '" . SQLite3::escapeString($label) . "')";
+		
 		$r = $ad->db->query($sql);
 		
+
 		
 		return true;
 		/*

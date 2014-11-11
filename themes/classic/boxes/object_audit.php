@@ -3,8 +3,11 @@
 							  <tr>
 							  	
 							  		<th>Date</th>
+
 							  	  <th>Worker</th>
 								  <th>Action</th>
+                  <th>Object</th>
+                  <th>Type</th>
 								  <th>Prev</th>
 								  
 							  </tr>
@@ -59,6 +62,7 @@ function audit_recover_object() {
 },
 function(){
    $.getJSON("extensions_wrap.php?script=Audit/datatables.php?force_id=" + window.audit_recover_id + "&recover_id=" + window.audit_recover_id, function(r) {
+       $("#auditModal").modal("hide");
        swal("Recovered!", "Object successfully recovered", "success");
    });
   
@@ -69,7 +73,8 @@ function(){
 function audit_inspect(id) {
   window.audit_recover_id=id;
   $.getJSON("extensions_wrap.php?script=Audit/datatables.php?force_id=" + id, function(r) {
-    console.log(r.prev);
+    console.log(r.current);
+    if(r.current == false) r.current = {}; 
 
     var diff = objectDiff.diffOwnProperties(r.prev, r.current);
    

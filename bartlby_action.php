@@ -409,14 +409,6 @@ switch($act) {
 			if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 				$btl->hasRight("modify_all_workers");
 			}
-			$wks = $btl->GetWorker(false);
-			for($x=0; $x<count($wks); $x++) {
-			
-				if($wks[$x][name] == $_GET[worker_name] && $wks[$x][worker_id] != $_GET[worker_id]) {
-					$act = 'worker_exists';	
-					break 2;
-				}	
-			}
 			
 			$svcstr = "";
 			for($x=0;$x<count($_GET[worker_services]); $x++) {

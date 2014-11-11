@@ -556,7 +556,45 @@ objectDiff.diffOwnProperties = function diffOwnProperties(a, b) {
  * Licensed under the MIT License. 
  */
 
+ $.fn.dataTableExt.oApi.fnNewAjax = function ( oSettings, sNewSource  )
+{
+    if ( typeof sNewSource != 'undefined' && sNewSource != null )
+    {
+        oSettings.sAjaxSource = sNewSource;
+       
+    }
+    this.fnDraw();
+}
 
+
+function logview_update_filter(d) {
+	
+	if(window.log_filter_query.match(/date_filter/)) {
+		window.log_filter_query=log_filter_query.replace(/(.*)&date_filter=.*&(.*)/, "$1&date_filter=" + d + "&$2");
+		
+	} else {
+		window.log_filter_query += "&date_filter=" + d + "&a=1";
+	}
+	
+	window.logTable.fnNewAjax("logview.php?" + window.log_filter_query + "&datatables_output=1");
+
+}
+function logview_prev() {
+	console.log($("#date_filter").val());
+	d=$("#date_filter").val();
+	p=new Date( d );
+	p.setDate(p.getDate() + 1);
+	d=$("#date_filter").val((p.getMonth() + 1) + '/' + p.getDate() + '/' +  p.getFullYear());
+	logview_update_filter($("#date_filter").val());
+}
+function logview_next() {
+	console.log($("#date_filter").val());
+	d=$("#date_filter").val();
+	p=new Date( d );
+	p.setDate(p.getDate() - 1 );
+	d=$("#date_filter").val((p.getMonth() + 1) + '/' + p.getDate() + '/' +  p.getFullYear());
+	logview_update_filter($("#date_filter").val());
+}
 $(function(){
   //Functions
   function toggleSideBar(_this){
@@ -1325,7 +1363,7 @@ $('.email_input').selectize({
     addToCalendar();
   }
   
-  $('[data-rel="ajax_plugin_search"]').selectize({
+  window.plugin_search = $('[data-rel="ajax_plugin_search"]').selectize({
     plugins: ['remove_button', 'drag_drop'],
      valueField: 'value',
     labelField: 'text',

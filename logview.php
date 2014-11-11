@@ -18,6 +18,8 @@ if($_GET[datatables_output] == 1) {
 		$tt=explode("/",$_GET[date_filter]);
 		//var_dump($tt);
 		$ch_time=mktime(0,0,0,$tt[0],$tt[1],$tt[2]);	
+	} else {
+		$_GET[date_filter]=date("m/d/Y");
 	}
 	$handle = "";
 	if($_GET[handle_filter] && $_GET[handle_filter] != "MAIN") $handle="." . $_GET[handle_filter];
@@ -315,7 +317,7 @@ $btl->service_list_loop(function($svc, $shm) use(&$r) {
 						}
 				}
 			}
-});
+}); 
 		
 	return $r;	
 }

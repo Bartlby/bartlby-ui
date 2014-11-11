@@ -34,7 +34,7 @@ if($_GET[datatables_output] == 1) {
 
 		$info_array=explode(";",$v);
 		$log_detail_o=explode("@", $info_array[2]);
-		
+		$hstate="";
 		if($log_detail_o[1] == "PERF") {
 			$tmp=explode("|", $log_detail_o[2]);
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
@@ -75,7 +75,21 @@ if($_GET[datatables_output] == 1) {
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			$clean = htmlentities($tmp[3]);
+			
+			$tmp=explode("|", $log_detail_o[2]);
+			$clean="";
+			for($z=3; $z<count($tmp);$z++) {
+				$clean .= " " . $tmp[$z];	
+			}
+
+			$clean = htmlentities($clean);
+			if(preg_match("/ HARD$/", $clean)) {
+				$hstate = "<br>(HARD)";
+			} else {
+				$hstate = "<br>(SOFT)";
+			}
+
+
 			$outline = "<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> changed to " . $btl->getState($tmp[1]) . "<br>" . $clean . "<br>";
 			$stcheck=$tmp[1];
 		}else if($log_detail_o[1] == "KILL") {
@@ -206,15 +220,15 @@ if($_GET[datatables_output] == 1) {
 		
 		$date=$info_array[0];
 		switch($stcheck) {
-			case 0: $img="<span class='label label-success'>OK</span>"; break;
-			case 1: $img="<span class='label label-warning'>Warning</span>"; break;
-			case 2: $img="<span class='label label-danger'>Critical</span>"; break;
-			case 3: $img="<span class='label label-default'>Info</span>"; break;	
-			case 4: $img="<span class='label label-default'>Info</span>"; break;
-			case 5: $img="<span class='label label-primary'>Trigger</span>"; break;
-			case 6: $img="<span class='label label-default'>Info</span>"; break;
-			case 7: $img="<span class='label label-primary'>Notification</span>"; break;
-			case 8: $img="<span class='label label-default'>Info</span>"; break;
+			case 0: $img="<span class='label label-success'>OK</span>" . $hstate; break;
+			case 1: $img="<span class='label label-warning'>Warning</span>" . $hstate; break;
+			case 2: $img="<span class='label label-danger'>Critical</span>" . $hstate; break;
+			case 3: $img="<span class='label label-default'>Info</span>" . $hstate; break;	
+			case 4: $img="<span class='label label-default'>Info</span>" . $hstate; break;
+			case 5: $img="<span class='label label-primary'>Trigger</span>" . $hstate; break;
+			case 6: $img="<span class='label label-default'>Info</span>" . $hstate; break;
+			case 7: $img="<span class='label label-primary'>Notification</span>" . $hstate; break;
+			case 8: $img="<span class='label label-default'>Info</span>" . $hstate; break;
 		}
 		
 		if(preg_match("/^AgentSyncer.*/i", $outline)) {

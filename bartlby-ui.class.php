@@ -127,7 +127,7 @@ class BartlbyUi {
 		file_get_contents("themes/css/btl.css") 
 		 . "</style></head><body>";
 	}
-	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report") {
+	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report", $only_hard=0) {
 		include_once "Mail.php";
 		include_once "Mail/mime.php";
 		
@@ -142,7 +142,7 @@ class BartlbyUi {
 
 			
 			
-			$rep = $this->do_report($from, $to, 0, $service_id);
+			$rep = $this->do_report($from, $to, 0, $service_id, $only_hard);
 			$rap .=  $this->format_report($rep, "html", "Report for: " . $defaults[server_name] . "/" . $defaults[service_name], true);
 			
 		
@@ -634,7 +634,8 @@ class BartlbyUi {
 		
 			array_push($files_scanned, array(0=>$filename, 1=>$lines));
 			while(list($k,$v) = @each($fdata)) {
-				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|/", $v, $m)) {
+				
+				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|.*HARD;CHECK\/HASTO$/", $v, $m)) {
 					$state_map[state_changes]++;
 					$cur_service_id=$m[2];
 					$cur_service_state=$m[3];
@@ -704,7 +705,7 @@ if($m[2] == "5724") {
 		$state_map[end_date] = date("Y/m/d", $time_end);
 		return $state_map;
 	}
-	function do_report($start_in, $end_in, $state_in, $in_service) {
+	function do_report($start_in, $end_in, $state_in, $in_service, $hard_only=0) {
 		$state_array=array();
 		
 		$log_mask=bartlby_config($this->CFG, "logfile");
@@ -753,13 +754,19 @@ if($m[2] == "5724") {
 					$tmp=explode("|", $log_detail_o[2]);
 					$msg="";
 					for($z=3; $z<count($tmp);$z++) {
-						$msg .= $tmp[$z];	
+						$msg .= " " . $tmp[$z];	
 					}
 					
 					if($in_service && $tmp[0] != $in_service) {
 						
 						continue;	
 					}
+					
+					$is_hard=0;
+					if(preg_match("/ HARD$/", $msg)) {
+						$is_hard=1;
+					}
+					if($hard_only == 1 && $is_hard != 1) continue;
 					
 					//if($last_state != $tmp[1]) {
 						
@@ -768,7 +775,7 @@ if($m[2] == "5724") {
 						$diff = $log_stamp - $last_mark;
 						//$out .= "State changed from " . $btl->getState($last_state) . " to " . $btl->getState($tmp[1]) . "<br>";	
 						//echo "Where " . $diff . " in " . $btl->getState($last_state) . "<br>"; 
-						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$msg, "lstate"=>$tmp[1]));
+						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$msg, "lstate"=>$tmp[1], "is_hard"=>$is_hard));
 						
 						$svc[$last_state] += $diff;
 						

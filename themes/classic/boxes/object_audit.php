@@ -70,10 +70,14 @@ function(){
 });
 
 }
-function audit_inspect(id) {
+function audit_inspect(id, action) {
   window.audit_recover_id=id;
   $.getJSON("extensions_wrap.php?script=Audit/datatables.php?force_id=" + id, function(r) {
     console.log(r.current);
+    var post_pend="";
+    if(r.current != false && action == 3) {
+      post_pend="<br><span class='label label-danger'>Object already been recovered - you can reset to this state</span>";
+    }
     if(r.current == false) r.current = {}; 
 
     var diff = objectDiff.diffOwnProperties(r.prev, r.current);
@@ -84,6 +88,9 @@ function audit_inspect(id) {
 
     if(diff.changed == "equal") {
       $("#audit_intime").html("<pre>Object in-time is the same as current state in DB</pre>");      
+    }
+    if(post_pend != "") {
+      $("#audit_date").html($("#audit_date").html() + post_pend);
     }
 
   });

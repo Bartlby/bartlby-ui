@@ -347,7 +347,7 @@
 
       $prev="";
       if($aRow["prev_object"] != "") {
-         $prev = '<span class="btn btn-primary btn-xs fa fa-eye" onClick="audit_inspect(' . $aRow["id"] . ');"> Inspect</span>';
+         $prev = '<span class="btn btn-primary btn-xs fa fa-eye" onClick="audit_inspect(' . $aRow["id"] . ', ' . $aRow[action] . ');"> Inspect</span>';
       }
       $row[]=$prev;
 

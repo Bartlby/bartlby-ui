@@ -76,16 +76,17 @@ function audit_inspect(id, action) {
     console.log(r.current);
     var post_pend="";
     if(r.current != false && action == 3) {
-      post_pend="<br><span class='label label-danger'>Object already been recovered - you can reset to this state</span>";
+      post_pend='<div class="alert alert-danger" role="alert">Object already been recovered - you can reset to this state</div>';
     }
     if(r.current == false) {
-      post_pend +="<br><span class='label label-danger'>Object does not exist anymore - <br>if you recover it it will be recovered with the original object_id BEWARE</span>";
+      //post_pend +="<br><span class='label label-danger'>Object does not exist anymore - <br>if you recover it it will be recovered with the original object_id BEWARE</span>";
+      post_pend +='<div class="alert alert-warning" role="alert">Object does not exist anymore - if you recover it it will be recovered with the original object_id BEWARE</div>';
       r.current = {}; 
     }
 
     var diff = objectDiff.diffOwnProperties(r.prev, r.current);
    
-    $("#audit_intime").html("<pre>" + objectDiff.convertToXMLString(diff) + "</pre>");
+    $("#audit_intime").html("<pre style='height: 300px; overflow:scroll;'>" + objectDiff.convertToXMLString(diff) + "</pre>");
     $("#audit_date").html("Object in time is from <kbd>" +  r.date + "</kbd> changes marked RED")
     $("#auditModal").modal();
 
@@ -93,7 +94,7 @@ function audit_inspect(id, action) {
       $("#audit_intime").html("<pre>Object in-time is the same as current state in DB</pre>");      
     }
     if(post_pend != "") {
-      $("#audit_date").html($("#audit_date").html() + post_pend);
+      $("#audit_date").html(post_pend + $("#audit_date").html());
     }
 
   });

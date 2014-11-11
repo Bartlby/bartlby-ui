@@ -78,7 +78,10 @@ function audit_inspect(id, action) {
     if(r.current != false && action == 3) {
       post_pend="<br><span class='label label-danger'>Object already been recovered - you can reset to this state</span>";
     }
-    if(r.current == false) r.current = {}; 
+    if(r.current == false) {
+      post_pend +="<br><span class='label label-danger'>Object does not exist anymore - <br>if you recover it it will be recovered with the original object_id BEWARE</span>";
+      r.current = {}; 
+    }
 
     var diff = objectDiff.diffOwnProperties(r.prev, r.current);
    

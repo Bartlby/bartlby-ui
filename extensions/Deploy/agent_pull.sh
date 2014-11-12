@@ -106,11 +106,11 @@ function bartlby_deploy_settings {
 	fi;
 }
 function bartlby_download_agent_conf {
-	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agentcfg-list&arch=all"|while read fname sha arch; do 
+	curl -s --cookie "$BARTLBY_SESSION" "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agentcfg-list&arch=all"|while read fname sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/${fname}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
-			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-cfg&arch=all&fn=${fname}";
+			curl -s --cookie "$BARTLBY_SESSION" -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-cfg&arch=all&fn=${fname}";
 			
 		fi;
 
@@ -118,28 +118,28 @@ function bartlby_download_agent_conf {
 }
 function bartlby_download_agent_bins {
 
-	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agent-list&arch=${THIS_ARCH}"|while read fname sha arch; do 
+	curl -s --cookie "$BARTLBY_SESSION" "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agent-list&arch=${THIS_ARCH}"|while read fname sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/${fname}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
-			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-bin&arch=${THIS_ARCH}&fn=${fname}";
+			curl -s --cookie "$BARTLBY_SESSION" -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-bin&arch=${THIS_ARCH}&fn=${fname}";
 			chmod a+rwx /opt/bartlby-agent/$fname
 		fi;
 
 	done;
 }
 function bartlby_update_sync_time {
-	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=update-sync-time&server_id=${SERVER_ID}" 
+	curl -s --cookie "$BARTLBY_SESSION" "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=update-sync-time&server_id=${SERVER_ID}" 
 		
 
 }
 function bartlby_download_agent_pull {
-	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&mode=get-agent-pull-list"|while read script_name sha arch; do 
+	curl -s --cookie "$BARTLBY_SESSION" "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&mode=get-agent-pull-list"|while read script_name sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/${script_name}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
 			
-			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/$script_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-pull&script_name=${plg_name}";
+			curl -s --cookie "$BARTLBY_SESSION" -o /opt/bartlby-agent/$script_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-pull&script_name=${plg_name}";
 			chmod a+rwx /opt/bartlby-agent/$script_name
 
 		fi;
@@ -148,12 +148,12 @@ function bartlby_download_agent_pull {
 }
 
 function bartlby_download_plugins {
-	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=plugin-list&server_id=${SERVER_ID}"|while read plg_name sha arch; do 
+	curl -s --cookie "$BARTLBY_SESSION" "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=plugin-list&server_id=${SERVER_ID}"|while read plg_name sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/plugins/${plg_name}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
 			
-			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/plugins/$plg_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-plugin&arch=${arch}&plugin=${plg_name}";
+			curl -s --cookie "$BARTLBY_SESSION" -o /opt/bartlby-agent/plugins/$plg_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-plugin&arch=${arch}&plugin=${plg_name}";
 			chmod a+rwx /opt/bartlby-agent/plugins/$plg_name
 
 		fi;

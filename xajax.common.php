@@ -67,4 +67,6 @@ $xajax->registerFunction("bulkEditValues");
 $xajax->registerFunction("bulkEditValuesServer");
 $xajax->registerFunction("setServiceDisplayPrio");
 
+$xajax->registerFunction("regen_keys");
+
 ?>

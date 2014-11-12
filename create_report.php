@@ -86,6 +86,14 @@ $layout->FormBox(
 );
 $layout->FormBox(
 			array(
+				0=>"Only HARD States:",
+				1=> $layout->Field("report_only_hard", "checkbox", "1", "" ,'class="icheck" checked')
+			)
+
+);
+
+$layout->FormBox(
+			array(
 				0=>"Email RCPT:",
 				1=>$layout->Field("report_rcpt", "text", "","", "class='email_input form-control chosen-select selectized selectize'") . $layout->Field("Subm", "button", "next->", "" ," onClick='xajax_CreateReport(xajax.getFormValues(\"fm1\"))'") . $layout->Field("server_id", "hidden", $_GET[server_id])
 			)

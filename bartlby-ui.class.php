@@ -24,8 +24,17 @@ $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */ 
 
+if(php_sapi_name() != "cli") {
+	include "Session.class.php";
+	SessionManager::sessionStart(gethostname());
+} else {
+	session_start();
+}	
 include_once("bartlbystorage.class.php");
-session_start();
+
+
+
+
 
 set_time_limit(0);
 if(function_exists("set_magic_quotes")) set_magic_quotes_runtime(0);
@@ -118,7 +127,7 @@ class BartlbyUi {
 		file_get_contents("themes/css/btl.css") 
 		 . "</style></head><body>";
 	}
-	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report") {
+	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report", $only_hard=0) {
 		include_once "Mail.php";
 		include_once "Mail/mime.php";
 		
@@ -133,7 +142,7 @@ class BartlbyUi {
 
 			
 			
-			$rep = $this->do_report($from, $to, 0, $service_id);
+			$rep = $this->do_report($from, $to, 0, $service_id, $only_hard);
 			$rap .=  $this->format_report($rep, "html", "Report for: " . $defaults[server_name] . "/" . $defaults[service_name], true);
 			
 		
@@ -625,7 +634,8 @@ class BartlbyUi {
 		
 			array_push($files_scanned, array(0=>$filename, 1=>$lines));
 			while(list($k,$v) = @each($fdata)) {
-				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|/", $v, $m)) {
+				
+				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|.*HARD;CHECK\/HASTO$/", $v, $m)) {
 					$state_map[state_changes]++;
 					$cur_service_id=$m[2];
 					$cur_service_state=$m[3];
@@ -695,7 +705,7 @@ if($m[2] == "5724") {
 		$state_map[end_date] = date("Y/m/d", $time_end);
 		return $state_map;
 	}
-	function do_report($start_in, $end_in, $state_in, $in_service) {
+	function do_report($start_in, $end_in, $state_in, $in_service, $hard_only=0) {
 		$state_array=array();
 		
 		$log_mask=bartlby_config($this->CFG, "logfile");
@@ -744,13 +754,19 @@ if($m[2] == "5724") {
 					$tmp=explode("|", $log_detail_o[2]);
 					$msg="";
 					for($z=3; $z<count($tmp);$z++) {
-						$msg .= $tmp[$z];	
+						$msg .= " " . $tmp[$z];	
 					}
 					
 					if($in_service && $tmp[0] != $in_service) {
 						
 						continue;	
 					}
+					
+					$is_hard=0;
+					if(preg_match("/ HARD$/", $msg)) {
+						$is_hard=1;
+					}
+					if($hard_only == 1 && $is_hard != 1) continue;
 					
 					//if($last_state != $tmp[1]) {
 						
@@ -759,7 +775,7 @@ if($m[2] == "5724") {
 						$diff = $log_stamp - $last_mark;
 						//$out .= "State changed from " . $btl->getState($last_state) . " to " . $btl->getState($tmp[1]) . "<br>";	
 						//echo "Where " . $diff . " in " . $btl->getState($last_state) . "<br>"; 
-						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$msg, "lstate"=>$tmp[1]));
+						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$msg, "lstate"=>$tmp[1], "is_hard"=>$is_hard));
 						
 						$svc[$last_state] += $diff;
 						
@@ -880,7 +896,8 @@ if($m[2] == "5724") {
 		return $r;
 	}
 	function isSuperUser() {
-		if($this->rights[super_user][0] != "true") {
+		
+		if($this->rights[super_user] != 1) {
 			return false;
 		}else {
 			return true;	
@@ -1029,7 +1046,7 @@ if($m[2] == "5724") {
 		return $r;
 	}
 	function hasServerorServiceRight($svcid, $do_redir=true) {
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			return true;	
 		}
 		
@@ -1068,7 +1085,7 @@ if($m[2] == "5724") {
 	}
 	function hasServerRight($srvid, $do_redir=true) {
 		
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			return true;	
 		}
 		
@@ -1093,7 +1110,7 @@ if($m[2] == "5724") {
 		}
 	}
 	function hasRight($k,$do_redir=true) {
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			
 			return true;	
 		}
@@ -1218,6 +1235,7 @@ if($m[2] == "5724") {
 			$wrk = bartlby_get_worker_by_id($this->RES, $this->user_id);
 
 			$this->rights[services] = explode(",", $wrk[visible_services]);
+			$this->rights[super_user] = $wrk[is_super_user];
 			$this->rights[servers] = explode(",", $wrk[visible_servers]);
 			$this->rights[selected_services] = explode(",", $wrk[selected_services]);
 			$this->rights[selected_servers] = explode(",", $wrk[selected_servers]);
@@ -1278,11 +1296,11 @@ if($m[2] == "5724") {
 		
 		// if is super_user ALL services and servers are allowed
 		
-		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user][0] == "true") {
+		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user] == 1) {
 		
 				$this->rights[services]=null;
 				$this->rights[servers]=null;
-				$this->rights[super_user][0]=true;
+				
 		}
 		
 	}
@@ -1313,12 +1331,8 @@ if($m[2] == "5724") {
 			$btl=$this;
 			$btl_to_use->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
 				global $_SERVER;
-				if($_SESSION[username] != "" && $_SESSION[password] != "") {
-					$_SERVER[PHP_AUTH_USER]=$_SESSION[username];
-					$_SERVER[PHP_AUTH_PW]=$_SESSION[password];
-				}
-				
-				if($_SERVER[PHP_AUTH_USER] == $v[name] && (md5($_SERVER[PHP_AUTH_PW]) == $v[password] || $_SERVER[PHP_AUTH_PW] == $v[password])) {
+			
+				if($_SESSION[username] == $v[name] && $_SESSION[password] == $v[password]) {
 					
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
@@ -1339,33 +1353,26 @@ if($m[2] == "5724") {
 	
 
 
-		if($auted == 0 && $_SESSION[username] != "") {
-			$this->redirectError("BARTLBY::LOGIN");
+	
+		if($auted == 0) {
+            session_destroy();
 			if(php_sapi_name() == "cli") {
-
+				echo "AUTH Failed";
+				exit;
 				return false;
+			} else {
+
+				header('HTTP/1.1 403 Authorization failed');
+				echo "Authorization failed - go to <a href=index.php>login</A>";
+				
+				exit(1);
 			}
-		}
-		if ($auted==0) { 
-			
-			 session_destroy();
-	      	@header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
-	      	@Header("HTTP/1.0 401 Unauthorized");
-	      	 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
-	      	 if(php_sapi_name() == "cli") {
 
-				return false;
-			 }
-			 $this->redirectError("BARTLBY::LOGIN");
-			 exit;
 		} else {
-			$this->user=$_SERVER[PHP_AUTH_USER];
-			$this->pw=$_SERVER[PHP_AUTH_PW];
-			
-			
-			
+			$this->user=$_SESSION[worker][name];
+			return true;
 		}
-		return true;
+		return false;
 	}
 	function _log($str) {
 		$logfile=bartlby_config($this->CFG, "logfile");
@@ -1737,7 +1744,32 @@ if($m[2] == "5724") {
 		if($name=="") $name="classic";
 		$this->theme=$name;	
 	}
-	
+
+	function getOneExtensionReturn($ext, $func, $base_dir="") {
+			
+			if(!file_exists($base_dir . "extensions/$ext/" .$ext . ".class.php")) {
+				return "Extenstion Not Found";
+			}
+			include_once($base_dir . "extensions/$ext/" .$ext . ".class.php");
+			//eval("\$clh = new " . $ext . "();");
+			$clh = new $ext();
+
+			$fcn_name = "api_" . $func;
+			
+				
+			if(method_exists($clh, $fcn_name)) {
+				
+				$o = $clh->$fcn_name();
+				$ex[ex_name]=$ext;
+				$ex[out]=$o;
+				$ex[fcn]=$func;
+				$ex[method]=$_SERVER['REQUEST_METHOD'];
+				return $ex;
+			} else {
+				return "Method Not Found";
+			}
+					
+	}	
 	function getExtensionsReturn($method, $layout, $ign=false) {
 		$r=array();
 		$dhl = opendir("extensions");
@@ -1750,9 +1782,9 @@ if($m[2] == "5724") {
 				
 				
 				if (class_exists($file)) {
-					eval("\$clh = new " . $file . "();");
+					$clh = new $file();
 					if(method_exists($clh, $method)) {
-						eval("\$o = \$clh->" . $method . "();");
+						$o = $clh->$method();
 						$ex[ex_name]=$file;
 						$ex[out] = $o;
 						

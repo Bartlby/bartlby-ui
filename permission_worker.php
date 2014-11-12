@@ -138,6 +138,7 @@ function translatedKey($k) {
 	$ar["super_user"]="Super User (has full rights, can also give rights)";
 	$ar["action.reload"]="allowed to reload data";
 	$ar["core.edit_cfg"]="can edit config files";
+	$ar["core.api_access"]="Can Access the REST-API (using priv/pubkey)";
 	$ar["core.process_info"]="can view statistics";
 	$ar["core.event_queue"]="view event queue";
 	$ar["action.disable_notify"]="allowed to disable notifications";

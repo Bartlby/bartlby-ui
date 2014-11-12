@@ -18,15 +18,23 @@ function dnl($i) {
 }
 
 
-if($act != "delete_package_ask") {
+if($act != "delete_package_ask" && $act != "logout" && $act != "poll_session") {
 	$btl->hasRight("action." . $act);
 }
 switch($act) {
+	case 'poll_session':
+	echo "OK";
+	exit;
+	break;
 	case 'set_instance_id':
 		$_SESSION["instance_id"] = $_GET[set_instance_id];
 		
 		Header("Location: " .  $_SERVER['HTTP_REFERER']);
 		
+	break;
+	case 'logout':
+		session_destroy();
+		header("Location: index.php");
 	break;
 	case 'save_permissions':
 	
@@ -401,14 +409,6 @@ switch($act) {
 			if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 				$btl->hasRight("modify_all_workers");
 			}
-			$wks = $btl->GetWorker(false);
-			for($x=0; $x<count($wks); $x++) {
-			
-				if($wks[$x][name] == $_GET[worker_name] && $wks[$x][worker_id] != $_GET[worker_id]) {
-					$act = 'worker_exists';	
-					break 2;
-				}	
-			}
 			
 			$svcstr = "";
 			for($x=0;$x<count($_GET[worker_services]); $x++) {
@@ -436,6 +436,7 @@ switch($act) {
 			$selected_services .= ",";
 			
 			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[api_enabled]) $_GET[api_enabled]=0;
 			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			
@@ -465,7 +466,7 @@ switch($act) {
 			if($df == false) {
 				$exec_plan="";	
 			}
-			$end_pw= md5($_GET[worker_password]);
+			$end_pw= sha1($_GET[worker_password]);
 			
 			$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 			if(!$_GET[worker_password]) {
@@ -490,13 +491,18 @@ switch($act) {
 				"visible_services" => $wrk1[visible_services],
 				"is_super_user" => $_GET[is_super_user],
 				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
-				"orch_id" => $_GET[orch_id]
+				"orch_id" => $_GET[orch_id],
+				"api_pubkey" => $_GET[api_pubkey],
+				"api_privkey" => $_GET[api_privkey],
+				"api_enabled" => $_GET[api_enabled]
 				
 				
 				
 			
 			);
 			
+			
+
 
 			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);
@@ -546,6 +552,7 @@ switch($act) {
 			$msg = "wa:" .  $_GET[worker_active] . "\n";
 			
 			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[api_enabled]) $_GET[api_enabled]=0;
 			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			for($x=0;$x<count($_GET[worker_services]); $x++) {
@@ -588,7 +595,7 @@ switch($act) {
 				"services" => $svcstr,
 				"notify_levels" => $notifystr,
 				"active" => $_GET[worker_active],
-				"password" => md5($_GET[worker_password]),
+				"password" => sha1($_GET[worker_password]),
 				"enabled_triggers" => $triggerstr,
 				"escalation_limit" => $_GET[escalation_limit],
 				"escalation_minutes" => $_GET[escalation_minutes],
@@ -599,7 +606,10 @@ switch($act) {
 				"visible_services" => $selected_services,
 				"is_super_user" => $_GET[is_super_user],
 				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
-				"orch_id" => $_GET[orch_id]
+				"orch_id" => $_GET[orch_id],
+				"api_pubkey" => $_GET[api_pubkey],
+				"api_privkey" => $_GET[api_privkey],
+				"api_enabled" => $_GET[api_enabled]
 				
 			);
 			
@@ -891,6 +901,8 @@ switch($act) {
 					
 					
 				);
+
+				
 				
 				$mod_server=bartlby_modify_server($btl->RES, $_GET[server_id], $srv_obj);
 				$defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);

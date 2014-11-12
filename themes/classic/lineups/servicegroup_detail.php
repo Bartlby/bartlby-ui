@@ -68,7 +68,7 @@
 	
 
 
-</div>
+
 <div class="row">
 
 

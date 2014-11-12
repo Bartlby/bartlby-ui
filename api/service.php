@@ -3,14 +3,34 @@
 include "../bartlby-ui.class.php";
 include "Slim/Slim.php";
 
+error_reporting(E_ALL);
 \Slim\Slim::registerAutoloader();
+
+ini_set("display_errors", "true");
+include "HMACAuth.php";
 
 $app = new \Slim\Slim();
 
+include "bartlby_api_global.php";
+
+//AS LOADING UI STUFF IS PATH DEPENDAND MOVE OUT OF API FOLDER - FROM HERE :)
+chdir("../");
+$btl = btl_api_load_node(0); // ATTACH TO API-NODE (this is the one you auth against)
+
+$app->add(new HMACAuth(array(
+                            "userAuth"=>new BTL_User_Auth($btl, $_SERVER["HTTP_X_PUBLIC"])
+                       )));
+
+
+$app->notFound(function () {
+    $r[api][status_code]=-404;
+    $r[api][status_msg]="Call not found1";
+    echo json_format(json_encode($r));
+    exit;
+});
+ 
 error_reporting(E_ERROR);
 ini_set("display_errors", "true");
-
-include "bartlby_api_global.php";
 
 
 $app->group("/v1", function() use($app) {
@@ -108,28 +128,76 @@ $app->group("/v1", function() use($app) {
         });
         $app->group("/stored", function() use($app) {
             //Running STUFF
+ 
+
             $app->post("/service(/node/:node)", function($node=0) use($app) {
                  $btl=btl_api_load_node($node);
                 //ADD NEW
+                 
+                 $return = bartlby_add_service($btl->RES,json_decode($app->request->getBody(), true));
+                 $r[api][status_code]=$return;
+                 if($return >= 0) {
+                    $r[api][status_msg]="Successfully created";
+                    $r[api][new_id]=$return;
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
+                 
+                 
             });
             $app->patch("/service(/node/:node)/:id", function($node=0, $id) use($app) {
                  $btl=btl_api_load_node($node);
                 //MODIFY
+                 
+                 $return = bartlby_modify_service($btl->RES, $id , json_decode($app->request->getBody(), true));
+                 $r[api][status_code]=$return;
+                 if($return >= 0) {
+                    $r[api][status_msg]="Successfully modified";
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
+            });
+
+
+            $app->delete("/service(/node/:node)/:id", function($node=0, $id) use($app) {
+                 $btl=btl_api_load_node($node);
+                //MODIFY
+                 
+                 $return = bartlby_delete_service($btl->RES,$id);
+                 $r[api][status_code]=$return;
+                 if($return >= 0) {
+                    $r[api][status_msg]="Successfully deleted";
+                 } else {
+                    $r[api][status_msg]="Failed";
+                }
+                echo json_format(json_encode($r));
             });
             $app->get("/service(/node/:node)", function($node=0) use($app) {
                 $filter = $app->request->params();
+            
+                
                 if(!$filter[from]) $filter[from]=0;
                 if(!$filter[to]) $filter[to]=20;
 
                 api_v1_svc_list($filter, true, $node);
 
-            });       
+            }); 
+            
             $app->get("/service(/node/:node)/:id", function($node=0, $id) use($app) {
-                $filter = $app->request->params();
-                $filter[service_id]=$id;
-                if(!$filter[from]) $filter[from]=0;
-                if(!$filter[to]) $filter[to]=20;
-                api_v1_svc_list($filter, true, $node);
+                $btl=btl_api_load_node($node);
+                $r=bartlby_get_service_by_id($btl->RES, $id);
+                if($r) {
+                    $r[api][status_code]=0;
+                    $r[api][status_msg]="Success";
+                } else {
+                    $r[api][status_code]=-1;
+                    $r[api][status_msg]="Failed to Fetch Service";
+                }
+                echo json_format(json_encode($r));
+
+                 
             });
 
         });
@@ -212,23 +280,7 @@ function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) 
             
             //get color and beauty state
             
-            if((int)$filter[service_expand_ui] == 1) {
-                //Expand with UI friendly objects:
-                $svc[beauty_color]=$btl->getColor($svc[current_state]);
-                $svc[beauty_state]=$btl->getState($svc[current_state]);
-                $svc[beauty_type]=$btl->getSVCType($svc[service_type]);
-                $svc[beauty_dead_marker]=$btl->resolveDeadMarker($svc[server_dead]);
-                $svc[beauty_service_enabled]=$svc[service_active] == 1 ? "true" : "false";
-                $svc[beauty_fires_events]=$svc[fires_events] == 1 ? "true" : "false";
-                $svc[beauty_check_plan] = $btl->resolveServicePlan($svc[exec_plan]);
-                if($svc[beauty_check_plan] == "") $svc[beauty_check_plan] = "none";
-                $svc[beauty_triggers] = implode(",", explode("|", $svc[enabled_triggers]));
-                if($svc[beauty_triggers] == "") $svc[beauty_triggers] = "all";
-                $svc[beauty_handled]=$svc[handled] == 1 ? "HANDLED" : "UNHANDLED";
-                $svc[beauty_check_is_running] = $svc[check_is_running] ? "true" : "false";
-                $svc[beauty_notify_enabled] = $svc[notify_enabled] ? "true" : "false";
-                $svc[beauty_server_enabled] = $svc[server_enabled] ? "true" : "false";
-            }
+            
             echo json_format(json_encode($svc));
             $rcnt++;
             echo ",";

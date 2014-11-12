@@ -1,3 +1,20 @@
+<script>
+<?
+global $defaults;
+?>
+$(document).ready(function() {
+	var selectize_tags=plugin_search[0].selectize;
+	selectize_tags.addOption({
+        text:'<?=$defaults[plugin]?>',
+        value: '<?=$defaults[plugin]?>'
+    });
+    selectize_tags.addItem('<?=$defaults[plugin]?>');
+
+});
+</script>
+<?
+echo $this->Form("fm1", "bartlby_action.php", "POST", true);
+?>
 
 <div class="row">
 	<div class="col-sm-6">
@@ -31,3 +48,5 @@
 		</div>
 	</div>
 </div>
+
+</form>

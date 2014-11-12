@@ -9,6 +9,7 @@
 BARTLBY_USER=$2;
 BARTLBY_PW=$3;
 SERVER_ID=$1;
+BARTLBY_SESSION="";
 THIS_ARCH=$(uname -m);
 
 function bartlby_deploy_settings {
@@ -98,17 +99,18 @@ function bartlby_deploy_settings {
 	if [ "x$BARTLBY_PW"  = "x" ];
 	then
 		sid=`dialog --inputbox "Enter Bartlby Password" 0 0 "" 3>&1 1>&2 2>&3`
+		sid=$(echo -n $sid|sha1sum|awk '{print $1}');
 		echo $sid > /opt/bartlby-agent/deploy_settings/remote_pw;
 		BARTLBY_PW=$(cat /opt/bartlby-agent/deploy_settings/remote_pw);
 		clear;
 	fi;
 }
 function bartlby_download_agent_conf {
-	curl -s -u $BARTLBY_USER:$BARTLBY_PW "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agentcfg-list&arch=all"|while read fname sha arch; do 
+	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agentcfg-list&arch=all"|while read fname sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/${fname}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
-			curl -s -u $BARTLBY_USER:$BARTLBY_PW -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-cfg&arch=all&fn=${fname}";
+			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-cfg&arch=all&fn=${fname}";
 			
 		fi;
 
@@ -116,28 +118,28 @@ function bartlby_download_agent_conf {
 }
 function bartlby_download_agent_bins {
 
-	curl -s -u $BARTLBY_USER:$BARTLBY_PW "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agent-list&arch=${THIS_ARCH}"|while read fname sha arch; do 
+	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=agent-list&arch=${THIS_ARCH}"|while read fname sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/${fname}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
-			curl -s -u $BARTLBY_USER:$BARTLBY_PW -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-bin&arch=${THIS_ARCH}&fn=${fname}";
+			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/$fname "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-bin&arch=${THIS_ARCH}&fn=${fname}";
 			chmod a+rwx /opt/bartlby-agent/$fname
 		fi;
 
 	done;
 }
 function bartlby_update_sync_time {
-	curl -s -u $BARTLBY_USER:$BARTLBY_PW "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=update-sync-time&server_id=${SERVER_ID}" 
+	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=update-sync-time&server_id=${SERVER_ID}" 
 		
 
 }
 function bartlby_download_agent_pull {
-	curl -s -u $BARTLBY_USER:$BARTLBY_PW "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&mode=get-agent-pull-list"|while read script_name sha arch; do 
+	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&mode=get-agent-pull-list"|while read script_name sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/${script_name}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
 			
-			curl -s -u $BARTLBY_USER:$BARTLBY_PW -o /opt/bartlby-agent/$script_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-pull&script_name=${plg_name}";
+			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/$script_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-agent-pull&script_name=${plg_name}";
 			chmod a+rwx /opt/bartlby-agent/$script_name
 
 		fi;
@@ -146,12 +148,12 @@ function bartlby_download_agent_pull {
 }
 
 function bartlby_download_plugins {
-	curl -s -u $BARTLBY_USER:$BARTLBY_PW "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=plugin-list&server_id=${SERVER_ID}"|while read plg_name sha arch; do 
+	curl -s --cookie $BARTLBY_SESSION "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php&arch=${THIS_ARCH}&mode=plugin-list&server_id=${SERVER_ID}"|while read plg_name sha arch; do 
 		local_sha=$( sha1sum  /opt/bartlby-agent/plugins/${plg_name}|awk '{print $1}');
 		if [ "x$local_sha" != "x${sha}" ];
 		then
 			
-			curl -s -u $BARTLBY_USER:$BARTLBY_PW -o /opt/bartlby-agent/plugins/$plg_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-plugin&arch=${arch}&plugin=${plg_name}";
+			curl -s --cookie $BARTLBY_SESSION -o /opt/bartlby-agent/plugins/$plg_name "${BARTLBY_URL}/extensions_wrap.php?script=Deploy/pull.php?mode=get-plugin&arch=${arch}&plugin=${plg_name}";
 			chmod a+rwx /opt/bartlby-agent/plugins/$plg_name
 
 		fi;
@@ -188,10 +190,19 @@ function bartlby_agent_install {
 	/etc/init.d/openbsd-inetd restart
 	
 }
-
+function bartlby_get_ui_session {
+	BARTLBY_SESSION=$(curl --silent -i  "${BARTLBY_URL}/login.php" -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data "login_username=${BARTLBY_USER}&password=${BARTLBY_PW}&btl_instance_id=0" |grep Cookie|tail -1|awk '{ print $2 }'|sed 's/;//');
+	EX=$?;
+	if [ $EX != 0 ];
+	then
+		echo "AUTH FAILED";
+		exit;
+	fi
+}
 function bartlby_agent_sync {
 	#check agent itself
 	#check agent cfg
+	bartlby_get_ui_session
 	bartlby_download_agent_bins
 	bartlby_download_agent_conf
 	#get plugin list

@@ -75,7 +75,8 @@
 	</tr>	
 	<tr>
 		<td width=150 class='font2'>Last State Change:</td>
-		<td align=left ><?=date("d.m.Y H:i:s",$plcs[service][last_state_change])?> (since:  <?=$btl->intervall(time()-$plcs[service][last_state_change])?>)</font></td>
+		<td align=left ><?=date("d.m.Y H:i:s",$plcs[service][last_state_change])?> <br>
+			(<?=$btl->intervall(time()-$plcs[service][last_state_change])?>)</font></td>
 		<td>&nbsp;</td>           
 	</tr>	
 	

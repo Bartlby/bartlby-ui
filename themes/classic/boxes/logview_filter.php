@@ -29,31 +29,11 @@
 			//var_dump($tt);
 			$ch_time=mktime(0,0,0,$tt[0],$tt[1],$tt[2]);	
 		}
-		 echo $layout->Form("fm1", "logview.php", "GET", true);
-		 echo $layout->FormBox(
-                                array(
-                                        0=>"Text",
-                                        1=>$layout->Field("text_filter", "text", $plcs["FILTER"][text_filter])
-                                        )
-                        ,true);
-		  echo $layout->FormBox(
-							array(
-								0=>"Date:",
-								1=>$layout->Field("date_filter", "text", date("m/d/Y",$ch_time), "", "class='datepicker'") 
-								)
-			, true);
-		  
-		  echo $layout->FormBox(
-                                array(
-                                        0=>"Handle",
-                                        1=>$layout->DropDown("handle_filter", $handle_drop) . $layout->Field("subm", "submit", "Filter")
-                                        )
-                        ,true);
-		  
-		 
-		
-		  
+
 		$svcM="";
+		$prev_day = "<span class='btn fa fa-backward' onClick='logview_next()'></span>";
+		$next_day = "<span class='btn fa fa-forward' onClick='logview_prev()'></span>";
+		
 		if($plcs[FILTER][service_id] != "") {
 			$def=bartlby_get_service_by_id($btl->RES, $plcs[FILTER][service_id]);
 			$svcM .="<h5>Service Filter:</h5>" . $def[server_name] . "/" . $def[service_name] . "<br>" . $btl->getServiceOptions($def, $layout) . "<a href='service_detail.php?service_id=" . $def[service_id] . "'>Detail</A>";
@@ -102,11 +82,35 @@
 
 
 		  if($_GET[text_filter] || $svcM != "") {
-			$svcM .= "<br><br>&nbsp; <a href='logview.php' class='btn btn-danger fa fa-trash'> reset filter</A>";
+			$svcM .= "<br>&nbsp; ";
 		  }
 
-		  echo $svcM;
 
+		 echo $layout->Form("fm1", "logview.php", "GET", true);
+		 echo $layout->FormBox(
+                                array(
+                                        0=>"Text",
+                                        1=>$layout->Field("text_filter", "text", $plcs["FILTER"][text_filter])
+                                        )
+                        ,true);
+		  echo $layout->FormBox(
+							array(
+								0=>"Date:",
+								1=>$layout->Field("date_filter", "text", date("m/d/Y",$ch_time), "", "class='datepicker' onChange='logview_update_filter($(this).val())'") 
+								)
+			, true);
+		  
+		  echo $layout->FormBox(
+                                array(
+                                        0=>"Handle",
+                                        1=>$layout->DropDown("handle_filter", $handle_drop) .  $prev_day . " " . $next_day . " <a href='logview.php' class='btn btn-danger fa fa-trash'> reset filter</A>" . $layout->Field("subm", "submit", "Filter") . $svcM
+                                        )
+                        ,true);
+		  
+		 
+		
+		  
+		
 		  echo  "<script>log_filter_query='" . http_build_query($plcs[FILTER]) . "';</script>"; 
 		  echo $layout->FormEnd(true);
 	?>

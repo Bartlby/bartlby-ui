@@ -72,7 +72,7 @@
 	
 
 
-</div>
+
 <div class="row">
 
 

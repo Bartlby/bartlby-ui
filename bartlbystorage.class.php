@@ -43,11 +43,16 @@
 				} else {
 					$this->db = new PDO('sqlite:' . $this->save_path . "/" . $fna);	
 				}
+
+
+
+				
 			} catch(Exception $e) {
 				
 				return false;
 			}
-
+			$this->db->path = $this->save_path . "/" . $fna;
+			
 			return $this->db;
 			
 			

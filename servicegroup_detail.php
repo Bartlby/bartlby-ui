@@ -11,7 +11,7 @@ $btl->hasRight("main.servergroup_detail");
 $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("ServiceGroup");
-
+$layout->setMainTabName("Details");
 $defaults=array();
 $btl->servicegroup_list_loop(function($grp, $shm) use (&$defaults) {
 		global $_GET;

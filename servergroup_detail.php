@@ -11,7 +11,7 @@ $btl->hasRight("main.servergroup_detail");
 $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("ServerGroup");
-
+$layout->setMainTabName("Details");
 if($_GET[all_servers] == 1) {
 $layout->setTitle("Server List");	
 }

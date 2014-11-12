@@ -22,12 +22,12 @@ session_start();
         	$input = new CLInput('Bartlby CLI Authentication', 'Press Ctrl-C to quit');
         	
         	$uname = $input->text("Username");
-        	$pw = $input->password("Password");
+        	$pw = sha1($input->password("Password"));
         	
         }
 
-     $_SERVER[PHP_AUTH_USER]=$uname;
-     $_SERVER[PHP_AUTH_PW]=$pw;
+     $_SESSION[username]=$uname;
+     $_SESSION[password]=$pw;
          
 
 

@@ -48,14 +48,14 @@ if(!$_GET[report_service] || !$log_mask) {
 	
 	if($_POST[report_rcpt]) {
 		
-		$out .= $btl->send_custom_report($_POST[report_rcpt], array($_GET[report_service]), $_GET[report_start], $_GET[report_end]);
+		$out .= $btl->send_custom_report($_POST[report_rcpt], array($_GET[report_service]), $_GET[report_start], $_GET[report_end], $_GET[report_only_hard]);
 		
 	}
 	
 	
 	
 	$out .= "creating report for service: $_GET[report_service] From: $_GET[report_start] To: $_GET[report_end]<br>";	
-	$ra=$btl->do_report($_GET[report_start], $_GET[report_end], $_GET[report_init], $_GET[report_service]);
+	$ra=$btl->do_report($_GET[report_start], $_GET[report_end], $_GET[report_init], $_GET[report_service], $_GET[report_only_hard]);
 	
 	
 	$date_start=explode(".", $_GET[report_start]);

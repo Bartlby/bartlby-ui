@@ -64,6 +64,14 @@ function idToInt($ids) {
 	return $ids;
 }
 
+
+function regen_keys() {
+		$res = new xajaxresponse();
+		$res->AddAssign("api_privkey","value", substr(sha1(microtime(true)), 0, 40));
+		$res->AddAssign("api_pubkey","value", substr(sha1(microtime(true)+time()), 0, 40));
+		return $res;
+}
+
 function bulkEditValuesServer($server_ids, $new_values, $mode = 0) {
 	global $btl;
 	$res = new xajaxresponse();
@@ -583,7 +591,6 @@ function toggle_server_check($server_id, $service_id) {
 	global $btl;
 	global $layout;
 	$res = new xajaxresponse();
-	if(!preg_match("/^XML.*$/i", $server_id)) {
 		if($btl->hasServerorServiceRight($server_id, false)) {
 			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
 			
@@ -601,12 +608,9 @@ function toggle_server_check($server_id, $service_id) {
 			
 			
 		} else{
-			$res->addAlert("permission denied");
+			$res->AddScript(sweetAlert("permission denied"));
 		}
 	
-	} else {
-		 $res->addAlert("action not possible on xml remote instances");
-	}	
 	return $res;
 }
 
@@ -618,7 +622,6 @@ function toggle_server_notify_check($server_id, $service_id) {
 	global $layout;
 
 	$res = new xajaxresponse();
-	if(!preg_match("/^XML.*$/i", $server_id)) {
 		if($btl->hasServerorServiceRight($server_id, false)) {
 			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
 			
@@ -637,12 +640,9 @@ function toggle_server_notify_check($server_id, $service_id) {
 			
 			
 		} else{
-			$res->addAlert("permission denied");
+			$res->AddScript(sweetAlert("permission denied"));
 		}
 	
-	} else {
-		 $res->addAlert("action not possible on xml remote instances");
-	}	
 	return $res;
 }
 function toggle_service_handled($server_id, $service_id) {
@@ -667,7 +667,7 @@ function toggle_service_handled($server_id, $service_id) {
 			
 			
 		} else{
-			$res->addAlert("permission denied");
+			$res->AddScript(sweetAlert("permission denied"));
 		}
 	
 	return $res;
@@ -676,7 +676,6 @@ function toggle_service_handled($server_id, $service_id) {
 function toggle_service_notify_check($server_id, $service_id) {
 	global $btl, $layout;
 	$res = new xajaxresponse();
-	if(!preg_match("/^XML.*$/i", $service_id)) {
 		if($btl->hasServerorServiceRight($service_id, false)) {
 			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
 			$idx=$btl->findSHMPlace($service_id);
@@ -697,19 +696,16 @@ function toggle_service_notify_check($server_id, $service_id) {
 			
 			
 		} else{
-			$res->addAlert("permission denied");
+			$res->AddScript(sweetAlert("permission denied"));
 		}
 	
-	} else {
-		 $res->addAlert("action not possible on xml remote instances");
-	}	
+	
 	return $res;
 }
 
 function toggle_service_check($server_id, $service_id) {
 	global $btl, $layout;
 	$res = new xajaxresponse();
-	if(!preg_match("/^XML.*$/i", $service_id)) {
 		if($btl->hasServerorServiceRight($service_id, false)) {
 			$gsm=bartlby_get_service_by_id($btl->RES, $service_id);
 			$idx=$btl->findSHMPlace($service_id);
@@ -726,12 +722,9 @@ function toggle_service_check($server_id, $service_id) {
 			
 			
 		} else{
-			$res->addAlert("permission denied");
+			$res->AddScript(sweetAlert("permission denied"));
 		}
 	
-	} else {
-		 $res->addAlert("action not possible on xml remote instances");
-	}	
 	return $res;
 }
 
@@ -769,27 +762,23 @@ function removeDIV($div) {
 function forceCheck($server, $service) {
 	global $btl;
 	$res = new xajaxresponse();
-	if(!preg_match("/^XML.*$/i", $service)) {
 		if($service) {
 			if($btl->hasServerorServiceRight($service, false)) {
 				$gsm=bartlby_get_service_by_id($btl->RES, $service);
 				if($gsm[orch_id] == 0) {
 					$idx=$btl->findSHMPlace($service);
 					$cur=bartlby_check_force($btl->RES, $idx);
-					//$res->addAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+					//$res->AddScript(sweetAlert("immediate check scheduled for:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
 					$res->AddScript('noty({"text":"Check has been forced","timeout": 600,  theme: "bootstrapTheme", "layout":"center","type":"success","animateOpen": {"opacity": "show"}})');
 				} else {
-					$res->addAlert("force on: " . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name] . " not possible because on orch-node");	
+					$res->AddScript(sweetAlert("force on: " . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name] . " not possible because on orch-node"));	
 				}
 			} else {
-				$res->addAlert("permission denied to force:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]);
+				$res->AddScript(sweetAlert("permission denied to force:" . $gsm[server_name] . ":" . $gsm[client_port] . "/" . $gsm[service_name]));
 			}
 		} else {                                     
-		 	$res->addAlert("missing service_id");
+		 	$res->AddScript(sweetAlert("missing service_id"));
 		}  
-	} else {
-	 	$res->addAlert("force check isnt possible on xml remote services");
-	}   
 	return $res;
 }
 
@@ -924,7 +913,7 @@ function QuickLook($what) {
 	$btl->worker_list_loop(function($wrk, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $wrk[name])) {
 			
-				$rq .= "<tr><td>Worker</td><td><a href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . quickLookHighlight($wrk[name],$_GET[search]) . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
+				$rq .= "<tr><td>Worker</td><td><a class=ql href='worker_detail.php?worker_id=" . $wrk[worker_id] . "'>" . quickLookHighlight($wrk[name],$_GET[search]) . "</A></td><td>" . $btl->getWorkerOptionsBTN($wrk, $layout) . "</td>";	
 				$wrkfound=true;
 		}
 
@@ -938,7 +927,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $srv[server_name] )) {
-			$rq .= "<tr><td>Server</td><td><a href='server_detail.php?server_id=" . $srv[server_id] . "'>" . quickLookHighlight($srv[server_name], $_GET[search]) . "</A>  </td><td><a href='services.php?server_id=" . $srv[server_id] . "'>Services</font></A> " . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
+			$rq .= "<tr><td>Server</td><td><a class=ql href='server_detail.php?server_id=" . $srv[server_id] . "'>" . quickLookHighlight($srv[server_name], $_GET[search]) . "</A>  </td><td><a href='services.php?server_id=" . $srv[server_id] . "'>Services</font></A> " . $btl->getserveroptions($srv, $layout) . "</td></tr>";        
             $svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -955,7 +944,7 @@ function QuickLook($what) {
 
 		
 		if(@preg_match("/" . $_GET[search] . "/i", $svc[server_name] . "/" . $svc[service_name])) {
-			$rq .= "<tr><td>Service</td><td><a href='service_detail.php?service_place=" . $shm . "'>" . $btl->getColorSpan($svc[current_state]) .  " " . quickLookHighlight($svc[server_name] . "/" . $svc[service_name], $_GET[search]) . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
+			$rq .= "<tr><td>Service</td><td><a class=ql href='service_detail.php?service_place=" . $shm . "'>" . $btl->getColorSpan($svc[current_state]) .  " " . quickLookHighlight($svc[server_name] . "/" . $svc[service_name], $_GET[search]) . "</A></font></td><td>" . $btl->getServiceOptions($svc, $layout) . "</td>";	
 			$svcfound=true;
 			$svcfound_counter++;
 			if($svcfound_counter >= 25) return -1;
@@ -969,7 +958,7 @@ function QuickLook($what) {
 	$btl->servergroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$srvgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servergroup_name])) {
 			
-				$rq .= "<tr><td>ServerGroup</td><td><a href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . quickLookHighlight($srvgrp[servergroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServerGroup</td><td><a class=ql href='servergroup_detail.php?servergroup_id=" . $srvgrp[servergroup_id] . "'>" . quickLookHighlight($srvgrp[servergroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServerGroupOptions($srvgrp, $layout) . "</td>";	
 				$srvgrpfound=true;
 		}
 
@@ -979,7 +968,7 @@ function QuickLook($what) {
 	$btl->servicegroup_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$svcgrpfound, &$btl, &$layout) {
 		if(@preg_match("/" . $what . "/i", $srvgrp[servicegroup_name])) {
 			
-				$rq .= "<tr><td>ServiceGroup</td><td><a href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . quickLookHighlight($srvgrp[servicegroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
+				$rq .= "<tr><td>ServiceGroup</td><td><a class=ql href='servicegroup_detail.php?servicegroup_id=" . $srvgrp[servicegroup_id] . "'>" . quickLookHighlight($srvgrp[servicegroup_name], $_GET[search]) . "</A></td><td>" . $btl->getServiceGroupOptions($srvgrp, $layout) . "</td>";	
 				$svcgrpfound=true;
 		}
 
@@ -1417,5 +1406,9 @@ function bartlbize_field($v, $n=false) {
 	return true;
 	
 }
+function sweetAlert($str) {
+	return 'swal("Error", "' . $str . '", "error")';
+}
+
 
 ?>

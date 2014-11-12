@@ -75,7 +75,7 @@ class SessionManager
 
 			// Give a 5% chance of the session id changing on any request
 			}elseif(rand(1, 100) <= 5){
-				self::regenerateSession();
+				//self::regenerateSession();
 			}
 		}else{
 			$_SESSION = array();

@@ -1810,8 +1810,9 @@ if($m[2] == "5724") {
 								
 							
 							
-							
-							$layout->create_box($info_box_title, $core_content, "extension_" . $ex[ex_name]);
+							if($layout) {
+								$layout->create_box($info_box_title, $core_content, "extension_" . $ex[ex_name]);
+							}
 						}
 								
 						

@@ -984,7 +984,7 @@ function QuickLook($what) {
 	@reset($servers);
 	$rq = "";
 	
-	/*
+	
 	$r = $btl->getExtensionsReturn("_quickLook", false);
 	if($rq == "") {
 		$rq = "<tr><td colspan=2><i>no extension returned results</i></td></tr>";	
@@ -998,7 +998,7 @@ function QuickLook($what) {
 	//Call n get return of Extensions
 	$output .=  $layout->create_box("Extensions", $rq, "search_extensions");
 
-	*/
+	
 
 	$cl_button = "<span class='fa fa-close pull-right' style='font-size:20px;' onClick=\"xajax_removeDIV('quick_suggest');\"> close</span><br>";
 	

@@ -1,5 +1,4 @@
 <?
-
 include "config.php";
 include_once "bartlbystorage.class.php";
 
@@ -64,4 +63,3 @@ class Dashboards {
 }
 
 ?>
-

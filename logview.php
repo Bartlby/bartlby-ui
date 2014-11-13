@@ -60,6 +60,7 @@ if($_GET[datatables_output] == 1) {
 			$outline = "" . $tmp[1]  . "(" . $tmp[0] . ")";
 			$stcheck=6;
 		} else if($log_detail_o[1] == "LOG") {
+
 			$tmp=explode("|", $log_detail_o[2]);
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
 				continue;	
@@ -77,21 +78,19 @@ if($_GET[datatables_output] == 1) {
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			
-			$tmp=explode("|", $log_detail_o[2]);
+			$log_el = explode("|", $v);
 			$clean="";
-			for($z=3; $z<count($tmp);$z++) {
-				$clean .= " " . $tmp[$z];	
+			for($z=3; $z<count($log_el);$z++) {
+				if(preg_match("/HARD;CHECK\/HASTO$/", $log_el[$z])) {
+					$hstate = "<br>(HARD)";
+					break;
+				} 
+				if(preg_match("/SOFT;CHECK\/HASTO$/", $log_el[$z])) {
+					$hstate = "<br>(SOFT)";
+					break;
+				}
+				$clean .=  $log_el[$z] . " ";	
 			}
-
-			$clean = htmlentities($clean);
-			if(preg_match("/ HARD$/", $clean)) {
-				$hstate = "<br>(HARD)";
-			} else {
-				$hstate = "<br>(SOFT)";
-			}
-
-
 			$outline = "<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> changed to " . $btl->getState($tmp[1]) . "<br>" . $clean . "<br>";
 			$stcheck=$tmp[1];
 		}else if($log_detail_o[1] == "KILL") {

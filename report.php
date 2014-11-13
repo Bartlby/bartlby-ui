@@ -330,7 +330,7 @@ if(!$_GET[report_service] || !$log_mask) {
 		if($_GET[report_init] == 1) $st_r = -1;
 		if($_GET[report_init] == 2) $st_r = -2;
 		
-		$o1 .= "<table class='table table-striped table-bordered ' id='services_table1'>
+		$o1 .= "<table class='table  table-bordered ' id='services_table1'>
 						  <thead>
 							  <tr>
 							  	<th>Time</th>
@@ -359,7 +359,7 @@ if(!$_GET[report_service] || !$log_mask) {
 			
 					$o1 .= "<tr>";
 					$o1 .= "<td>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
-					$o1 .= "<td valign=top width=200><span class='label " .  $lbl . "'>" . $btl->getState($state_array[$xy][lstate]) . "</span></b></td>";
+					$o1 .= "<td valign=top width=200><span class='label " .  $lbl . "'>" . $btl->getState($state_array[$xy][lstate]) . "</span></b><br>" . $state_array[$xy][is_hard_lable] . "</td>";
 			
 					$o1 .= "<td>" . $state_array[$xy][msg] . "</td></tr>";
 					$js_out .= "[" . ($state_array[$xy][end]*1000) . ", " . $st_r . "],";

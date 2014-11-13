@@ -752,20 +752,33 @@ if($m[2] == "5724") {
 						
 				if($log_detail_o[1] == "LOG") {
 					$tmp=explode("|", $log_detail_o[2]);
-					$msg="";
-					for($z=3; $z<count($tmp);$z++) {
-						$msg .= " " . $tmp[$z];	
-					}
+				
 					
 					if($in_service && $tmp[0] != $in_service) {
 						
 						continue;	
 					}
 					
-					$is_hard=0;
-					if(preg_match("/ HARD$/", $msg)) {
-						$is_hard=1;
+
+					$log_el = explode("|", $v);
+					$clean="";
+					for($z=3; $z<count($log_el);$z++) {
+						if(preg_match("/HARD;CHECK\/HASTO$/", $log_el[$z])) {
+							$hstate = "(HARD)";
+							$is_hard=1;
+							break;
+						} 
+						if(preg_match("/SOFT;CHECK\/HASTO$/", $log_el[$z])) {
+							$hstate = "(SOFT)";
+							$is_hard=0;
+							break;
+						}
+						
+						$clean .=  $log_el[$z] . " ";	
+					
 					}
+
+					
 					if($hard_only == 1 && $is_hard != 1) continue;
 					
 					//if($last_state != $tmp[1]) {
@@ -775,7 +788,7 @@ if($m[2] == "5724") {
 						$diff = $log_stamp - $last_mark;
 						//$out .= "State changed from " . $btl->getState($last_state) . " to " . $btl->getState($tmp[1]) . "<br>";	
 						//echo "Where " . $diff . " in " . $btl->getState($last_state) . "<br>"; 
-						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$msg, "lstate"=>$tmp[1], "is_hard"=>$is_hard));
+						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$clean, "lstate"=>$tmp[1], "is_hard"=>$is_hard, "is_hard_lable"=>$hstate));
 						
 						$svc[$last_state] += $diff;
 						

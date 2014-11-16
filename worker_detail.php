@@ -6,6 +6,8 @@ function dnl($i) {
 include "layout.class.php";
 include "config.php";
 include "bartlby-ui.class.php";
+@include_once "extensions/Audit/Audit.class.php";
+
 $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("main.servergroup_detail");
 $layout= new Layout();
@@ -80,7 +82,10 @@ $layout->create_box($info_box_title, $core_content, "worker_detail_info", array(
 										),
 			"worker_detail_info");
 
-
+$layout->create_box("History", $core_content, "worker_detail_timeline", array(
+										"worker" => $defaults										
+										),
+			"worker_detail_timeline");
 
 
 

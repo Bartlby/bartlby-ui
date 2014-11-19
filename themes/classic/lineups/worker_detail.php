@@ -8,7 +8,9 @@
 		<div id=service_detail_downtime_notice_ajax class='fifty_float_left'>
 		<?=$this->disp_box("activity_worker")?>
 		</div>
-		
+		<div id=worker_detail_timeline_ajax class='fifty_float_left'>
+		<?=$this->disp_box("worker_detail_timeline")?>
+		</div>
 	
 		
 	</div>

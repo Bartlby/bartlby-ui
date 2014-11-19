@@ -22,7 +22,7 @@ class Audit {
 				);";
 
 		$this->db = $this->storage->SQLDB($this->DBSTR, "core-audit_v5.db");
-		echo $this->db->db_path;
+		
 
 		
 	

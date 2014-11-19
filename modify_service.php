@@ -12,9 +12,11 @@ $btl=new BartlbyUi($Bartlby_CONF);
 if($Bartlby_CONF_Remote == true && $Bartlby_CONF_DBSYNC == false) {
 	$btl->redirectError("BARTLBY::INSTANCE::IS_REMOTE");
 }
+error_reporting(1);
 
 $layout= new Layout();
 $layout->setTitle("");
+
 
 function dnl($i) {
 	return sprintf("%02d", $i);
@@ -296,7 +298,7 @@ if(!$defaults[service_type]) {
 }
 //Get plugins :))
 
-$plg_drop="";
+$plg_drop=null;
 $plgs=bartlby_config($btl->CFG, "agent_plugin_dir");
 $dh=opendir($plgs);
 while ($file = readdir ($dh)) { 

@@ -136,7 +136,11 @@ if(!function_exists("bartlby_audit")) {
 		$ret[label]=$label;
 		return $ret;		
 	}
-	function bartlby_audit($res, $type, $id, $action) {
+	function bartlby_generic_audit($res, $id, $type, $line) {
+		//echo "GENERIC AUDIT: $id $type $line \n";
+		return true;
+	}
+	function bartlby_object_audit($res, $type, $id, $action) {
 
 		if((int)$_SESSION[worker][worker_id] < 0)  {
 			

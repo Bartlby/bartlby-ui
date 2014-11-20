@@ -76,6 +76,7 @@ class Audit {
 		global $layout;
 		global $defaults;
 		$layout->Tab("Audit", $this->output_table($layout,"", ""));
+		
 		return "";
 	}
 

@@ -1,6 +1,8 @@
 <?php
 error_reporting(0);	
 
+error_reporting(1);	
+ini_set("display_errors", true);
 
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
@@ -99,7 +101,7 @@ define("API_PORTIER_HOST", "localhost");
 define("API_PORTIER_PORT", "9031");
 
 
-if(!function_exists("bartlby_audit")) {
+if(!function_exists("bartlby_generic_audit")) {
 	function btl_audit_get_last($r, $id, $type) {
 
 		$re="";
@@ -137,7 +139,7 @@ if(!function_exists("bartlby_audit")) {
 		return $ret;		
 	}
 	function bartlby_generic_audit($res, $id, $type, $line) {
-		//echo "GENERIC AUDIT: $id $type $line \n";
+		//file_put_contents("/var/log/bartlby_audit", "GENERIC AUDIT: $id $type $line \n", FILE_APPEND);
 		return true;
 	}
 	function bartlby_object_audit($res, $type, $id, $action) {

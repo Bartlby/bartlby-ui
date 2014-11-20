@@ -57,6 +57,7 @@ if($_GET["copy"] == "true") {
 	$btl->hasRight("action.copy_service");
 	$server_list_type="multiple";
 	$server_field_name="service_server[]";
+	$defaults[usid]=substr(sha1(time()), 0, 15); //NEW USID
 }
 
 if($_GET["new"] == "true") {

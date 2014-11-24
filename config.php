@@ -138,7 +138,19 @@ if(!function_exists("bartlby_generic_audit")) {
 		$ret[label]=$label;
 		return $ret;		
 	}
-	function bartlby_generic_audit($res, $id, $type, $line) {
+	function bartlby_generic_audit($res, $type,  $id, $line) {
+		if(!class_exists("Audit")) {
+			include_once "extensions/Audit/Audit.class.php";
+		}
+		$ad = new Audit();
+		$o=btl_audit_get_last($res, $id, $type);
+		$prev_object=$o[json];
+		$label=$o[label];
+
+		$sql = "insert into bartlby_generic_audit (type, utime, object_id, line, worker_id, label) values(" . $type . "," . time() . ", " . $id . ", '" .  SQLite3::escapeString($line) . "', " . $_SESSION[worker][worker_id] . ",'" . SQLite3::escapeString($label) . "')";
+		$r = $ad->db->query($sql);
+
+
 		//file_put_contents("/var/log/bartlby_audit", "GENERIC AUDIT: $id $type $line \n", FILE_APPEND);
 		return true;
 	}
@@ -204,9 +216,6 @@ if(!function_exists("bartlby_generic_audit")) {
 			include_once "extensions/Audit/Audit.class.php";
 		}
 		$ad = new Audit();
-		
-		
-
 		$sql = "insert into bartlby_object_audit (type, action, utime, worker_id, object_id, prev_object, label) values(" . $type . "," . $action . ", " . time() . ", " . $_SESSION[worker][worker_id] . ", " . $id . ", '" .  SQLite3::escapeString($prev_object) . "', '" . SQLite3::escapeString($label) . "')";
 		
 		$r = $ad->db->query($sql);

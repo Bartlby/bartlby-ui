@@ -19,9 +19,17 @@ class Audit {
 				object_id INTEGER,
 				prev_object TEXT,
 				label TEXT
-				);";
+				);
 
-		$this->db = $this->storage->SQLDB($this->DBSTR, "core-audit_v5.db");
+		CREATE TABLE bartlby_generic_audit(id INTEGER PRIMARY KEY AUTOINCREMENT,
+										   type INTEGER,
+										   object_id INTEGER,
+										   utime INTEGER,
+										   line TEXT,
+										   worker_id INTEGER,
+										   label TEXT);";
+
+		$this->db = $this->storage->SQLDB($this->DBSTR, "core-audit_v8.db");
 		
 
 		
@@ -75,7 +83,7 @@ class Audit {
 	function _overview() {
 		global $layout;
 		global $defaults;
-		$layout->Tab("Audit", $this->output_table($layout,"", ""));
+		$layout->Tab("Object-Audit", $this->output_table($layout,"", ""));
 		
 		return "";
 	}

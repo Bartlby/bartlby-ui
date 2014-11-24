@@ -40,6 +40,10 @@
                         $t = " Servergroup";
                         $link = "<a href='servergroup_detail.php?servergroup_id=" . $aRow[object_id] . "'>" . $aRow[label] . "</A>";
                       break;
+                      default:
+                        $t = "";
+                        $link = "";
+                      break;
                   }
                   $licolor="blue";
                   $fa_icon="fa-bars";

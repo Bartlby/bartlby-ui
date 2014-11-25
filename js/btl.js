@@ -1969,13 +1969,7 @@ $('[data-rel="ajax_report_service"]').selectize({
             "bProcessing": true,
             "oTableTools": {
             "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
-              "aButtons": [
-                  {
-                      "sExtends":    "collection",
-                      "sButtonText": "Export",
-                      "aButtons":    [ "csv", "xls", "pdf" ]
-                  }
-              ]
+              "aButtons": ["csv", "pdf","xls" ]
           },
             "oLanguage": {
               "sEmptyTable": "No Entries found",
@@ -2044,13 +2038,7 @@ $('[data-rel="ajax_report_service"]').selectize({
           "bProcessing": true,
           "oTableTools": {
           "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
-            "aButtons": [
-                {
-                    "sExtends":    "collection",
-                    "sButtonText": "Export",
-                    "aButtons":    [ "csv", "xls", "pdf" ]
-                }
-            ]
+            "aButtons": ["csv", "pdf","xls" ]
         },
           "oLanguage": {
             "sEmptyTable": "No Services found",
@@ -2083,13 +2071,7 @@ window.servers_table = $('#servers_table').dataTable({
     
         "oTableTools": {
           "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
-            "aButtons": [
-                {
-                    "sExtends":    "collection",
-                    "sButtonText": "Export",
-                    "aButtons":    [ "csv", "xls", "pdf" ]
-                }
-            ]
+            "aButtons": ["csv", "pdf","xls" ]
         },
           "oLanguage": {
             "sEmptyTable": "No Servers found",

@@ -11,7 +11,7 @@
             <?
             		
             		$ad = new Audit();
-            		$rResult = $ad->db->query("select * from bartlby_generic_audit where worker_id=1 order by utime desc limit 0,20");
+            		$rResult = $ad->db->query("select * from bartlby_generic_audit where worker_id=" . (int)$_GET[worker_id] . " order by utime desc limit 0,20");
             		while($aRow = $rResult->fetch(PDO::FETCH_ASSOC)) {
                   $t = "";
                   $link = "";

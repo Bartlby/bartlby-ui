@@ -593,7 +593,7 @@ function toggle_server_check($server_id, $service_id) {
 	$res = new xajaxresponse();
 		if($btl->hasServerorServiceRight($server_id, false)) {
 			$gsm=bartlby_get_server_by_id($btl->RES, $server_id);
-			
+			//var_dump($gsm[server_shm_place]);	
 			$cur=bartlby_toggle_server_active($btl->RES, $gsm[server_shm_place], 1);
 			
 			if($cur == 1) { //Active

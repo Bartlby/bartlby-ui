@@ -10,7 +10,7 @@ $sdk = new BartlbyAPISDK($priv_key, $pub_key, "http://localhost");
 $json_data="";
 $params="";
 $method="GET";
-$request_uri="/api/v1/running/worker/1";
+$request_uri="/api/v1/running/core";
 
 $r = $sdk->doRequest($request_uri,$method, $params, $json_data);
 $arr = json_decode($r,true);

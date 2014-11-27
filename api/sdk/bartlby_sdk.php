@@ -22,8 +22,8 @@ class BartlbyAPISDK {
 		    'X-Microtime:' . $microtime
 		);
 
-		$ch = curl_init($this->end_point . $request_uri);
-		curl_setopt($ch, CURLOPT_VERBOSE, false);
+		$ch = curl_init($this->end_point . $request_uri . $params);
+		curl_setopt($ch, CURLOPT_VERBOSE, true);
 		curl_setopt($ch,CURLOPT_HTTPHEADER,$headers);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 		curl_setopt($ch,CURLOPT_POSTFIELDS,$content);

@@ -209,13 +209,15 @@ $app->response['Content-Type'] = 'application/json';
 $app->run();
 
 function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) {
-
+     
     ////FIXME
     $btl=btl_api_load_node($node_id);
+    
     
     $status_code=1;
     $status_msg="loaded";
     $filter[node_id] = $node_id;
+ 
     echo "{";
     echo '"api": {';
     echo '"status_code":' . $status_code;
@@ -228,6 +230,7 @@ function api_v1_svc_list($filter=array(), $from_disk = false, $node_id = false) 
     $rcnt =0;
     $avail=0;
     $btl->service_list_loop(function($svc, $shm) use(&$filter, &$rcnt, &$avail, &$from_disk, &$btl) {
+
         if($from_disk) {
                 $svc=bartlby_get_service_by_id($btl->RES, $svc[service_id]);
         }

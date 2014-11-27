@@ -50,6 +50,8 @@ function btl_api_load_node($node_id) {
     $_GET[instance_id]=(int)$node_id;
     include "config.php";
     $btl=new BartlbyUi($Bartlby_CONF, false);
+    $btl->user_id=$_SESSION[worker][worker_id];
+    $btl->loadRights(); //Act on behalf of user :D
     return $btl;
 }
 function array_has_keys($array = array(), $keys = array()) {

@@ -157,8 +157,7 @@ class SessionManager
 
 		$remoteIpSegment = substr($remoteIpHeader, 0, 7);
 
-		if($_SESSION['IPaddress'] != $remoteIpHeader
-			&& !(in_array($sessionIpSegment, $this->aolProxies) && in_array($remoteIpSegment, $this->aolProxies)))
+		if($_SESSION['IPaddress'] != $remoteIpHeader)			
 		{
 			return false;
 		}

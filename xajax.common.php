@@ -4,6 +4,7 @@ $xajax->registerFunction("AddModifyWorker");
 $xajax->registerFunction("AddModifyClient");
 $xajax->registerFunction("AddModifyServerGroup");
 $xajax->registerFunction("AddModifyServiceGroup");
+$xajax->registerFunction("AddModifyTrap");
 
 
 $xajax->registerFunction("AddModifyService");

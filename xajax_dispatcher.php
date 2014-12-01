@@ -1071,7 +1071,40 @@ function AddModifyServiceGroup($aFormValues) {
 	
 	return $res;	
 }
+function AddModifyTrap($aFormValues) {
 
+	global $_GET, $_POST;
+	
+	$av = $aFormValues;
+	
+	$res = new xajaxResponse();
+	
+	
+	
+	$al="";
+	
+	if(!bartlbize_field($av[trap_name])) {
+		$res->addAssign("error_trap_name", "innerHTML", "Trap Name required");
+		$al="1";
+	} else {
+		$res->addAssign("error_trap_name", "innerHTML", "");
+	}
+	
+	if(!bartlbize_field($av[trap_catcher])) {
+		$res->addAssign("error_trap_catcher", "innerHTML", "Trap Catcher required");
+		$al="1";
+	} else {
+		$res->addAssign("error_trap_catcher", "innerHTML", "");
+	}
+
+	
+	if($al == "")  {
+		$res->addScript("document.fm1.submit()");
+	}
+	
+	return $res;
+
+}
 function AddModifyServerGroup($aFormValues) {
 	global $_GET, $_POST;
 	

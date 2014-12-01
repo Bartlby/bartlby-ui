@@ -18,7 +18,9 @@ if($_GET[pkey] && $_GET[pval]) {
 
 $optind = 0;
 $traps=array();
+
 $btl->trap_list_loop(function($grp, $shm) use(&$traps, &$optind) {
+	
 	global $_GET;
 		if($_GET[dropdown_term] && preg_match("/" . $_GET[dropdown_term] . "/i", $grp[trap_name])) {
 			$traps[$optind][c]="";

@@ -1553,6 +1553,7 @@ if($m[2] == "5724") {
 		}
 	}
 	function trap_list_loop($fcn) {
+		
 		for($x=0; $x<$this->info[traps]; $x++) {
 			$srvcgrp = bartlby_get_trap($this->RES, $x);
 			$rtc=$fcn($srvcgrp, $x);

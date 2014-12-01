@@ -1568,7 +1568,37 @@ $('[data-rel="ajax_trap_list"]').selectize({
 });
 
 
-  
+   $('[data-rel="ajax_trap_service"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Service",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'modify_servicegroup.php?dropdown_search=1&dropdown_name=servicegroup_members[]&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
 
   $('[data-rel="ajax_servicegroup_members"]').selectize({
     plugins: ['remove_button', 'drag_drop'],

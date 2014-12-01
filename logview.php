@@ -81,11 +81,11 @@ if($_GET[datatables_output] == 1) {
 			$log_el = explode("|", $v);
 			$clean="";
 			for($z=3; $z<count($log_el);$z++) {
-				if(preg_match("/HARD;CHECK\/HASTO$/", $log_el[$z])) {
+				if(preg_match("/HARD;.*\/HASTO$/", $log_el[$z])) {
 					$hstate = "<br>(HARD)";
 					break;
 				} 
-				if(preg_match("/SOFT;CHECK\/HASTO$/", $log_el[$z])) {
+				if(preg_match("/SOFT;.*\/HASTO$/", $log_el[$z])) {
 					$hstate = "<br>(SOFT)";
 					break;
 				}

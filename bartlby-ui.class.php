@@ -635,7 +635,7 @@ class BartlbyUi {
 			array_push($files_scanned, array(0=>$filename, 1=>$lines));
 			while(list($k,$v) = @each($fdata)) {
 				
-				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|.*HARD;CHECK\/HASTO$/", $v, $m)) {
+				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|.*HARD;.*\/HASTO$/", $v, $m)) {
 					$state_map[state_changes]++;
 					$cur_service_id=$m[2];
 					$cur_service_state=$m[3];
@@ -763,7 +763,7 @@ if($m[2] == "5724") {
 					$log_el = explode("|", $v);
 					$clean="";
 					for($z=3; $z<count($log_el);$z++) {
-						if(preg_match("/HARD;CHECK\/HASTO$/", $log_el[$z])) {
+						if(preg_match("/HARD;.*\/HASTO$/", $log_el[$z])) {
 							$hstate = "(HARD)";
 							$is_hard=1;
 							break;

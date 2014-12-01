@@ -44,6 +44,7 @@ $app->group("/v1", function() use($app) {
                     $btl=btl_api_load_node($node);
                     $i = bartlby_get_info($btl->RES);
                     $i[input]=$app->request->getBody();
+                    $i[getparams]=$input = $app->request->params();
                     
                     echo json_format(json_encode($i));
 

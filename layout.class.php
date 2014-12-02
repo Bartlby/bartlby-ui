@@ -577,6 +577,16 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$this->ext_menu .= $this->endMenu();
 
 
+
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("Trap/s", "fa fa-plus-circle");
+                $this->ext_menu .= $this->addSub("Trap/s", "Add","add_trap.php");
+                $this->ext_menu .= $this->addSub("Trap/s", "Modify","trap_list.php?script=modify_trap.php");
+                $this->ext_menu .= $this->addSub("Trap/s", "Delete","trap_list.php?script=delete_trap.php");
+		$this->ext_menu .= $this->endMenu();
+
+
+
 		$this->ext_menu .= $this->beginMenu();
 		$this->ext_menu .= $this->addRoot("Worker/s", "fa fa-group");
                 $this->ext_menu .= $this->addSub("Worker/s", "Add","add_worker.php");

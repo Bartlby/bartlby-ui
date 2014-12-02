@@ -1552,6 +1552,14 @@ if($m[2] == "5724") {
 			if($rtc == -2) continue;
 		}
 	}
+	function trap_list_loop($fcn) {
+		for($x=0; $x<$this->info[traps]; $x++) {
+			$srvcgrp = bartlby_get_trap($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
 	function server_list_loop($fcn) {
 		for($x=0; $x<$this->info[server]; $x++) {
 

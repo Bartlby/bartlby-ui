@@ -1497,6 +1497,37 @@ $('.email_input').selectize({
     }
 });
 
+$('[data-rel="ajax_trap_list"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Trapname",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'trap_list.php?dropdown_search=1&dropdown_name=trap_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
 
 
   

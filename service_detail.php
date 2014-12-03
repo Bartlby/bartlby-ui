@@ -86,6 +86,10 @@ if($defaults[service_type] == 10) {
 	$svc_type="SSH";
 }
 
+if($defaults[service_type] == 11) {
+	$svc_type="TRAP";
+}
+
 if($defaults["notify_enabled"]==1) {
 	$noti_en="<input type=checkbox class='switch'  disabled checked>";
 } else {
@@ -281,7 +285,7 @@ if(is_array($defaults[servicegroups])) {
 												
 			, "service_detail_group_info", false, true);
 }
-if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9)) {
+if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_type] == 2 || $defaults[service_type] == 11 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9)) {
 	
 	
 	

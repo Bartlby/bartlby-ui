@@ -514,6 +514,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Monitoring", "Overview","overview.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Servers","servers.php");
+                $this->ext_menu .= $this->addSub("Monitoring", "Traps","traps.php");
 		$this->ext_menu .= $this->endMenu();
 
 

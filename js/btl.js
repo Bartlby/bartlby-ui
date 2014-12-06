@@ -1121,6 +1121,22 @@ function btl_change(t) {
 		document.location.href='bartlby_action.php?set_instance_id=' + t.selectedIndex + '&action=set_instance_id';
 }
 
+function bulk_trap_edit(mode) {
+	traps_to_handle=new Array();
+			$('.trap_checkbox').each(function() {
+				
+				if($(this).is(':checked')) {
+						traps_to_handle.push($(this).data("trap_id"));
+				}
+			});
+			console.log("Handle Traps");
+			console.log(traps_to_handle);
+
+			xajax_bulkEditValuesTrap(traps_to_handle, xajax.getFormValues("traps_bulk_form"), mode);
+
+}
+
+
 function bulk_server_edit(mode) {
 	servers_to_handle=new Array();
 			$('.server_checkbox').each(function() {
@@ -1894,6 +1910,37 @@ $('[data-rel="ajax_report_service"]').selectize({
 
 
 
+//Trap
+
+	$("#traps_bulk_edit_run").click(function() {
+      bulk_trap_edit(1);
+    });
+    $("#traps_bulk_edit_delete").click(function() {
+      if(confirm("You really want to delete the selected services?")) {
+        bulk_trap_edit(3);  
+      }
+      
+    });
+    //BULK EDIT trap
+    $("#traps_bulk_edit_dry_run").click(function() {
+      //Get Service id list
+      bulk_trap_edit(0);
+
+    });
+    $("#traps_bulk_edit").click(function() {
+      window.clearTimeout(window.trap_list_timer); //Disable auto reload
+      if($('.trap_checkbox').is(":checked") == false) {
+        if(!confirm("You have not selected any trap if you continue - all your bulk actions will apply to EVERY trap (system wide)!!")) {
+          return;
+        }
+      }
+      $('#myModal').modal('show');
+    });
+
+//Trap
+
+
+
     $("#services_bulk_force").click(function() {
     var force_services = new Array();
       $('.service_checkbox').each(function() {
@@ -1971,7 +2018,13 @@ $('[data-rel="ajax_report_service"]').selectize({
     if(server_ajax_url.match(/\?/)) {
       server_char = "&";
     }
-        
+  
+	trap_ajax_url = document.location.href.replace(/\/s.*\.php/, "/traps.php");
+    trap_char = "?";
+    if(trap_ajax_url.match(/\?/)) {
+      trap_char = "&";
+    }
+
   
      
     $("#toggle_reload").on('ifClicked', function() {
@@ -2142,8 +2195,54 @@ window.servers_table = $('#servers_table').dataTable({
        
         });
 
+window.traps_table = $('#traps_table').dataTable({
+          "iDisplayLength": 50,
+          "fnDrawCallback": function ( oSettings ) {
+            checkCheckBoxes();
+          },
+          "aoColumns": [
+            { "sWidth": "1" , "sClass": "center_td" },
+            { "sWidth": "10" , "sClass": "" },
+            { "sWidth": "1", "sClass": "" },
+            { "sWidth": "90", "sClass": "" },
+            { "sWidth": "90", "sClass": "" },
+              { "sWidth": "90", "sClass": "" }
+          
+            ],
+          "aaSortingFixed": [[ 0, 'asc' ]],
+          "bSort": false,
+          "aaSorting": [[ 1, 'asc' ]],
+          "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
+          "sAjaxSource": trap_ajax_url + trap_char + "datatables_output=1",
+          "bServerSide": true,
+          "bProcessing": true,
+    
+        "oTableTools": {
+          "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+            "aButtons": ["csv", "pdf","xls" ]
+        },
+          "oLanguage": {
+            "sEmptyTable": "No Trap found",
+            "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
+          }
+          
+       
+        });
+
+
   
 }
+
+
+
+
+
+  
+
+
+
+
+
 
 
 	
@@ -2367,6 +2466,18 @@ function checkCheckBoxes() {
       console.log("UNCHECK ALL");
     
       $('.server_checkbox').iCheck('uncheck');
+    }
+  });
+  
+   $("#trap_checkbox_select_all").on('ifClicked',function() {
+    if(!$(this).is(':checked')) {
+      console.log("check all");
+      
+      $('.trap_checkbox').iCheck('check');
+    } else {
+      console.log("UNCHECK ALL");
+    
+      $('.trap_checkbox').iCheck('uncheck');
     }
   });
   

@@ -1,8 +1,17 @@
 
+<script>
+	$(document).ready(function() {
+		$("#traptestrun").click(function() {
+				//$("#traptest_output").html("<pre>RUN</pre>");
+				xajax_trapTester($("#trapdata").val());
+		});
+	});
+</script>
 Perform Action on Selected traps<br>
 
 <button class="btn btn-default btn-xs " id="traps_bulk_refresh_table" onClick='window.traps_table.fnDraw(false)'><i class=" icon-refresh"></i>Refresh Trap Table</button>&nbsp;
 <button class="btn btn-default btn-xs " id="traps_bulk_edit"><i class=" icon-edit"></i>Bulk Edit</button>&nbsp;
+<button class="btn btn-default btn-xs " id="traps_tester" data-toggle="modal" data-target="#traptester"><i class=" icon-edit"></i>Trap Simulator</button>&nbsp;
 
 
 <?
@@ -21,6 +30,49 @@ $editable_service_fields[] = array("orch_id", "Orchestra ID");
 
 
 ?>	
+
+
+<div class="modal fade" id=traptester>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Trap Simulator</h4>
+      </div>
+      <div class="modal-body">
+        	
+        	<form class="form-horizontal">
+  <fieldset>
+    
+  <div class="form-group">
+      <label for="trapdata" class="col-lg-2 control-label">Data</label>
+      <div class="col-lg-10">
+        <textarea class="form-control" rows="3" id="trapdata"></textarea>
+        <span class="help-block">Input Data (max 4kb)</span>
+      </div>
+    </div>
+
+
+    
+  </fieldset>
+</form>
+
+<div id=traptest_output>
+
+</div>
+
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" id='traptestrun'><i class="fa fa-fire"></i>Run</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="modal fade " id="myModal">
   <div class="modal-dialog full-width">

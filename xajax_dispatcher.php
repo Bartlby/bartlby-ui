@@ -23,7 +23,90 @@ $xajax->processRequests();
 
 
 
+function trapTester($data) {
+	global $layout, $btl;
+	$res=new xajaxResponse();
 
+	$match=array();
+	$btl->trap_list_loop(function($trap) use(&$data, &$out, &$match) {
+		if(preg_match("/" . $trap[trap_catcher] . "/i", $data)) {
+			$match[]=$trap;
+			if($trap[trap_is_final] == 1) {
+				return LOOP_BREAK;
+			}
+
+		}
+	});		
+	for($x=0; $x<count($match); $x++) {
+		$tr=$match[$x];
+		
+		$rule_out = "";
+		$rule_out .= "<pre>";
+		if($tr[trap_is_final] == 1) {
+			$rule_out .= "<i>Rule is Final no more deeper rules will be processed</i>\n";
+		}
+		if(preg_match("/" . $tr[trap_status_text] . "/i", $data, $matches)) {
+			
+			if($matches[1] != "") {
+				$rule_out .= "Status Text extracted: <kbd>" . $matches[1] . "</kbd>\n";
+			} else {
+				$rule_out .= "Fallback Status Text (rule not matched): '" . substr($data, 0, 1023) . "'\n";
+			}
+		} else {
+			$rule_out .= "Fallback Status Text: '" . substr($data, 0, 1023) . "'\n";
+		}
+
+		$is_ok=preg_match("/" . $tr[trap_status_ok] . "/i", $data);
+		$is_warning=preg_match("/" . $tr[trap_status_warning] . "/i", $data);
+		$is_critical=preg_match("/" . $tr[trap_status_critical] . "/i", $data);
+		$is_fixed=$tr[trap_fixed_status]; //-2 unused
+
+		$status=4; //default unkown
+		if($is_fixed != -2) {
+			$status=$is_fixed;
+			$rule_out .= "<i>using fixed status: " . $is_fixed . "\n";
+		} else {
+			if($is_ok && $tr[trap_status_ok] != "") $status=0;
+			if($is_warning && $tr[trap_status_warning] != "") $status=1;
+			if($is_critical && $tr[trap_status_critical] != "") $status=2;
+		}
+		//Get service :)
+		if($tr[service_shm_place] >= 0) {
+			$svc = bartlby_get_service($btl->RES, $tr[service_shm_place]);
+			$rule_out .= "Service: " . $svc[server_name] . "/" . $svc[service_name] . "(" . $svc[service_id] . ")\n";
+		} else {
+			$rule_out .= "NO SERVICE found just log\n";
+		}
+
+		$rule_out .= "Status set to:  " . $btl->getColorSpan($status) . "\n";
+		$rule_out .= "</pre>";
+
+		$header = "Rule <strong>'" . $tr[trap_name] . "'</strong> matched prio: <strong>" . $tr[trap_prio] . "</strong>  " . $btl->getColorSpan($status) . "  " . $btl->getTrapOptions($tr, $layout) . "\n";
+
+		$out .= '  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne' . $x .'">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne' . $x .'" aria-expanded="false" aria-controls="collapseOne' . $x .'">
+          ' . $header . '
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne' . $x .'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne' . $x .'">
+      <div class="panel-body">
+        ' . $rule_out . '
+      </div>
+    </div>
+  </div>';
+
+
+
+	}
+
+	
+	$retout = '<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">' . $out . '</div>';	
+	$res->AddAssign("traptest_output","innerHTML", "" . $out . "");
+	return $res;
+}
 function updateServiceDetail($svc_idx) {
 	global $layout, $btl;
 	$res=new xajaxResponse();

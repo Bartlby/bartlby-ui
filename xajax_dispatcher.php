@@ -73,7 +73,11 @@ function trapTester($data) {
 		//Get service :)
 		if($tr[service_shm_place] >= 0) {
 			$svc = bartlby_get_service($btl->RES, $tr[service_shm_place]);
-			$rule_out .= "Service: " . $svc[server_name] . "/" . $svc[service_name] . "(" . $svc[service_id] . ")\n";
+			if(!$svc) {
+				$rule_out .= "NO SERVICE found just log\n";
+			} else {
+				$rule_out .= "Service: " . $svc[server_name] . "/" . $svc[service_name] . "(" . $svc[service_id] . ")\n";
+			}
 		} else {
 			$rule_out .= "NO SERVICE found just log\n";
 		}

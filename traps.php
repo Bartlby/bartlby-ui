@@ -38,7 +38,14 @@
 
 							$ajax_checkbox='<div><input type=checkbox class="trap_checkbox icheck" data-trap_id="' . $svc[trap_id] .  '"></div>';
 							$ajax_server_options=$btl->getTrapOptions($svc, $layout);
-							$ajax_search["aaData"][] = array($ajax_checkbox,$svc[trap_name],$svc[matched], $svc[trap_prio],"service",  $ajax_server_options);		//FIXME
+
+							$svc_out="NONE";
+							if($svc[trap_service_id] > 0) {
+								$trap_svc = bartlby_get_service($btl->RES, $svc[service_shm_place]);
+								$svc_out = "<a href='service_detail.php?service_id=" . $trap_svc[service_id] . "'>" . $trap_svc[server_name] . "/" . $trap_svc[service_name] . "</a>";
+							}
+
+							$ajax_search["aaData"][] = array($ajax_checkbox,$svc[trap_name],$svc[matched], $svc[trap_prio],$svc_out,  $ajax_server_options);		//FIXME
 							$ajax_search["rawService"][] = $svc;
 						}
 					

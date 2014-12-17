@@ -114,7 +114,17 @@ if($_GET[datatables_output] == 1) {
 			$clean = htmlentities($tmp[3]);
 			$outline = "<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A><br>" . $clean . "<br>";
 			$stcheck=8;
-		} else if($log_detail_o[1] == "NOT") {
+		} else if($log_detail_o[1] == "TRAP") {
+			$tmp=explode("|", $log_detail_o[2]);
+			$svc_out = "<i>No Service assigned</i>";
+			if($tmp[4] >= 0) {
+				$svc_t = bartlby_get_service_by_id($btl->RES, $tmp[4]);
+				$svc_out = " matched <a href='service_detail.php?service_id=" . $svc_t[service_id] . "'>" . $svc_t[server_name] . "/" . $svc_t[service_name] . "</a>";
+			}
+			$outline =  "Rule <b>" . $tmp[2] . '</b>  ' .  $svc_out . ' <br> status: '  . $btl->getColorSpan($tmp[3]) . " <br> " . $tmp[5] . " ";
+			$stcheck=9;	
+			
+		}  else if($log_detail_o[1] == "NOT") {
 			$tmp=explode("|", $log_detail_o[2]);
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
 				continue;	
@@ -230,6 +240,7 @@ if($_GET[datatables_output] == 1) {
 			case 6: $img="<span class='label label-default'>Info</span>" . $hstate; break;
 			case 7: $img="<span class='label label-primary'>Notification</span>" . $hstate; break;
 			case 8: $img="<span class='label label-default'>Info</span>" . $hstate; break;
+			case 9: $img="<span class='label label-default'>Trap</span>" . $hstate; break;
 		}
 		
 		if(preg_match("/^AgentSyncer.*/i", $outline)) {

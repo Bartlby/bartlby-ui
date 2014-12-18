@@ -45,7 +45,7 @@ function trapTester($data) {
 		if($tr[trap_is_final] == 1) {
 			$rule_out .= "<i>Rule is Final no more deeper rules will be processed</i>\n";
 		}
-		if(preg_match("/" . $tr[trap_status_text] . "/i", $data, $matches)) {
+		if(preg_match("/" . $tr[trap_status_text] . "/mi", $data, $matches)) {
 			
 			if($matches[1] != "") {
 				$rule_out .= "Status Text extracted: <kbd>" . $matches[1] . "</kbd>\n";

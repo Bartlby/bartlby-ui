@@ -195,34 +195,34 @@ $ov .= $layout->FormBox(
 $ov .= $layout->FormBox(
 		array(
 			0=>"Catcher Rule",
-			1=>$layout->Field("trap_catcher", "text", $defaults[trap_catcher])
+			1=>$layout->Field("trap_catcher", "text", nl_safe($defaults[trap_catcher]))
 		)
 ,true);
 $ov .= $layout->FormBox(
 		array(
 			0=>"Status Text Pattern",
-			1=>$layout->Field("trap_status_text", "text", $defaults[trap_status_text])
+			1=>$layout->Field("trap_status_text", "text", nl_safe($defaults[trap_status_text]))
 		)
 ,true);
 
 $ov .= $layout->FormBox(
 		array(
 			0=>"OK Pattern",
-			1=>$layout->Field("trap_status_ok", "text", $defaults[trap_status_ok])
+			1=>$layout->Field("trap_status_ok", "text", nl_safe($defaults[trap_status_ok]))
 		)
 ,true);
 
 $ov .= $layout->FormBox(
 		array(
 			0=>"WARNING Pattern",
-			1=>$layout->Field("trap_status_warning", "text", $defaults[trap_status_warning])
+			1=>$layout->Field("trap_status_warning", "text", nl_safe($defaults[trap_status_warning]))
 		)
 ,true);
 
 $ov .= $layout->FormBox(
 		array(
 			0=>"CRITICAL Pattern",
-			1=>$layout->Field("trap_status_critical", "text", $defaults[trap_status_critical])
+			1=>$layout->Field("trap_status_critical", "text", nl_safe($defaults[trap_status_critical]))
 		)
 ,true);
 
@@ -287,3 +287,9 @@ $layout->boxes_placed[MAIN]=true;
 
 
 $layout->display();
+
+function nl_safe($str) {
+	$str = str_replace("\n", "\\n", $str);
+	//$str = str_replace("\\", "\\\\", $str);
+	return $str;
+}

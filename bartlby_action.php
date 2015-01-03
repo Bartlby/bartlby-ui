@@ -898,7 +898,8 @@ switch($act) {
 					"enabled_triggers" => $triggerstr,
 					"exec_plan" => $exec_plan,
 					"orch_id" => $_GET[orch_id],
-					'web_hooks' => $_GET[web_hooks]
+					'web_hooks' => $_GET[web_hooks],
+					'json_endpoint' => $_GET[json_endpoint]
 					
 					
 				);
@@ -1208,7 +1209,8 @@ switch($act) {
 					"enabled_triggers" => $triggerstr,
 					"default_service_type" => $_GET[default_service_type],
 					"orch_id" => $_GET[orch_id],
-					"web_hooks" => $_GET[web_hooks]
+					"web_hooks" => $_GET[web_hooks],
+					'json_endpoint' => $_GET[json_endpoint]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);

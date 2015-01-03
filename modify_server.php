@@ -446,6 +446,14 @@ $ov .= $layout->FormBox(
 
 $ov .= $layout->FormBox(
 		array(
+			0=>"JSON Endpoint:",
+			1=>$layout->Field("json_endpoint", "text", $defaults[json_endpoint])
+	)
+,true);
+
+
+$ov .= $layout->FormBox(
+		array(
 			0=>"<h4><b>SSH Options</b></h4>" . ''
 		)
 ,true);

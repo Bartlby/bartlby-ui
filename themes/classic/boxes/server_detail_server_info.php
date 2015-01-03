@@ -61,7 +61,11 @@
 		<td align=left ><?= $plcs[default_service_type]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
-
+		<tr>
+		<td width=150 class='font2'>JSON Endpoint:</td>
+		<td align=left ><?= $plcs[service][json_endpoint]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
 
 	
 	

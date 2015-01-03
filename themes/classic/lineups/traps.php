@@ -18,9 +18,11 @@
 							  <tr>
 							  	<th><input type=checkbox id=trap_checkbox_select_all class=icheck></th>
 							  		<th>Name</th>
-							  	  <th>Matched</th>
+							  	  
 								  <th>Prio</th>
 								  <th>Service</th>
+								  <th>Matched</th>
+								  <th>Last Match</th>
 								  <th>Options</th>
 								  
 							  </tr>

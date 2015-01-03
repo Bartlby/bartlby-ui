@@ -45,7 +45,7 @@
 								$svc_out = "<a href='service_detail.php?service_id=" . $trap_svc[service_id] . "'>" . $trap_svc[server_name] . "/" . $trap_svc[service_name] . "</a>";
 							}
 
-							$ajax_search["aaData"][] = array($ajax_checkbox,$svc[trap_name],$svc[matched], $svc[trap_prio],$svc_out,  $ajax_server_options);		//FIXME
+							$ajax_search["aaData"][] = array($ajax_checkbox,$svc[trap_name],$svc[trap_prio],$svc_out,$svc[matched],$svc[trap_last_match] == 0 ? "not" : date("d.m.Y H:i:s", $svc[trap_last_match]),  $ajax_server_options);		//FIXME
 							$ajax_search["rawService"][] = $svc;
 						}
 					

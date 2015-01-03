@@ -2206,6 +2206,7 @@ window.traps_table = $('#traps_table').dataTable({
             { "sWidth": "1", "sClass": "" },
             { "sWidth": "90", "sClass": "" },
             { "sWidth": "90", "sClass": "" },
+            { "sWidth": "90", "sClass": "" },
               { "sWidth": "90", "sClass": "" }
           
             ],

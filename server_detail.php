@@ -203,6 +203,15 @@ $layout->create_box($info_box_title, $core_content, "server_detail_timing", arra
 											
 		, "server_detail_timing", false, true);
 
+if(strlen($defaults[web_hooks]) > 3) {
+	$info_box_title='Web Hooks';  
+	$layout->create_box($info_box_title, $core_content, "server_detail_web_hooks", array(
+												"server" => $defaults										
+												)
+												
+			, "server_detail_web_hooks", false, true);
+
+}
 
 
 

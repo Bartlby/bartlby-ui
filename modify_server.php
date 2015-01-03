@@ -434,6 +434,16 @@ $ov .= $layout->FormBox(
 			1=>$layout->orchDropdown(true, $defaults[orch_id])
 	)
 ,true);
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"Web Hooks (one per line):",
+			1=>$layout->TextArea("web_hooks", $defaults[web_hooks])
+	)
+,true);
+
+
+
 $ov .= $layout->FormBox(
 		array(
 			0=>"<h4><b>SSH Options</b></h4>" . ''

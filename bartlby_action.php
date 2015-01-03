@@ -897,7 +897,8 @@ switch($act) {
 					"default_service_type" => $_GET[default_service_type],
 					"enabled_triggers" => $triggerstr,
 					"exec_plan" => $exec_plan,
-					"orch_id" => $_GET[orch_id]
+					"orch_id" => $_GET[orch_id],
+					'web_hooks' => $_GET[web_hooks]
 					
 					
 				);
@@ -1045,7 +1046,8 @@ switch($act) {
 	break;
 	case 'modify_trap':
 		if($_GET[trap_name]  && $_GET[trap_catcher]) {
-	
+			
+			
 			$_GET[trap_is_final] = $_GET[trap_is_final] ? 1 : 0;
 			$trap_obj = array(
 				"trap_name" => $_GET[trap_name],
@@ -1059,6 +1061,7 @@ switch($act) {
 				"trap_is_final" => $_GET[trap_is_final],
 				"trap_prio" => (int)$_GET[trap_prio],
 				"orch_id" => $_GET[orch_id]
+				
 			
 			);
 		
@@ -1085,7 +1088,8 @@ switch($act) {
 				"trap_fixed_status" => (int)$_GET[trap_fixed_status],
 				"trap_is_final" => (int)$_GET[trap_is_final],
 				"trap_prio" => (int)$_GET[trap_prio],
-				"orch_id" => (int)$_GET[orch_id]
+				"orch_id" => (int)$_GET[orch_id],
+				
 			
 			);
 
@@ -1203,7 +1207,8 @@ switch($act) {
 					"exec_plan" => $exec_plan,
 					"enabled_triggers" => $triggerstr,
 					"default_service_type" => $_GET[default_service_type],
-					"orch_id" => $_GET[orch_id]
+					"orch_id" => $_GET[orch_id],
+					"web_hooks" => $_GET[web_hooks]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);

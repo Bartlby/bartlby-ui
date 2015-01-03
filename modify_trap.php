@@ -145,7 +145,9 @@ $fixed_status[3][v] = 2; //No
 $fixed_status[3][k] = "Critical"; //No
 $fixed_status[3][s]=0;
 
-if(!$defaults[trap_fixed_status]) $defaults[trap_fixed_status]=-2;
+
+
+if($defaults[trap_fixed_status] < 0) $defaults[trap_fixed_status]=-2;
 
 switch($defaults[trap_fixed_status]) {
 	case -2:
@@ -162,6 +164,7 @@ switch($defaults[trap_fixed_status]) {
 	break;
 
 }
+
 
 
 

@@ -89,6 +89,9 @@ if($defaults[service_type] == 10) {
 if($defaults[service_type] == 11) {
 	$svc_type="TRAP";
 }
+if($defaults[service_type] == 12) {
+	$svc_type="JSON";
+}
 
 if($defaults["notify_enabled"]==1) {
 	$noti_en="<input type=checkbox class='switch'  disabled checked>";

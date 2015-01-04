@@ -300,6 +300,13 @@ if($defaults[service_type] == 11) {
 	$types[10][s]=1;
 }
 
+$types[11][c]="";
+$types[11][v]="12";
+$types[11][k]="JSON";
+if($defaults[service_type] == 12) {
+	$types[11][s]=1;
+}
+
 if(!$defaults[service_type]) {
 	$types[0][s]=1;	
 }

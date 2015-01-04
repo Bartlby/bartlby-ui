@@ -176,6 +176,20 @@ if($defaults[default_service_type] == 10) {
 	$types[9][s]=1;
 }
 
+$types[10][c]="";
+$types[10][v]="11";
+$types[10][k]="TRAP";
+if($defaults[default_service_type] == 11) {
+	$types[10][s]=1;
+}
+
+$types[11][c]="";
+$types[11][v]="12";
+$types[11][k]="JSON";
+if($defaults[default_service_type] == 12) {
+	$types[11][s]=1;
+}
+
 
 if(!$defaults[default_service_type]) {
 	$types[0][s]=1;	

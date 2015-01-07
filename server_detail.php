@@ -129,6 +129,20 @@ if($defaults[default_service_type] == 10) {
 }
 
 
+switch($defaults["web_hooks_level"]) {
+		case 0:
+			$events_en="false";
+		break;
+		case 1:
+			$events_en="true (HARD)";
+		break;
+		case 2:
+			$events_en="true (SOFT)";
+		break;
+		case 3:
+			$events_en="true (HARD|SOFT)";
+		break;
+}
 
 
 
@@ -148,7 +162,8 @@ $layout->create_box($info_box_title, $core_content, "server_detail_server_info",
 										"service" => $defaults,
 										"isup" => $isup,
 										"server_enabled" => $server_en,
-										"default_service_type" => $svc_type
+										"default_service_type" => $svc_type,
+										"fires_hooks" => $events_en
 										),
 			"server_detail_server_info", false,true);
 

@@ -483,6 +483,11 @@ $ov .= $layout->FormBox(
 	)
 ,true);
 
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>Web Hooks</b></h4>" . ''
+		)
+,true);
 
 $ov .= $layout->FormBox(
 		array(
@@ -500,7 +505,11 @@ $ov .= $layout->FormBox(
 ,true);
 
 
-
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>JSON Options</b></h4>" . ''
+		)
+,true);
 $ov .= $layout->FormBox(
 		array(
 			0=>"JSON Endpoint:",

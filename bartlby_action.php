@@ -900,11 +900,12 @@ switch($act) {
 					"orch_id" => $_GET[orch_id],
 					'web_hooks' => $_GET[web_hooks],
 					'json_endpoint' => $_GET[json_endpoint],
-					'web_hooks_level' => $_GET[web_hooks_level]
+					'web_hooks_level' => (int)$_GET[web_hooks_level]
 					
 					
 				);
 
+				
 				
 				
 				$mod_server=bartlby_modify_server($btl->RES, $_GET[server_id], $srv_obj);
@@ -1212,7 +1213,7 @@ switch($act) {
 					"orch_id" => $_GET[orch_id],
 					"web_hooks" => $_GET[web_hooks],
 					'json_endpoint' => $_GET[json_endpoint],
-					'web_hooks_level' => $_GET[web_hooks_level]
+					'web_hooks_level' => (int)$_GET[web_hooks_level]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);

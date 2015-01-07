@@ -899,7 +899,8 @@ switch($act) {
 					"exec_plan" => $exec_plan,
 					"orch_id" => $_GET[orch_id],
 					'web_hooks' => $_GET[web_hooks],
-					'json_endpoint' => $_GET[json_endpoint]
+					'json_endpoint' => $_GET[json_endpoint],
+					'web_hooks_level' => $_GET[web_hooks_level]
 					
 					
 				);
@@ -1210,7 +1211,8 @@ switch($act) {
 					"default_service_type" => $_GET[default_service_type],
 					"orch_id" => $_GET[orch_id],
 					"web_hooks" => $_GET[web_hooks],
-					'json_endpoint' => $_GET[json_endpoint]
+					'json_endpoint' => $_GET[json_endpoint],
+					'web_hooks_level' => $_GET[web_hooks_level]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);

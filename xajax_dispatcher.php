@@ -22,7 +22,29 @@ echo $depre;
 $xajax->processRequests();
 
 
+function showTrapData($id) {
+	global $layout, $btl;
+	$res=new xajaxResponse();
 
+	$match=array();
+	$out = "";
+	$btl->trap_list_loop(function($trap) use(&$id, &$out) {
+		if($trap[trap_id] == $id) {
+			if(trim($trap[trap_last_data]) == "") {
+				$out="NONE";	
+				return LOOP_BREAK;
+			}
+			$out .= htmlentities($trap[trap_last_data]);
+			return LOOP_BREAK;
+		}
+		
+	});	
+	
+	$res->AddAssign("trap_data","innerHTML", "<pre>" . $out . "</pre>");
+	$res->AddScript("$('#trapdataModal').modal('show');");
+	return $res;
+
+}
 function trapTester($data) {
 	global $layout, $btl;
 	$res=new xajaxResponse();

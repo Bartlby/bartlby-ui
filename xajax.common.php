@@ -68,6 +68,7 @@ $xajax->registerFunction("bulkEditValues");
 $xajax->registerFunction("bulkEditValuesServer");
 $xajax->registerFunction("bulkEditValuesTrap");
 $xajax->registerFunction("trapTester");
+$xajax->registerFunction("showTrapData");
 $xajax->registerFunction("setServiceDisplayPrio");
 
 $xajax->registerFunction("regen_keys");

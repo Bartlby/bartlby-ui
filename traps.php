@@ -37,7 +37,7 @@
 						if($xc >= $_GET[iDisplayStart] && $xc <= $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
 
 							$ajax_checkbox='<div><input type=checkbox class="trap_checkbox icheck" data-trap_id="' . $svc[trap_id] .  '"></div>';
-							$ajax_server_options=$btl->getTrapOptions($svc, $layout);
+							$ajax_server_options=$btl->getTrapOptions($svc, $layout) . "<button type='button' class='btn btn-sm btn-primary' onClick='xajax_showTrapData(" . $svc[trap_id] . ")'>Last Data</button>";
 
 							$svc_out="NONE";
 							if($svc[trap_service_id] > 0) {

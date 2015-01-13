@@ -18,6 +18,14 @@ $layout->Tr(
 			)
 		));
 		
+$layout->Tr(
+	$layout->Td(
+			Array(
+				0=>"Set OK:",
+				1=>$layout->Field("set_ok", "checkbox", "1", "" ,'class="icheck"')
+			)
+		));
+				
 	$layout->Tr(
 	$layout->Td(
 			Array(

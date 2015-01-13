@@ -276,9 +276,13 @@ switch($act) {
 			$_GET[notify][0]=2;
 			$idx=$btl->findSHMPlace($_GET[service_id]);
 			bartlby_ack_problem($btl->RES, $idx);
+			if($_GET[set_ok] == 1) {
+				$idx=$btl->findSHMPlace($_GET[service_id]);
+				bartlby_set_passive($btl->RES, $idx, 0, $_GET[comment]);
 				
+			}
 		}
-		if($_GET[subject] && $_GET[comment]) {
+		if($_GET[comment]) {
 			
 			$fp=@fopen("comments/" . (int)$_GET[service_id], "a+");
 			if(!$fp) {

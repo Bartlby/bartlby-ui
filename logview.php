@@ -123,6 +123,28 @@ if($_GET[datatables_output] == 1) {
 			}
 			$outline =  "Rule <b>" . $tmp[2] . '</b>  ' .  $svc_out . ' <br> status: '  . $btl->getColorSpan($tmp[3]) . " <br> " . nl2br(wordwrap($tmp[5],80)) . " ";
 			$stcheck=9;	
+
+
+
+			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[4], $_GET[server_id])) {
+				continue;	
+			}
+			if($_GET[servergroup_id] && !cmpServiceIDisInServerGroup($tmp[4], $_GET[servergroup_id])) {
+				continue;	
+			}
+		
+			if($_GET[servicegroup_id] && !cmpServiceIDisInServiceGroup($tmp[4], $_GET[servicegroup_id])) {
+				continue;	
+			}
+			if($_GET[service_id] && $tmp[4] != $_GET[service_id]) {
+				
+				continue;	
+			}
+			if(!$btl->hasServerorServiceRight($tmp[4], false)) {
+				continue;	
+			}
+
+
 			
 		}  else if($log_detail_o[1] == "NOT") {
 			$tmp=explode("|", $log_detail_o[2]);

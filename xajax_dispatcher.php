@@ -1175,6 +1175,16 @@ function QuickLook($what) {
 
 	});
 
+
+	$trapfound=false;
+	$btl->trap_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$trapfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $srvgrp[trap_name])) {
+			
+				$rq .= "<tr><td>Traps</td><td>" . quickLookHighlight($srvgrp[trap_name], $_GET[search]) . "</td><td>" . $btl->getTrapOptions($srvgrp, $layout) . "</td>";	
+				$trapfound=true;
+		}
+
+	});
 	
 	
 

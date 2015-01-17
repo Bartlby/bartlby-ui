@@ -87,18 +87,15 @@ echo $layout->FormBox(
             "aaSortingFixed": [[ 0, 'asc' ]],
             "bSort": false,
             "aaSorting": [[ 1, 'asc' ]],
-            "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
+            "sDom": "<'row'<'col-sm-12'<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
             "sAjaxSource": "state_history.php?datatables_output=1&service_id=<?=$plcs[service][service_id]?>",
             "bServerSide": true,
             "bProcessing": true,
             "oLanguage": {
               "sEmptyTable": "No Entries found",
               "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
-            },
-            "oTableTools": {
-          		"sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
-            	"aButtons": ["csv", "pdf","xls" ]
-        	}
+            }
+            
             
          
           });		

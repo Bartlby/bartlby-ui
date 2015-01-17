@@ -247,6 +247,9 @@ $layout->create_box($info_box_title, $core_content, "server_detail_orch", array(
 
 
 
+	
+$info_box_title='Gauglets';  
+$layout->create_box($info_box_title, $core_content, "server_detail_gauglets",array("a"=>1), "server_gauglets");
 
 
 if($defaults[is_downtime] == 1) {

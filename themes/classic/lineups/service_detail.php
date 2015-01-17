@@ -64,6 +64,7 @@
 				<div id=service_detail_service_info_ajax class='fifty_float_left'>
 				<?=$this->disp_box("service_detail_service_info")?>
 				</div>
+			
 				<div id=service_detail_group_info_ajax class='fifty_float_left'>
 				<?=$this->disp_box("service_detail_group_info")?>
 
@@ -92,6 +93,7 @@
 		
 		<div class=row>
 			<div class=col-lg-12>
+			
 			<?=$this->disp_box("UNPLACED")?>
 			</div>
 		</div>	

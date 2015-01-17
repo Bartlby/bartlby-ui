@@ -258,6 +258,14 @@ $layout->create_box($info_box_title, $core_content, "service_detail_orch", array
 
 
 
+$info_box_title='History';  
+$layout->create_box($info_box_title, $core_content, "service_detail_service_history", array(
+											"service" => $defaults,											
+											)											
+		, "service_detail_service_history", false, false);
+
+$layout->Tab("History", $layout->disp_box("service_detail_service_history"));
+
 
 
 $info_box_title='Service Info';  

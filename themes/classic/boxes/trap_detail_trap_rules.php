@@ -52,6 +52,13 @@
 		<td align=left ><kbd><?=htmlentities($plcs[trap][trap_status_warning])?></kbd></font></td>
 		<td>&nbsp;</td>           
 	</tr>	
+
+	<tr>
+		<td width=150 class='font2'><span class='label label-danger'>Critical</span></td>
+		<td align=left ><kbd><?=htmlentities($plcs[trap][trap_status_critical])?></kbd></font></td>
+		<td>&nbsp;</td>           
+	</tr>	
+
 <?
 	if($plcs[trap][trap_fixed_status] >= 0) {
 
@@ -64,12 +71,6 @@
 <?
 	}
 ?>
-	<tr>
-		<td width=150 class='font2'><span class='label label-danger'>Critical</span></td>
-		<td align=left ><kbd><?=htmlentities($plcs[trap][trap_status_critical])?></kbd></font></td>
-		<td>&nbsp;</td>           
-	</tr>	
-
 
 
 </table>

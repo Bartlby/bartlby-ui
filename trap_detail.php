@@ -46,7 +46,7 @@ $layout->create_box($info_box_title, $core_content, "trap_detail_trap_info", arr
 
 
 $info_box_title='Last Data';  
-$layout->create_box($info_box_title, $defaults[trap_last_data] ? date("d.m.Y H:i:s", $defaults[trap_last_match]) . "<br>" . $defaults[trap_last_data] : "no data received", "trap_last_data");
+$layout->create_box($info_box_title, strlen($defaults[trap_last_data])  > 4 ? date("d.m.Y H:i:s", $defaults[trap_last_match]) . "<br><div style='background: #333333;'><kbd>" . $defaults[trap_last_data]  . "</kbd></div>": "no data received", "trap_last_data");
 
 
 

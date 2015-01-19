@@ -116,6 +116,7 @@ class QuickDowntime {
 		$obj = $btl->_BTL["object"];
 		$btn_size = $btl->_BTL["btn_size"];
 
+		if($obj[is_downtime]) return "";
 		
 		return ' <span onClick="qd_show_dialog(' . BARTLBY_OBJECT_SERVICEGROUP . ',' . $obj[servicegroup_id] . ')" class="btn btn-primary ' . $btn_size . '"><i title="Add Downtime" class="fa fa-bomb "></i></span>';
 	}
@@ -128,7 +129,8 @@ class QuickDowntime {
 		$obj = $btl->_BTL["object"];
 		$btn_size = $btl->_BTL["btn_size"];
 
-		
+		if($obj[is_downtime]) return "";
+			
 		return ' <span onClick="qd_show_dialog(' . BARTLBY_OBJECT_SERVERGROUP . ',' . $obj[servergroup_id] . ')" class="btn btn-primary ' . $btn_size . '"><i title="Add Downtime" class="fa fa-bomb "></i></span>';
 	}
 	function _serviceoptions($size) {
@@ -141,6 +143,7 @@ class QuickDowntime {
 		$obj = $btl->_BTL["object"];
 		$btn_size = $btl->_BTL["btn_size"];
 
+		if($obj[is_downtime]) return "";
 		
 		return ' <span onClick="qd_show_dialog(' . BARTLBY_OBJECT_SERVICE . ',' . $obj[service_id] . ')" class="btn btn-primary ' . $btn_size . '"><i title="Add Downtime" class="fa fa-bomb "></i></span>';
 	}
@@ -154,6 +157,7 @@ class QuickDowntime {
 		$obj = $btl->_BTL["object"];
 		$btn_size = $btl->_BTL["btn_size"];
 
+		if($obj[is_downtime]) return "";
 		
 		return ' <span onClick="qd_show_dialog(' . BARTLBY_OBJECT_SERVER . ',' . $obj[server_id] . ')" class="btn btn-primary ' . $btn_size . '"><i title="Add Downtime" class="fa fa-bomb "></i></span>';
 	}

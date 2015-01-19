@@ -16,7 +16,11 @@
 <?
 	}
 ?>
-
+	<tr>
+		<td width=150 class='font2'>Matched:</td>
+		<td align=left ><?=$plcs[trap][matched]?></font></td>  
+		<td>&nbsp;</td>         
+	</tr>
 	<tr>
 		<td width=150 class='font2'>Prio:</td>
 		<td align=left ><?=$plcs[trap][trap_prio]?></font></td>  

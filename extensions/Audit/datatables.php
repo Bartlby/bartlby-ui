@@ -351,8 +351,8 @@
           $obj_type="SERVICEGROUP";
           break;
           case BARTLBY_AUDIT_TYPE_TRAP:
-          
-          $obj_link=" " . $aRow["label"] .  " ";
+          $obj_link=" <a href='trap_detail.php?trap_id=" . $aRow["object_id"]  . "'>" . $aRow["label"] .  "</a>";
+          //$obj_link=" " . $aRow["label"] .  " ";
           $obj_type="TRAP";
           break;
         

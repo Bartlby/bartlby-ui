@@ -44,8 +44,9 @@ $layout->create_box($info_box_title, $core_content, "trap_detail_trap_info", arr
 			"trap_detail_trap_info");
 
 
+
 $info_box_title='Last Data';  
-$layout->create_box($info_box_title, $defaults[trap_last_output] ? date("d.m.Y H:i:s", $defaults[trap_last_match]) . "<br>" . $defaults[trap_last_output] : "no data received", "trap_last_data");
+$layout->create_box($info_box_title, $defaults[trap_last_data] ? date("d.m.Y H:i:s", $defaults[trap_last_match]) . "<br>" . $defaults[trap_last_data] : "no data received", "trap_last_data");
 
 
 

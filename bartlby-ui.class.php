@@ -1793,6 +1793,7 @@ if($m[2] == "5724") {
 					
 	}	
 	function getExtensionsReturn($method, $layout, $ign=false) {
+		
 		$r=array();
 		$dhl = opendir("extensions");
 		while($file = readdir($dhl)) {
@@ -2239,7 +2240,13 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					</div>
 					 
 				</div>';
-	
+
+		$this->_BTL["btn_size"]=$btn_size;
+		$this->_BTL["object"]=$defaults;
+		$r=$this->getExtensionsReturn("_servicegroupoptions", false);
+		for($x=0; $x<count($r); $x++) {
+			$ret .= $r[$x][out];
+		}	
 		return $ret;
 	}
 	
@@ -2308,7 +2315,13 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					</div>
 					 
 				</div>';
-	
+		$this->_BTL["btn_size"]=$btn_size;
+		$this->_BTL["object"]=$defaults;
+		$r=$this->getExtensionsReturn("_servergroupoptions", false);
+		for($x=0; $x<count($r); $x++) {
+			$ret .= $r[$x][out];
+		}
+
 		return $ret;	
 	
 
@@ -2344,16 +2357,20 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					
 					 
 				</div>';
-	
+		
+
+		$this->_BTL["btn_size"]=$btn_size;
+		$this->_BTL["object"]=$defaults;
+		$r=$this->getExtensionsReturn("_workeroptions", false);
+		for($x=0; $x<count($r); $x++) {
+			$ret .= $r[$x][out];
+		}
+
 		return $ret;
 
-
-		$defaults[service_id]="";
-		$modify = "<a href='modify_worker.php?worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this  Worker' border=0></A>";
-		$copy = "<a href='modify_worker.php?copy=true&worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Worker' border=0></A>";
-		$is_gone=$this->is_gone($defaults[server_gone]);
 		
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
+
+		
 
 	}
 	function getTrapOptions($defaults, $layout, $btn_size="btn-sm") {
@@ -2394,6 +2411,8 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 	}
 	function getserveroptions($defaults, $layout, $btn_size="btn-sm") {
 		$defaults[service_id]="";
+		
+		
 		
 		
 		
@@ -2475,6 +2494,16 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					 
 				</div>';
 	
+
+
+		$this->_BTL["btn_size"]=$btn_size;
+		$this->_BTL["object"]=$defaults;
+		
+		$r=$this->getExtensionsReturn("_serveroptions", false);
+		for($x=0; $x<count($r); $x++) {
+			$ret .= $r[$x][out];
+		}
+
 		return $ret;
 
 
@@ -2569,7 +2598,13 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 					</div>
 					 
 				</div>';
-	
+
+		$this->_BTL["btn_size"]=$btn_size;				
+		$this->_BTL["object"]=$defaults;
+		$r=$this->getExtensionsReturn("_serviceoptions", false);
+		for($x=0; $x<count($r); $x++) {
+			$ret .= $r[$x][out];
+		}
 		return $ret;
 	}
 	function updatePerfHandler($srvId, $svcId) {

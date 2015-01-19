@@ -2,7 +2,8 @@
 
 <?
 	if($plcs[trap][trap_service_id] > 0) {
-		$trap_svc = bartlby_get_service($btl->RES, $svc[service_shm_place]);
+		$shm_place=$btl->findSHMPlace($plcs[trap][trap_service_id]);
+		$trap_svc = bartlby_get_service($btl->RES, $shm_place);
 		$svc_out = "<a href='service_detail.php?service_id=" . $trap_svc[service_id] . "'>" . $trap_svc[server_name] . "/" . $trap_svc[service_name] . "</a>";
 ?>
 

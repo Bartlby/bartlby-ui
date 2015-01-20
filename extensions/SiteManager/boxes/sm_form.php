@@ -19,82 +19,62 @@
 				remote_alias TEXT
 				*/
 ?>
-<form id=sm_form>
+<form id=sm_form class=form-horizontal>
 <div id=sm_edit_mode></div>
 <input type="hidden" name="sm_edit_node_id" id=sm_edit_node_id value="">
-<table>
-		<tr>
-			<td>
-				Remote-Alias:
-			</td>
-			<td>
-				<input type=text name=remote_alias id=remote_alias>
-			</td>
-	</tr>
-		<tr>
-			<td>
-				Remote Core Path:
-			</td>
-			<td>
-				<input type=text name=remote_core_path id=remote_core_path>
-			</td>
-	</tr>
-		<tr>
-			<td>
-				Remote UI Path:
-			</td>
-			<td>
-				<input type=text name=remote_ui_path id=remote_ui_path>
-			</td>
-	</tr>
-	<tr>
-			<td>
-				SSH Keyfile Path:
-			</td>
-			<td>
-				<input type=text name=ssh_key id=ssh_key>
-			</td>
-	</tr>
 
-	<tr>
-			<td>
-				SSH ip:
-			</td>
-			<td>
-				<input type=text name=ssh_ip id=ssh_ip>
-			</td>
-	</tr>
-	<tr>
-			<td>
-				SSH Username:
-			</td>
-			<td>
-				<input type=text name=ssh_username id=ssh_username>
-			</td>
-	</tr>	
-</table>
+<?
+		echo $layout->FormBox(array(
+				0=>"Remote-Alias",
+				1=>$layout->Field("remote_alias", "text") . "to send uptstreams, and connect to DB"
+			), true);
 
-<table>
-				<tr>
-			<td>
-				Mode:
-			</td>
-			<td>
-				<select name=mode id=mode>
-					<option value='pull'>(read only) - PULL</option>
-					<option value='push'>(read write) - PUSH</option>
-					<option value='arch-ind-pull'>(read only) - ARCH indend (EXPERIMENTIAL)</option>
-					
-				</select>
-			</td>
-	</tr>
-	<tr>
-		<td>Reload Before DB Transfer</td>
-		<td>
-			<select name=reload_before_db_sync id=reload_before_db_sync>
-				<option value="0">Off</option>
-				<option value="1">On</option>
-			</select>
-		</td>
-	</tr>
-</table>
+			echo $layout->FormBox(array(
+				0=>"Remote Core Path",
+				1=>$layout->Field("remote_core_path", "text") . "to send uptstreams, and connect to DB"
+			), true);
+
+			echo $layout->FormBox(array(
+				0=>"Remote UI Path",
+				1=>$layout->Field("remote_ui_path", "text") . "to send uptstreams, and connect to DB"
+			), true);
+
+			echo $layout->FormBox(array(
+				0=>"SSH Keyfile Path",
+				1=>$layout->Field("ssh_key", "text") . "to send uptstreams, and connect to DB"
+			), true);
+			echo $layout->FormBox(array(
+				0=>"SSH ip",
+				1=>$layout->Field("ssh_ip", "text") . "to send uptstreams, and connect to DB"
+			), true);
+			echo $layout->FormBox(array(
+				0=>"SSH Username",
+				1=>$layout->Field("ssh_username", "text") . "to send uptstreams, and connect to DB"
+			), true);
+
+
+			echo $layout->FormBox(array(
+				0=>"SSH Username",
+				1=>$layout->Dropdown("mode", array(
+						0=>array("k" => "(read only) - PULL", "v" => "pull"),
+						1=>array("k" => "(read write) - PUSH", "v" => "push"),
+						2=>array("k" => "(read only) - ARCH independant pull (EXPERIMENTIAL)", "v" => "arch-ind-pull"),
+						3=>array("k" => "Orchestra Node", "v" => "orch-node")
+						
+
+					))
+			), true);
+
+			echo $layout->FormBox(array(
+				0=>"Reload Before DB Transfer",
+				1=>'<select name=reload_before_db_sync id=reload_before_db_sync>
+							<option value="0" selected>Off</option>
+							<option value="1">On</option>
+						</select>'
+			), true);
+
+
+
+?>
+
+

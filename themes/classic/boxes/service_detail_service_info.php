@@ -1,28 +1,6 @@
-<?
-/*
-	"service" => $defaults,
-											"service_type" => $svc_type,
-											"map" => $map,
-											"server_enabled" => $server_enabled,
-											"currently_running" => $currun,
-											"renotify" => $renot_en,
-											"escalate" => $escal_en,
-											"server_notifications" => $server_noti_enabled,
-											"server_enabled" => $server_enabled,
-											"service_ms" => $svcMS,
-											"service_delay" => $svcDEL,
-											"service_enabled" => $serv_en,
-											"notify_enabled" => $noti_en,
-											"needs_ack" => $needs_ack,
-											"color" => $svc_color,
-											"state" => $svc_state
 
-*/
-
-?>
-
-<table  width='100%' style='min-height:627px;'>
-
+<table  width='100%' class="table no-strip borderless">
+	<tbody class=" ">
 	<tr>
 		<td width=150 class='font2'>Server:</td>
 		<td align=left ><a href='server_detail.php?server_id=<?=$plcs[service][server_id] ?>'><?=$plcs[service][server_name]?></A> ( IP: <?=gethostbyname($plcs[service][client_ip])?> Port: <?=$plcs[service][client_port]?> )</font> <?=$plcs[server_enabled]?> </td> 
@@ -45,54 +23,22 @@
 	</tr>
 	<tr>
 		<td width=150 class='font2'>Current State:</td>
-		<td align=left id='service_current_state' name='service_current_state'><font color='<?=$plcs[color]?>'><?=$plcs[state]?></font></td> 
+		<td align=left id='service_current_state' name='service_current_state'><?=$plcs[state]?></td> 
 		<td>&nbsp;</td>          
 	</tr>
+	<?
+	if($plcs[dead_marker] != "") {
+	?>
 	<tr>
 		<td width=150 class='font2' Valign=top>Server Life Indicator:</td>
-		<td align=left><?=$btl->resolveDeadMarker($plcs[service][server_dead], $plcs[map])?></td> 
+		<td align=left><?=$plcs[dead_marker]?></td> 
 		<td>&nbsp;</td>          
 	</tr>
+	<?
+	}
+	?>
 	
-	<tr>
-		<td width=150 class='font2'>Last Check:</td>
-		<td align=left id='service_last_check' name='service_last_check'><?=date("d.m.Y H:i:s", $plcs[service][last_check])?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
-	<tr>
-		<td width=150 class='font2'>approx. next Check:</td>
-		<td align=left  id='service_next_check' name='service_next_check'><?=date("d.m.Y H:i:s", $plcs[service][last_check]+$plcs[service][check_interval])?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
 	
-	<tr>
-		<td width=150 class='font2'>Check intervall:</td>
-		<td align=left ><?=$plcs[service][check_interval_original]?> / <?=$plcs[service][check_interval]?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
-	<tr>
-		<td width=150 class='font2'>Last Notify Send:</td>
-		
-		<td align=left id='service_last_notify_send' name='service_last_notify_send'><?=date("d.m.Y H:i:s", $plcs[service][last_notify_send])?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
-		<tr>
-		<td width=150 class='font2'>Re-Notification Interval</td>
-		
-		<td align=left ><?=$plcs[renotify]?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
-		<tr>
-		<td width=150 class='font2'>Escalate after:</td>
-		
-		<td align=left ><?=$plcs[escalate]?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
-	<tr>
-		<td width=150 class='font2'>Notify Enabled:</td>
-		<td align=left ><?=$plcs[notify_enabled]?> <?=$plcs[server_notifications]?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
 	
 	<tr>
 		<td width=150 class='font2'>Check Enabled:</td>
@@ -104,11 +50,7 @@
 		<td align=left ><?=$plcs[fires_events]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
-	<tr>
-		<td width=150 class='font2' valign=top>Check Plan:</td>
-		<td align=left ><?=$plcs[check_plan]?></td>
-		<td>&nbsp;</td>           
-	</tr>
+	
 	
 	<tr>
 		<td width=150 class='font2'>Flap count:</td>
@@ -133,34 +75,25 @@
 	</tr>	
 	<tr>
 		<td width=150 class='font2'>Last State Change:</td>
-		<td align=left ><?=date("d.m.Y H:i:s",$plcs[service][last_state_change])?> (since:  <?=$btl->intervall(time()-$plcs[service][last_state_change])?>)</font></td>
+		<td align=left ><?=date("d.m.Y H:i:s",$plcs[service][last_state_change])?> <br>
+			(<?=$btl->intervall(time()-$plcs[service][last_state_change])?>)</font></td>
 		<td>&nbsp;</td>           
 	</tr>	
 	
-		<tr>
-		<td width=150 class='font2'>Is Running?:</td>
-		<td align=left id='service_currently_running' name='service_currently_running'><?= $plcs[currently_running]?></font></td>
-		<td>&nbsp;</td>           
-	</tr>	
-	<tr>
-		<td width=150 class='font2'>Average Check Time:</td>
-		<td align=left ><?= $plcs[service_ms]?> ms</font></td>
-		<td>&nbsp;</td>           
-	</tr>
-	<tr>
-		<td width=150 class='font2'>Average delay Time:</td>
-		<td align=left ><?= $plcs[service_delay]?> Seconds</font></td>
-		<td>&nbsp;</td>           
-	</tr>
-	<tr>
-		<td width=150 class='font2'>Triggers:</td>
-		<td align=left ><?= $plcs[triggers]?></font></td>
-		<td>&nbsp;</td>           
-	</tr>
+
+
+
 	<tr>
 		<td width=150 class='font2'>Problem Handled:</td>
 		<td align=left ><?= $plcs[handled]?></font></td>
 		<td>&nbsp;</td>           
 	</tr>
-	
+
+
+
+
+
+
+
+	</tbody>
 </table>

@@ -1,102 +1,44 @@
 <?
-//logview.php?bartlby_filter=.*;@LOG@.*\|[0,1,2]\|&json=1
-	include "config.php";
-	include "layout.class.php";
-	include "bartlby-ui.class.php";
-	$btl=new BartlbyUi($Bartlby_CONF);
-	$btl->hasright("log.logview");
-	$info=$btl->getInfo();
-	$layout= new Layout();
-	$layout->set_menu("report");
-	$layout->Form("fm1", "logview.php");
-	
-	
-	$layout->OUT .= '<table class="table table-striped table-bordered ">';
-	$layout->OUT .= '<thead>
-							  <tr>
-								  <th>Date</th>
-								  <th>State</th>
-								  <th>Text</th>
-								  
-							  </tr>
-						  </thead>   ';
-	
-	$_GET[bartlby_filter]=stripslashes($_GET[bartlby_filter]);	
+
+include "config.php";
+include "layout.class.php";
+include "bartlby-ui.class.php";
+$btl=new BartlbyUi($Bartlby_CONF);
+$btl->hasright("log.logview");
+$info=$btl->getInfo();
+$layout= new Layout();
+$layout->set_menu("report");
+
+if($_GET[bartlby_filter]) $_GET[text_filter]=$_GET[bartlby_filter];
+if($_GET[sSearch]) $_GET[text_filter]=$_GET[sSearch];
+
+if($_GET[datatables_output] == 1) {
 	$ch_time=time();
-	if($_GET[l]) {
-		$tt=explode(".",$_GET[l]);
+	if($_GET[date_filter]) {
+		$tt=explode("/",$_GET[date_filter]);
 		//var_dump($tt);
-		$ch_time=mktime(0,0,0,$tt[1],$tt[2],$tt[0]);	
+		$ch_time=mktime(0,0,0,$tt[0],$tt[1],$tt[2]);	
+	} else {
+		$_GET[date_filter]=date("m/d/Y");
 	}
-	
-	$logf=bartlby_config($btl->CFG, "logfile") . date(".Y.m.d", $ch_time);
-	$svcid=$_GET[service_id];
-	$srvid=$_GET[server_id];
-	$srvgrpid=$_GET[servergroup_id];
-	$svcgrpid=$_GET[servicegroup_id];
-	
-	$shm_id=$btl->findSHMPlace($svcid);
-	
-	if($shm_id >= 0) {
-		$def=bartlby_get_service($btl->RES, $shm_id);
-		$svcM=$btl->getServiceOptions($def, $layout) . "<a href='service_detail.php?service_place=" . $shm_id . "'>Detail</A>";
-	}
-	if($_GET[bartlby_filter]) {
-		$svcM .= "&nbsp; <a href='logview.php?servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&bartlby_filter=&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time) . "'>remove filter</A>";
-	}
-	
-	
-	$layout->OUT .= "<tr><td colspan=3><table width=100%>";
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 3,
-						'class'=>'header',
-						'show'=>"<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$servergroup_id&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time-86400)  . "'>&laquo;" . date("Y.m.d", $ch_time-86400) . "</A> <font color=black>Logfile ($logf)</font> <a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$srvgrpid&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time+86400)  . "'>&raquo;" . date("Y.m.d", $ch_time+86400) . "</A>  "  
-						)
-				)
-			)
+	$handle = "";
+	if($_GET[handle_filter] && $_GET[handle_filter] != "MAIN") $handle="." . $_GET[handle_filter];
+	$logf=bartlby_config($btl->CFG, "logfile") .  date(".Y.m.d", $ch_time) . $handle;
+	$xc = 0;
 
-	);
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>array("colspan" => 3, 
-						"show" => "Filter:" . $layout->Field("bartlby_filter", "text", $_GET["bartlby_filter"]) . $layout->Field("bartlby_sub", "submit", "Filter") . $svcM
-					)
-				)
-			)
-
-		);
-	$layout->OUT .= "</table></td></tr>";
-	
-	
-	
 	
 	$fla=@file($logf);
 	$fl=@array_reverse($fla);
-	$lcounter=0;
-
-	$curp = $_GET["site"] > 0 ? $_GET["site"] : 1;
-	if(!$_GET[perp]) $_GET[perp]=100;
-	$perp=$_GET[perp];
-	$forward_link=$btl->create_pagelinks("logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servergroup_id=$srvgrpid&servicegroup_id=$svcgrpid&server_id=$srvid&service_id=$svcid&l=" . date("Y.m.d", $ch_time), count($fl)-1, $perp, $curp,"site");
-	$skip_em=($curp*$perp)-$perp;
-	$skipped=0;
-	
-	$layout->setTitle($forward_link);	
-	
+	$ajax_total_records=0;
+	$ajax_displayed_records=0;
 	while(list($k, $v)=@each($fl)) {
-		
-		
+		$ajax_total_records++;
+
 		$info_array=explode(";",$v);
-		
 		$log_detail_o=explode("@", $info_array[2]);
-		
+		$hstate="";
 		if($log_detail_o[1] == "PERF") {
 			$tmp=explode("|", $log_detail_o[2]);
-			
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
 				continue;	
 			}
@@ -109,7 +51,6 @@
 			}
 			
 			if($_GET[service_id] && $tmp[0] != $_GET[service_id]) {
-				
 				continue;	
 			}
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
@@ -119,20 +60,17 @@
 			$outline = "" . $tmp[1]  . "(" . $tmp[0] . ")";
 			$stcheck=6;
 		} else if($log_detail_o[1] == "LOG") {
+
 			$tmp=explode("|", $log_detail_o[2]);
-			
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
 				continue;	
 			}
 			if($_GET[servergroup_id] && !cmpServiceIDisInServerGroup($tmp[0], $_GET[servergroup_id])) {
 				continue;	
 			}
-			
-		
 			if($_GET[servicegroup_id] && !cmpServiceIDisInServiceGroup($tmp[0], $_GET[servicegroup_id])) {
 				continue;	
 			}
-			
 			if($_GET[service_id] && $tmp[0] != $_GET[service_id]) {
 				
 				continue;	
@@ -140,23 +78,32 @@
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			$clean = htmlentities($tmp[3]);
-			$outline = "<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> changed to " . $btl->getState($tmp[1]) . "<br>" . $clean . "<br>";
+			$log_el = explode("|", $v);
+			$clean="";
+			for($z=3; $z<count($log_el);$z++) {
+				if(preg_match("/HARD;.*\/HASTO$/", $log_el[$z])) {
+					$hstate = "<br>(HARD)";
+					break;
+				} 
+				if(preg_match("/SOFT;.*\/HASTO$/", $log_el[$z])) {
+					$hstate = "<br>(SOFT)";
+					break;
+				}
+				$clean .=  $log_el[$z] . " ";	
+			}
+			$outline = "<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> changed to " . $btl->getState($tmp[1]) . "<br>" . nl2br(wordwrap($clean, 80)) . "<br>";
 			$stcheck=$tmp[1];
 		}else if($log_detail_o[1] == "KILL") {
 			$tmp=explode("|", $log_detail_o[2]);
-			
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
 				continue;	
 			}
 			if($_GET[servergroup_id] && !cmpServiceIDisInServerGroup($tmp[0], $_GET[servergroup_id])) {
 				continue;	
 			}
-		
 			if($_GET[servicegroup_id] && !cmpServiceIDisInServiceGroup($tmp[0], $_GET[servicegroup_id])) {
 				continue;	
 			}
-			
 			if($_GET[service_id] && $tmp[0] != $_GET[service_id]) {
 				
 				continue;	
@@ -165,12 +112,42 @@
 				continue;	
 			}
 			$clean = htmlentities($tmp[3]);
-			$outline = "<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A><br>" . $clean . "<br>";
+			$outline = "<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A><br>" . $clean . "<br>";
 			$stcheck=8;
-			
-		} else if($log_detail_o[1] == "NOT") {
+		} else if($log_detail_o[1] == "TRAP") {
 			$tmp=explode("|", $log_detail_o[2]);
+			$svc_out = "<i>No Service assigned</i>";
+			if($tmp[4] >= 0) {
+				$svc_t = bartlby_get_service_by_id($btl->RES, $tmp[4]);
+				$svc_out = " matched <a href='service_detail.php?service_id=" . $svc_t[service_id] . "'>" . $svc_t[server_name] . "/" . $svc_t[service_name] . "</a>";
+			}
+			$outline =  "Rule <b>" . $tmp[2] . '</b>  ' .  $svc_out . ' <br> status: '  . $btl->getColorSpan($tmp[3]) . " <br> " . nl2br(wordwrap($tmp[5],80)) . " ";
+			$stcheck=9;	
+
+
+
+			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[4], $_GET[server_id])) {
+				continue;	
+			}
+			if($_GET[servergroup_id] && !cmpServiceIDisInServerGroup($tmp[4], $_GET[servergroup_id])) {
+				continue;	
+			}
+		
+			if($_GET[servicegroup_id] && !cmpServiceIDisInServiceGroup($tmp[4], $_GET[servicegroup_id])) {
+				continue;	
+			}
+			if($_GET[service_id] && $tmp[4] != $_GET[service_id]) {
+				
+				continue;	
+			}
+			if(!$btl->hasServerorServiceRight($tmp[4], false)) {
+				continue;	
+			}
+
+
 			
+		}  else if($log_detail_o[1] == "NOT") {
+			$tmp=explode("|", $log_detail_o[2]);
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
 				continue;	
 			}
@@ -188,7 +165,7 @@
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			$outline =  "Done " . $tmp[3] . " for " . $tmp[4] . " Service:<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $btl->getState($tmp[2]);
+			$outline =  "Done " . $tmp[3] . " for " . $tmp[4] . " Service:<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $btl->getState($tmp[2]);
 			$stcheck=5;	
 			
 		} else if($log_detail_o[1] == "NOT-EXT") {
@@ -212,7 +189,7 @@
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			$outline =  $tmp[3] . " for " . $tmp[4] . " Service:<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $tmp[6];
+			$outline =  $tmp[3] . " for " . $tmp[4] . " Service:<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $tmp[6];
 			$stcheck=7;	
 		} else if($log_detail_o[1] == "EV-HANDLER") {
 			$tmp=explode("|", $log_detail_o[2]);
@@ -235,7 +212,7 @@
 				continue;	
 			}
 			$clean = htmlentities($tmp[3] . "-" . $tmp[4]);
-			$outline = "<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> event handler called STATE: "  . $clean . "<br>";
+			$outline = "<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" . $tmp[2] . "</A> event handler called STATE: "  . $clean . "<br>";
 			
 			$stcheck=7;	
 		}else if($log_detail_o[1] == "FORCE") {
@@ -258,7 +235,7 @@
 			if(!$btl->hasServerorServiceRight($tmp[0], false)) {
 				continue;	
 			}
-			$outline = "Force Service:<a href='logview.php?bartlby_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $tmp[6];
+			$outline = "Force Service:<a href='logview.php?text_filter=" . $_GET["bartlby_filter"] . "&servicegroup_id=$svcgrpid&servergroup_id=$srvgrpid&server_id=$srvid&service_id=" . $tmp[0] . "&l=" . date("Y.m.d", $ch_time)  . "'>" .  $tmp[5] . "</A> " . $tmp[6];
 			$stcheck=3;	
 		} elseif(!$_GET[service_id] && !$_GET[server_id] && !$_GET[servergroup_id] && !$_GET[servicegroup_id]) {
 			if(!$btl->hasRight("sysmessages", false)) {
@@ -276,89 +253,71 @@
 		
 		$date=$info_array[0];
 		switch($stcheck) {
-			case 0: $img="ok.gif"; break;
-			case 1: $img="warning.gif"; break;
-			case 2: $img="critical.gif"; break;
-			case 3: $img="info.gif"; break;	
-			case 4: $img="info.gif"; break;
-			case 5: $img="trigger.gif"; break;
-			case 6: $img="icon_stat.gif"; break;
-			case 7: $img="icon_work.gif"; break;
-			case 8: $img="icon_work.gif"; break;
+			case 0: $img="<span class='label label-success'>OK</span>" . $hstate; break;
+			case 1: $img="<span class='label label-warning'>Warning</span>" . $hstate; break;
+			case 2: $img="<span class='label label-danger'>Critical</span>" . $hstate; break;
+			case 3: $img="<span class='label label-default'>Info</span>" . $hstate; break;	
+			case 4: $img="<span class='label label-default'>Info</span>" . $hstate; break;
+			case 5: $img="<span class='label label-primary'>Trigger</span>" . $hstate; break;
+			case 6: $img="<span class='label label-default'>Info</span>" . $hstate; break;
+			case 7: $img="<span class='label label-primary'>Notification</span>" . $hstate; break;
+			case 8: $img="<span class='label label-default'>Info</span>" . $hstate; break;
+			case 9: $img="<span class='label label-default'>Trap</span>" . $hstate; break;
 		}
-		if($_GET["bartlby_filter"]) {
-			if(!preg_match("/" . $_GET["bartlby_filter"] . "/i", $v)) {
-				continue;
-			}
-		}
-		if($skipped < $skip_em) {
-			$skipped++;
-			continue;	
-		}
-		if($lcounter > $_GET[perp]) {
-			break;	
-		}
-		$lcounter++;
-				
 		
-			
 		if(preg_match("/^AgentSyncer.*/i", $outline)) {
-			$img = "agent_syncer.gif";	
+			$img = "<span class='label label-primary'>Sync</span>";	
+
 		}
-		$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'class'=>'header1',
-						'width' => '50',
-						
-						'show'=>"<font size=1>$date</font>"
-						),
-					1=>Array(
-						'class'=>'header1',
-						'width'=>10,						
-						'show'=>"<img src='themes/" . $layout->theme . "/images/$img'>"
-						),
-					2=>Array(
-						'width'=>720,
-						'class'=>'header1',
-						'show'=>str_replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", str_replace( "\\dbr", "<br>",$outline))
-						),
-				)
-			)
+		
+		if(preg_match("/" . $_GET["text_filter"] . "/i", $v)) {
 
-		);
-		
-		$log_line_json[$lcounter][date]=$date;
-		$log_line_json[$lcounter][icon]="<img src='themes/" . $layout->theme . "/images/$img'>";
-		$log_line_json[$lcounter][txt]=$outline;
-		$log_line_json[$lcounter][state]=$stcheck;
-		$log_line_json[$lcounter][service_id]=$tmp[0];
-		
-		
+			$ajax_displayed_records++;
+				
+				if($xc >= $_GET[iDisplayStart] && $xc < $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
+					$ajax_search["aaData"][] = array($date, $img, $outline);
+							
+				}
+				$xc++;
+
+		}
 	}
-	$layout->TableEnd();
-	
-	
-	$layout->FormEnd();
 
 
-
-
-
+	$json_ret["iTotalRecords"] = $ajax_total_records;
+	$json_ret["iTotalDisplayRecords"] = $ajax_displayed_records;
+	$json_ret["sEcho"] = (int)$_GET[sEcho];
+			
 	
-	$r=$btl->getExtensionsReturn("_logView", $layout);
-	
-	
-	
-	if($_GET[json]) {
-		echo json_encode($log_line_json);
-		exit;
+	$json_ret["aaData"] = $ajax_search["aaData"];
+	if(!is_array($json_ret["aaData"])) {
+			$json_ret["aaData"]=array();
 	}
-	$layout->display("no");
+	echo json_encode(utf8_encode_all($json_ret));
+	exit;
+
 	
-	
-	
+}	
+
+
+$info_box_title='Filter';  
+
+$layout->create_box($info_box_title, $core_content, "logview_filter", array(
+											"FILTER" => $_GET											
+											)
+		, "logview_filter", false, false);
+
+
+$info_box_title='Log';  
+$layout->create_box($info_box_title, $core_content, "logview_table", array(
+											"FILTER" => $_GET											
+											)
+		, "logview_table", false, false);
+
+$layout->boxes_placed[MAIN]=true;
+
+$layout->display("logview");
+
 function cmpServiceIDisInServiceGroup($svc_id, $servicegroup_id) {
 			global $btl;
 			$r = false;
@@ -390,25 +349,23 @@ $btl->service_list_loop(function($svc, $shm) use(&$r) {
 						}
 				}
 			}
-});
+}); 
 		
 	return $r;	
 }
 
 function cmpServiceIDHasServer($svc_id, $server_id) {
-	global $map;
-	reset($map);
-	while(list($k, $v) = @each($map)) {
-		for($x=0; $x<count($v); $x++) {
-			if($v[$x][server_id] == $server_id && $v[$x][service_id] == $svc_id) {
-				return true;	
-			}
-		}
-	}
+	global $btl;
 	
-	return false;	
+	$found = false;
+
+	$btl->service_list_loop(function($svc, $shm) use(&$found, &$server_id, &$svc_id) {
+			if($svc[service_id] == $svc_id && $svc[server_id] == $server_id) {
+				$found=true;
+				return LOOP_BREAK;
+			}
+	});
+	return $found;	
 }
 
 
-
-?>

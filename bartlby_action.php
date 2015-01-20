@@ -12,22 +12,29 @@ $layout= new Layout();
 $layout->setTitle("Bartlby Action ($act)");
 
 
-$layout->Table("100%");
 
 function dnl($i) {
 	return sprintf("%02d", $i);
 }
 
 
-if($act != "delete_package_ask") {
+if($act != "delete_package_ask" && $act != "logout" && $act != "poll_session") {
 	$btl->hasRight("action." . $act);
 }
 switch($act) {
+	case 'poll_session':
+	echo "OK";
+	exit;
+	break;
 	case 'set_instance_id':
 		$_SESSION["instance_id"] = $_GET[set_instance_id];
 		
 		Header("Location: " .  $_SERVER['HTTP_REFERER']);
 		
+	break;
+	case 'logout':
+		session_destroy();
+		header("Location: index.php");
 	break;
 	case 'save_permissions':
 	
@@ -63,6 +70,21 @@ switch($act) {
 		$fp = @fopen($base . "/" . $wk[worker_id] . ".dat", "w");
 		@fwrite($fp, $new_file);
 		@fclose($fp);
+
+		if($servers == "") $servers="";
+ 		if($services == "") $services="";
+
+		$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
+		$wrk1[visible_servers]=$servers . ",";
+		$wrk1[visible_services]=$services . ",";
+
+
+	
+
+		$a = bartlby_modify_worker($btl->RES, $_GET[worker_id], $wrk1);
+		
+
+
 		//echo file_get_contents("rights/" . $wk[worker_id] . ".dat");
 	break;
 	
@@ -116,7 +138,8 @@ switch($act) {
 				"downtime_to" => $dto,
 				"downtime_type" => $_GET[downtime_type],
 				"downtime_notice" => $_GET[downtime_notice],
-				"downtime_service" => $clean_service
+				"downtime_service" => $clean_service,
+				"orch_id" => $_GET[orch_id]
 			);
 			
 			
@@ -149,7 +172,9 @@ switch($act) {
 				"downtime_to" => $dto,
 				"downtime_type" => $_GET[downtime_type],
 				"downtime_notice" => $notice,
-				"downtime_service" => $clean_service
+				"downtime_service" => $clean_service,
+				"orch_id" => $_GET[orch_id]
+
 			);
 			
 			
@@ -251,9 +276,13 @@ switch($act) {
 			$_GET[notify][0]=2;
 			$idx=$btl->findSHMPlace($_GET[service_id]);
 			bartlby_ack_problem($btl->RES, $idx);
+			if($_GET[set_ok] == 1) {
+				$idx=$btl->findSHMPlace($_GET[service_id]);
+				bartlby_set_passive($btl->RES, $idx, 0, $_GET[comment]);
 				
+			}
 		}
-		if($_GET[subject] && $_GET[comment]) {
+		if($_GET[comment]) {
 			
 			$fp=@fopen("comments/" . (int)$_GET[service_id], "a+");
 			if(!$fp) {
@@ -384,14 +413,6 @@ switch($act) {
 			if(!$btl->isSuperUser() && $btl->user_id != $_GET[worker_id]) {
 				$btl->hasRight("modify_all_workers");
 			}
-			$wks = $btl->GetWorker(false);
-			for($x=0; $x<count($wks); $x++) {
-			
-				if($wks[$x][name] == $_GET[worker_name] && $wks[$x][worker_id] != $_GET[worker_id]) {
-					$act = 'worker_exists';	
-					break 2;
-				}	
-			}
 			
 			$svcstr = "";
 			for($x=0;$x<count($_GET[worker_services]); $x++) {
@@ -418,6 +439,9 @@ switch($act) {
 			$selected_servers .= ",";
 			$selected_services .= ",";
 			
+			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[api_enabled]) $_GET[api_enabled]=0;
+			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			
 			for($x=0;$x<count($_GET[notify]); $x++) {
@@ -446,32 +470,44 @@ switch($act) {
 			if($df == false) {
 				$exec_plan="";	
 			}
-			$end_pw= md5($_GET[worker_password]);
+			$end_pw= sha1($_GET[worker_password]);
 			
+			$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 			if(!$_GET[worker_password]) {
-					$wrk1 = bartlby_get_worker_by_id($btl->RES, $_GET[worker_id]);
 					$end_pw=$wrk1[password];
 			}
 			//, , $svcstr, $notifystr, , ,$end_pw, $triggerstr, , , $exec_plan
 			$wrk_obj = array(
-				"worker_name" =>$_GET[worker_name],
-				"worker_icq" => $_GET[worker_icq],
-				"worker_mail" => $_GET[worker_mail],
-				"worker_services" => $svcstr,
-				"worker_notify_levels" => $notifystr,
-				"worker_active" => $_GET[worker_active],
-				"worker_password" => $end_pw,
+				"name" =>$_GET[worker_name],
+				"icq" => $_GET[worker_icq],
+				"mail" => $_GET[worker_mail],
+				"services" => $svcstr,
+				"notify_levels" => $notifystr,
+				"active" => $_GET[worker_active],
+				"password" => $end_pw,
 				"enabled_triggers" => $triggerstr,
-				"worker_escalation_limit" => $_GET[escalation_limit],
-				"worker_escalation_minutes" => $_GET[escalation_minutes],
-				"worker_notify_plan" => $exec_plan
-				
+				"escalation_limit" => $_GET[escalation_limit],
+				"escalation_minutes" => $_GET[escalation_minutes],
+				"notify_plan" => $exec_plan,				
+				"selected_services" => $selected_services,
+				"selected_servers" => $selected_servers,
+				"visible_servers" => $wrk1[visible_servers],
+				"visible_services" => $wrk1[visible_services],
+				"is_super_user" => $_GET[is_super_user],
+				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
+				"orch_id" => $_GET[orch_id],
+				"api_pubkey" => $_GET[api_pubkey],
+				"api_privkey" => $_GET[api_privkey],
+				"api_enabled" => $_GET[api_enabled]
 				
 				
 				
 			
 			);
 			
+			
+
+
 			$add=bartlby_modify_worker($btl->RES,$_GET[worker_id], $wrk_obj );
 			$btl->setUIRight("selected_servers", $selected_servers, $_GET[worker_id]);
 			$btl->setUIRight("selected_services", $selected_services, $_GET[worker_id]);
@@ -496,10 +532,32 @@ switch($act) {
 				}	
 			}
 			
+			$selected_servers="";
+			$selected_services="";
+			
+			for($x=0;$x<count($_GET[worker_services]); $x++) {
+				if($_GET[worker_services][$x]{0} == 's') {
+					$cl = str_replace("s", "", $_GET[worker_services][$x]);
+					$selected_servers .= "," . $cl;
+
+				} else {
+					$selected_services .= "," . $_GET[worker_services][$x];
+
+				}	
+			}
+			$selected_servers .= ",";
+			$selected_services .= ",";
+
+
+
 			$svcstr="";
 			$notifystr="";
 			
 			$msg = "wa:" .  $_GET[worker_active] . "\n";
+			
+			if(!$_GET[is_super_user]) $_GET[is_super_user]=0;
+			if(!$_GET[api_enabled]) $_GET[api_enabled]=0;
+			if(!$_GET[notification_aggregation_interval]) $_GET[notification_aggregation_interval]=0;
 			
 			for($x=0;$x<count($_GET[worker_services]); $x++) {
 				$svcstr .="" . $_GET[worker_services][$x] . "|";	
@@ -535,21 +593,31 @@ switch($act) {
 			}
 			
 			$wrk_obj = array(
-				"worker_name" =>$_GET[worker_name],
-				"worker_icq" => $_GET[worker_icq],
-				"worker_mail" => $_GET[worker_mail],
-				"worker_services" => $svcstr,
-				"worker_notify_levels" => $notifystr,
-				"worker_active" => $_GET[worker_active],
-				"worker_password" => md5($_GET[worker_password]),
+				"name" =>$_GET[worker_name],
+				"icq" => $_GET[worker_icq],
+				"mail" => $_GET[worker_mail],
+				"services" => $svcstr,
+				"notify_levels" => $notifystr,
+				"active" => $_GET[worker_active],
+				"password" => sha1($_GET[worker_password]),
 				"enabled_triggers" => $triggerstr,
-				"worker_escalation_limit" => $_GET[escalation_limit],
-				"worker_escalation_minutes" => $_GET[escalation_minutes],
-				"worker_notify_plan" => $exec_plan
+				"escalation_limit" => $_GET[escalation_limit],
+				"escalation_minutes" => $_GET[escalation_minutes],
+				"notify_plan" => $exec_plan,
+				"selected_services" => $selected_services,
+				"selected_servers" => $selected_servers,
+				"visible_servers" => $selected_servers,
+				"visible_services" => $selected_services,
+				"is_super_user" => $_GET[is_super_user],
+				"notification_aggregation_interval" => $_GET[notification_aggregation_interval],
+				"orch_id" => $_GET[orch_id],
+				"api_pubkey" => $_GET[api_pubkey],
+				"api_privkey" => $_GET[api_privkey],
+				"api_enabled" => $_GET[api_enabled]
 				
 			);
 			
-	
+
 			$add=bartlby_add_worker($btl->RES, $wrk_obj);
 			
 			$layout->OUT .= "<script>doReloadButton();</script>";
@@ -600,6 +668,16 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+			if(!$_GET[usid]) $_GET[usid]=substr(sha1(time()), 0, 15);
+			$srv=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
+			$global_msg=$srv;
+
+
+			$_GET[service_ack_enabled] = $_GET[service_ack_enabled] ? 1 : 0;
+			$_GET[notify_enabled] = $_GET[notify_enabled] ? 1 : 0;
+			$_GET[service_active] = $_GET[service_active] ? 1 : 0;
+			$_GET[notify_super_users] = $_GET[notify_super_users] ? 1 : 0;
+
 				$svc_obj = array(
 					
 					"plugin"=>$_GET[service_plugin],
@@ -628,10 +706,14 @@ switch($act) {
 					"fires_events" => $_GET[fires_events],
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
-					"handled" => $_GET[handled]
+					"handled" => $_GET[handled],
+					"usid" => $_GET[usid],
+					"prio" => $_GET[prio],
+					"notify_super_users" => $_GET[notify_super_users],
+					"orch_id" => $srv[orch_id]
 				);
 
-			
+		
 			$ads=bartlby_modify_service($btl->RES, $_GET[service_id] , $svc_obj);
 			$global_msg=bartlby_get_server_by_id($btl->RES, $_GET[service_server]);
 			$global_msg[exec_plan]=$btl->resolveServicePlan($exec_plan);
@@ -686,17 +768,26 @@ switch($act) {
 				$triggerstr = "|" . $triggerstr;
 			}
 			$o_svc_type=$_GET[service_type];
-
+			
 			for($x = 0; $x<count($_GET[service_server]); $x++) {
 				$server_id=$_GET[service_server][$x];
-				
 				$svc_type_to_use=$o_svc_type;
+				$srv_temp = bartlby_get_server_by_id($btl->RES, $server_id);
+				
 				if((int)$_GET[use_server_default_type] == 1) {
-					$srv_temp = bartlby_get_server_by_id($btl->RES, $server_id);
+					
 					$svc_type_to_use = $srv_temp[default_service_type];
 					//FALLBACK
 					if($svc_type_to_use == "" || $svc_type_to_use == 0) $svc_type_to_use=1;
 				}
+				if(!$_GET[usid]) $_GET[usid]=substr(sha1(time()), 0, 15);
+
+
+				$_GET[service_ack_enabled] = $_GET[service_ack_enabled] ? 1 : 0;
+				$_GET[notify_enabled] = $_GET[notify_enabled] ? 1 : 0;
+				$_GET[service_active] = $_GET[service_active] ? 1 : 0;
+				$_GET[notify_super_users] = $_GET[notify_super_users] ? 1 : 0;
+
 
 				$svc_obj = array(
 					
@@ -726,7 +817,11 @@ switch($act) {
 					"fires_events" => $_GET[fires_events],
 					"renotify_interval" => $_GET[renotify_interval],
 					"enabled_triggers" => $triggerstr,
-					"handled" => $_GET[handled]
+					"handled" => $_GET[handled],
+					"prio" => $_GET[prio],
+					"notify_super_users" => $_GET[notify_super_users],
+					"usid" => $_GET[usid],
+					"orch_id" => $srv_temp[orch_id]
 				);
 				
 				
@@ -775,7 +870,22 @@ switch($act) {
 				if($triggerstr != "") {
 					$triggerstr = "|" . $triggerstr;
 				}
-				//$_GET[server_name], $_GET[server_ip], $_GET[server_port], $_GET[server_icon], $_GET[server_enabled], $_GET[server_notify], $_GET[server_flap_seconds], $_GET["text_service_search1"], 
+				$exec_plan = "";
+				$df=false;
+				while(list($k, $v) = each($_GET[wdays_plan])) {
+					if($v != "") {
+						$df = true;		
+					}
+					$exec_plan .= $k . "=" . $v . "|";	
+				}
+			
+				if($df == false) {
+					$exec_plan="";	
+				}
+
+				$_GET[server_notify] = $_GET[server_notify] ? 1 : 0;
+				$_GET[server_enabled] = $_GET[server_enabled] ? 1 : 0;
+
 				$srv_obj = array(
 					"server_name" => $_GET[server_name],
 					"server_ip" => $_GET[server_ip],
@@ -789,9 +899,18 @@ switch($act) {
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => $_GET[service_id],
 					"default_service_type" => $_GET[default_service_type],
-					"enabled_triggers" => $triggerstr
+					"enabled_triggers" => $triggerstr,
+					"exec_plan" => $exec_plan,
+					"orch_id" => $_GET[orch_id],
+					'web_hooks' => $_GET[web_hooks],
+					'json_endpoint' => $_GET[json_endpoint],
+					'web_hooks_level' => (int)$_GET[web_hooks_level]
+					
 					
 				);
+
+				
+				
 				
 				$mod_server=bartlby_modify_server($btl->RES, $_GET[server_id], $srv_obj);
 				$defaults=bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
@@ -816,7 +935,9 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-		
+			$_GET[servergroup_active] = $_GET[servergroup_active] ? 1 : 0;
+			$_GET[servergroup_notify] = $_GET[servergroup_notify] ? 1 : 0;
+			
 			
 			$srvgrp_obj = array(
 				"servergroup_name" => $_GET[servergroup_name],
@@ -824,7 +945,8 @@ switch($act) {
 				"servergroup_notify" => $_GET[servergroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servergroup_members" => $group_members,
-				"servergroup_dead" => (int)$_GET["service_dead"]
+				"servergroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 						
 			);
 			
@@ -857,13 +979,20 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+
+			$_GET[servicegroup_active] = $_GET[servicegroup_active] ? 1 : 0;
+			$_GET[servicegroup_notify] = $_GET[servicegroup_notify] ? 1 : 0;
+			
+			
+
 			$svcgrp_obj = array(
 				"servicegroup_name" => $_GET[servicegroup_name],
 				"servicegroup_active" => $_GET[servicegroup_active],
 				"servicegroup_notify" => $_GET[servicegroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servicegroup_members" => $group_members,
-				"servicegroup_dead" => (int)$_GET["service_dead"]
+				"servicegroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 						
 			);
 			$add_servergroup = bartlby_modify_servicegroup($btl->RES, $_GET[servicegroup_id], $svcgrp_obj);
@@ -893,14 +1022,17 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
-			//$_GET[servicegroup_name], $_GET[servicegroup_active], $_GET[servicegroup_notify], $group_members, (int)$_GET["text_service_search1"], $triggerstr
+			$_GET[servicegroup_active] = $_GET[servicegroup_active] ? 1 : 0;
+			$_GET[servicegroup_notify] = $_GET[servicegroup_notify] ? 1 : 0;
+			
 			$svcgrp_obj = array(
 				"servicegroup_name" => $_GET[servicegroup_name],
 				"servicegroup_active" => $_GET[servicegroup_active],
 				"servicegroup_notify" => $_GET[servicegroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servicegroup_members" => $group_members,
-				"servicegroup_dead" => (int)$_GET["service_dead"]
+				"servicegroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 						
 			);
 			
@@ -916,8 +1048,72 @@ switch($act) {
 		}
 	
 	break;
+	case 'delete_trap':
+		$s = bartlby_delete_trap($btl->RES, $_GET[trap_id]);
+	break;
+	case 'modify_trap':
+		if($_GET[trap_name]  && $_GET[trap_catcher]) {
+			
+			
+			$_GET[trap_is_final] = $_GET[trap_is_final] ? 1 : 0;
+			$trap_obj = array(
+				"trap_name" => $_GET[trap_name],
+				"trap_catcher" => $_GET[trap_catcher],
+				"trap_status_text" => $_GET[trap_status_text],
+				"trap_status_ok" => $_GET[trap_status_ok],
+				"trap_status_warning" => $_GET[trap_status_warning],
+				"trap_status_critical" => $_GET[trap_status_critical],
+				"trap_service_id" => $_GET[trap_service_id],
+				"trap_fixed_status" => $_GET[trap_fixed_status],
+				"trap_is_final" => $_GET[trap_is_final],
+				"trap_prio" => (int)$_GET[trap_prio],
+				"orch_id" => $_GET[orch_id]
+				
+			
+			);
+		
+			$add_trap = bartlby_modify_trap($btl->RES, (int)$_GET[trap_id], $trap_obj);
+			error_reporting($o);
+			
+		} else {
+			$act="missing_param";	
+		}
+	break;
+	case 'add_trap':
 	
+		if($_GET[trap_name]  && $_GET[trap_catcher]) {
 	
+			$_GET[trap_is_final] = $_GET[trap_is_final] ? 1 : 0;
+			$trap_obj = array(
+				"trap_name" => $_GET[trap_name],
+				"trap_catcher" => $_GET[trap_catcher],
+				"trap_status_text" => $_GET[trap_status_text],
+				"trap_status_ok" => $_GET[trap_status_ok],
+				"trap_status_warning" => $_GET[trap_status_warning],
+				"trap_status_critical" => $_GET[trap_status_critical],
+				"trap_service_id" => (int)$_GET[trap_service_id],
+				"trap_fixed_status" => (int)$_GET[trap_fixed_status],
+				"trap_is_final" => (int)$_GET[trap_is_final],
+				"trap_prio" => (int)$_GET[trap_prio],
+				"orch_id" => (int)$_GET[orch_id],
+				
+			
+			);
+
+			//var_dump($trap_obj);
+			
+			$add_trap = bartlby_add_trap($btl->RES, $trap_obj);
+			
+			
+			
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	break;
 	case 'add_servergroup':
 		if($_GET[servergroup_name]  && $_GET[servergroup_members]) {
 			
@@ -934,13 +1130,18 @@ switch($act) {
 			if($triggerstr != "") {
 				$triggerstr = "|" . $triggerstr;
 			}
+
+			$_GET[servergroup_active] = $_GET[servergroup_active] ? 1 : 0;
+			$_GET[servergroup_notify] = $_GET[servergroup_notify] ? 1 : 0;
+
 			$srvgrp_obj = array(
 				"servergroup_name" => $_GET[servergroup_name],
 				"servergroup_active" => $_GET[servergroup_active],
 				"servergroup_notify" => $_GET[servergroup_notify],
 				"enabled_triggers" => $triggerstr,
 				"servergroup_members" => $group_members,
-				"servergroup_dead" => (int)$_GET["service_dead"]
+				"servergroup_dead" => (int)$_GET["service_dead"],
+				"orch_id" => $_GET[orch_id]
 				
 			
 				
@@ -980,7 +1181,24 @@ switch($act) {
 				if($triggerstr != "") {
 					$triggerstr = "|" . $triggerstr;
 				}
-				//,  0,$_GET[server_ssh_keyfile],$_GET[server_ssh_passphrase],$_GET[server_ssh_username], $triggerstr
+				$exec_plan = "";
+				$df=false;
+				while(list($k, $v) = each($_GET[wdays_plan])) {
+					if($v != "") {
+						$df = true;		
+					}
+					$exec_plan .= $k . "=" . $v . "|";	
+				}
+			
+				if($df == false) {
+					$exec_plan="";	
+				}
+
+				$_GET[server_notify] = $_GET[server_notify] ? 1 : 0;
+				$_GET[server_enabled] = $_GET[server_enabled] ? 1 : 0;
+			
+
+
 				$srv_obj = array(
 					"server_name" => $_GET[server_name],
 					"server_ip" => $_GET[server_ip],
@@ -993,8 +1211,13 @@ switch($act) {
 					"server_ssh_passphrase" => $_GET[server_ssh_passphrase],
 					"server_ssh_username" => $_GET[server_ssh_username],
 					"server_dead" => 0,
+					"exec_plan" => $exec_plan,
 					"enabled_triggers" => $triggerstr,
-					"default_service_type" => $_GET[default_service_type]
+					"default_service_type" => $_GET[default_service_type],
+					"orch_id" => $_GET[orch_id],
+					"web_hooks" => $_GET[web_hooks],
+					'json_endpoint' => $_GET[json_endpoint],
+					'web_hooks_level' => (int)$_GET[web_hooks_level]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);
@@ -1056,35 +1279,15 @@ if($act != "edit_cfg" && @bartlby_config(getcwd() . "/ui-extra.conf", "ui_event_
 $f=$act;
 
 $msg=$btl->finScreen($f);
-$ov .=  $layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					'show'=>$msg
-					)
-			)
-		)
+$ov .=  '<div class=panel-body>' . $msg  . '</div>';
+$ov .=  '<div class=panel-body><a href="overview.php">Overview</A></div>';
 
-, true);
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					'show'=>"<a href='overview.php'>Overview</A>"
-					)
-			)
-		)
-
-);
-
-$content = "<table>" . $ov . "</table>";
+$content = "<span>" . $ov . "</span>";
 $layout->create_box($layout->BoxTitle, $content, "Message");
 
 $btl->getExtensionsReturn("_POST_" . $act, $layout);
 $layout->BoxTitle="";
 
 
-$layout->TableEnd();
+
 $layout->display("bartlby_action");

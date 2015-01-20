@@ -34,12 +34,12 @@ $layout->OUT .= "
 				window.close();
 			}
 			function group_str_selected(f) {
-			 new_svc_id=$(\"#\"  + f.target.id).val();
-			 new_svc_text=$(\"#\"  + f.target.id + \" :selected\").text();
+			 new_svc_id=$(\"#grp_service_id\")[0].selectize.getValue();
+			 new_svc_text=$(\"#grp_service_id\")[0].selectize.getItem($(\"#grp_service_id\")[0].selectize.getValue())[0].innerHTML;
 			 drop=\"<select name='sel_service_state_\"+new_svc_id+\"' id='sel_service_state_\"+new_svc_id+\"'   data-rel='chosen'><option style='background-color: ' value='-1' >unused<option style='background-color: green' value='0' >OK<option style='background-color: orange' value='1' >Warning<option style='background-color: red' value='2' selected>Critical</select>\";
 			 $(\"#sel_services\").append(\"<div id='grp_service_\" + new_svc_id + \"' name='\" + new_svc_id + \"'><table  border=0 width='100%'><tr><td>\"+ new_svc_text +\"</td><td width=100>\"+drop+\"</td><td width=10><button id='remove_service_\" + new_svc_id + \"' class='btn btn-small btn-danger'>remove</button></td></tr></table></div>\");
-			 $('[data-rel=\"chosen\"],[rel=\"chosen\"]').css(\"width\", \"400px\");
-			 $('[data-rel=\"chosen\"],[rel=\"chosen\"]').chosen({ search_contains: true });
+			 
+			 $('[data-rel=\"chosen\"],[rel=\"chosen\"]').selectize({  });
 			 		$('button[id^=\"remove_service_\"]').unbind();
 			 	$('button[id^=\"remove_service_\"]').click(function(f) {
 				group_str_remove(f);
@@ -179,7 +179,7 @@ $layout->Tr(
 	$layout->Td(
 			Array(
 				0=>array(
-					"show"=>"<input type=button value='Apply' onClick=appl();>",
+					"show"=>"<input type=button class='btn btn-primary' value='Apply' onClick=appl();>",
 					'colspan'=> 3,
 					'class'=>'header'
 					)

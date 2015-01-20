@@ -22,16 +22,17 @@
 
 						
 
-<div style='xmin-height:150px'>
+<div >
 						
-						<table class='nopad' width='100%'  border=0>
-		<tr>
-			<td class='font1'>
+						<table class="no-border no-strip borderless-thin">
+						<tbody class="">
+		<tr class="">
+			<td >
 		<?
 			if($Bartlby_CONF_isMaster) {
 		?>
 
-				(Logged in as: <font class='font2'><?=$plcs[user]?></font>)
+				(Logged in as: <b><?=$plcs[user]?></b>)
 		<?
 			} else {
 		?>			
@@ -40,37 +41,40 @@
 			}
 		?>	
 			</td>
-			<td align=right class='font1'>Uptime:<font class='font2'><?=$plcs[uptime]?></font></td>
+			<td align=right >Uptime:<b><?=$plcs[uptime]?></b></td>
 		</tr>
 		<tr>
-			<td class='font1'>Services: <font class='font2'><?=$plcs[services]?>&nbsp;<font class='font1'>Workers: <font class='font2'><?=$plcs[workers]?><font class='font1'>&nbsp;Servers: <font class='font2'><?=$plcs[servers]?></td>
-			<td align=right class='font1'>Datalib:<font class='font2'><?=$plcs[datalib]?>-<?=$plcs[datalib_version]?></font></td>
+			<td >Services: <b><?=$plcs[services]?></b>&nbsp;Workers: <b><?=$plcs[workers]?></b>Servers:<b><?=$plcs[servers]?></b></td>
+			<td align=right >Datalib:<b><?=$plcs[datalib]?>-<?=$plcs[datalib_version]?></b></td>
 		</tr>
 		<?
 			if($Bartlby_CONF_isMaster) {
 		?>
 		<tr>
-			<td class='font1' colspan=1>
-			Running: <?=$plcs[running]?>
+			<td  colspan=1>
+			Running: <b><?=$plcs[running]?></b>
 			</td>
-			<td align=right class='font1'>Avg Round Time:<font class='font2'><?=$plcs[round_ms_time]?> ms / <font class=font1>avg service delay:<font class=font2> <?=$plcs[average_delay]?> sec.</font></td>
+			<td align=right >Avg Round Time:<b><?=$plcs[round_ms_time]?></b> ms / avg service delay:<b> <?=$plcs[average_delay]?> sec.</b></td>
 		</tr>
 		<?
 			}
 		?>
 		<tr>
-			<td><font class='font1'>Last-Sync: <font class='font2'><?=$plcs[last_sync]?></td>
-			<td align=right class='font1' colspan=1 rxowspan=1>Checks Performed:<font class='font2'><?=$plcs[checks_performed]?> <font class=font1> Checks/s: <font class=font2><?=$plcs[checks_performed_per_sec]?></font></td>
+			<td>Last-Sync: <b><?=$plcs[last_sync]?></b></td>
+			<td align=right>Checks Performed:<b><?=$plcs[checks_performed]?> </b> Checks/s:<b><?=$plcs[checks_performed_per_sec]?></b>
+			<br>
+			Notifications Waiting: <b><?=$plcs[notification_aggregation_queue]?></b>
+			</td>
 		</tr>
 		<tr>
-			<td colspan=2 class='font1'>Version: <font class='font2'><?=$plcs[release_name]?></font></td>
+			<td colspan=2 >Version: <b><?=$plcs[release_name]?></b></td>
 			
 		</tr>
 		<tr>
-			<td colspan=2 class='font1'>Reload: <font class='font2'><?=$plcs[reload_state]?></font></td>
+			<td colspan=2 >Reload: <b><?=$plcs[reload_state]?></b></td>
 			
 		</tr>
-		
+		</tbody>
 	</table>
 	
 </div>				

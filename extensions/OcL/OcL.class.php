@@ -116,7 +116,7 @@ class OcL {
 	
 	function _Menu() {
 		$r =  $this->layout->beginMenu();
-		$r .= $this->layout->addRoot("On-Call");
+		$r .= $this->layout->addRoot("On-Call", "fa fa-phone");
 		$r .= $this->layout->addSub("On-Call", "Logs","extensions_wrap.php?script=OcL/index.php");
 		$r .= $this->layout->addSub("On-Call", "Add","extensions_wrap.php?script=OcL/add.php");
 		$r .= $this->layout->addSub("On-Call", "Schedule","extensions_wrap.php?script=OcL/schedule.php");
@@ -207,17 +207,17 @@ class OcL {
 		global $layout;
 		
 		
-	$sql = "select * from logbook order by ocl_date desc limit 30";
+	$sql = "select * from logbook order by id desc limit 30";
 	$r = $this->db_logbook->query($sql);
 	$cur_box_content  = '<button onClick="document.location.href=\'extensions_wrap.php?script=OcL/add.php\'" class="sm_add_new_btn btn  btn-success">Add New Entry</button>';
-	$cur_box_content .= ' <ol class="discussion">';
+	$cur_box_content .= ' <ul class="timeline" style="padding-top:20px;">';
 	$ocnt=0;
 foreach($r as $row) {
 
 
 		//images/diabled.gif
-		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
-		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
+		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><span class='fa fa-remove xl'></span></A>";
+		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><span class='fa fa-edit xl'></span></A>";
 		$grp_str=$this->resolveGroupString($row[ocl_service_var]);
 		$gv="";
 		$btl->worker_list_loop(function($wrk, $shm) use (&$gv, &$layout, &$row){
@@ -226,33 +226,25 @@ foreach($r as $row) {
 				}
 		});
 
-		$cur_box_content .= '<li class="other">
-      <div class="avatar1">
-      	<div class=avatar style="width: 40px; height:40px;">
+		$cur_box_content .= '<li>              <i class="">
+				<div class=avatar style="width: 40px; height:40px;">
         	<img src="' . $gv . '">
     	</div>
-	' . $row[ocl_date] . '
-      </div>
 
-      <div class="messages">
-      <b><h2>' . $row[ocl_subject] . '</b></h2>
-      <span >' . $grp_str . '</span>
-      <hr noshade>
-       <p>
-       	' . nl2br($row[ocl_error_long]) . '
-       </p>
-       <hr noshade>
-       ' . $del_icon . '&nbsp;' .  $mod_icon . '
-        <span class="pull-right"><xsmall>Duration: '.  $row[ocl_duration] . ' Caller: ' . $row[ocl_caller] . ' Type: ' . $row[ocl_type] . '</sxmall></span>
-        
-      </div>
-    </li>	';		
+		</i>
+              
+              <span class="date">27 Jan</span>
+              <div class="content">
+                <p><strong>' . $row[ocl_poster] . '</strong>  ' . $del_icon . '&nbsp;' .  $mod_icon . '<br><blockquote>' . nl2br($row[ocl_error_long]) . "<p><hr noshade>" . $grp_str . '</p></p></blockquote>
+                <small> Duration: '.  $row[ocl_duration] . ' Caller: ' . $row[ocl_caller] . ' Type: ' . $row[ocl_type] . '</small>
+                
+              </div></li>';		
 		
 
     $ocnt++;
 	}
 	$cur_box_content .= "</ol>";
-	$layout->Tab("Recent On-Call Log <span class='notification blue' style='display:inline-block; font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif; position:relative;top: 0px;'>" . $ocnt . "</span>", $cur_box_content, "ocl_overview");
+	$layout->Tab("Recent On-Call Log <span class='badge badge-info'>" . $ocnt . "</span>", $cur_box_content, "ocl_overview");
 
 	
 

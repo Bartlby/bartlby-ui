@@ -44,6 +44,7 @@ if (!$_GET[id]) {
 
 		)";	
 
+
 	$ocl->db_logbook->exec($sql);
 	
 	

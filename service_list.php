@@ -8,7 +8,6 @@ $layout= new Layout();
 
 $layout->setTitle("Select a Service");
 $layout->Form("fm1", $_GET[script]);
-$layout->Table("100%");
 $layout->set_menu("services");
 
 $optind=0;
@@ -70,31 +69,17 @@ while(list($k, $servs) = @each($servers_out)) {
 	
 	
 	
-	$layout->Tr(
-		$layout->Td(
-				Array(
+	$layout->FormBox(
+				array(
 					0=>"Service:",
-					1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . $passthrough
+					1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . $layout->Field("Subm", "submit", "next->") .  $passthrough
 				)
-			)
-	
 	);
 	
-	$layout->Tr(
-		$layout->Td(
-				Array(
-					0=>Array(
-						'colspan'=> 2,
-						"align"=>"right",
-						'show'=>$layout->Field("Subm", "submit", "next->")
-						)
-				)
-			)
-	
-	);
 
 
-$layout->TableEnd();
+
+
 
 $layout->FormEnd();
 $layout->display();

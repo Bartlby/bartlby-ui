@@ -34,9 +34,14 @@ array
 
 	$layout->OUT .= "<div id='ocl_schedule'></div>";
 	
+
+
+
+
+	
 	
 
-	$worker_drp = "<div style='width: 320px;'>Managed Workers: <select name='worker_id' id='worker_id'   data-rel='ocl_chosen' multiple>";
+	$worker_drp = "<div class=form-control>Managed Workers: <select class='form-control' name='worker_id' id='worker_id'   data-rel='ocl_chosen' multiple>";
 	$btl->worker_list_loop(function($wrk, $shm) use(&$worker_drp, &$ocl) {
 		$sel="";
 
@@ -45,13 +50,17 @@ array
 		}
 		$worker_drp .= "<option value=" . $wrk[worker_id] . " " . $sel .   ">" . $wrk[name] . "</option>"; 
 	});
-	$worker_drp .= "</select></div><div style='height:350px;'></div>";
+	$worker_drp .= "</select></div>";
 
 	$cnt .= '<button  class="ocl_save_managed btn  btn-success">Save</button>';
 	$cnt .= $worker_drp;
 
+	$managed_workers_cnt = $layout->local_box_render("OcL", "ocl_managed_workers.php", array(
+			"dropdown" => $cnt
+		));
+	$layout->create_box("Managed Workers", $managed_workers_cnt, "ocl_managed");
 
-	$layout->Tab("Managed Worker", $cnt);
+	$layout->Tab("Managed Worker", $layout->disp_box("ocl_managed"), "ocl_managed");
 
 
 	$layout->display();

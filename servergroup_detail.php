@@ -11,7 +11,7 @@ $btl->hasRight("main.servergroup_detail");
 $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("ServerGroup");
-
+$layout->setMainTabName("Details");
 if($_GET[all_servers] == 1) {
 $layout->setTitle("Server List");	
 }
@@ -65,14 +65,14 @@ if(!$defaults && !$_GET[all_servers]) {
 
 
 if($defaults["servergroup_notify"]==1) {
-	$noti_en="true";
+	$noti_en="<input type=checkbox class=switch checked disabled>";
 } else {
-	$noti_en="false";
+	$noti_en="<input type=checkbox class=switch disabled>";
 }
 if($defaults["servergroup_active"]==1) {
-	$server_en="true";
+	$server_en="<input type=checkbox class=switch checked disabled>";
 } else {
-	$server_en="false";
+	$server_en="<input type=checkbox class=switch  disabled>";
 }
 
 $services_found = array();
@@ -131,9 +131,7 @@ $layout->create_box("Mass Actions", "", "mass_actions",
 $r=$btl->getExtensionsReturn("_servergroupDetails", $layout);
 
 
-if($_GET[all_servers] != 1) {
-	$layout->OUT .= $btl->getServerGroupOptions($defaults, $layout);
-}
+$layout->OUT .= $btl->getServerGroupOptions($defaults, $layout, "btn-lg");
 
 
 

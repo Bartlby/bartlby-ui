@@ -32,6 +32,7 @@ $_GLO[debug_commands]=true;
 	$local_mail_from=$ar->storage->load_key("local_mail_from");
 	
 
+
 	switch($_GET[wich]) {
         case 'convert-ars':
             $old_storage = new BartlbyStorage("ArS");
@@ -84,6 +85,7 @@ $_GLO[debug_commands]=true;
 	$lstate=0;
 
 	foreach($r as $row) {
+			if($_GET[only_id] && $_GET[only_id] != $row[id]) continue;
 			echo "sending report to:" . $row[receipient] . " \n";
 
 			$svcel = explode("|", $row[service_var]);
@@ -95,7 +97,7 @@ $_GLO[debug_commands]=true;
 				$svc_ids[]=$svc_id;
 			}
 
-            $btl->send_custom_report($row[receipient], $svc_ids, $d_from, $d_to, $btl_subj);
+            $btl->send_custom_report($row[receipient], $svc_ids, $d_from, $d_to, $btl_subj, 1); //ONLY HARD REPORTS
 			$c("Sent Report to " . $row[receipient] . " with " . $x . " Services" . PHP_EOL)->green->bold;
             $sql = "update autoreports set last_send=DATETIME('now') where id=" . $row[id];
             $ar->db->exec($sql);

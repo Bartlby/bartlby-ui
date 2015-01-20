@@ -2,13 +2,20 @@
 
 
 error_reporting(0);	
-	
+session_start();	
 	include "config.php";
 	include "layout.class.php";
 	include "bartlby-ui.class.php";
 
 	
 
+
+
+	if($argv[1]) {
+		$_SESSION["service_display_prio"]=$argv[1];
+	} else {
+		$_SESSION["service_display_prio"]=50;
+	}
 	$uname=getenv("BARTLBY_USER");
     $pw=getenv("BARTLBY_PASSWORD");
         if(!$uname || !$pw) {
@@ -19,8 +26,8 @@ error_reporting(0);
         	
         }
 
-     $_SERVER[PHP_AUTH_USER]=$uname;
-     $_SERVER[PHP_AUTH_PW]=$pw;
+     $_SESSION[username]=$uname;
+     $_SESSION[password]=sha1($pw);
          
 
 
@@ -218,6 +225,8 @@ while(1){
 		}
 			
 	}
+
+
 
 //	unset($map);
 	//$map = @$btl->GetSVCMap();

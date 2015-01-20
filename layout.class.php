@@ -31,7 +31,17 @@ class Layout {
 	var $box_count;
 
 
-
+function local_box_render($ext, $file, $plcs = array()) {
+	
+	$layout=$this;
+	$boxes_path="extensions/" . $ext . "/boxes/" . $file;
+	
+	ob_start();
+	include($boxes_path);
+	$o = ob_get_contents();	
+	ob_end_clean();	
+	return $o;
+}	
 function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
     $url = 'http://www.gravatar.com/avatar/';
     $url .= md5( strtolower( trim( $email ) ) );
@@ -89,8 +99,8 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function setTemplate($file) {
 		$this->template_file=$file;
 	}
-	function setJSONOutput() {
-		$this->OUTPUT_JSON=true;
+	function setJSONOutput($json_variant = 1) {
+		$this->OUTPUT_JSON=$json_variant;
 	}
 	function setMainTabName($n) {
 		$this->mainTabName=$n;
@@ -118,8 +128,8 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		if($_GET[json]) {
-			$this->setJSONOutput();
-		}
+			$this->setJSONOutput($_GET[json]);
+		} 
 
 		//
 
@@ -130,13 +140,19 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function addScript($sc) {
 		$this->BTUI_SCRIPTS .= $sc;
 	}
-	function Tab($name, $cnt, $tab_name="") {
+	function Tab($name, $cnt, $tab_name="", $default_box=false) {
 		$this->tab_count++;
 		
+
+		if($default_box != false) {
+			$cnt = '<div class=row><div class="col-md-12"><div class="panel panel-default"><div class="panel-heading">' . $name . '</div><div class="panel-body">' . $cnt . "</div></div></div></div>";
+		}
 		$this->tabs[]=array(name=>$name, cnt=>$cnt, tab_name=>$tab_name);
 	}
 	function Table($proz="100%", $border=0) {
-		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0>";
+		$this->deprecated("NO MORE TABLE");
+
+		$this->OUT .= "<table border=$border width='$proz' cellpadding=0 cellspacing=0 border=0 style='width: 100%;' class=' no-border'><tbody class='no-border-y'>";
 	}
 	function MetaRefresh($time=20) {
 		$this->OUT .= "<script>function ReloadME() {
@@ -148,7 +164,8 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		window.setTimeout('ReloadME()', " . $time . "000);</script>";	
 	}
 	function TableEnd() {
-		$this->OUT .= "</table>";	
+		$this->deprecated("NO MORE TABLE");
+		$this->OUT .= "</tbody></table>";	
 	}
 	function DisplayHelp($msg=array()) {
 		for($x=0; $x<=count($msg);$x++) {
@@ -158,6 +175,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 
 	function Td($data=array()) {
+		$this->deprecated("NO MORE TD();");
 		for($x=0;$x<count($data);$x++) {
 			$width="";
 			$height="";
@@ -177,13 +195,32 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			
 			
 			//$disp=htmlspecialchars($disp);			
-			$r .= "<td $colspan  $align  valign=top $width $height $class>\n" . $disp . "\n</td>\n";	
+			
+			$r .= "<td $colspan  $align  valign=top $width $height $class>\n" . $disp . "\n</td>\n";
+			//$r .= "<div >\n" . $disp . "\n</div>\n";	
 		}
 		return $r;
 	}
-	
+	function FormBox($el = array(), $return=false) {
+
+		$data = '<div class="form-group">
+                <label class="col-sm-3 control-label">' . $el[0] . '</label>
+                <div class="col-sm-6">
+                 ' . $el[1] . '
+                </div>
+              </div>';
+             	if($return == true) {
+					return  $data;
+				} else {
+					$this->OUT .= $data;
+				}
+
+	}
 	function Tr($td, $return = false) {
 		$data="<tr>\n$td\n</tr>\n";
+		//$data='' . $td; // NO MORE TR
+		$this->deprecated("NO MORE TR();");
+		
 		if($return == true) {
 			return  $data;
 		} else {
@@ -193,7 +230,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	function Form($name,$action, $method='GET', $r = false) {
 		
-		$rr = "<form id='$name' name='$name' action='$action' method='POST'>\n";	
+		$rr = "<form id='$name' name='$name' class='form-horizontal' action='$action' method='POST'>\n";	
 		if($r) {
 			return $rr;	
 		} else {
@@ -211,7 +248,15 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	}
 	 
 	function TextArea($name, $def, $height=7, $width=100) {
-		return "<textarea name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
+		$r = "<textarea class=form-control name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
+		$r = '<div class="form-group" id="fg_' . $name . '">
+				    
+				   	 <div class="col-sm-12">
+				      ' . $r . '
+				      </div>
+				    
+				  </div>';
+		return $r;
 	}
 	
 	function Field($name, $type='text', $value='',$L='', $chkBox='', $help = array()) {
@@ -220,13 +265,78 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		if($help) {
 			$hIcon="<a href='help.php?msg[0]=$help&msg[1]=NULL' target='unten'><img src='layout/themes/classic/info.gif' border=0></A>";
 		}
-		$r="<input type='$type' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
+		$cl = "form-control";
+		if($type == "button" || $type == "submit") {
+			$cl = "btn btn-primary pull-right";
+		}
+		if(preg_match("/class=/", $chkBox)) {
+			preg_match("/class=['\"](.*?)['\"]/", $chkBox, $m);
+			if($m[1] == "switch") {
+				$cl = $m[1];
+			} else {
+				$cl .= " " . $m[1];
+			}
+		}
+		
+		$r="<input type='$type' class='$cl' value='$value' $n $chkBox>$hIcon<div style='color:#ff0000' id='error_" . $name . "'></div>\n";
+
+		if($type != "hidden" && $type != "button" && $type != "submit") {
+			$r = '<div class="form-group" id="fg_' . $name . '">
+				    
+				   	 <div class="col-sm-12">
+				      ' . $r . '
+				      </div>
+				    
+				  </div>';
+		}
 		if ($L) {
 			$this->OUT .= $r;
 		} else {
 			return $r;
 		}
 		
+	}
+	function orchLable($orch_id) {
+		global $_BARTLBY;
+		$_BARTLBY[orch_nodes][]=array("orch_id"=>0, "orch_alias"=>"LOCAL");
+		for($x=0; $x<count($_BARTLBY[orch_nodes]); $x++) {
+			$f=true;
+			$sel="";
+			if($_BARTLBY[orch_nodes][$x][orch_id] == $orch_id) {
+				return $_BARTLBY[orch_nodes][$x][orch_alias];
+			}
+		}
+		return "UNKNOWN";
+
+
+	}
+	function orchDropdown($choosable=true, $selected) {
+		global $_BARTLBY;
+		$_BARTLBY[orch_nodes][]=array("orch_id"=>0, "orch_alias"=>"LOCAL");
+		if($choosable) {
+			$f=false;
+			for($x=0; $x<count($_BARTLBY[orch_nodes]); $x++) {
+				$f=true;
+				$sel="";
+				if($_BARTLBY[orch_nodes][$x][orch_id] == $selected) {
+					$sel = "selected";
+				}
+				$rdrop .= "<option value='" . $_BARTLBY[orch_nodes][$x][orch_id] . "' " . $sel . ">" . $_BARTLBY[orch_nodes][$x][orch_alias] . "</option>";
+			}
+
+			if($f == true) {
+				return "<select name=orch_id id=orch_id data-rel='chosen'>" . $rdrop . "</select>";				
+			} else {
+				return "<input type=hidden name=orch_id value=0>No Orchestra Node Configured defaulting to 0";
+			}
+
+
+
+
+		} else {
+			return "<select id=orch_id name=orch_id disabled data-rel='chosen'><option value=-1>Orch id is inerhited</option></select>";
+		}
+
 	}
 	function DropDown($name,$options=array(), $type='', $style='', $addserver=true, $custom_name='chosen', $default_preset = false) {
 		global $_GET;
@@ -266,7 +376,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 						$obj_cleaned[]=$obj[$x];
 					}
 				}
-				echo json_encode($obj_cleaned);
+				echo json_encode(utf8_encode_all($obj_cleaned));
 				exit;
 				
 				
@@ -274,7 +384,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			}
 		}
 		
-		$r = "<select name='$name' id='$name' $type $style data-rel='" . $custom_name . "'>\n";
+		$r = "<select name='$name' id='$name' $type $style data-rel='" . $custom_name . "' class='form-control chosen-select'>\n";
 		for ($x=0;$x<count($options); $x++) {
 			$sel="";
 			if ($options[$x][s] == 1) $sel="selected";
@@ -291,6 +401,15 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			}
 		}		
 		$r .= "</select><div style='color:#ff0000' id='error_" . $name . "'></div>\n";
+
+
+		$r = '<div class="form-group" id="fg_' . $name . '">
+			    
+			   	 <div class="col-sm-12">
+			      ' . $r . '
+			    </div>
+			  </div>';
+
 		return $r;
 	}
 	function setTitle($str) {
@@ -303,34 +422,46 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 				
 	
 	function beginMenu() {
-		return '<div class="btn-group " xstyle="width:300px;">';
+		return '<li class="">';
+		//return '<ul class="nav navbar-nav">';
 		
-		return '<ul class="nav nav-tabs nav-stacked main-menu" xstyle="width:300px;">';	
+		
 	}
-	function addRoot($name) {
-		
-		return '<a style="width:190px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="" ></i><span style="width: 100%" xclass="hidden-phone" >' . $name . '</span>
-						<span class="caret" ></span>
-					</a><ul class="dropdown-menu" id="' . $root . '" style="width: 210px">';
 
-		$r = "<table class=\"nopad\">	<tr><td class=\"nav_main\" onClick=\"doToggle('$name')\"><img id='" . $name . "_plus' src='themes/" . $this->theme . "/images/plus.gif' border=0> $name</td></tr><tr><td class=\"nav_place\">&nbsp;</td></tr></table><table class=\"nopad\" id='" . $name . "_sub' style='display:none;'>";
-		$r = '<li class="nav-header hidden-tablet">' . $name . '</li>';
+	/*
+	<li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li class="dropdown-header">Dropdown header</li>
+          <li><a href="#">Separated link</a></li>
+          <li><a href="#">One more separated link</a></li>
+        </ul>
+      </li>
+	*/
+
+	function addRoot($name, $cl = "fa fa-gear") {
 		
-		return $r;	
+		return ' <a href="#"><i class="' . $cl . '"></i><span>' . $name . '</span></a> <ul class="sub-menu">';
+	
+		
 	}
 	function addSub($root, $name, $link) {
-		return '<li> <a href="' . $link . '"> ' . $name . '</a>';
-		$r="<tr><td class=\"nav_sub\"><a href='" . $link . "' class=\"sub\">$name</A></td></tr><tr><td class=\"nav_place\">&nbsp;</td></tr>";
-		$r = '<li><a class="ajax-link" href="' . $link . '"><i class="icon-home"></i><span class="hidden-tablet"> ' . $name . '</span></a></li>';
-		return $r;	
+		//return '<li><a tabindex="-1" href="#">Second level</a></li>'
+		return '<li> <a href="' . $link . '"> ' . $name . '</a></li>';
+		
 	}
 	function endMenu() {
-		return '</ul></div>';
-		return "</ul>";	
+		return '</ul></li>';
+	
+ 
+	
 	}
 	
-	function display($lineup_file="") {
+	function display($lineup_file="", $base_path=false) {
 	global $xajax;
 	global $confs;
 		if($lineup_file=="no") $lineup_file="";
@@ -379,15 +510,16 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		//Create Menu.
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Monitoring");
+		$this->ext_menu .= $this->addRoot("Monitoring", "fa fa-fighter-jet");
                 $this->ext_menu .= $this->addSub("Monitoring", "Overview","overview.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
-                $this->ext_menu .= $this->addSub("Monitoring", "Servers","servergroup_detail.php?all_servers=1");
+                $this->ext_menu .= $this->addSub("Monitoring", "Servers","servers.php");
+                $this->ext_menu .= $this->addSub("Monitoring", "Traps","traps.php");
 		$this->ext_menu .= $this->endMenu();
 
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Reporting");
+		$this->ext_menu .= $this->addRoot("Reporting", "fa fa-bar-chart");
                 $this->ext_menu .= $this->addSub("Reporting", "Report/s","create_report.php");
                 $this->ext_menu .= $this->addSub("Reporting", "Logfile","logview.php");
                 $this->ext_menu .= $this->addSub("Reporting", "Notifications","logview.php?bartlby_filter=@NOT@");
@@ -395,7 +527,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$this->ext_menu .= $this->endMenu();
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Server/s");
+		$this->ext_menu .= $this->addRoot("Server/s", "fa fa-rocket");
                 $this->ext_menu .= $this->addSub("Server/s", "Add","add_server.php");
                 $this->ext_menu .= $this->addSub("Server/s", "Modify","server_list.php?script=modify_server.php");
                 $this->ext_menu .= $this->addSub("Server/s", "Delete","server_list.php?script=delete_server.php");
@@ -404,7 +536,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Service/s");
+		$this->ext_menu .= $this->addRoot("Service/s", "fa  fa-paper-plane-o");
                 $this->ext_menu .= $this->addSub("Service/s", "Add","add_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Modify","service_list.php?script=modify_service.php");
                 $this->ext_menu .= $this->addSub("Service/s", "Delete","service_list.php?script=delete_service.php");
@@ -413,7 +545,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Packages");
+		$this->ext_menu .= $this->addRoot("Packages", "fa fa-file-archive-o");
                 $this->ext_menu .= $this->addSub("Packages", "Install","server_list.php?script=install_pkg.php");
                 $this->ext_menu .= $this->addSub("Packages", "Uninstall","server_list.php?script=uninstall_pkg.php");
                 $this->ext_menu .= $this->addSub("Packages", "Create","package_create.php");
@@ -439,15 +571,25 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Downtime/s");
+		$this->ext_menu .= $this->addRoot("Downtime/s", "fa fa-pause");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Add","downtime_type_list.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Modify","downtime_list.php?script=modify_downtime.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Delete","downtime_list.php?script=delete_downtime.php");
 		$this->ext_menu .= $this->endMenu();
 
 
+
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Worker/s");
+		$this->ext_menu .= $this->addRoot("Trap/s", "fa fa-plus-circle");
+                $this->ext_menu .= $this->addSub("Trap/s", "Add","add_trap.php");
+                $this->ext_menu .= $this->addSub("Trap/s", "Modify","trap_list.php?script=modify_trap.php");
+                $this->ext_menu .= $this->addSub("Trap/s", "Delete","trap_list.php?script=delete_trap.php");
+		$this->ext_menu .= $this->endMenu();
+
+
+
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("Worker/s", "fa fa-group");
                 $this->ext_menu .= $this->addSub("Worker/s", "Add","add_worker.php");
                 $this->ext_menu .= $this->addSub("Worker/s", "Modify","user_list.php?script=modify_worker.php");
                 $this->ext_menu .= $this->addSub("Worker/s", "Delete","user_list.php?script=delete_worker.php");
@@ -478,7 +620,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		
 
 		$this->ext_menu .= $this->beginMenu();
-		$this->ext_menu .= $this->addRoot("Core");
+		$this->ext_menu .= $this->addRoot("Core", "fa fa-database");
                 $this->ext_menu .= $this->addSub("Core", "Reload","bartlby_action.php?action=reload");
                 $this->ext_menu .= $this->addSub("Core", "Config","choose_config.php");
                 $this->ext_menu .= $this->addSub("Core", "Statistic","statistic.php");
@@ -504,13 +646,14 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		
 	
+		if(1==2) {
 		
-		
-		for($z=0; $z<count($this->deprecated); $z++) {
-			$depre .= '<div class="alert alert-error">
-							<button type="button" class="close" data-dismiss="alert">×</button>
-							Deprecated INFO: <strong>' .  $this->deprecated[$z] . '</strong>
-						</div>';
+			for($z=0; $z<count($this->deprecated); $z++) {
+				$depre .= '<div class="alert alert-error">
+								<button type="button" class="close" data-dismiss="alert">×</button>
+								Deprecated INFO: <strong>' .  $this->deprecated[$z] . '</strong>
+							</div>';
+			}
 		}
 
 		//Default LineUp
@@ -519,6 +662,10 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 
 		$lineup_path="themes/" . $this->theme . "/lineups/" . $lineup_file . ".php";
+		if($base_path != false) {
+			$lineup_path = $base_path . "/" . $lineup_file;
+		}
+		
 		if(!file_exists($lineup_path)) {
 			$lineup_path="themes/classic/lineups/default.php";
 		}
@@ -536,7 +683,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->tabs[-1][tab_name]="ROOT";
 
 			$this->BTUIOUTSIDE='<div id="myTabContent" class="tab-content">';
-			$this->BTTABBAR='<ul class="nav nav-tabs" id="coreTabs">';
+			$this->BTTABBAR='<ul class="nav nav-tabs nav-tabs-google" id="coreTabs">';
 			for($x=-1; $x<$this->tab_count; $x++) {
 				if($this->tabs[$x][tab_name] != "") {
 					$ttname=$this->tabs[$x][tab_name];
@@ -562,7 +709,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		ob_end_clean();
 
 		if($this->OUTPUT_JSON) {
-			echo json_encode($this);
+			echo json_encode(utf8_encode_all($this));
 			exit;
 		}
 		
@@ -625,6 +772,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$box_file="default_box.php";
 		} else {
 			$box_file .= ".php";
+			if($this->OUTPUT_JSON == 2) {
+				$this->boxes_values[$oid]=$plcs;
+			}
 		}
 		$boxes_path="themes/" . $this->theme . "/boxes/" . $box_file;
 		if(!file_exists($boxes_path)) {
@@ -646,11 +796,11 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$o = ob_get_contents();	
 			
 		ob_end_clean();	
-		
 	
-		$this->boxes[$oid]=$o;
-		$this->boxes_content[$oid]=$content;
-
+		if($this->OUTPUT_JSON != 2) {
+			$this->boxes[$oid]=$o;
+			$this->boxes_content[$oid]=$content;
+		}
 		
 		
 		if($box_file != "default_box.php" && $put_a_standard_box_around_me == true) { //pack into a standard box
@@ -661,12 +811,14 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		//$this->boxes_wo_reload[$oid] = $this->boxes[$oid];
 		if($auto_reload) {
 		
-		$this->boxes[$oid] .= "<script>
-		btl_add_refreshable_object(function(data) {
-				
-				$('#content_" . $oid . "').html(data.boxes_content." . $oid . ");
-		});
-		</script>";
+		if($this->OUTPUT_JSON != 2) {
+			$this->boxes[$oid] .= "<script>
+			btl_add_refreshable_object(function(data) {
+					
+					$('#content_" . $oid . "').html(data.boxes_content." . $oid . ");
+			});
+			</script>";
+		}
 		
 		
 		}

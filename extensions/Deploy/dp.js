@@ -46,15 +46,7 @@ $(document).ready(function() {
 						{ "bVisible": false, "aTargets": [ 0 ] }
 					],
 					
-					"aaSortingFixed": [[ 0, 'asc' ]],
-					"bSort": true,
-					"aaSorting": [[ 1, 'asc' ]],
-					"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
-					"sPaginationType": "bootstrap",
-			    	"oLanguage": {
-			    		"sEmptyTable": "No Files Found",
-            			"sProcessing": "<img src='extensions/AutoDiscoverAddons/ajax-loader.gif'> Loading"
-        			}
+				
 			    
        
 				});

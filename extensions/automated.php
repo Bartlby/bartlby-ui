@@ -12,13 +12,14 @@
 //   	
 // Will produce a full backup
 
+session_start();
 chdir("../");
 for($x=0; $x<$argc; $x++) {
 	$t=explode("=", $argv[$x]);
 	$_GET[$t[0]]=$t[1];
 }
-$_SERVER[PHP_AUTH_USER]=$_GET["username"];
-$_SERVER[PHP_AUTH_PW]=$_GET["password"];
+$_SESSION[username]=$_GET["username"];
+$_SESSION[password]=sha1($_GET["password"]);
 
 include("extensions/"  . $_GET[script]);
 

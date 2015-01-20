@@ -20,7 +20,7 @@ $core_extensions="";
 $cnt = (int)bartlby_config($btl->CFG, "extension_count");
 
 if($cnt || $cnt == 0) {
-	$ext_table = '<table class="table table-bordered table-striped table-condensed">
+	$ext_table = '<table class="table table-bordered  table-condensed">
 							  <thead>
 								  <tr>
 									  <th>Extension</th>
@@ -66,7 +66,7 @@ $r=$btl->getExtensionsReturn("_About", $temp_layout, true);
 
 //FIXME create_box
 
-$ext_table = '<table class="table table-bordered table-striped table-condensed">
+$ext_table = '<table class="table table-bordered  table-condensed">
 							  <thead>
 								  <tr>
 									  <th>Extensions</th>
@@ -87,18 +87,30 @@ for($x=0; $x<count($r); $x++) {
 		$z = 0;
 		$basic_provides="";
 		$provides_widgets=false;
+		$provides_api=false;
 		for($y=0; $y<count($r[$x][methods]); $y++) {
-			if(preg_match("/^(_|widget_).*/", $r[$x][methods][$y])) {
+			if(preg_match("/^(_|widget_|api_).*/", $r[$x][methods][$y])) {
 				
 				$provides .= $r[$x][methods][$y] . "<br>";
 				if(preg_match("/^widget/", $r[$x][methods][$y])) {
 					$provides_widgets = true;
 				}
+				if(preg_match("/^api_.*/", $r[$x][methods][$y])) {
+					$provides_api = true;
+				
+				}
+
+
 			}
+
+
+			
 			
 		}
+	
 		$basic_provides="Functions";
 		if($provides_widgets) $basic_provides .= ",Widgets";
+		if($provides_api) $basic_provides .= ",REST-API";
 		
 		$ext_table .= ' <td><a href="#" data-rel="popover" title="Provides" data-content="' . $provides . '">' . $basic_provides . '</a></td>';
 		

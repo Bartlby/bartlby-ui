@@ -1,9 +1,14 @@
-<div style='height: 72px;overflow:scroll'>
-<table  width='100%'>
-	<tr>
-		<td id='service_new_server_text' id='service_new_server_text'><?=str_replace( "\\dbr", "<br>",nl2br(htmlspecialchars($plcs[service][new_server_text])))?></td> 
-	</tr>
+<style>
+#content_service_detail_status_text > div > div {
+	background: #333333;
+	padding-left: 10px;
+}
+#content_service_detail_status_text > div > div > kbd {
+	box-shadow: none;
 	
-	
-</table>
+	background: #333333;
+}
+</style>
+<div style='height: 250px;overflow:scroll'>
+<div ><kbd><?=str_replace( "\\dbr", "<br>",nl2br(htmlspecialchars($plcs[service][new_server_text])))?></kbd></div>
 </div>

@@ -11,7 +11,7 @@ $btl->hasRight("main.servergroup_detail");
 $layout= new Layout();
 $layout->set_menu("main");
 $layout->setTitle("ServiceGroup");
-
+$layout->setMainTabName("Details");
 $defaults=array();
 $btl->servicegroup_list_loop(function($grp, $shm) use (&$defaults) {
 		global $_GET;
@@ -31,14 +31,16 @@ if(!$defaults) {
 
 
 if($defaults["servicegroup_notify"]==1) {
-	$noti_en="true";
+	$noti_en="<input type=checkbox class=switch checked disabled>";
 } else {
-	$noti_en="false";
+	$noti_en="<input type=checkbox class=switch disabled>";
 }
 if($defaults["servicegroup_active"]==1) {
-	$server_en="true";
+	
+	$server_en="<input type=checkbox class=switch checked disabled>";
 } else {
-	$server_en="false";
+	
+	$server_en="<input type=checkbox class=switch disabled>";
 }
 
 
@@ -90,7 +92,7 @@ $layout->create_box("Mass Actions", "", "mass_actions",
 
 $r=$btl->getExtensionsReturn("_servicegroupDetails", $layout);
 
-$layout->OUT .= $btl->getServiceGroupOptions($defaults, $layout);
+$layout->OUT .= $btl->getServiceGroupOptions($defaults, $layout, "btn-lg");
 
 
 

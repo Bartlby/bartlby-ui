@@ -8,7 +8,6 @@ $layout= new Layout();
 
 $layout= new Layout();
 $layout->Form("fm1", "bartlby_action.php");
-$layout->Table("100%");
 $layout->set_menu("packages");
 $layout->setTitle("Package Name");
 
@@ -18,7 +17,7 @@ $servers=array();
 $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out) {
 	global $_GET;
 	if($svc[is_gone] != 0) {
-	 continue;
+	 return LOOP_CONTINUE;
 	}
 
 	if(($_GET[dropdown_term] && @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $_GET[service_id]) {
@@ -36,67 +35,45 @@ $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$s
 });		
 
 
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Name:",
-				1=>$layout->Field("package_name", "test", "") . $layout->Field("action", "hidden", "create_package")
+				1=>$layout->Field("package_name", "text", "") . $layout->Field("action", "hidden", "create_package")
 			)
-		)
-
+		
 );
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 		array(
 			0=>"Services:",
 			1=>$layout->DropDown("services[]", $servers, "multiple","",false,"ajax_package_services")
 		)
-	)
 );
 
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Include Plugins:",
-				1=>$layout->Field("package_with_plugins", "checkbox", "checked")
+				1=>$layout->Field("package_with_plugins", "checkbox", "checked", "", "class='icheck'")
 			)
-		)
-
 );
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Include Perf Handlers:",
-				1=>$layout->Field("package_with_perf", "checkbox", "checked")
+				1=>$layout->Field("package_with_perf", "checkbox", "checked", "", "class='icheck'")
 			)
-		)
-
 );
-$layout->Tr(
-	$layout->Td(
+$layout->FormBox(
+
 			Array(
 				0=>"Overwrite existing package:",
-				1=>$layout->Field("package_overwrite", "checkbox", "checked")
+				1=>$layout->Field("package_overwrite", "checkbox", "checked", "", "class='icheck'") . $layout->Field("Subm", "button", "next->", "" ," onClick='xajax_CreatePackage(xajax.getFormValues(\"fm1\"))'") . $layout->Field("server_id", "hidden", $_GET[server_id])
 			)
-		)
-
-);
-
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "" ," onClick='xajax_CreatePackage(xajax.getFormValues(\"fm1\"))'") . $layout->Field("server_id", "hidden", $_GET[server_id])
-					)
-			)
-		)
-
 );
 
 
-$layout->TableEnd();
 
 $layout->FormEnd();
 $layout->display();

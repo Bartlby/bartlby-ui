@@ -1,5 +1,9 @@
 <?php
-error_reporting(0);
+error_reporting(0);	
+
+error_reporting(1);	
+ini_set("display_errors", true);
+
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
  *
@@ -21,7 +25,6 @@ $HeadURL: http://bartlby.svn.sourceforge.net/svnroot/bartlby/trunk/bartlby-core/
 $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */
-session_start();
 
 
 	$Bartlby_SOFT_selected_instance=-1;
@@ -92,12 +95,157 @@ if($do_not_merge_post_get != true) {
 			}
 		}
 
-/*
-
-	$Bartlby_CONF="/opt/bartlby/etc/bartlby.cfg";
-	
 
 
-$Bartlby_CONF="/storage/SF.NET/BARTLBY/GIT/bartlby-core/BARTLBY.local";
-*/
+define("API_PORTIER_HOST", "localhost");
+define("API_PORTIER_PORT", "9031");
+
+
+if(!function_exists("bartlby_generic_audit")) {
+	function btl_audit_get_last($r, $id, $type) {
+
+		$re="";
+		$label="";
+		switch($type) {
+			case BARTLBY_AUDIT_TYPE_SERVICE:
+			$re = bartlby_get_service_by_id($r, $id);
+			$label=$re[server_name] . "/" . $re[service_name];
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVER:
+			$re = bartlby_get_server_by_id($r, $id);
+			$label=$re[server_name];
+			break;
+			case BARTLBY_AUDIT_TYPE_WORKER:
+			$re = bartlby_get_worker_by_id($r, $id);
+			$label=$re[name];
+			break;
+			case BARTLBY_AUDIT_TYPE_DOWNTIME:
+			$re = bartlby_get_downtime_by_id($r, $id);
+			$label=$re[downtime_notice];
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVERGROUP:
+			$re = bartlby_get_servergroup_by_id($r, $id);
+			$label=$re[servergroup_name];
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVICEGROUP:
+			$re = bartlby_get_servicegroup_by_id($r, $id);
+			$label=$re[servicegroup_name];
+			break;
+			case BARTLBY_AUDIT_TYPE_TRAP:
+			$re = bartlby_get_trap_by_id($r, $id);
+			$label=$re[trap_name];
+			break;
+		
+		}
+		
+		$ret[json]=json_encode($re, true);
+		$ret[label]=$label;
+		return $ret;		
+	}
+	function bartlby_generic_audit($res, $type,  $id, $line) {
+		if(!class_exists("Audit")) {
+			include_once "extensions/Audit/Audit.class.php";
+		}
+		$ad = new Audit();
+		$o=btl_audit_get_last($res, $id, $type);
+		$prev_object=$o[json];
+		$label=$o[label];
+
+		$sql = "insert into bartlby_generic_audit (type, utime, object_id, line, worker_id, label) values(" . $type . "," . time() . ", " . $id . ", '" .  SQLite3::escapeString($line) . "', " . $_SESSION[worker][worker_id] . ",'" . SQLite3::escapeString($label) . "')";
+		$r = $ad->db->query($sql);
+
+
+		//file_put_contents("/var/log/bartlby_audit", "GENERIC AUDIT: $id $type $line \n", FILE_APPEND);
+		return true;
+	}
+	function bartlby_object_audit($res, $type, $id, $action) {
+
+		if((int)$_SESSION[worker][worker_id] < 0)  {
+			
+			return false;
+		}
+		$prev_object="";
+		$label="";
+		//readable
+		switch($action) {
+			case BARTLBY_AUDIT_ACTION_ADD:
+			$readable_action="ADD";
+			
+			$o=btl_audit_get_last($res, $id, $type);
+			$prev_object=$o[json];
+			$label=$o[label];
+
+			break;
+			case BARTLBY_AUDIT_ACTION_DELETE:
+			$readable_action="DELETE";
+			
+			$o=btl_audit_get_last($res, $id, $type);
+			$prev_object=$o[json];
+			$label=$o[label];
+
+			break;
+			case BARTLBY_AUDIT_ACTION_MODIFY:
+			$readable_action="MODIFY";
+			
+			$o=btl_audit_get_last($res, $id, $type);
+			$prev_object=$o[json];
+			$label=$o[label];
+
+			break;
+		}
+
+		
+		switch($type) {
+			case BARTLBY_AUDIT_TYPE_SERVICE:
+			$readable_type="SERVICE";
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVER:
+			$readable_type="SERVER";
+			break;
+			case BARTLBY_AUDIT_TYPE_WORKER:
+			$readable_type="WORKER";
+			break;
+			case BARTLBY_AUDIT_TYPE_DOWNTIME:
+			$readable_type="DOWNTIME";
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVERGROUP:
+			$readable_type="SERVERGROUP";
+			break;
+			case BARTLBY_AUDIT_TYPE_SERVICEGROUP:
+			$readable_type="SERVICEGROUP";
+			break;
+			case BARTLBY_AUDIT_TYPE_TRAP:
+			$readable_type="TRAP";
+			break;
+		
+		}
+		if(!class_exists("Audit")) {
+			include_once "extensions/Audit/Audit.class.php";
+		}
+		$ad = new Audit();
+		$sql = "insert into bartlby_object_audit (type, action, utime, worker_id, object_id, prev_object, label) values(" . $type . "," . $action . ", " . time() . ", " . $_SESSION[worker][worker_id] . ", " . $id . ", '" .  SQLite3::escapeString($prev_object) . "', '" . SQLite3::escapeString($label) . "')";
+		
+		$r = $ad->db->query($sql);
+		
+
+		
+		return true;
+		/*
+		
+		//" Type=>" . $type . " ID=>" . $id . " action=>" . $action . " folder: " . $folder . "\n<br>";
+		
+		*/
+		/*
+		$fp = fopen("/var/log/bartlby_audit.log", "a");
+		fwrite($fp, "AUDIT: Type=>" . $type . " ID=>" . $id . " action=>" . $action . " folder: " . $folder . "\n");
+		fclose($fp);
+		*/
+        return true;
+	}
+
+
+
+
+}
+
 ?>

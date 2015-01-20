@@ -53,17 +53,20 @@ array
 	
 	
 	//get all entrys via identifier
-	$identifier = date(".m.Y",$edate);
-	$sql = "select * from logbook where ocl_date like '%" . $identifier . " %' order by ocl_date desc";
+	$identifier = date("m/%/Y",$edate);
+	$sql = "select * from logbook where ocl_date like '%" . $identifier . " %' order by id desc";
 	$r = $ocl->db_logbook->query($sql);
 	$cur_box_content  = '<button onClick="document.location.href=\'extensions_wrap.php?script=OcL/add.php\'" class="sm_add_new_btn btn  btn-success">Add New Entry</button>';
-	$cur_box_content .= ' <ol class="discussion">';
+	$cur_box_content .= '<ul class="timeline" style="padding-top:20px;">';
+
+
+
 	foreach($r as $row) {
 
 
 		//images/diabled.gif
-		$del_icon="<a href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'><img border=0 alt='delete this entry' src='themes/classic/images/diabled.gif'></A>";
-		$mod_icon="<a href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'><img border=0 alt='modify this entry' src='themes/classic/images/modify.gif'></A>";
+		$del_icon="<a class='fa fa-trash' style='font-size: 20px;' href='#' onClick='xajax_ExtensionAjax(\"OcL\", \"xajax_ocl_del_entry\",\"" . $identifier . "\",\""  . $row[id] .  "\" )'></A>";
+		$mod_icon="<a class='fa fa-edit' style='font-size: 20px;' href='extensions_wrap.php?script=OcL/modify.php&identifier=" . $identifier . "&id=" . $row[id] ."'></A>";
 		$grp_str=$ocl->resolveGroupString($row[ocl_service_var]);
 		$gv="";
 	
@@ -74,32 +77,24 @@ array
 				}
 		});
 
-		$cur_box_content .= '<li class="other">
-      <div class="avatar1">
-      	<div class=avatar style="width: 40px; height:40px;">
+		$cur_box_content .= '<li>              <i class="">
+				<div class=avatar style="width: 40px; height:40px;">
         	<img src="' . $gv . '">
     	</div>
-	' . $row[ocl_date] . '
-      </div>
 
-      <div class="messages">
-      <b><h2>' . $row[ocl_subject] . '</b></h2>
-      <span >' . $grp_str . '</span>
-      <hr noshade>
-       <p>
-       	' . nl2br($row[ocl_error_long]) . '
-       </p>
-       <hr noshade>
-       ' . $del_icon . '&nbsp;' .  $mod_icon . '
-        <span class="pull-right"><xsmall>Duration: '.  $row[ocl_duration] . ' Caller: ' . $row[ocl_caller] . ' Type: ' . $row[ocl_type] . '</sxmall></span>
-        
-      </div>
-    </li>	';		
+		</i>
+              
+              <span class="date">27 Jan</span>
+              <div class="content">
+                <p><strong>' . $row[ocl_poster] . '</strong>  ' . $del_icon . '&nbsp;' .  $mod_icon . '<br><blockquote>' . nl2br($row[ocl_error_long]) . "<p><hr noshade>" . $grp_str . '</p></p></blockquote>
+                <small> Duration: '.  $row[ocl_duration] . ' Caller: ' . $row[ocl_caller] . ' Type: ' . $row[ocl_type] . '</small>
+                
+              </div></li>';		
 		
 
 
 	}
-	$cur_box_content .= "</ol>";
+	$cur_box_content .= "</ul>";
 	$layout->push_outside($layout->create_box("Entrys for " . $identifier, $cur_box_content));
 	
 	

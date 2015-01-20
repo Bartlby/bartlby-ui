@@ -1,6 +1,7 @@
 <?
 ini_set("memory_limit","999999999M");
 ob_start("ob_gzhandler");
+
 /* $Id: ack.c 16 2008-04-07 19:20:34Z hjanuschka $ */
 /* ----------------------------------------------------------------------- *
  *
@@ -23,9 +24,17 @@ $Date: 2008-04-07 21:20:34 +0200 (Mo, 07 Apr 2008) $
 $Author: hjanuschka $ 
 */ 
 
+if(php_sapi_name() != "cli") {
+	include "Session.class.php";
+	SessionManager::sessionStart(gethostname());
+} else {
+	session_start();
+}	
 include_once("bartlbystorage.class.php");
 
-session_start();
+
+
+
 
 set_time_limit(0);
 if(function_exists("set_magic_quotes")) set_magic_quotes_runtime(0);
@@ -33,6 +42,7 @@ define("BARTLBY_UI_VERSION", "2.5-1.6.0");
 define("BARTLBY_RELNOT", "");
 define("LOOP_CONTINUE", -2);
 define("LOOP_BREAK", -1);
+define("MAX_NOTIFICATION_LOG", 512);
 $wdays[0]="Sunday";
 $wdays[1]="Monday";
 $wdays[2]="Tuesday";
@@ -93,7 +103,15 @@ function bartlby_server_map() {
 
 }
 
-
+//JSON UTFCONVERTER
+function utf8_encode_all($dat) // -- It returns $dat encoded to UTF8 
+{ 
+  if (is_string($dat)) return utf8_encode($dat); 
+  if (!is_array($dat) && !is_object($dat)) return $dat; 
+  $ret = array(); 
+  foreach($dat as $i=>$d) $ret[utf8_encode($i)] = utf8_encode_all($d); 
+  return $ret; 
+} 
 
 		
 
@@ -105,10 +123,11 @@ class BartlbyUi {
 	}
 	function html_report_header() {
 		return "<html><head><style>" . 
-		file_get_contents("themes/classic/css/bootstrap-simplex.css") 
+		file_get_contents("themes/classic/css/bootstrap.css")  .
+		file_get_contents("themes/css/btl.css") 
 		 . "</style></head><body>";
 	}
-	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report") {
+	function send_custom_report($emails, $service_ids = array(), $from, $to, $subj="Bartlby Custom Report", $only_hard=0) {
 		include_once "Mail.php";
 		include_once "Mail/mime.php";
 		
@@ -123,7 +142,7 @@ class BartlbyUi {
 
 			
 			
-			$rep = $this->do_report($from, $to, 0, $service_id);
+			$rep = $this->do_report($from, $to, 0, $service_id, $only_hard);
 			$rap .=  $this->format_report($rep, "html", "Report for: " . $defaults[server_name] . "/" . $defaults[service_name], true);
 			
 		
@@ -258,7 +277,7 @@ class BartlbyUi {
 			bartlby_new($this->CFG);
 		}
 	}
-	function resolveDeadMarker($start_id, $map) {
+	function resolveDeadMarker($start_id, $map="") {
 		
 		$rr=0;
 		
@@ -554,7 +573,7 @@ class BartlbyUi {
 			$filled[$x]{strlen($filled[$x][value])-1} = " ";
 			
 		}
-		$plan_box = "<table>";
+		$plan_box = "<table class='table no-borderless border' style=''>";
 		for($x=0; $x<=6; $x++) {
 			$chk="";
 			$vv = "<i>NO</i>";
@@ -571,7 +590,7 @@ class BartlbyUi {
 			} else {
 				$invinfo="";	
 			}
-			$plan_box .= "<tr><td><font size=1 " . $cl . ">" .  $wdays[$x] . $invinfo  . "</font></td><td><font size=1>" . $vv . "</font></td></tr>";
+			$plan_box .= "<tr><td width=20%><font size=1 " . $cl . ">" .  $wdays[$x] . $invinfo  . "</font></td><td><font size=1>" . $vv . "</font></td></tr>";
 		}
 		
 		$plan_box .= "</table>";
@@ -615,7 +634,8 @@ class BartlbyUi {
 		
 			array_push($files_scanned, array(0=>$filename, 1=>$lines));
 			while(list($k,$v) = @each($fdata)) {
-				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|/", $v, $m)) {
+				
+				if(preg_match("/(.*);\[.*@LOG@([0-9]+)\|([0-9])\|.*HARD;.*\/HASTO$/", $v, $m)) {
 					$state_map[state_changes]++;
 					$cur_service_id=$m[2];
 					$cur_service_state=$m[3];
@@ -685,7 +705,7 @@ if($m[2] == "5724") {
 		$state_map[end_date] = date("Y/m/d", $time_end);
 		return $state_map;
 	}
-	function do_report($start_in, $end_in, $state_in, $in_service) {
+	function do_report($start_in, $end_in, $state_in, $in_service, $hard_only=0) {
 		$state_array=array();
 		
 		$log_mask=bartlby_config($this->CFG, "logfile");
@@ -732,15 +752,34 @@ if($m[2] == "5724") {
 						
 				if($log_detail_o[1] == "LOG") {
 					$tmp=explode("|", $log_detail_o[2]);
-					$msg="";
-					for($z=3; $z<count($tmp);$z++) {
-						$msg .= $tmp[$z];	
-					}
+				
 					
 					if($in_service && $tmp[0] != $in_service) {
 						
 						continue;	
 					}
+					
+
+					$log_el = explode("|", $v);
+					$clean="";
+					for($z=3; $z<count($log_el);$z++) {
+						if(preg_match("/HARD;.*\/HASTO$/", $log_el[$z])) {
+							$hstate = "(HARD)";
+							$is_hard=1;
+							break;
+						} 
+						if(preg_match("/SOFT;CHECK\/HASTO$/", $log_el[$z])) {
+							$hstate = "(SOFT)";
+							$is_hard=0;
+							break;
+						}
+						
+						$clean .=  $log_el[$z] . " ";	
+					
+					}
+
+					
+					if($hard_only == 1 && $is_hard != 1) continue;
 					
 					//if($last_state != $tmp[1]) {
 						
@@ -749,7 +788,7 @@ if($m[2] == "5724") {
 						$diff = $log_stamp - $last_mark;
 						//$out .= "State changed from " . $btl->getState($last_state) . " to " . $btl->getState($tmp[1]) . "<br>";	
 						//echo "Where " . $diff . " in " . $btl->getState($last_state) . "<br>"; 
-						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$msg, "lstate"=>$tmp[1]));
+						array_push($state_array, array("start"=>$last_mark, "end"=>$log_stamp, "state"=>$last_state, "msg"=>$clean, "lstate"=>$tmp[1], "is_hard"=>$is_hard, "is_hard_lable"=>$hstate));
 						
 						$svc[$last_state] += $diff;
 						
@@ -870,7 +909,8 @@ if($m[2] == "5724") {
 		return $r;
 	}
 	function isSuperUser() {
-		if($this->rights[super_user][0] != "true") {
+		
+		if($this->rights[super_user] != 1) {
 			return false;
 		}else {
 			return true;	
@@ -1019,7 +1059,7 @@ if($m[2] == "5724") {
 		return $r;
 	}
 	function hasServerorServiceRight($svcid, $do_redir=true) {
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			return true;	
 		}
 		
@@ -1058,7 +1098,7 @@ if($m[2] == "5724") {
 	}
 	function hasServerRight($srvid, $do_redir=true) {
 		
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			return true;	
 		}
 		
@@ -1083,11 +1123,10 @@ if($m[2] == "5724") {
 		}
 	}
 	function hasRight($k,$do_redir=true) {
-		if($this->rights[super_user][0] == "true") {
+		if($this->rights[super_user] == 1) {
 			
 			return true;	
 		}
-		
 		if($this->rights[$k] && $this->rights[$k][0] != "false") {
 			
 				return true;
@@ -1121,6 +1160,14 @@ if($m[2] == "5724") {
 				
 				
 			}
+			$wrk = bartlby_get_worker_by_id($this->RES, $user);
+			
+			$r[services] = explode(",", $wrk[visible_services]);
+			$r[servers] = explode(",", $wrk[visible_servers]);
+			$r[selected_services] = explode(",", $wrk[selected_services]);
+			$r[selected_servers] = explode(",", $wrk[selected_servers]);
+
+
 			for($x=0; $x<count($r[services]); $x++) {
 					if($r[services][$x] == "") {
 						$r[services][$x]=-4;
@@ -1190,11 +1237,21 @@ if($m[2] == "5724") {
 		
 		if(file_exists($base . "/" . $this->user_id . ".dat")) {
 			$fa=file($base . "/" . $this->user_id . ".dat");
+			
 			while(list($k, $v) = each($fa)) {
 				$s1=explode("=", $v);
 				$this->rights[$s1[0]]=explode(",", trim($s1[1]));
 				
+				
 			}
+
+			$wrk = bartlby_get_worker_by_id($this->RES, $this->user_id);
+
+			$this->rights[services] = explode(",", $wrk[visible_services]);
+			$this->rights[super_user] = $wrk[is_super_user];
+			$this->rights[servers] = explode(",", $wrk[visible_servers]);
+			$this->rights[selected_services] = explode(",", $wrk[selected_services]);
+			$this->rights[selected_servers] = explode(",", $wrk[selected_servers]);
 
 			for($x=0; $x<count($this->rights[services]); $x++) {
 					if($this->rights[services][$x] == "") {
@@ -1252,11 +1309,11 @@ if($m[2] == "5724") {
 		
 		// if is super_user ALL services and servers are allowed
 		
-		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user][0] == "true") {
+		if($this->user == @bartlby_config($ui_extra_file, "super_user") || $this->rights[super_user] == 1) {
 		
 				$this->rights[services]=null;
 				$this->rights[servers]=null;
-				$this->rights[super_user][0]=true;
+				
 		}
 		
 	}
@@ -1271,6 +1328,7 @@ if($m[2] == "5724") {
 		global $Bartlby_CONF_IDX;
 		global $Bartlby_CONF_single_sign_on;
 		global $confs;
+		global $_SESSION;
 		$auted=0;
 		if($a==false) {
 			$auted=1;
@@ -1286,16 +1344,14 @@ if($m[2] == "5724") {
 			$btl=$this;
 			$btl_to_use->worker_list_loop(function($v, $shm) use (&$auted, &$btl) {
 				global $_SERVER;
-				if($_SESSION[username] != "" && $_SESSION[password] != "") {
-					$_SERVER[PHP_AUTH_USER]=$_SESSION[username];
-					$_SERVER[PHP_AUTH_PW]=$_SESSION[password];
-				}
-				
-				if($_SERVER[PHP_AUTH_USER] == $v[name] && (md5($_SERVER[PHP_AUTH_PW]) == $v[password] || $_SERVER[PHP_AUTH_PW] == $v[password])) {
+			
+				if($_SESSION[username] == $v[name] && $_SESSION[password] == $v[password]) {
 					
 					//FIXME: remove back. comp. to plain pass'es
 					$auted=1;
 					$btl->user_id=$v[worker_id];
+					$_SESSION[worker]=$v;
+					$_SESSION[worker][password]="";
 					return LOOP_BREAK;
 
 				}
@@ -1303,39 +1359,33 @@ if($m[2] == "5724") {
 				
 				
 			});
+
 			
 			
 		}
 	
 
 
-		if($auted == 0 && $_SESSION[username] != "") {
-			$this->redirectError("BARTLBY::LOGIN");
+	
+		if($auted == 0) {
+            session_destroy();
 			if(php_sapi_name() == "cli") {
-
+				echo "AUTH Failed";
+				exit;
 				return false;
+			} else {
+
+				header('HTTP/1.1 403 Authorization failed');
+				echo "Authorization failed - go to <a href=index.php>login</A>";
+				
+				exit(1);
 			}
-		}
-		if ($auted==0) { 
-			
-			 session_destroy();
-	      	@header("WWW-Authenticate: Basic realm=\"Bartlby Config Admin\"");	
-	      	@Header("HTTP/1.0 401 Unauthorized");
-	      	 $this->_log("Login attempt from " . $_SERVER[REMOTE_ADDR] . " User: '" . $_SERVER[PHP_AUTH_USER] . "'  Pass: '" . $_SERVER[PHP_AUTH_PW] . "'"); 
-	      	 if(php_sapi_name() == "cli") {
 
-				return false;
-			 }
-			 $this->redirectError("BARTLBY::LOGIN");
-			 exit;
 		} else {
-			$this->user=$_SERVER[PHP_AUTH_USER];
-			$this->pw=$_SERVER[PHP_AUTH_PW];
-			
-			
-			
+			$this->user=$_SESSION[worker][name];
+			return true;
 		}
-		return true;
+		return false;
 	}
 	function _log($str) {
 		$logfile=bartlby_config($this->CFG, "logfile");
@@ -1469,14 +1519,18 @@ if($m[2] == "5724") {
 			
 		
 	}
-	function is_gone($state) {
+	function is_gone($state, $sz="btn-sm") {
 		switch($state) {
 			case 1:
-				return "<img src='themes/" . $this->theme . "/images/emblem-generic.png' alt='Object changed you should reload' border=0>";
+				return '<span class="btn btn-danger ' . $sz . '"><i  title="Object changed you should reload" class="fa fa-exclamation"></i></span>';
 			case 2:
-				return "<img src='themes/" . $this->theme . "/images/emblem-important.png' alt='Object deleted you should reload' border=0>";
+				return '<span class="btn btn-danger ' . $sz . '"><i  title="Object Deleted" class="fa fa-trash"></i></span>';
+			case 3:
+				return '<span class="btn btn-danger ' . $sz . '"><i  title="Object ORCH sync timed out" class="fa fa-clock-o"></i></span>';
+			break;
 			default:
-				return "";
+				return '';
+				//return '<span class="btn btn-warning ' . $sz . '"><i  title="Object ORCH sync timed out" class="fa fa-clock-o"></i></span>';
 		}
 	}	
 	
@@ -1493,6 +1547,15 @@ if($m[2] == "5724") {
 	function servicegroup_list_loop($fcn) {
 		for($x=0; $x<$this->info[servicegroups]; $x++) {
 			$srvcgrp = bartlby_get_servicegroup($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
+	function trap_list_loop($fcn) {
+		
+		for($x=0; $x<$this->info[traps]; $x++) {
+			$srvcgrp = bartlby_get_trap($this->RES, $x);
 			$rtc=$fcn($srvcgrp, $x);
 			if($rtc == -1) break;
 			if($rtc == -2) continue;
@@ -1526,15 +1589,24 @@ if($m[2] == "5724") {
 		}
 	}
 	function service_list_loop($fcn) {
+		global $_SESSION;
 
+//for($y=0; $y<=800; $y++) {
 		for($x=0; $x<$this->info[services]; $x++) {
+
 			$svc = bartlby_get_service($this->RES, $x);
+			if($_SESSION["service_display_prio"] && $svc[prio] < $_SESSION["service_display_prio"]) continue;
+			if($svc[is_gone] == 2) {
+				//Skip deleted services
+				continue;
+			}
 			if($this->btl_is_array($this->rights[services], $svc[service_id]) == -1 && $this->btl_is_array($this->rights[servers], $svc[server_id]) == -1) continue;
 			$rtc=$fcn($svc, $x);			
 			if($rtc == -1) break;
 			if($rtc == -2) continue;
 
-		}		
+		}
+//}		
 	}
 
 
@@ -1546,6 +1618,46 @@ if($m[2] == "5724") {
 
 		return -1;
 
+
+	}
+	function getSVCType($t) {
+		switch($t) {
+			case 1:
+				return "ACTIVE";
+			break;
+			case 2:
+				return "PASSIVE";
+			break;
+			case 3:
+				return "GROUP";
+			break;
+			case 4:
+				return "LOCAL";
+			break;
+			case 5:
+				return "SNMP";
+			break;
+			case 6:
+				return "NRPE";
+			break;
+			case 7:
+				return "NRPE(SSL)";
+			break;
+			case 9:
+				return "AGENTV2(no-ssl)";
+			break;
+			case 8:
+				return "AGENTV2";
+			break;
+			case 10:
+				return "SSH";
+			break;
+
+
+			default:
+				return "active";
+
+		}
 
 	}
 
@@ -1582,7 +1694,7 @@ if($m[2] == "5724") {
  		return $map; 
 			
 	}
-	function getColorSpan($state) {
+	function getColorSpan($state, $default="") {
 		switch($state) {
 			case 0:
 				$l = 'success';
@@ -1591,11 +1703,14 @@ if($m[2] == "5724") {
 				$l = 'warning';
 			break;
 			case 2:
-				$l = 'important';
+				$l = 'danger';
 			break;
 			default:
-				$l = '';
+				$l = 'default';
 			break;
+		}
+		if($default != "") {
+			return '<span class="label label-default">' . $default . '</span>';	
 		}
 		return '<span class="label label-' . $l . '">'  . $this->getState($state) . '</span>';
 	}
@@ -1651,7 +1766,32 @@ if($m[2] == "5724") {
 		if($name=="") $name="classic";
 		$this->theme=$name;	
 	}
-	
+
+	function getOneExtensionReturn($ext, $func, $base_dir="") {
+			
+			if(!file_exists($base_dir . "extensions/$ext/" .$ext . ".class.php")) {
+				return "Extenstion Not Found";
+			}
+			include_once($base_dir . "extensions/$ext/" .$ext . ".class.php");
+			//eval("\$clh = new " . $ext . "();");
+			$clh = new $ext();
+
+			$fcn_name = "api_" . $func;
+			
+				
+			if(method_exists($clh, $fcn_name)) {
+				
+				$o = $clh->$fcn_name();
+				$ex[ex_name]=$ext;
+				$ex[out]=$o;
+				$ex[fcn]=$func;
+				$ex[method]=$_SERVER['REQUEST_METHOD'];
+				return $ex;
+			} else {
+				return "Method Not Found";
+			}
+					
+	}	
 	function getExtensionsReturn($method, $layout, $ign=false) {
 		$r=array();
 		$dhl = opendir("extensions");
@@ -1664,9 +1804,9 @@ if($m[2] == "5724") {
 				
 				
 				if (class_exists($file)) {
-					eval("\$clh = new " . $file . "();");
+					$clh = new $file();
 					if(method_exists($clh, $method)) {
-						eval("\$o = \$clh->" . $method . "();");
+						$o = $clh->$method();
 						$ex[ex_name]=$file;
 						$ex[out] = $o;
 						
@@ -1678,26 +1818,23 @@ if($m[2] == "5724") {
 							array_push($r, $ex);
 							
 							if(!file_exists("extensions/" . $file . ".disabled")) {
-								$endis="<tr><td colspan=2 align=right><a href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is enabled click to change'><img id='extension_img_$file' border=0 src='themes/" . $this->theme . "/images/extension_enable.gif'></A></td></tr>";
+								$endis="<a id=extension1_button_" . $ex[ex_name] . " class='fa fa-pause btn btn-danger' href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is enabled click to change'> Disable</A>";
 							} else {
-								$endis="<tr><td colspan=2 align=right><a href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is disabled click to change'><img id='extension_img_$file' border=0 src='themes/" . $this->theme . "/images/extension_disable.gif'></A></td></tr>";	
+								$endis="<a extension1_button_" . $ex[ex_name] . " class='fa fa-play btn btn-success' href=\"javascript:void(0);\" onClick=\"xajax_toggle_extension('$file')\" title='$file extension is disabled click to change'> Enable</A>";	
 							}
 							
 							
-							$info_box_title='Extension: ' . $this->wikiLink("ui-extensions:" . $ex[ex_name], $ex[ex_name]);  
+							$info_box_title=$ex[ex_name];  
 							// (<i>Logged in as:</i><font color="#000000"><b>' . $btl->user . '</b></font>) Uptime: <font color="#000000">' . $btl->intervall(time()-$btl->info[startup_time]) . '</font>'
-							$core_content = "<table  width='100%'>
-								<tr>
-									<td colspan=2>" . $ex[out] .  "</td> 
-								</tr>
-								$endis
+							$core_content = $ex[out] . 	"<div class=pull-right>" . $endis . "</div>";
 								
 								
 								
-							</table>";
 							
 							
-							$layout->create_box($info_box_title, $core_content, "extension_" . $ex[ex_name]);
+							if($layout) {
+								$layout->create_box($info_box_title, $core_content, "extension_" . $ex[ex_name]);
+							}
 						}
 								
 						
@@ -1729,134 +1866,142 @@ if($m[2] == "5724") {
 		
 		
 		$msg = "Installing package '$pkg' on Server:  $server<br>";
+		
 		if($my_path == "") {
-			$fp=@fopen("pkgs/" . $pkg, "r");
+			$bf=file_get_contents("pkgs/" . $pkg);
 		} else {
-			$fp=@fopen($my_path . $pkg, "r");	
+			$bf=file_get_contents($my_path . $pkg);	
 		}
 
-		if($fp) {
-			while(!feof($fp)) {
-				$bf .= fgets($fp, 1024);	
-			}
-			$re=unserialize($bf);
-			fclose($fp);
-			for($x=0; $x<count($re); $x++) {
-				$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
-				
-				
-				$svc_type = $re[$x][service_type];
-				if($force_service_type != 0) { //Use selected type
-					$svc_type = $force_service_type;
-					
-				}
-				
-				if($force_service_type == -1) { //use server default type
-
-					$srv_temp=bartlby_get_server_by_id($this->RES, $server);
-				
-					$svc_type=$srv_temp[default_service_type];
-				}
-				
-				$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
-				$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
-				$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $svc_type . "<br>";
-				
-				
-
-				$svc_obj = array(
-					"plugin"=>$re[$x][plugin],
-					"service_name"=>$re[$x][service_name],
-					"notify_enabled"=>$re[$x][notify_enabled],					
-					"plugin_arguments"=>$re[$x][plugin_arguments],
-					"check_interval"=>$re[$x][check_interval],
-					"service_type"=>$svc_type,
-					"service_passive_timeout" => $re[$x][service_passive_timeout],
-					"server_id" => $server,
-					"service_check_timeout" => $re[$x][service_check_timeout],
-					"service_var" => $re[$x][service_var],
-					"exec_plan" => $re[$x][exec_plan],
-					"service_ack_enabled" => $re[$x][service_ack_enabled],
-					"service_retain" => $re[$x][service_retain],
-					"snmp_community" => $re[$x][snmp_community],
-					"snmp_version" => $re[$x][snmp_version],
-					"snmp_objid" => $re[$x][snmp_objid],
-					"snmp_warning" => $re[$x][snmp_warning],
-					"snmp_critical" => $re[$x][snmp_critical],
-					"snmp_type" => $re[$x][snmp_type],
-					"service_active" => $re[$x][service_active],
-					"snmp_textmatch" => $re[$x][snmp_textmatch],
-					"flap_seconds" => $re[$x][flap_seconds],
-					"escalate_divisor" => $re[$x][escalate_divisor],
-					"fires_events" => $re[$x][fires_events],
-					"renotify_interval" => $re[$x][renotify_interval],
-					"enabled_triggers" => $re[$x][enabled_triggers],
-					"handled" => 0
-				);
+		if($bf) {
 			
-
-				
-				$ads=bartlby_add_service($this->RES, $svc_obj);
-				
-				
-
-				$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
-				
-				if($re[$x][__install_plugin]) {
-					$msg .= str_repeat("&nbsp;", 20) . "Installing plugin: " . $re[$x][plugin] . "<br>";	
+			$re=unserialize($bf);
+			
+			if($re) {
+				for($x=0; $x<count($re); $x++) {
+					$msg .= "Installing Service: <b>" . $re[$x][service_name] . "</b><br>";	
 					
-					if(!file_exists($plugin_dir . "/" . $re[$x][plugin]) || $force_plugin == "checked") {
-						$plugin=@fopen($plugin_dir . "/" . $re[$x][plugin], "wb");
-						if($plugin){
-							fwrite($plugin, $re[$x][__install_plugin]);
-							fclose($plugin);
-							@chmod($plugin_dir . "/" . $re[$x][plugin], 0777);
-						} else {
-							$msg .= str_repeat("&nbsp;", 25) . " plugin fopen( " . $plugin_dir . "/" . $re[$x][plugin] . ") failed<br>";
-						}
-					} else {
-						$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $plugin_dir . "/" . $re[$x][plugin] . ") already existing<br>";
+					$srv_temp=bartlby_get_server_by_id($this->RES, $server);
+					
+					
+					$svc_type = $re[$x][service_type];
+					if($force_service_type != 0) { //Use selected type
+						$svc_type = $force_service_type;
+						
 					}
 					
-				}
-				if($re[$x][__install_perf]) {
-					$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler: " . $re[$x][plugin] . "<br>";	
+					if($force_service_type == -1) { //use server default type
+
 					
-					if(!file_exists($perf_dir . "/" . $re[$x][plugin]) || $force_perf == "checked") {
-						$perf=@fopen($perf_dir . "/" . $re[$x][plugin], "wb");
-						if($perf){
-							fwrite($perf, $re[$x][__install_perf]);
-							fclose($perf);
-							@chmod($perf_dir . "/" . $re[$x][plugin], 0777);
-						} else {
-							$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
-						}
-					} else {
-						$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
+						$svc_type=$srv_temp[default_service_type];
 					}
 					
-				}
-				if($re[$x][__install_perf_default]) {
-					$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler (default): " . $re[$x][plugin] . "<br>";	
+					$msg .= str_repeat("&nbsp;", 20) . "Plugin:" . $re[$x][plugin] . "/'" . $re[$x][plugin_arguments] . " '<br>";	
+					$msg .= str_repeat("&nbsp;", 20) . "Check Plan: " . $this->resolveServicePlan($re[$x][exec_plan]) . "<br>";	
+					$msg .= str_repeat("&nbsp;", 20) . "Service Type: " . $svc_type . "<br>";
 					
-					if(!file_exists($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd") || $force_perf == "checked") {
-						$perf=@fopen($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", "wb");
-						if($perf){
-							fwrite($perf, $re[$x][__install_perf_default]);
-							fclose($perf);
-							@chmod($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", 0777);
-						} else {
-							$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
-						}
-					} else {
-						$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
-					}
 					
-				}
-				
-				
+
+					$svc_obj = array(
+						"plugin"=>$re[$x][plugin],
+						"service_name"=>$re[$x][service_name],
+						"notify_enabled"=>$re[$x][notify_enabled],					
+						"plugin_arguments"=>$re[$x][plugin_arguments],
+						"check_interval"=>$re[$x][check_interval],
+						"service_type"=>$svc_type,
+						"service_passive_timeout" => $re[$x][service_passive_timeout],
+						"server_id" => $server,
+						"service_check_timeout" => $re[$x][service_check_timeout],
+						"service_var" => $re[$x][service_var],
+						"exec_plan" => $re[$x][exec_plan],
+						"service_ack_enabled" => $re[$x][service_ack_enabled],
+						"service_retain" => $re[$x][service_retain],
+						"snmp_community" => $re[$x][snmp_community],
+						"snmp_version" => $re[$x][snmp_version],
+						"snmp_objid" => $re[$x][snmp_objid],
+						"snmp_warning" => $re[$x][snmp_warning],
+						"snmp_critical" => $re[$x][snmp_critical],
+						"snmp_type" => $re[$x][snmp_type],
+						"service_active" => $re[$x][service_active],
+						"snmp_textmatch" => $re[$x][snmp_textmatch],
+						"flap_seconds" => $re[$x][flap_seconds],
+						"escalate_divisor" => $re[$x][escalate_divisor],
+						"fires_events" => $re[$x][fires_events],
+						"renotify_interval" => $re[$x][renotify_interval],
+						"enabled_triggers" => $re[$x][enabled_triggers],
+						"prio" => $re[$x][prio],
+						"usid" => $re[$x][usid],
+						"notify_super_users" => $re[$x][notify_super_users],
+						"handled" => 0,
+						"orch_id" => $srv_temp[orch_id]
+					);
 				
 
+				
+					$ads=bartlby_add_service($this->RES, $svc_obj);
+					
+					
+
+					$msg .= str_repeat("&nbsp;", 20) . "New id: " . $ads . "<br>";
+					
+					if($re[$x][__install_plugin]) {
+						$msg .= str_repeat("&nbsp;", 20) . "Installing plugin: " . $re[$x][plugin] . "<br>";	
+						
+						if(!file_exists($plugin_dir . "/" . $re[$x][plugin]) || $force_plugin == "checked") {
+							$plugin=@fopen($plugin_dir . "/" . $re[$x][plugin], "wb");
+							if($plugin){
+								fwrite($plugin, $re[$x][__install_plugin]);
+								fclose($plugin);
+								@chmod($plugin_dir . "/" . $re[$x][plugin], 0777);
+							} else {
+								$msg .= str_repeat("&nbsp;", 25) . " plugin fopen( " . $plugin_dir . "/" . $re[$x][plugin] . ") failed<br>";
+							}
+						} else {
+							$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $plugin_dir . "/" . $re[$x][plugin] . ") already existing<br>";
+						}
+						
+					}
+					if($re[$x][__install_perf]) {
+						$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler: " . $re[$x][plugin] . "<br>";	
+						
+						if(!file_exists($perf_dir . "/" . $re[$x][plugin]) || $force_perf == "checked") {
+							$perf=@fopen($perf_dir . "/" . $re[$x][plugin], "wb");
+							if($perf){
+								fwrite($perf, $re[$x][__install_perf]);
+								fclose($perf);
+								@chmod($perf_dir . "/" . $re[$x][plugin], 0777);
+							} else {
+								$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
+							}
+						} else {
+							$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
+						}
+						
+					}
+					if($re[$x][__install_perf_default]) {
+						$msg .= str_repeat("&nbsp;", 20) . "Installing perf handler (default): " . $re[$x][plugin] . "<br>";	
+						
+						if(!file_exists($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd") || $force_perf == "checked") {
+							$perf=@fopen($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", "wb");
+							if($perf){
+								fwrite($perf, $re[$x][__install_perf_default]);
+								fclose($perf);
+								@chmod($perf_dir . "/defaults/" . $re[$x][plugin] . ".rrd", 0777);
+							} else {
+								$msg .= str_repeat("&nbsp;", 25) . " fopen( " . $perf_dir . "/" . $re[$x][plugin] . ") failed<br>";
+							}
+						} else {
+							$msg .= 	str_repeat("&nbsp;", 25) .  "plugin (" . $re[$x][plugin] . ") already existing<br>";
+						}
+						
+					}
+					
+					
+					
+
+				}
+			} else {
+				$msg = "unserialize failed";
 			}
 //			$layout->OUT .= "<script>doReloadButton();</script>";
 		} else {
@@ -2030,62 +2175,179 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 	}
 	
 	
-	function getServiceGroupOptions($defaults, $layout) {
+	function getServiceGroupOptions($defaults, $layout, $btn_size = "btn-xs") {
 		$defaults[service_id]="";
-		$modify = "<a href='modify_servicegroup.php?servicegroup_id=" . $defaults[servicegroup_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this servicegroup' border=0></A>";
-		$copy = "<a href='modify_servicegroup.php?copy=true&servicegroup_id=" . $defaults[servicegroup_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Servicegroup' border=0></A>";
-		$logview= "<a href='logview.php?servicegroup_id=" . $defaults[servicegroup_id]. "' ><font size=1><img  title='View Events for this Servicegroup' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
-		
-		
+
+
+
 		if($defaults[servicegroup_active] == 1) {
-			$check = "<a title='Disable Checks for this ServiceGroup' href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[service_id] . "')\"><img id='servicegroup_" . $defaults[servicegroup_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='servicegroup_" . $defaults[servicegroup_id] . "' title='Enable  Checks for this ServiceGroup' border=0></A>";
+			$check_show="inline";
 		}
 		if($defaults[servicegroup_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[servicegroup_id] . "' title='Disable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[servicegroup_id] . "')\"><img id='trigger_" . $defaults[servicegroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServiceGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
-		//$is_gone=$this->is_gone($defaults[service_gone]);
 		if($defaults[is_downtime] == 1) {
-			$downtime="<img src='themes/" . $this->theme . "/images/icon_work.gif' data-rel='tooltip' title='Service is in downtime (" . date("d.m.Y H:i:s", $defaults[downtime_from])  . "-" . date("d.m.Y H:i:s", $servs[$x][downtime_to]) . "): " . $defaults[downtime_notice] . "'>";	
+			
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+
 		} else {
-			$downtime="&nbsp;";
+			$downtime="";
 		}
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview . " " . $downtime;
 		
+		$copy_link = "modify_servicegroup.php?copy=true&servicegroup_id=" . $defaults[servicegroup_id];
+		$modify_link="modify_servicegroup.php?servicegroup_id=" . $defaults[servicegroup_id];
+		
+		$logview_link = "logview.php?servicegroup_id=" . $defaults[servicegroup_id];
+		
+		$delete_link = "delete_servicegroup.php?server_id=" . $defaults[servicegroup_id];
+		
+
+		
+		
+		$check_onclick="xajax_toggle_servicegroup_check('" . $defaults[servicegroup_id] . "', '" . $defaults[server_id] . "')";
+		$notify_onclick="xajax_toggle_servicegroup_notify_check('" . $defaults[servicegroup_id] . "', '" . $defaults[server_id] . "')";
+				
+
+
+
+		$ret = '<div class="btn-group">
+					' . $downtime . '
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=servicegroup_' . $defaults[servicegroup_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=servicegroup_trigger_' . $defaults[servicegroup_id] . '></i></span>
+					<div class="btn-group  ">
+					  
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
+	
+		return $ret;
 	}
 	
 	
-	function getServerGroupOptions($defaults, $layout) {
+	function getServerGroupOptions($defaults, $layout, $btn_size="btn-xs") {
 		$defaults[service_id]="";
-		$modify = "<a href='modify_servergroup.php?servergroup_id=" . $defaults[servergroup_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this servergroup' border=0></A>";
-		$copy = "<a href='modify_servergroup.php?copy=true&servergroup_id=" . $defaults[servergroup_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Servergroup' border=0></A>";
-		$logview= "<a href='logview.php?servergroup_id=" . $defaults[servergroup_id]. "' ><font size=1><img  title='View Events for this Servergroup' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
-		
-		
+
+
+
 		if($defaults[servergroup_active] == 1) {
-			$check = "<a title='Disable Checks for this ServerGroup' href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[service_id] . "')\"><img id='servergroup_" . $defaults[servergroup_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='servergroup_" . $defaults[servergroup_id] . "' title='Enable  Checks for this ServerGroup' border=0></A>";
+			$check_show="inline";
 		}
 		if($defaults[servergroup_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[servergroup_id] . "' title='Disable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[servergroup_id] . "')\"><img id='trigger_" . $defaults[servergroup_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this ServerGroup' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
-		//$is_gone=$this->is_gone($defaults[server_gone]);
 		if($defaults[is_downtime] == 1) {
-			$downtime="<img src='themes/" . $this->theme . "/images/icon_work.gif' data-rel='tooltip' title='Service is in downtime (" . date("d.m.Y H:i:s", $defaults[downtime_from])  . "-" . date("d.m.Y H:i:s", $servs[$x][downtime_to]) . "): " . $defaults[downtime_notice] . "'>";	
+			
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+
 		} else {
-			$downtime="&nbsp;";
+			$downtime="";
 		}
 		
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview . " " .  $downtime;
+		$copy_link = "modify_servergroup.php?copy=true&servergroup_id=" . $defaults[servergroup_id];
+		$modify_link="modify_servergroup.php?servergroup_id=" . $defaults[servergroup_id];
 		
+		$logview_link = "logview.php?servergroup_id=" . $defaults[servergroup_id];
+		
+		$delete_link = "delete_servergroup.php?server_id=" . $defaults[servergroup_id];
+		
+
+		
+		
+		$check_onclick="xajax_toggle_servergroup_check('" . $defaults[servergroup_id] . "', '" . $defaults[server_id] . "')";
+		$notify_onclick="xajax_toggle_servergroup_notify_check('" . $defaults[servergroup_id] . "', '" . $defaults[server_id] . "')";
+				
+
+
+
+		$ret = '<div class="btn-group">
+					' . $downtime . '
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=servergroup_' . $defaults[servergroup_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=servergroup_trigger_' . $defaults[servergroup_id] . '></i></span>
+					<div class="btn-group  ">
+					  
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
+	
+		return $ret;	
+	
+
+
+
 	}
-	function getWorkerOptionsBTN($defaults, $layout) {
+	function getWorkerOptionsBTN($defaults, $layout, $btn_size="btn-xs") {
+		$defaults[service_id]="";
+
+
+
+		
+		$copy_link = "modify_worker.php?copy=true&worker_id=" . $defaults[worker_id];
+		$modify_link="modify_worker.php?worker_id=" . $defaults[worker_id];
+		
+		$logview_link = "logview.php?worker_id=" . $defaults[worker_id];
+		
+		$delete_link = "delete_worker.php?worker_id=" . $defaults[worker_id];
+		
+
+		
+		
+				
+
+
+
+		$ret = '<div class="btn-group">
+					
+					 <span onClick="document.location.href=\'' .  $modify_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="edit" class="fa fa-pencil "></i></span>
+					 <span onClick="document.location.href=\'' .  $copy_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="copy" class="fa fa-copy "></i></span>
+					 <span onClick="document.location.href=\'' .  $delete_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="delete" class="fa fa-trash "></i></span>
+					 
+					
+					 
+				</div>';
+	
+		return $ret;
+
+
 		$defaults[service_id]="";
 		$modify = "<a href='modify_worker.php?worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this  Worker' border=0></A>";
 		$copy = "<a href='modify_worker.php?copy=true&worker_id=" . $defaults[worker_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Worker' border=0></A>";
@@ -2094,67 +2356,219 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
 
 	}
-	function getserveroptions($defaults, $layout) {
-		$defaults[service_id]="";
-		$modify = "<a href='modify_server.php?server_id=" . $defaults[server_id] . "'><img src='themes/" . $this->theme . "/images/modify.gif' title='Modify this server' border=0></A>";
-		$copy = "<a href='modify_server.php?copy=true&server_id=" . $defaults[server_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Server' border=0></A>";
-		$logview= "<a href='logview.php?server_id=" . $defaults[server_id]. "' ><font size=1><img  title='View Events for this Server' src='themes/" . $this->theme . "/images/icon_view.gif' border=0></A>";
+	function getTrapOptions($defaults, $layout, $btn_size="btn-sm") {
 		
+
+		
+
+
+		
+		$copy_link = "modify_trap.php?copy=true&trap_id=" . $defaults[trap_id];
+		$modify_link="modify_trap.php?trap_id=" . $defaults[trap_id];
+		$logview_link = "logview.php?trap_id=" . $defaults[trap_id];
+		$delete_link = "delete_trap.php?trap_id=" . $defaults[trap_id];
+
+		$ret = '<div class="btn-group">
+									
+					 <span onClick="document.location.href=\'' .  $modify_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="edit" class="fa fa-pencil "></i></span>
+					 <span onClick="document.location.href=\'' .  $copy_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="copy" class="fa fa-copy "></i></span>
+					 <span onClick="document.location.href=\'' .  $delete_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="delete" class="fa fa-trash "></i></span>
+					 
+					
+					 
+				</div>';
+	
+		return $ret;
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+	function getserveroptions($defaults, $layout, $btn_size="btn-sm") {
+		$defaults[service_id]="";
+		
+		
+		
+		
+
 		if($defaults[server_enabled] == 1) {
-			$check = "<a title='Disable Checks for this Server' href='javascript:void(0);' onClick=\"xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='server_" . $defaults[server_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0></A>";
+			$check_show="hide";
 		} else {
-			$check = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='server_" . $defaults[server_id] . "' title='Enable  Checks for this Service' border=0></A>";
+			$check_show="inline";
 		}
 		if($defaults[server_notify] == 1) {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[server_id] . "' title='Disable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notify_show="hide";
 		} else {
-			$notifys = "<a href='javascript:void(0);' onClick=\"xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='trigger_" . $defaults[server_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this Service' border=0 data-rel='tooltip'></A>";
-		}
-		$is_gone=$this->is_gone($defaults[server_gone]);
-		
-		return $is_gone . " " . $notifys . " " .  $check . " " . $modify . " " . $copy . " " . $logview;
-	}
-
-	function getserviceOptions($defaults, $layout) {
-		if($defaults[service_active] == 1) {
-			$check = "<a data-rel='tooltip' title='Disable Checks for this Service' href='javascript:void(0);' onClick=\"xajax_toggle_service_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='service_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/enabled.gif'  border=0 data-rel='tooltip'></A>";
-		} else {
-			$check = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/diabled.gif' id='service_" . $defaults[service_id] . "' title='Enable  Checks for this Service' border=0 data-rel='tooltip'></A>";
-		}
-		if($defaults[notify_enabled] == 1) {
-			$notifys = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/trigger.gif' id='trigger_" . $defaults[service_id] . "' title='Disable Notifications for this Service' border=0 data-rel='tooltip'></A>";
-		} else {
-			$notifys = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='trigger_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/notrigger.gif' title='Enable Notifications for this Service' border=0 data-rel='tooltip'></A>";
+			$notify_show="inline";
 		}
 		if($defaults[is_downtime] == 1) {
-			$downtime="<img src='themes/" . $this->theme . "/images/icon_work.gif' data-rel='tooltip' title='Service is in downtime (" . date("d.m.Y H:i:s", $defaults[downtime_from])  . "-" . date("d.m.Y H:i:s", $servs[$x][downtime_to]) . "): " . $defaults[downtime_notice] . "'>";	
+			
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+
 		} else {
-			$downtime="&nbsp;";
+			$downtime="";
 		}
 		if($defaults[current_state] != 0) {
 			if($defaults[handled] == 1) {
-				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img src='themes/" . $this->theme . "/images/handled.png' id='handled_" . $defaults[service_id] . "' title='Unhandle this Service' border=0 data-rel='tooltip'></A>";
+				$handled_show="inline";
 			} else {
-				$handled = "<a data-rel='tooltip' href='javascript:void(0);' onClick=\"xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img id='handled_" . $defaults[service_id] . "' src='themes/" . $this->theme . "/images/unhandled.png' title='Handle this Service' border=0 data-rel='tooltip'></A>";
+				$handled_show="hide";
 			}
 		}			
 		
-		$modify = "<a href='modify_service.php?service_id=" . $defaults[service_id] . "'><img data-rel='tooltip' src='themes/" . $this->theme . "/images/modify.gif' title='Modify this Service' border=0 data-rel='tooltip'></A>";
-		$force = "<a href='javascript:void(0);' onClick=\"xajax_forceCheck('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')\"><img title='Force an immediate Check' src='themes/" . $this->theme . "/images/force.gif' border=0 data-rel='tooltip'></A>";
-		$comments="<a href='view_comments.php?service_id=" . $defaults[service_id] . "'><img title='Comments for this Service' src='themes/" . $this->theme . "/images/icon_comments.gif' border=0 data-rel='tooltip'></A>";
-		$logview= "<a href='logview.php?service_id=" . $defaults[service_id]. "' ><font size=1><img  title='View Events for this Service' src='themes/" . $this->theme . "/images/icon_view.gif' border=0 data-rel='tooltip'></A>";				
-		$reports = "<a href='create_report.php?service_id=" . $defaults[service_id]. "' ><font size=1><img  title='Create Report' src='themes/" . $this->theme . "/images/create_report.gif' border=0 data-rel='tooltip'></A>";				
-		if(file_exists($this->PERFDIR . "/" . $defaults[plugin])) {
-			$stat = "<a href='bartlby_action.php?service_id=" . $defaults[service_id] . "&server_id=" . $defaults[server_id] . "&action=perfhandler_graph'><img title='Graph collected perf handler data' src='themes/" . $this->theme . "/images/icon_stat.gif' border=0 data-rel='tooltip'></A>";				
-		} else {
-			$stat = "";
-		}
-		$copy = "<a href='modify_service.php?copy=true&service_id=" . $defaults[service_id] . "'><img src='themes/" . $this->theme . "/images/edit-copy.gif' title='Copy (Create a similar) this Service' border=0 data-rel='tooltip'></A>";				
+		
 
-		$is_gone=$this->is_gone($defaults[is_gone]);
+
+		
+
+
+		
+		$copy_link = "modify_server.php?copy=true&server_id=" . $defaults[server_id];
+		$modify_link="modify_server.php?server_id=" . $defaults[server_id];
+		
+		$logview_link = "logview.php?server_id=" . $defaults[server_id];
+		$reports_link = "create_report.php?service_id=" . $defaults[server_id];
+		$delete_link = "delete_server.php?server_id=" . $defaults[server_id];
+		
+
+		
+		
+		$check_onclick="xajax_toggle_server_check('" . $defaults[server_id] . "', '" . $defaults[server_id] . "')";
+		$notify_onclick="xajax_toggle_server_notify_check('" . $defaults[server_id] . "', '" . $defaults[server_id] . "')";
 				
+
+		$is_gone=$this->is_gone($defaults[server_gone], $btn_size);
+		
+
+		$ret = '<div class="btn-group">
+					' . $is_gone . '
+					' . $downtime . '
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=server_' . $defaults[server_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=server_trigger_' . $defaults[server_id] . '></i></span>
+					<div class="btn-group  ">
+					  
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
+	
+		return $ret;
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+	function getserviceOptions($defaults, $layout, $btn_size="btn-sm") {
+		if($defaults[service_active] == 1) {
+			$check_show="hide";
+		} else {
+			$check_show="inline";
+		}
+		if($defaults[notify_enabled] == 1) {
+			$notify_show="hide";
+		} else {
+			$notify_show="inline";
+		}
+		if($defaults[is_downtime] == 1) {
+			
+			$downtime = '<span class="btn btn-default ' . $btn_size . '"><i  title="Downtimed" class="fa fa-clock-o"></i></span>';
+
+		} else {
+			$downtime="";
+		}
+		if($defaults[current_state] != 0) {
+			if($defaults[handled] == 1) {
+				$handled_show="inline";
+			} else {
+				$handled_show="hide";
+			}
+		}			
+	
+
+		
+		$copy_link = "modify_service.php?copy=true&service_id=" . $defaults[service_id];
+		$modify_link="modify_service.php?service_id=" . $defaults[service_id];
+		$comments_link = "view_comments.php?service_id=" . $defaults[service_id];
+		$logview_link = "logview.php?service_id=" . $defaults[service_id];
+		$reports_link = "create_report.php?service_id=" . $defaults[service_id];
+		$delete_link = "delete_service.php?service_id=" . $defaults[service_id];
+		
+
+		$handled_onclick="xajax_toggle_service_handled('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+		$force_onclick="xajax_forceCheck('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+		$check_onclick="xajax_toggle_service_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+		$notify_onclick="xajax_toggle_service_notify_check('" . $defaults[server_id] . "', '" . $defaults[service_id] . "')";
+				
+
+		$is_gone=$this->is_gone($defaults[is_gone], $btn_size);
 		$ret ="$is_gone $notifys $check $logview $comments $modify $force $downtime $copy $reports $stat $handled";
 		
+
+		$ret = '<div class="btn-group">
+					' . $downtime . '
+					' . $is_gone . '
+					<span class="btn btn-primary hidden-xs ' . $btn_size . '" onClick="' . $force_onclick . '"><i  title="Force Check" class="fa fa-play-circle"></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $check_onclick . '"><i  title="Check Active?" class="fa fa-check"></i><i class="fa fa-ban fa-stack-2x text-danger ' . $check_show . '" id=service_' . $defaults[service_id] . '></i></span>
+					<span class="btn btn-primary ' . $btn_size . '" onClick="' . $notify_onclick . '"><i title="Notifications" class="fa fa-bell "></i><i class="fa fa-ban fa-stack-2x text-danger ' .  $notify_show . '" id=trigger_' . $defaults[service_id] . '></i></span>
+					
+
+
+					 
+					<span class="hide btn btn-primary ' . $btn_size . ' ' . $handled_show . '" onClick="' . $handled_onclick . '" id=handled_' . $defaults[service_id] . '><i title="Service is handled" class="fa fa-stethoscope"></i></span>
+					
+					
+					<div class="btn-group  ">
+					  
+					  <span class="btn btn-primary dropdown-toggle ' . $btn_size . '" data-toggle="dropdown" href="#">
+					    <span class="fa fa-caret-down"></span></span>
+					  <ul class="dropdown-menu">
+					    
+					  	
+					    <li><a href="' . $modify_link .  '"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+					    <li><a href="' . $copy_link . '"><i class="fa fa-copy fa-fw"></i> Copy</a></li>
+					    <li><a href="' . $comments_link . '"><i class="fa fa-comment fa-fw"></i> Comments</a></li>
+					    <li><a href="' . $logview_link . '"><i class="fa fa-eye fa-fw"></i> Logs</a></li>
+					    <li><a href="' . $reports_link . '"><i class="fa fa-line-chart fa-fw"></i> Report</a></li>
+					    
+					    <li class="divider"></li>
+					    <li><a href="' . $delete_link . '"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+					    ' . $downtime . '
+					  </ul>
+					</div>
+					 
+				</div>';
 	
 		return $ret;
 	}

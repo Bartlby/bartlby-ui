@@ -190,9 +190,18 @@ $btl->servicegroup_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl
 /*! gridster.js - v0.1.0 - 2012-10-20
 * http://gridster.net/
 * Copyright (c) 2012 ducksboard; Licensed MIT */
-
+img {
+	max-width:100%;
+}
+.panel-body {
+	overflow: auto;	
+}
 .gridster {
     position:relative;
+}
+
+.panel  {
+	margin: 10px;
 }
 
 .gridster > * {
@@ -260,19 +269,7 @@ ul.gridst
 li.gridst {
 	background-color: grey;
 }
-.modal {
-	overflow:none;
-}
-#myModal {
-	width: 800px; /* SET THE WIDTH OF THE MODAL */
 
-	xmargin: -250px 0 0 -350px; /* CHANGE MARGINS TO ACCOMODATE THE NEW WIDTH (original = margin: -250px 0 0 -280px;) */
-	overflow:none !important;
-}
-#myModal .modal-body {
-	height: 250px;
-	overflow-y:none;
-}
 </style>
 <script>
 	var grid='';
@@ -316,7 +313,10 @@ li.gridst {
  								} else {
  								  rd = 'NO LOG DATA FOUND';
  								}
- 								$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> LogView</h2><div class=\'box-icon\'></div></div><div class=\'box-content\' style=\'display:block; height:100%;\' >' +  rd + '<div class=\'clearfix\'></div></div></div>');
+ 								$('#' + id).html('<div class=\"panel panel-default\"><div class=\"panel-heading\">LogView</div><div class=\"panel-body\">' + rd + '</div></div>');
+
+
+ 									
  					});
 					
 					
@@ -369,13 +369,13 @@ li.gridst {
 												lbl = 'label-warning';
 											}
 												if(data.SVC_DETAIL.svc_color == 'red') {
-												lbl = 'label-important';
+												lbl = 'label-danger';
 											}
 								
 								
  											st='<span class=\'label ' + lbl + '\'>' + data.SVC_DETAIL.svc_state + '</span>';
  												
- 												$('#' + id).html('<div class=\'box\'><div class=\'box-header well\'><h2><i class=\'xicon-info-sign\'></i> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </h2><div class=\'box-icon\'></div></div><div class=\'box-content\' style=\'display:block; height:55px;\' >' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A><div class=\'clearfix\'></div></div></div>');
+ 												$('#' + id).html('<div class=\"panel panel-default\"><div class=\"panel-heading\"> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </div><div class=\"panel-body\">' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A></div></div>');
  								
  											});
  									} else {
@@ -429,10 +429,8 @@ li.gridst {
 			
 			}
 	}
-	$.fn.chosenDestroy = function () {
-		$(this).show().removeClass('chzn-done')
-		$(this).next().remove()
-		
+	$.fn.selectizeDestroy = function () {
+	
 		  return $(this);
 	}
 	function autoReloader() {
@@ -448,7 +446,7 @@ li.gridst {
 		json = JSON.parse(in_data);
 		for(i=0; i<json.length; i++) {
 	   	 grid.add_widget(
-	       	 '<div style=\'overflow:auto\' data-params=\'' + json[i]['params'] + '\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><img src=\'extensions/AutoDiscoverAddons/ajax-loader.gif\'></div>', 
+	       	 '<div style=\'overflow:auto\' data-params=\'' + json[i]['params'] + '\' data-pipe=\'' + json[i]['pipe'] + '\' data-rel=\'widget\' id=\"' + json[i]['id'] + '\"><i class=\"fa fa-spinner fa-spin\"></i></div>', 
 	        json[i]['size_x'], 
 	        json[i]['size_y'], 
 	        json[i]['col'], 
@@ -490,13 +488,13 @@ li.gridst {
  		$('#add_widget').click(function(e) {
  			e.preventDefault();
  			$('#widget_type').css(\"width\", \"400px\");
- 			$('#widget_type').chosenDestroy();
- 			$('#widget_type').chosen({ search_contains: true });
+ 			$('#widget_type').selectizeDestroy();
+ 			$('#widget_type').selectize();
  			
  			
  			$('#widget_pipe').css(\"width\", \"400px\");
- 			$('#widget_pipe').chosenDestroy();
- 			$('#widget_pipe').chosen({ search_contains: true });
+ 			$('#widget_pipe').selectizeDestroy();
+ 			$('#widget_pipe').selectize();
  			
 			
 			$('#myModal').modal('show');
@@ -560,7 +558,7 @@ li.gridst {
 				case 'overview_core':
 					
 					w=6;
-					h=2;
+					h=3;
 					
 					
 				break;
@@ -734,13 +732,17 @@ hashCode = function(str){
     		
     </ul>
 </div>
-			<div class="modal hide fade" id="myModal" >
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">x</button>
-				<h3>Add Widget</h3>
-			</div>
-			<div class="modal-body">
-				<table width=100% border=0>
+			<div class="modal fade " id="myModal">
+  <div class="modal-dialog full-width">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Add Widget</h4>
+      </div>
+      <div class="modal-body" style="overflow-y:auto;height:600px;">
+        	
+				<table width=100% border=0 class="no-border">
+					<tbody class="no-border-y">
 					<tr>
 					<td>Type:</td>
 					<td>
@@ -759,13 +761,15 @@ hashCode = function(str){
 					' . $layout->Field("widget_params", "") . '					
 					</td>
 					</tr>
-					
+					</tbody>
 				</table>
 			</div>
 			<div class="modal-footer">
 				<a href="#" class="btn" data-dismiss="modal">Close</a>
 				<a href="#" id=btn_add_widget_done class="btn btn-primary">Save changes</a>
 			</div>
+		</div>
+		</div>
 		</div>
 
 ';

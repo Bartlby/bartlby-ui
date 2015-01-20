@@ -18,14 +18,11 @@ $layout= new Layout();
 $layout->set_menu("client");
 
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
-$layout->Table("100%");
+
 if($_GET[server_id]) {
 	$btl->hasServerRight($_GET[server_id]);	
 }
 
-
-
-	
 
 $defaults=@bartlby_get_server_by_id($btl->RES, $_GET[server_id]);
 
@@ -34,7 +31,7 @@ $servers_out=array();
 $services_x=0;
 $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
 	if($svc[is_gone] != 0) {
-	 continue;
+	return LOOP_CONTINUE;
 	}
 	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[server_dead]) {
 		if(!is_array($servers_out[$svc[server_id]])) {
@@ -179,12 +176,60 @@ if($defaults[default_service_type] == 10) {
 	$types[9][s]=1;
 }
 
+$types[10][c]="";
+$types[10][v]="11";
+$types[10][k]="TRAP";
+if($defaults[default_service_type] == 11) {
+	$types[10][s]=1;
+}
+
+$types[11][c]="";
+$types[11][v]="12";
+$types[11][k]="JSON";
+if($defaults[default_service_type] == 12) {
+	$types[11][s]=1;
+}
+
 
 if(!$defaults[default_service_type]) {
 	$types[0][s]=1;	
 }
 
 
+
+//Events Enabled
+$eventenabled[0][c]="";
+$eventenabled[0][v] = 0; //No
+$eventenabled[0][k] = "Disabled"; //No
+$eventenabled[0][s]=0;
+
+$eventenabled[1][c]="";
+$eventenabled[1][v] = 1; //No
+$eventenabled[1][k] = "HARD"; //No
+$eventenabled[1][s]=0;
+
+$eventenabled[2][c]="";
+$eventenabled[2][v] = 2; //No
+$eventenabled[2][k] = "SOFT"; //No
+$eventenabled[2][s]=0;
+
+
+$eventenabled[3][c]="";
+$eventenabled[3][v] = 3; //No
+$eventenabled[3][k] = "BOTH"; //No
+$eventenabled[3][s]=0;
+
+if(is_int($defaults[web_hooks_level]) && $defaults[web_hooks_level] == 1) {
+	$eventenabled[1][s]=1;	
+	
+} else if (is_int($defaults[web_hooks_level]) && $defaults[web_hooks_level] == 2) {
+	
+	$eventenabled[2][s]=1;
+} else if(is_int($defaults[web_hooks_level]) && $defaults[web_hooks_level] == 3) {
+	$eventenabled[3][s]=1;
+} else {
+	$eventenabled[0][s]=1;
+}
 
 $fm_action="modify_server";
 $layout->setTitle("Modify Server");
@@ -226,7 +271,7 @@ while ($file = readdir ($dh)) {
        			$plugins[$optind][s]=1;	
        		}*/
        		
-       		if(strstr((string)$defaults[server_enabled_triggers],"|" . $file . "|")) {
+       		if(strstr((string)$defaults[enabled_triggers],"|" . $file . "|")) {
 				$triggers[$optind][s]=1;	
 			}
        		
@@ -237,43 +282,26 @@ while ($file = readdir ($dh)) {
 closedir($dh);
 
 
-//Notify Enabled
-$notenabled[0][c]="";
-$notenabled[0][v] = 0; //No
-$notenabled[0][k] = "No"; //No
-$notenabled[0][s]=0;
-
-$notenabled[1][c]="";
-$notenabled[1][v] = 1; //No
-$notenabled[1][k] = "Yes"; //No
-$notenabled[1][s]=0;
 
 if(is_int($defaults[server_notify]) && $defaults[server_notify] == 0) {
-	$notenabled[0][s]=1;	
+	
+	$notchecked="";
 	
 } else {
 	
-	$notenabled[1][s]=1;
+	$notchecked="checked";
 }
 
 //Notify Enabled
-$servactive[0][c]="";
-$servactive[0][v] = 0; //No
-$servactive[0][k] = "No"; //No
-$servactive[0][s]=0;
 
-$servactive[1][c]="";
-$servactive[1][v] = 1; //No
-$servactive[1][k] = "Yes"; //No
-$servactive[1][s]=0;
 
 
 if(is_int($defaults[server_enabled]) && $defaults[server_enabled] == 0) {
-	$servactive[0][s]=1;	
+	$servchecked="";	
 	
 } else {
 
-	$servactive[1][s]=1;
+	$servchecked="checked";
 }
 
 
@@ -286,6 +314,46 @@ if($defaults == false && $_GET["new"] != "true") {
 	$btl->redirectError("BARTLBY::OBJECT::MISSING");
 	exit(1);	
 }
+
+$o = explode("|", $defaults[exec_plan]);
+
+
+for($x=0; $x<count($o); $x++) {
+	$p = explode("=", $o[$x]);
+	
+	if(count($p) == 1) {
+		$p = explode("!", $o[$x]);
+		$filled[$p[0]][disabled]=1;
+		
+		
+	}
+	
+	
+	$filled[$p[0]][value]=$p[1];
+	
+	
+}
+$plan_box = "<table class='no-border'><tbody class='no-border-y'>";
+for($x=0; $x<=6; $x++) {
+	$chk="";
+	
+	
+	$inv_check="";
+	if($filled[$x][disabled] == 1) {
+		$inv_check="checked";
+	}	
+		
+	$plan_box .= "<tr><td><font size=1>" .  $wdays[$x] . "</font></td><td><input type=text id='wdays_plan[" . $x . "]'  name='wdays_plan[" . $x . "]' value='" . $filled[$x][value] . "' style='font-size:10px; width:200px; height:20px'><input type=checkbox class='icheck'  id='wdays_inv[" . $x . "]'  name='wdays_inv[" . $x . "]' $inv_check> invert</td></tr>";
+	
+}
+$plan_box .= "<tr><td colspan=2><font size=1>Time ranges are seperated with ',' e.g.: 14:30-15:20,01:20-02:30 <a href='javascript:void(0);' onClick='modify_service_make_24();'>make 24h a day</a></font></td></tr>";
+$plan_box .= "</tbody></table>";
+
+
+
+
+
+
 $optind=0;
 $dhl=opendir("server_icons");
 while($file = readdir($dhl)) {
@@ -308,60 +376,48 @@ while($file = readdir($dhl)) {
 }
 closedir($dhl);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
-			0=>"Server Name",
+			0=>"Name",
 			1=>$layout->Field("server_name", "text", $defaults[server_name]) . $layout->Field("action", "hidden", $fm_action) . "<a href=\"javascript:var w=window.open('locate_server.php','','width=353,height=421, scrollbar=yes, scrollbars=yes')\">Find Server Wizard!</A>"
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
-			0=>"Server IP",
+			0=>"IP-Address",
 			1=>$layout->Field("server_ip", "text", $defaults[server_ip])
 		)
-	)
 ,true);
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Server Port",
 			1=>$layout->Field("server_port", "text", $defaults[server_port]) . $layout->Field("server_id", "hidden", $_GET[server_id])
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
-			0=>"Server Enabled?",
-			1=>$layout->DropDown("server_enabled", $servactive)
+			0=>"Enabled?",
+			1=>$layout->Field("server_enabled", "checkbox", "1", "", "class='switch' " . $servchecked)
 			
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
-			0=>"Server Notify?",
-			1=>$layout->DropDown("server_notify", $notenabled)
+			0=>"Notify?",
+			1=>$layout->Field("server_notify", "checkbox", "1", "", "class='switch' " . $notchecked)
 			
 		)
-	)
 ,true);
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Flap Seconds",
 			1=>$layout->Field("server_flap_seconds", "text", $defaults[server_flap_seconds])
 		)
-	)
 ,true);
 
 
@@ -370,132 +426,148 @@ if(!$_GET["copy"] && !$_GET["new"]) {
 	if($defaults[server_dead]) {
 		$svc = bartlby_get_service_by_id($btl->RES, $defaults[server_dead]);	
 	}
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Alive indicator",
-			1=>$layout->DropDown("service_id", $servers,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_id\").find(\"option\").remove();$(\"#service_id\").trigger(\"liszt:updated\");'>Remove</A></div>"
+			1=>$layout->DropDown("service_id", $servers,"multiple","",false, "ajax_service_list_php") . ""
 		)
-	)
 ,true);
 
 	
 }
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Triggers:",
 			1=>$layout->DropDown("server_triggers[]", $triggers, "multiple") . " "
-		)
 	)
 ,true);
 
 
-$ov .=$layout->Tr(
-	$layout->Td(
+$ov .=$layout->FormBox(
+	
 		array(
 			0=>"Default Service Type:",
 			1=>$layout->DropDown("default_service_type", $types) 
 		)
-	)
+	
 , true);
 
 if($fm_action == "add_server") {
-	$ov .= $layout->Tr(
-	$layout->Td(
+	$ov .= $layout->FormBox(
 			Array(
 				0=>"Package:",
 				1=>$layout->DropDown("package_name", $packages) 
 			)
-		)
-
 	,true);	
 }
-$ov .= $layout->Tr(
-	$layout->Td(
-			Array(
+$ov .= $layout->FormBox(
+			array(
 				0=>"Icon:",
-				1=>$layout->DropDown("server_icon", $server_icons, "onChange=\"serviceManageIconChange(this.form);\"") 
+				1=>$layout->DropDown("server_icon", $server_icons, "onChange=\"serviceManageIconChange(this.form);\"") . "<div id=picholder></div><script>serviceManageIconChange(document.fm1);</script>" 
 			)
-		)
-
-,true);
-$ov .= $layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"left",
-					'show'=>"<div id=picholder></div><script>serviceManageIconChange(document.fm1);</script>"
-					)
-			)
-		)
-
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
-			0=>array("colspan"=>2, "show"=>"<hr><b>SSH Options</b>")
+			0=>"Exec Plan:",
+			1=>$plan_box
 		)
+,true);
+
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"Orchestra ID:",
+			1=>$layout->orchDropdown(true, $defaults[orch_id])
 	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>Web Hooks</b></h4>" . ''
+		)
+,true);
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"Web Hook Level?",
+			1=>$layout->DropDown("web_hooks_level", $eventenabled)
+			
+		)
+,true);
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"Web Hooks (one per line):",
+			1=>$layout->TextArea("web_hooks", $defaults[web_hooks])
+	)
+,true);
+
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>JSON Options</b></h4>" . ''
+		)
+,true);
+$ov .= $layout->FormBox(
+		array(
+			0=>"JSON Endpoint:",
+			1=>$layout->Field("json_endpoint", "text", $defaults[json_endpoint])
+	)
+,true);
+
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>SSH Options</b></h4>" . ''
+		)
+,true);
+
+$ov .= $layout->FormBox(
 		array(
 			0=>"Keyfile Path",
 			1=>$layout->Field("server_ssh_keyfile", "text", $defaults[server_ssh_keyfile])
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Key-Passphrase",
 			1=>$layout->Field("server_ssh_passphrase", "text", $defaults[server_ssh_passphrase])
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Username ",
 			1=>$layout->Field("server_ssh_username", "text", $defaults[server_ssh_username])
 		)
-	)
 ,true);
 
 
 
+$ov .= $layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyClient(xajax.getFormValues(\"fm1\"))'");
 
 
-
+$ov .= "<script>function modify_service_make_24() {
+			for(x=0; x<=6; x++) {
+				e = document.getElementById('wdays_plan[' + x + ']');
+				e.value='00:00-23:59';
+			}
+			
+		}</script>";
 
 
 $title="add server";  
-$content = "<table>" . $ov . "</table>";
+$content = "" . $ov . "";
 $layout->push_outside($layout->create_box($layout->BoxTitle, $content));
 	
 	
 $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
 
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyClient(xajax.getFormValues(\"fm1\"))'")
-					)
-			)
-		)
+//HIDE MAIN
+$layout->boxes_placed[MAIN]=true;
 
-,false);
-
-$layout->TableEnd();
 $layout->FormEnd();
 $layout->display();

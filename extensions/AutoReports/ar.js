@@ -12,13 +12,13 @@ function ar_show_tab(t) {
 	
 }
 function ar_copy_node(id) {
-        $("#ar_edit_mode").html("COPY Node Mode");
+        $("#ar_edit_mode").html("COPY Report Mode");
         $("#ar_edit_node_id").val("");
         ar_lock_form();
         xajax_ExtensionAjax("AutoReports", "ar_load_form", id);
 }
 function ar_add_new() {
-	$("#ar_edit_mode").html("ADD Node Mode");
+	$("#ar_edit_mode").html("ADD Report Mode");
 	$("#ar_edit_node_id").val("");
 	ar_show_tab("ar_add");
 	ar_lock_form();
@@ -26,7 +26,7 @@ function ar_add_new() {
 	//Set type to ADD
 }
 function ar_edit_node(id) {
-	$("#ar_edit_mode").html("EDIT Node Mode");
+	$("#ar_edit_mode").html("EDIT Report Mode");
 	$("#ar_edit_node_id").val(id);
 	ar_lock_form();
 	xajax_ExtensionAjax("AutoReports", "ar_load_form", id);

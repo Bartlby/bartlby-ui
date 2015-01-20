@@ -22,6 +22,10 @@ $Author: hjanuschka $
 */
 ?>
 
-<?=$this->disp_box("UNPLACED")?>
+<div class=row>
+	<div class="col-md-12">
+		<?=$this->disp_box("UNPLACED")?>
+	</div>
+</div>
 
 

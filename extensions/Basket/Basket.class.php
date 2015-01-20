@@ -50,23 +50,29 @@ class Basket {
       </tr>
     </thead><tbody>";
 		
-		
-		while(@list($k, $v) = @each($sto[services])) {
-			$idx=$btl->findSHMPlace($k);
-			if($idx < 0) continue;
-			$svc = bartlby_get_service($btl->RES, $idx);
-			$beauty_state = $btl->getColorSpan($svc[current_state]);
-			$label=$svc[server_name] . "/" . $svc[service_name];
-			//$label=substr($label, 0,30);
-			$r .= "<tr>";
-      $r .= "<td ><b><a href='service_detail.php?service_place=" . $idx . "'><font size=1>" .  $label . "</A></td>";
-      $r .= "<td> $beauty_state </td>";
-      $r .= "<td><a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '" . $svc[service_id] . "')\">X</A></b></td>";
-      $r .= "</tr>";	
-			
-		}
+    $r="";
+	
+  		while(@list($k, $v) = @each($sto[services])) {
+  			$idx=$btl->findSHMPlace($k);
+  			if($idx < 0) continue;
+  			$svc = bartlby_get_service($btl->RES, $idx);
+  			$beauty_state = $btl->getColorSpan($svc[current_state]);
+  			$label=$svc[server_name] . "/" . $svc[service_name];
+  			//$label=substr($label, 0,30);
+  			/*
+        $r .= "<tr>";
+        $r .= "<td ><b><a href='service_detail.php?service_place=" . $idx . "'><font size=1>" .  $label . "</A></td>";
+        $r .= "<td> $beauty_state </td>";
+        $r .= "<td><a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '" . $svc[service_id] . "')\">X</A></b></td>";
+        $r .= "</tr>";	
 
-		$r .= "</tbody></table>";
+        */
+        $r .= '<li><a href="service_detail.php?service_place=' . $idx . '">  ' . $beauty_state . ' <b>' . $label . '</b> <span style="font-size: 15px" class="fa fa-trash pull-right" onClick="xajax_ExtensionAjax(\'Basket\', \'DelService\', \''  . $svc[service_id] . '\');event.stopPropagation(); event.preventDefault();"></span></a></li>';
+  			
+  		}
+    
+
+		//$r .= "</tbody></table>";
        	
        	return $r;	
        }
@@ -121,19 +127,19 @@ class Basket {
        		$r = "<a href='javascript:void(0)' onClick=\"xajax_ExtensionAjax('Basket', 'DelService', '$defaults[service_id]')\">Remove from Favorites</A>";
        	}
        	
-       	$this->_overview();
+        //$this->_overview();
        	return "<div id='basket_add_remove'>" . $r . "</div>";
        	
        		
        }
        function _logView() {
-       	return $this->_overview();	
+       	//return $this->_overview();	
        }
        function _services() {
-       	return $this->_overview();	
+       	//return $this->_overview();	
        }
        function _serverDetail() {
-       	return $this->_overview();	
+       	//return $this->_overview();	
        }
        function updateBasket() {
        	$re = new xajaxResponse();
@@ -144,7 +150,7 @@ class Basket {
        
        function _overview() {
        	global $layout;
-       	$layout->addScript("<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>");
+       	//$layout->addScript("<script>xajax_ExtensionAjax('Basket', 'updateBasket');</script>");
        }
        
 }

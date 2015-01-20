@@ -81,16 +81,18 @@ $(document).ready(function() {
 	$(".ocl_save_managed").click(function() {
 		xajax_ExtensionAjax("OcL", "ocl_save_managed", $("#worker_id").val());
 	});
-	$('[data-rel="ocl_chosen"]').chosen();
-	$('[data-rel="ocl_chosen"]').css("max-width", "300px");
-
+	$('[data-rel="ocl_chosen"],[rel="ocl_chosen"]').selectize({
+    	create: false,
+    	plugins: ['remove_button', 'drag_drop'],
+    	sortField: 'text'
+	});
 
 		$('#coreTabs a[href=#ocl_schedule_tab]').click(function() {
 			$("#ocl_calendar").fullCalendar('render');	
 			
 		});
 
-		$("#ocl_schedule").append("Find Worker: <input type=text id=ocl_worker_filter style='width:140px; margin-top:10px;'><div id='wrap'><div id='ocl_external-events'></div><div id='ocl_calendar'></div></div>");
+		$("#ocl_schedule").append("Find Worker: <input type=text id=ocl_worker_filter style='margin-top:10px;'><div id='wrap'><div id='ocl_external-events'></div><div id='ocl_calendar'></div></div>");
 		xajax_ExtensionAjax("OcL", "ocl_get_worker_list");
 
 

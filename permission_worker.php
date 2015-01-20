@@ -86,32 +86,30 @@ while(list($k, $servs) = @each($map)) {
 		$optind++;
 	}
 }
-$ov = "<form name='fm1' action='bartlby_action.php' method=POST>";
-$layout->Table("100%");
+$ov = "<form name='fm1' action='bartlby_action.php' method=POST class='form-horizontal'>";
 
 
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Name",
 			1=>$defaults[name]. $layout->Field("action", "hidden", $fm_action)
 		)
-	)
 , true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
 			0=>"Visible services:",
 			1=>$layout->DropDown("worker_services[]", $servers, "multiple","",true, "ajax_modify_worker_services_permission")
 		)
-	)
 ,true);
 
 
 
+
+
+$ov .= "<table class='border datatable table-border'><thead class='border'><td>Right</td><td>Given</td></thead><tbody class='no-border-y'>";
 
 
 $all_keys=$btl->loadForeignRights("template");
@@ -123,17 +121,12 @@ while(list($k,$v) = each($all_keys)) {
 		$checked="";
 	}
 	
-	$ov .= $layout->Tr(
-		$layout->Td(
-			array(
-				0=>translatedKey($k),
-				1=>"<input type=checkbox name='" . $k . "' $checked>"
-			)
-		)
-	,true);	
+	$ov .= "<tr><td>" . translatedKey($k) . "</td>";
+	$ov .= "<td>" . "<input type=checkbox class=icheck name='" . $k . "' $checked>" . "</td>";
 			
-	}
+}
 
+$ov .= "</tbody></table>";
 
 
 	
@@ -145,6 +138,7 @@ function translatedKey($k) {
 	$ar["super_user"]="Super User (has full rights, can also give rights)";
 	$ar["action.reload"]="allowed to reload data";
 	$ar["core.edit_cfg"]="can edit config files";
+	$ar["core.api_access"]="Can Access the REST-API (using priv/pubkey)";
 	$ar["core.process_info"]="can view statistics";
 	$ar["core.event_queue"]="view event queue";
 	$ar["action.disable_notify"]="allowed to disable notifications";
@@ -207,18 +201,16 @@ function translatedKey($k) {
 	}
 	
 }
-$layout->TableEnd();
-	
 	
 	$title="UI privileges";  
-	$ov .= $layout->Field("worker_id", "hidden", $_GET[worker_id]) . "<input type=submit value='Save'>";
+	$ov .= $layout->Field("worker_id", "hidden", $_GET[worker_id]) . "<input class='fa fa-save btn btn-primary' type=submit value='Save'>";
 	
-	$content = "<table>" . $ov . "</table>";
-	$layout->push_outside($layout->create_box($title, $content));
+	$content = "<span class=form-horizontal>" . $ov . "</span>";
+	$layout->create_box($title, $content);
 	
 	$r=$btl->getExtensionsReturn("_permissions", $layout);
 
-	$layout->OUT .= "</form>";
+	$layout->FormEnd();
 	
 	$title="";  
 

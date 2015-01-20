@@ -35,7 +35,7 @@ $Author: hjanuschka $
 	
 	$layout->set_menu("main");
 	//$layout->MetaRefresh(30);
-	$layout->Table("100%");
+
 	$lib=bartlby_lib_info($btl->RES);
 	$info=$btl->info;
 	
@@ -91,11 +91,12 @@ $Author: hjanuschka $
 
 			global $reload_status, $hosts_down, $hosts_up, $services_critical, $services_critical, $services_info, $services_ok, $services_warning, $services_unkown, $services_downtime, $all_services, $acks_outstanding, $gdelay_sum, $gdelay_count, $service_state_a, $server_state_a;
 			global $services_handled;
+			global $qck;
 
 			$gdelay_sum += $v[service_delay_sum];
 			$gdelay_count += $v[service_delay_count];
 			
-			if($v[is_gone]) $reload_status="<font color=red>Reload needed</font>";		
+			if($v[is_gone] == 1 || $v[is_gone] == 2) $reload_status="<font color=red>Reload needed</font>";		
 			
 			$service_state_a[$v[service_id]][$v[current_state]]++;	
 			$server_state_a[$v[server_id]][$v[current_state]]++;	
@@ -228,7 +229,7 @@ $Author: hjanuschka $
 	
 		}
 	} else {
-		$load_bar = "<font color=green>" . $info[current_running]  . "</font> Load: <font color=green>" . $curr_load[0] . " / " . $max_load . " </font>";	
+		$load_bar = "<font color=green>" . $info[current_running]  . "</font></b> Load: <b><font color=green>" . $curr_load[0] . " / " . $max_load . " </b></font>";	
 	}
 
 	$fin_last_sync =  "MASTER";
@@ -249,6 +250,16 @@ $Author: hjanuschka $
 		$tmpa[1]= str_replace(")", "", $tmpa[1]);
 		$rel_name = $tmpa[0] . " <a href='https://github.com/Bartlby/bartlby-core/commit/" . $tmpa[1] . "'>" . $tmpa[1] . "</A>)";
 	}
+
+	$notifications_aggregation_wait=0;
+	for($x=0; $x<MAX_NOTIFICATION_LOG; $x++) {
+		$r=bartlby_notification_log_at_index($btl->RES, $x);
+		if($r != false && $r[notification_valid] >= 0 && $r[aggregated] != 1 && $r[aggregation_interval] > 0) {
+			$notifications_aggregation_wait++;
+		}
+	}
+
+
 	$info_box_title='Core Information';  
 	$core_content = "";
 	$layout->create_box($info_box_title, $core_content, "core_info", array(
@@ -269,7 +280,8 @@ $Author: hjanuschka $
 		'sirene'  => $sir,
 		'last_sync' => $fin_last_sync,
 		'checks_performed' => number_format($info[checks_performed], 0, ',', '.'),
-		'checks_performed_per_sec' => round($info[checks_performed] / (time()-$btl->info[checks_performed_time]),2)
+		'checks_performed_per_sec' => round($info[checks_performed] / (time()-$btl->info[checks_performed_time]),2),
+		"notification_aggregation_queue" => $notifications_aggregation_wait
 		
 		), "core_info", false, true);
 	
@@ -335,10 +347,10 @@ $Author: hjanuschka $
 
 			
 		
-			$oks=($all[0] * 100 / $service_sum);
-			$downtimes_infos=(($all[8]+$all[4]) * 100 / $service_sum);
-			$warnings=($all[1] * 100 / $service_sum);
-			$criticals=($all[2] * 100 / $service_sum);
+			$oks=@($all[0] * 100 / $service_sum);
+			$downtimes_infos=@(($all[8]+$all[4]) * 100 / $service_sum);
+			$warnings=@($all[1] * 100 / $service_sum);
+			$criticals=@($all[2] * 100 / $service_sum);
 
 			$proz=100-$criticals;
 	
@@ -466,6 +478,7 @@ $Author: hjanuschka $
 	$layout->setTitle("QuickView");
 	$r=$btl->getExtensionsReturn("_overview", $layout);
 	
+
 	if($quickview_disabled != "false") {
 		$qv_title='Quick View';  
 		$layout->create_box($qv_title, $qv_content,"quick_view", array(
@@ -477,7 +490,7 @@ $Author: hjanuschka $
 
 	
 	$layout->boxes_placed[MAIN]=true;
-	$layout->TableEnd();
+	
 	$layout->display("overview");
 	
 	

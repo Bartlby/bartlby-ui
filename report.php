@@ -48,14 +48,14 @@ if(!$_GET[report_service] || !$log_mask) {
 	
 	if($_POST[report_rcpt]) {
 		
-		$out .= $btl->send_custom_report($_POST[report_rcpt], array($_GET[report_service]), $_GET[report_start], $_GET[report_end]);
+		$out .= $btl->send_custom_report($_POST[report_rcpt], array($_GET[report_service]), $_GET[report_start], $_GET[report_end], $_GET[report_only_hard]);
 		
 	}
 	
 	
 	
 	$out .= "creating report for service: $_GET[report_service] From: $_GET[report_start] To: $_GET[report_end]<br>";	
-	$ra=$btl->do_report($_GET[report_start], $_GET[report_end], $_GET[report_init], $_GET[report_service]);
+	$ra=$btl->do_report($_GET[report_start], $_GET[report_end], $_GET[report_init], $_GET[report_service], $_GET[report_only_hard]);
 	
 	
 	$date_start=explode(".", $_GET[report_start]);
@@ -94,7 +94,7 @@ if(!$_GET[report_service] || !$log_mask) {
 						    <tbody>";
 		$out .= "";
 		
-		$hun=$svc[0]+$svc[1]+$svc[2];
+		$hun=$svc[0]+$svc[1]+$svc[2]+$svc[8];
 		$flash[0]="0";
 		$flash[1]="0";
 		$flash[2]="0";
@@ -111,24 +111,27 @@ if(!$_GET[report_service] || !$log_mask) {
 			
 			$perc =   (($hun-$time) * 100 / $hun);
 			$perc =100-$perc;
-			$lbl="";
+			$lbl="label-default";
+			$col="#bbbbbb";
 			if($state == 0) {
 					 $lbl="label-success";
-					 $col="green";
+					 $col="#4caf50";
 			}
 			if($state == 1) {
 				$lbl="label-warning";
-				$col="orange";
+				$col="#ff9800";
 			}
 			if($state == 2) {
-				 $lbl="label-important";
-				 $col="red";
+				 $lbl="label-danger";
+				 $col="#e51c23";
 			}
-			if($state == 8) {
-				 $lbl="";
-				 $col="grey";
+			if($state == 8 ) {
+				 $lbl="label-default";
+				 $col="#bbbbbb";
 			}
 			
+
+
 			$out .= "<tr>";
 			$out .= "<td width=200><span class='label " .  $lbl . "'>" . $btl->getState($state) . "</span><br>";
 			
@@ -168,18 +171,18 @@ if(!$_GET[report_service] || !$log_mask) {
 					
 					threshold:  [{
 								below: 3,
-								color: "grey"
+								color: "#bbbbbb"
 							},{
 								below: 1,
-								color: "orange"
+								color: "#ff9800"
 							},{
 								below: 2,
-								color: "green"
+								color: "#4caf50"
 							},{
 								below: -1,
-								color: "red"
+								color: "#e51c23"
 							}],
-							color: "green",
+							color: "#4caf50",
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
@@ -198,18 +201,18 @@ if(!$_GET[report_service] || !$log_mask) {
 					
 					threshold:  [{
 								below: 3,
-								color: "grey"
+								color: "#bbbbbb"
 							},{
 								below: 1,
-								color: "orange"
+								color: "#ff9800"
 							},{
 								below: 2,
-								color: "green"
+								color: "#4caf50"
 							},{
 								below: -1,
-								color: "red"
+								color: "#e51c23"
 							}],
-							color: "green",
+							color: "#4caf50",
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
@@ -230,18 +233,18 @@ if(!$_GET[report_service] || !$log_mask) {
 					
 					threshold:  [{
 								below: 3,
-								color: "grey"
+								color: "#bbbbbb"
 							},{
 								below: 1,
-								color: "orange"
+								color: "#ff9800"
 							},{
 								below: 2,
-								color: "green"
+								color: "#4caf50"
 							},{
 								below: -1,
-								color: "red"
+								color: "#e51c23"
 							}],
-							color: "green",
+							color: "#4caf50",
 							points: { show: false },
 							selection: { 	mode: "x"  },
             	lines: { show: true, steps: true }}], {
@@ -310,7 +313,7 @@ if(!$_GET[report_service] || !$log_mask) {
 					$lbl="";
 					if($ts[1] == 0) $lbl="label-success";
 					if($ts[1] == 1) $lbl="label-warning";
-					if($ts[1] == 2) $lbl="label-important";
+					if($ts[1] == 2) $lbl="label-danger";
 					$out .= "&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp; "  . date("d.m.Y H:i:s", $ts[0]) . " <span class='label " .  $lbl . "'>" . $btl->getState($ts[1]) . "</span><br>";
 				}
 			}
@@ -327,7 +330,7 @@ if(!$_GET[report_service] || !$log_mask) {
 		if($_GET[report_init] == 1) $st_r = -1;
 		if($_GET[report_init] == 2) $st_r = -2;
 		
-		$o1 .= "<table class='table table-striped table-bordered ' id='services_table1'>
+		$o1 .= "<table class='table  table-bordered ' id='services_table1'>
 						  <thead>
 							  <tr>
 							  	<th>Time</th>
@@ -348,15 +351,15 @@ if(!$_GET[report_service] || !$log_mask) {
 				if($state_array[$xy][lstate] == 2) $st_r = -2;
 				if($state_array[$xy][lstate] == 8) $st_r = 2;
 				
-			$lbl="";
+			$lbl="label-default";
 			if($state_array[$xy][lstate] == 0) $lbl="label-success";
 			if($state_array[$xy][lstate] == 1) $lbl="label-warning";
-			if($state_array[$xy][lstate] == 2) $lbl="label-important";
-			if($state_array[$xy][lstate] == 8) $lbl="";
+			if($state_array[$xy][lstate] == 2) $lbl="label-danger";
+			if($state_array[$xy][lstate] == 8) $lbl="label-default";
 			
 					$o1 .= "<tr>";
 					$o1 .= "<td>" . date("d.m.Y H:i:s", $state_array[$xy][end]) . "</td>";
-					$o1 .= "<td valign=top width=200><span class='label " .  $lbl . "'>" . $btl->getState($state_array[$xy][lstate]) . "</span></b></td>";
+					$o1 .= "<td valign=top width=200><span class='label " .  $lbl . "'>" . $btl->getState($state_array[$xy][lstate]) . "</span></b><br>" . $state_array[$xy][is_hard_lable] . "</td>";
 			
 					$o1 .= "<td>" . $state_array[$xy][msg] . "</td></tr>";
 					$js_out .= "[" . ($state_array[$xy][end]*1000) . ", " . $st_r . "],";

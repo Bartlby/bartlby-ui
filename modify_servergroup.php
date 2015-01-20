@@ -19,7 +19,7 @@ $layout= new Layout();
 //$layout->set_menu("client");
 
 $ov .= $layout->Form("fm1", "bartlby_action.php", "GET", true);
-$layout->Table("100%");
+
 
 
 
@@ -63,7 +63,7 @@ $servers_out=array();
 $services_x=0;
 $btl->service_list_loop(function($svc, $shm) use(&$servers, &$optind, &$btl, &$servers_out, &$services_x, &$defaults) {
 	if($svc[is_gone] != 0) {
-	 continue;
+	 return LOOP_CONTINUE;
 	}
 	if(($_GET[dropdown_term] &&  @preg_match("/" . $_GET[dropdown_term] . "/i", $svc[server_name] . "/" .  $svc[service_name])) || $svc[service_id] == $defaults[servergroup_dead]) {
 
@@ -169,43 +169,21 @@ while ($file = readdir ($dh)) {
 closedir($dh); 
 
 
-//Notify Enabled
-$notenabled[0][c]="";
-$notenabled[0][v] = 0; //No
-$notenabled[0][k] = "No"; //No
-$notenabled[0][s]=0;
-
-$notenabled[1][c]="";
-$notenabled[1][v] = 1; //No
-$notenabled[1][k] = "Yes"; //No
-$notenabled[1][s]=0;
 
 if(is_int($defaults[servergroup_notify]) && $defaults[servergroup_notify] == 0) {
-	$notenabled[0][s]=1;	
+	$notenabled="";	
 	
 } else {
 	
-	$notenabled[1][s]=1;
+	$notenabled="checked";
 }
 
-//Notify Enabled
-$servactive[0][c]="";
-$servactive[0][v] = 0; //No
-$servactive[0][k] = "No"; //No
-$servactive[0][s]=0;
-
-$servactive[1][c]="";
-$servactive[1][v] = 1; //No
-$servactive[1][k] = "Yes"; //No
-$servactive[1][s]=0;
 
 
 if(is_int($defaults[servergroup_active]) && $defaults[servergroup_active] == 0) {
-	$servactive[0][s]=1;	
-	
+	$servactive="";
 } else {
-
-	$servactive[1][s]=1;
+	$servactive="checked";
 }
 
 
@@ -219,62 +197,63 @@ if($defaults == false && $_GET["new"] != "true") {
 	exit(1);	
 }
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
 		array(
-			0=>"Servergroup Name",
+			0=>"Name",
 			1=>$layout->Field("servergroup_name", "text", $defaults[servergroup_name]) . $layout->Field("action", "hidden", $fm_action) 
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
+
 		array(
-			0=>"Servergroup Members",
+			0=>"Members",
 			1=>$layout->DropDown("servergroup_members[]", $servers,"multiple","",false, "ajax_server_list_php")
 		)
-	)
 ,true);
 
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
+
 		array(
-			0=>"Servergroup Enabled",
-			1=>$layout->DropDown("servergroup_active", $servactive)
+			0=>" Enabled",
+			1=>$layout->Field("servergroup_active", "checkbox", "1", "", "class='switch' " . $servactive) 
+						
+		)
+,true);
+
+$ov .= $layout->FormBox(
+
+		array(
+			0=>" Notify?",
+			1=>$layout->Field("servergroup_notify", "checkbox", "1", "", "class='switch' " . $notenabled) . $layout->Field("servergroup_id", "hidden", $_GET[servergroup_id])
+			
 			
 		)
-	)
 ,true);
+$ov .= $layout->FormBox(
 
-$ov .= $layout->Tr(
-	$layout->Td(
-		array(
-			0=>"Servergroup Notify?",
-			1=>$layout->DropDown("servergroup_notify", $notenabled) . $layout->Field("servergroup_id", "hidden", $_GET[servergroup_id])
-			
-		)
-	)
-,true);
-$ov .= $layout->Tr(
-	$layout->Td(
 		array(
 			0=>"Alive indicator",
-			1=>$layout->DropDown("service_dead", $alive_indicator,"","",false, "ajax_service_list_php") . "<div style='float:right'><a href='#' onClick='$(\"#service_dead\").find(\"option\").remove();$(\"#service_dead\").trigger(\"liszt:updated\");'>Remove</A></div>"
+			1=>$layout->DropDown("service_dead", $alive_indicator,"multiple","",false, "ajax_service_list_php") . ""
 		)
-	)
 ,true);
 
-$ov .= $layout->Tr(
-	$layout->Td(
+$ov .= $layout->FormBox(
+
 		array(
 			0=>"Triggers:",
 			1=>$layout->DropDown("servergroup_triggers[]", $triggers, "multiple") . " "
 		)
-	)
 ,true);
 
+$ov .= $layout->FormBox(
+
+		array(
+			0=>"Orchestra ID",
+			1=>$layout->orchDropdown(true, $defaults[orch_id]) . $layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyServerGroup(xajax.getFormValues(\"fm1\"))'")
+		)
+,true);
 
 
 
@@ -286,25 +265,16 @@ $ov .= $layout->Tr(
 
 
 $title="add servergroup";  
-$content = "<table>" . $ov . "</table>";
-$layout->push_outside($layout->create_box($layout->BoxTitle, $content));
+$content = "<span class=form-horizontal>" . $ov . "</span>";
+$layout->create_box($layout->BoxTitle, $content);
 	
 	
 $r=$btl->getExtensionsReturn("_PRE_" . $fm_action, $layout);
-
-$layout->Tr(
-	$layout->Td(
-			Array(
-				0=>Array(
-					'colspan'=> 2,
-					"align"=>"right",
-					'show'=>$layout->Field("Subm", "button", "next->", "", " onClick='xajax_AddModifyServerGroup(xajax.getFormValues(\"fm1\"))'")
-					)
-			)
-		)
-
-,false);
-
-$layout->TableEnd();
 $layout->FormEnd();
+
+
+//HIDE MAIN
+$layout->boxes_placed[MAIN]=true;
+
+
 $layout->display();

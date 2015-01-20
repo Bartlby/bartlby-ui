@@ -1,11 +1,16 @@
 <?php
-
-session_start();
+include "config.php";
+include "layout.class.php";
+include "bartlby-ui.class.php";
 
 $_SESSION[username]=$_POST[login_username];
 $_SESSION[password]=$_POST[password];
 $_SESSION[instance_id] = $_POST[btl_instance_id];
 
 
-header("Location: overview.php");
+
+
+$btl=new BartlbyUi($Bartlby_CONF);
+
+//header("Location: overview.php");
 ?>

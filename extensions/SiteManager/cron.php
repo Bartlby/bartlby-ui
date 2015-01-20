@@ -1,4 +1,5 @@
 <?
+
 // php automated.php \
 //   	username=admin \
 //   	password=password \
@@ -13,6 +14,12 @@
 //*/10 * * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=FOLDERS)
 //Removes demoted nodes
 //0 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=CLEANUP)
+
+
+//FOR ORCHES
+//*/5 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=INIT)
+//*/5 0 * * * (cd /var/www/bartlby-ui/extensions/; php automated.php username=admin password=password script=SiteManager/cron.php sync=RESTART)
+	
 
 /* DEFAULT PULL folders
 /var/www/bartlby-ui/rights/:%UINODEPATH%/rights/
@@ -40,7 +47,7 @@ $_GLO[debug_commands]=true;
 	include "bartlby-ui.class.php";
 	
 	include "extensions/SiteManager/SiteManager.class.php";
-	
+
 	$btl=new BartlbyUi($Bartlby_CONF);
 	$btl->hasRight("sitemanager");
 	$sm = new SiteManager();
@@ -51,9 +58,20 @@ $_GLO[debug_commands]=true;
 	$local_core_replication_path=$sm->storage->load_key("local_core_replication_path");
 	
 
+	$orch_ext_name=$sm->storage->load_key("orch_ext_name");
+	$orch_db_user=$sm->storage->load_key("orch_db_user");
+	$orch_db_pw=$sm->storage->load_key("orch_db_pw");
+	$orch_db_name=$sm->storage->load_key("orch_db_name");
+	$orch_master_pw=$sm->storage->load_key("orch_master_pw");
+	$orch_ext_port=$sm->storage->load_key("orch_ext_port");
+	
+
+	
+
 	$sync = $_GET[sync];
 	if(!$sync) $sync="SHM";
 	$r = $sm->db->query("select * from sm_remotes where sync_active = 1");
+	
 	foreach($r as $row) {
 		$key_file=$row[ssh_key];
 		$user=$row[ssh_username];
@@ -77,9 +95,65 @@ $_GLO[debug_commands]=true;
 			echo $c("Error on Node => " . $row[remote_alias] . " SSH PARAMS skipping!\n")->red()->bold() . PHP_EOL;
 			continue;
 		}
-
+		if(!nodeReachable($row[ssh_ip], 22, $ssh_cmd_str) && $sync != "EVACUATE") {
+			$sql = "update sm_remotes set node_dead=1 where id=" . $row[id];	
+			$sm->db->exec($sql);
+			echo $c("Node " . $row[id] . " marked as DEAD\n")->red()->bold() . PHP_EOL;
+			//Evacuate objects
+			continue;
+		}
+		$sql = "update sm_remotes set node_dead=0 where id=" . $row[id];	
+		$sm->db->exec($sql);
 
 		switch($sync) {
+			case "RESTART":
+			
+				if($row[node_restart_outstanding] == 1) {
+
+					runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup stop");					
+					runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup remove");					
+					runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup start");	
+					echo $c("Restarted node " . $row[id] . "\n")->red()->bold() . PHP_EOL;
+					$sql = "update sm_remotes set node_restart_outstanding=0 where id=" . $row[id];	
+					$sm->db->exec($sql);	
+				}
+			break;
+			case 'INIT':
+				if($row[mode] == "orch-node") {
+					$init_file=$local_ui_replication_path . "/" . $row[id] . "/node.deployed";
+					if(!file_exists($init_file)) {
+						echo $c("Doing node Deploy on " . $row[id] . "\n")->green()->bold() . PHP_EOL;
+						runSSHCMD($ssh_cmd_str, "grep -vE \"(orch_|mysql_)\" " . $row[remote_core_path] . "/etc/bartlby.cfg > " .  $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo orch_master_ip=" . $orch_ext_name . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo orch_master_port=" . $orch_ext_port . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo orch_master_pw=" . $orch_master_pw . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+
+						runSSHCMD($ssh_cmd_str, "echo orch_id=" . $row[id] . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						
+
+						runSSHCMD($ssh_cmd_str, "echo mysql_user=" . $orch_db_user . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						
+						runSSHCMD($ssh_cmd_str, "echo mysql_pw=" . $orch_db_pw . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo mysql_db=" . $orch_db_name . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+						runSSHCMD($ssh_cmd_str, "echo mysql_host=" . $orch_ext_name . " >> " . $row[remote_core_path] . "/etc/bartlby_empty.cfg");
+
+						runSSHCMD($ssh_cmd_str, "mv " . $row[remote_core_path] . "/etc/bartlby_empty.cfg " . $row[remote_core_path] . "/etc/bartlby.cfg");
+						
+
+						//STOP RUNNING INSTANCES AND RESTART - FOR CFG REFRESH
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup stop");					
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup remove");					
+						runSSHCMD($ssh_cmd_str, $row[remote_core_path] . "/etc/bartlby.startup start");					
+						
+
+
+						touch($init_file);
+					} else {
+						echo $c("Skipping already deployed node " . $row[id] . "\n")->red()->bold() . PHP_EOL;
+					}
+				}
+
+			break;
 			case "GENCONF":
 				//Does not matter if push or pull
 				if($row[mode] == "pull" || $row[mode] == "push") {
@@ -114,15 +188,21 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 				if($row[mode] == "push") {
 					$db_sync="true";
 				}
-				$ui_cfg  .= '
-						$a[file] = "' . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg" .  '";
-						$a[remote] = true;
-						$a[db_sync] = ' . $db_sync . ';
-						$a[display_name] = "' .  $row[remote_alias] . '";
-						$a[uniq_id] = ' . $row[id] . ';		
-						array_push($confs, $a);			
-				';
 
+
+				if($row[mode] != "orch-node") {
+					$ui_cfg  .= '
+							$a[file] = "' . $local_core_replication_path . "/" . $row[id] . "/bartlby.cfg" .  '";
+							$a[remote] = true;
+							$a[db_sync] = ' . $db_sync . ';
+							$a[display_name] = "' .  $row[remote_alias] . '";
+							$a[uniq_id] = ' . $row[id] . ';		
+							array_push($confs, $a);			
+					';
+				} else {
+					$ui_cfg .= '$_BARTLBY[orch_nodes][]=array(orch_id=>' . $row[id] . ', orch_alias=>"' . $row[remote_alias] . '");';
+					
+				}
 
 				echo $c("bartlby.cfg  for Node $row[remote_alias]  generated\n")->green;		
 			break;
@@ -346,6 +426,27 @@ performance_rrd_htdocs=" . $local_ui_replication_path . "/" . $row[id] . "/rrd/
 			}
 		}		
 	}
+
+
+function nodeReachable($ip, $port = 22, $cmd_str) {
+    $rdp_sock = fsockopen($ip, $port, $err, $err1, 3);
+    
+    if (!$rdp_sock) {
+        return false;
+    } else {
+        fclose($rdp_sock);
+
+        $check=runSSHCMD($cmd_str, "date");					
+        if($check == "") {
+        	return false;
+        }
+					
+
+
+        return true;
+    }
+}
+
 function setLastOutput($id, $str) {
 	global $sm;
 	$q = "update sm_remotes set last_output='" . $str . "' where id=" . $id;
@@ -385,6 +486,7 @@ function runSSHCMD($str, $cmd) {
 		$rr .= $s;
 	}
 	pclose($fp);
+	echo $rr;
 	return $rr;
 
 }
@@ -516,6 +618,8 @@ class Color
      */
     public function isSupported()
     {
+    	global $_GET;
+    	if($_GET[force_color] == 1) return true;
         if (DIRECTORY_SEPARATOR === '\\') {
             return false !== getenv('ANSICON');
         }

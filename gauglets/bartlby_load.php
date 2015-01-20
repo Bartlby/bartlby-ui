@@ -7,13 +7,17 @@ if(!$max_value) $max_value=10;
 
 //Get current Value
 
-preg_match("/, ([0-9\.]+) ([0-9\.]+) ([0-9\.]+)/", $plcs[service][new_server_text], $m);
 
+if(preg_match("/, ([0-9\.]+) ([0-9\.]+) ([0-9\.]+)/", $plcs[service][new_server_text], $m)) {
+	$cur_val[0]=$m[1];
+	$cur_val[1]=$m[2];
+	$cur_val[2]=$m[3];
+} else {
+	$cur_val[0]=0;
+	$cur_val[1]=0;
+	$cur_val[2]=0;
+}
 
-
-$cur_val[0]=$m[1];
-$cur_val[1]=$m[2];
-$cur_val[2]=$m[3];
 
 
 
@@ -24,18 +28,18 @@ $cur_val[2]=$m[3];
 	
 	$(document).ready(function() {
 	
-			 window.g1 = new JustGage({
-		    id: "g1",
+			 window.g<?=$plcs[service][service_id]?>AA1 = new JustGage({
+		    id: "g<?=$plcs[service][service_id]?>AA1",
 		    value : <?=$cur_val[0]?>,
 		    min: 0,
-		    max: <?=$max_value*2?>,
+		    max: <?=$max_value*2?>, 
 		    decimals: 2,
 		    gaugeWidthScale: 0.6,
 		    label: "1m",
 		    title: "Load"
 		  });
-		   window.g2 = new JustGage({
-		    id: "g2",
+		   window.g<?=$plcs[service][service_id]?>AA2 = new JustGage({
+		    id: "g<?=$plcs[service][service_id]?>AA2",
 		    value : <?=$cur_val[1]?>,
 		    min: 0,
 		    max: <?=$max_value*1.5?>,
@@ -44,8 +48,8 @@ $cur_val[2]=$m[3];
 		    label: "5m",
 		    title: "Load"
 		  });
-		 window.g3 = new JustGage({
-		    id: "g3",
+		 window.g<?=$plcs[service][service_id]?>AA3 = new JustGage({
+		    id: "g<?=$plcs[service][service_id]?>AA3",
 		    value : <?=$cur_val[2]?>,
 		    min: 0,
 		    max: <?=$max_value?>,
@@ -59,30 +63,34 @@ $cur_val[2]=$m[3];
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_1_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_1_max");
-		 			window.g1.refresh(parseFloat(cur), parseFloat(max));
+		 			window.g<?=$plcs[service][service_id]?>AA1.refresh(parseFloat(cur), parseFloat(max));
 		 	});
 		 	 btl_add_refreshable_object(
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_2_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_2_max");
-		 			window.g2.refresh(parseFloat(cur), parseFloat(max));
+		 			window.g<?=$plcs[service][service_id]?>AA2.refresh(parseFloat(cur), parseFloat(max));
 		 	});
 		 	 btl_add_refreshable_object(
 		 	function(data) {
 		 			cur = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_3_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_load.sh_<?=$plcs[service][service_id]?>_3_max");
-		 			window.g3.refresh(parseFloat(cur), parseFloat(max));
+		 			window.g<?=$plcs[service][service_id]?>AA3.refresh(parseFloat(cur), parseFloat(max));
 		 	});
 		 	
 			
 	});
 	</script>      
 
-	<div id="g1" class="gauge" style='width:100px;height:100px;float:left'></div>
-	<div id="g2" class="gauge" style='width:100px;height:100px;float:left'></div>
-	<div id="g3" class="gauge" style='width:100px;height:100px;float:left'></div>
+	<div id="g<?=$plcs[service][service_id]?>AA1" class="gauge" style='width:100px;height:100px;float:left'></div>
+	<div id="g<?=$plcs[service][service_id]?>AA2" class="gauge" style='width:100px;height:100px;float:left'></div>
+	<div id="g<?=$plcs[service][service_id]?>AA3" class="gauge" style='width:100px;height:100px;float:left'></div>
 	
-	
+	<style>
+		tspan {
+				font-family:Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		}
+	</style>
   
 <?
 

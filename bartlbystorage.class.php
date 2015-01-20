@@ -18,6 +18,13 @@
 				}
 			}
 		}
+		function db_has_field($f,$table,  $create) {
+			if(!$this->db) return;
+			$r=$this->db->exec("select " . $f  . " from " . $table);
+			if($r == false) {
+				$this->db->exec($create);
+			}
+		}
 
 		function SQLDB($cr, $fixed_name="") {
 			$first_run=false;
@@ -36,11 +43,16 @@
 				} else {
 					$this->db = new PDO('sqlite:' . $this->save_path . "/" . $fna);	
 				}
+
+
+
+				
 			} catch(Exception $e) {
 				
 				return false;
 			}
-
+			$this->db->path = $this->save_path . "/" . $fna;
+			
 			return $this->db;
 			
 			

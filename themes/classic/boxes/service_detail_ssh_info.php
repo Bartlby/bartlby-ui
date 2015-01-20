@@ -1,4 +1,4 @@
-<table  width='100%'>
+<table  width='100%' class="table no-strip borderless">
 	<tr>
 		<td width=150 class='font2'>Keyfile:</td>
 		<td align=left ><?=$plcs[service][server_ssh_keyfile]?></font></td> 

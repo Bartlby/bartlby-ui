@@ -1552,6 +1552,15 @@ if($m[2] == "5724") {
 			if($rtc == -2) continue;
 		}
 	}
+	function trap_list_loop($fcn) {
+		
+		for($x=0; $x<$this->info[traps]; $x++) {
+			$srvcgrp = bartlby_get_trap($this->RES, $x);
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
 	function server_list_loop($fcn) {
 		for($x=0; $x<$this->info[server]; $x++) {
 
@@ -2362,6 +2371,42 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 		
 
 		
+
+	}
+	function getTrapOptions($defaults, $layout, $btn_size="btn-sm") {
+		
+
+		
+
+
+		
+		$copy_link = "modify_trap.php?copy=true&trap_id=" . $defaults[trap_id];
+		$modify_link="modify_trap.php?trap_id=" . $defaults[trap_id];
+		$logview_link = "logview.php?trap_id=" . $defaults[trap_id];
+		$delete_link = "delete_trap.php?trap_id=" . $defaults[trap_id];
+
+		$ret = '<div class="btn-group">
+									
+					 <span onClick="document.location.href=\'' .  $modify_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="edit" class="fa fa-pencil "></i></span>
+					 <span onClick="document.location.href=\'' .  $copy_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="copy" class="fa fa-copy "></i></span>
+					 <span onClick="document.location.href=\'' .  $delete_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="delete" class="fa fa-trash "></i></span>
+					 
+					
+					 
+				</div>';
+	
+		return $ret;
+
+
+
+
+
+
+
+
+
+
+
 
 	}
 	function getserveroptions($defaults, $layout, $btn_size="btn-sm") {

@@ -22,8 +22,117 @@ echo $depre;
 $xajax->processRequests();
 
 
+function showTrapData($id) {
+	global $layout, $btl;
+	$res=new xajaxResponse();
+
+	$match=array();
+	$out = "";
+	$btl->trap_list_loop(function($trap) use(&$id, &$out) {
+		if($trap[trap_id] == $id) {
+			if(trim($trap[trap_last_data]) == "") {
+				$out="NONE";	
+				return LOOP_BREAK;
+			}
+			$out .= htmlentities($trap[trap_last_data]);
+			return LOOP_BREAK;
+		}
+		
+	});	
+	
+	$res->AddAssign("trap_data","innerHTML", "<pre>" . $out . "</pre>");
+	$res->AddScript("$('#trapdataModal').modal('show');");
+	return $res;
+
+}
+function trapTester($data) {
+	global $layout, $btl;
+	$res=new xajaxResponse();
+
+	$match=array();
+	$btl->trap_list_loop(function($trap) use(&$data, &$out, &$match) {
+		if(preg_match("/" . $trap[trap_catcher] . "/i", $data)) {
+			$match[]=$trap;
+			if($trap[trap_is_final] == 1) {
+				return LOOP_BREAK;
+			}
+
+		}
+	});		
+	for($x=0; $x<count($match); $x++) {
+		$tr=$match[$x];
+		
+		$rule_out = "";
+		$rule_out .= "<pre>";
+		if($tr[trap_is_final] == 1) {
+			$rule_out .= "<i>Rule is Final no more deeper rules will be processed</i>\n";
+		}
+		if(preg_match("/" . $tr[trap_status_text] . "/mi", $data, $matches)) {
+			
+			if($matches[1] != "") {
+				$rule_out .= "Status Text extracted: <kbd>" . $matches[1] . "</kbd>\n";
+			} else {
+				$rule_out .= "Fallback Status Text (rule not matched): '" . substr($data, 0, 1023) . "'\n";
+			}
+		} else {
+			$rule_out .= "Fallback Status Text: '" . substr($data, 0, 1023) . "'\n";
+		}
+
+		$is_ok=preg_match("/" . $tr[trap_status_ok] . "/i", $data);
+		$is_warning=preg_match("/" . $tr[trap_status_warning] . "/i", $data);
+		$is_critical=preg_match("/" . $tr[trap_status_critical] . "/i", $data);
+		$is_fixed=$tr[trap_fixed_status]; //-2 unused
+
+		$status=4; //default unkown
+		if($is_fixed != -2) {
+			$status=$is_fixed;
+			$rule_out .= "<i>using fixed status: " . $is_fixed . "\n";
+		} else {
+			if($is_ok && $tr[trap_status_ok] != "") $status=0;
+			if($is_warning && $tr[trap_status_warning] != "") $status=1;
+			if($is_critical && $tr[trap_status_critical] != "") $status=2;
+		}
+		//Get service :)
+		if($tr[service_shm_place] >= 0) {
+			$svc = bartlby_get_service($btl->RES, $tr[service_shm_place]);
+			if(!$svc) {
+				$rule_out .= "NO SERVICE found just log\n";
+			} else {
+				$rule_out .= "Service: " . $svc[server_name] . "/" . $svc[service_name] . "(" . $svc[service_id] . ")\n";
+			}
+		} else {
+			$rule_out .= "NO SERVICE found just log\n";
+		}
+
+		$rule_out .= "Status set to:  " . $btl->getColorSpan($status) . "\n";
+		$rule_out .= "</pre>";
+
+		$header = "Rule <strong>'" . $tr[trap_name] . "'</strong> matched prio: <strong>" . $tr[trap_prio] . "</strong>  " . $btl->getColorSpan($status) . "  " . $btl->getTrapOptions($tr, $layout) . "\n";
+
+		$out .= '  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne' . $x .'">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne' . $x .'" aria-expanded="false" aria-controls="collapseOne' . $x .'">
+          ' . $header . '
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne' . $x .'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne' . $x .'">
+      <div class="panel-body">
+        ' . $rule_out . '
+      </div>
+    </div>
+  </div>';
 
 
+
+	}
+
+	
+	$retout = '<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">' . $out . '</div>';	
+	$res->AddAssign("traptest_output","innerHTML", "" . $out . "");
+	return $res;
+}
 function updateServiceDetail($svc_idx) {
 	global $layout, $btl;
 	$res=new xajaxResponse();
@@ -70,6 +179,98 @@ function regen_keys() {
 		$res->AddAssign("api_privkey","value", substr(sha1(microtime(true)), 0, 40));
 		$res->AddAssign("api_pubkey","value", substr(sha1(microtime(true)+time()), 0, 40));
 		return $res;
+}
+
+function bulkEditValuesTrap($trap_ids, $new_values, $mode = 0) {
+	global $btl;
+	$res = new xajaxresponse();
+	$output = "";
+	//FIXME check for <= 0 $service_ids
+	$btl->trap_list_loop(function($svc, $shm) use(&$trap_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
+		$f = in_array("" . $svc[server_id], $server_ids);
+		
+		if(count($trap_ids) == 0) {
+			$f = true;
+		}
+		$doedit=0;
+		if($f) {
+		
+		
+			$output .= "Working on:  " . $svc[trap_name] . "(" . $svc[trap_id] . ")\n";
+			@reset($new_values);
+
+			if((int)$mode == 3) {
+				bartlby_delete_trap($btl->RES, $svc[trap_id]);
+				$output .= "<font color=red>Removed Trap with id: " . $svc[trap_id] . "</font>\n";
+			}	
+
+			while(list($k, $v) = @each($new_values)) {
+				
+				if(preg_match("/_typefield\$/i", $k)) {
+					continue;
+				}
+
+				if($new_values[$k . "_typefield"] != "unused") {
+					$newvalue= $v;
+					$oldvalue=$svc[$k];
+					switch($new_values[$k . "_typefield"]) {
+						case 'set':
+						break;
+						case 'regex':
+							$regex = explode("#", $newvalue);
+							$newvalue = preg_replace("#" . $regex[1] . "#i", $regex[2], $oldvalue);
+						break;
+						case 'add':
+							$newvalue = $oldvalue + $newvalue;
+						break;
+						case 'sub':
+							$newvalue = $oldvalue - $newvalue;
+						break;
+						case 'addrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue + $newrand;
+						break;
+						case 'subrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue - $newrand;
+						break;
+						case 'toggle':
+							//$newvalue = $oldvalue - $newvalue;
+							if($oldvalue == 0) $newvalue=1;
+							if($oldvalue == 1) $newvalue=0;
+						break;
+
+
+					}
+					if($oldvalue != $newvalue) {
+						$output .= "$k to <b>$newvalue</b> was:  $oldvalue \n";	
+						$svc[$k] = $newvalue;
+						$doedit=1;
+					}
+					
+					if((int)$mode == 1) {
+						//Real Mode:
+
+						if($doedit == 1) {
+							$ret=bartlby_modify_trap($btl->RES,  $svc[trap_id], $svc);
+							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
+						}
+					}
+
+					
+										
+
+				}
+			}
+		$output .= "-------------\n";	
+		}
+	});
+	
+	bartlby_reload($btl->RES);
+	$res->addAssign("traps_bulk_output", "innerHTML", "<pre>$output</pre>");
+	return $res;
 }
 
 function bulkEditValuesServer($server_ids, $new_values, $mode = 0) {
@@ -974,6 +1175,16 @@ function QuickLook($what) {
 
 	});
 
+
+	$trapfound=false;
+	$btl->trap_list_loop(function($srvgrp, $shm) use(&$what, &$rq, &$trapfound, &$btl, &$layout) {
+		if(@preg_match("/" . $what . "/i", $srvgrp[trap_name])) {
+			
+				$rq .= "<tr><td>Traps</td><td><a class=ql href='trap_detail.php?trap_id=" . $srvgrp[trap_id] . "'>" . quickLookHighlight($srvgrp[trap_name], $_GET[search]) . "</a></td><td>" . $btl->getTrapOptions($srvgrp, $layout) . "</td>";	
+				$trapfound=true;
+		}
+
+	});
 	
 	
 
@@ -1071,7 +1282,40 @@ function AddModifyServiceGroup($aFormValues) {
 	
 	return $res;	
 }
+function AddModifyTrap($aFormValues) {
 
+	global $_GET, $_POST;
+	
+	$av = $aFormValues;
+	
+	$res = new xajaxResponse();
+	
+	
+	
+	$al="";
+	
+	if(!bartlbize_field($av[trap_name])) {
+		$res->addAssign("error_trap_name", "innerHTML", "Trap Name required");
+		$al="1";
+	} else {
+		$res->addAssign("error_trap_name", "innerHTML", "");
+	}
+	
+	if(!bartlbize_field($av[trap_catcher])) {
+		$res->addAssign("error_trap_catcher", "innerHTML", "Trap Catcher required");
+		$al="1";
+	} else {
+		$res->addAssign("error_trap_catcher", "innerHTML", "");
+	}
+
+	
+	if($al == "")  {
+		$res->addScript("document.fm1.submit()");
+	}
+	
+	return $res;
+
+}
 function AddModifyServerGroup($aFormValues) {
 	global $_GET, $_POST;
 	

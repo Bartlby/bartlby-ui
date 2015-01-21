@@ -514,6 +514,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Monitoring", "Overview","overview.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Servers","servers.php");
+                $this->ext_menu .= $this->addSub("Monitoring", "Traps","traps.php");
 		$this->ext_menu .= $this->endMenu();
 
 
@@ -575,6 +576,16 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Downtime/s", "Modify","downtime_list.php?script=modify_downtime.php");
                 $this->ext_menu .= $this->addSub("Downtime/s", "Delete","downtime_list.php?script=delete_downtime.php");
 		$this->ext_menu .= $this->endMenu();
+
+
+
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("Trap/s", "fa fa-plus-circle");
+                $this->ext_menu .= $this->addSub("Trap/s", "Add","add_trap.php");
+                $this->ext_menu .= $this->addSub("Trap/s", "Modify","trap_list.php?script=modify_trap.php");
+                $this->ext_menu .= $this->addSub("Trap/s", "Delete","trap_list.php?script=delete_trap.php");
+		$this->ext_menu .= $this->endMenu();
+
 
 
 		$this->ext_menu .= $this->beginMenu();

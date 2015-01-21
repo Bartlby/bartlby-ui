@@ -31,8 +31,8 @@ for($x=0; $x<count($ar); $x++) {
 			for($x=0; $x<count($cur_val); $x++) {			
 			?>
 			
-			window.g<?=$x?> = new JustGage({
-		    id: "g<?=$x?>",
+			window.g<?=$plcs[service][service_id]?>AAA<?=$x?> = new JustGage({
+		    id: "g<?=$plcs[service][service_id]?>AAA<?=$x?>",
 		    value : <?=$cur_val[$x]?>,
 		    min: 0,
 		    max: <?=$max_value?>,
@@ -43,10 +43,10 @@ for($x=0; $x<count($ar); $x++) {
 		  });
 		  
 		 btl_add_refreshable_object(
-		 	function(data) {
+		 	function(data) {	
 		 			cur = btl_get_refreshable_value(data,"bartlby_disk.sh_<?=$plcs[service][service_id]?>_<?=$x?>_cur");
 		 			max = btl_get_refreshable_value(data,"bartlby_disk.sh_<?=$plcs[service][service_id]?>_<?=$x?>_max");
-		 			window.g<?=$x?>.refresh(parseInt(cur), parseInt(max));
+		 			window.g<?=$plcs[service][service_id]?>AAA<?=$x?>.refresh(parseInt(cur), parseInt(max));
 		 	});
 		 
 			
@@ -60,7 +60,7 @@ for($x=0; $x<count($ar); $x++) {
 	<?
 		for($x=0; $x<count($cur_val); $x++) {
 	?>
-	<div id="g<?=$x?>" class="gauge" style='width:100px;height:100px;float:left'></div>
+	<div id="g<?=$plcs[service][service_id]?>AAA<?=$x?>" class="gauge" style='width:100px;height:100px;float:left'></div>
 	<?
 	}
 	?>

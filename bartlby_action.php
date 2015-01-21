@@ -276,9 +276,13 @@ switch($act) {
 			$_GET[notify][0]=2;
 			$idx=$btl->findSHMPlace($_GET[service_id]);
 			bartlby_ack_problem($btl->RES, $idx);
+			if($_GET[set_ok] == 1) {
+				$idx=$btl->findSHMPlace($_GET[service_id]);
+				bartlby_set_passive($btl->RES, $idx, 0, $_GET[comment]);
 				
+			}
 		}
-		if($_GET[subject] && $_GET[comment]) {
+		if($_GET[comment]) {
 			
 			$fp=@fopen("comments/" . (int)$_GET[service_id], "a+");
 			if(!$fp) {
@@ -897,11 +901,15 @@ switch($act) {
 					"default_service_type" => $_GET[default_service_type],
 					"enabled_triggers" => $triggerstr,
 					"exec_plan" => $exec_plan,
-					"orch_id" => $_GET[orch_id]
+					"orch_id" => $_GET[orch_id],
+					'web_hooks' => $_GET[web_hooks],
+					'json_endpoint' => $_GET[json_endpoint],
+					'web_hooks_level' => (int)$_GET[web_hooks_level]
 					
 					
 				);
 
+				
 				
 				
 				$mod_server=bartlby_modify_server($btl->RES, $_GET[server_id], $srv_obj);
@@ -1040,8 +1048,72 @@ switch($act) {
 		}
 	
 	break;
+	case 'delete_trap':
+		$s = bartlby_delete_trap($btl->RES, $_GET[trap_id]);
+	break;
+	case 'modify_trap':
+		if($_GET[trap_name]  && $_GET[trap_catcher]) {
+			
+			
+			$_GET[trap_is_final] = $_GET[trap_is_final] ? 1 : 0;
+			$trap_obj = array(
+				"trap_name" => $_GET[trap_name],
+				"trap_catcher" => $_GET[trap_catcher],
+				"trap_status_text" => $_GET[trap_status_text],
+				"trap_status_ok" => $_GET[trap_status_ok],
+				"trap_status_warning" => $_GET[trap_status_warning],
+				"trap_status_critical" => $_GET[trap_status_critical],
+				"trap_service_id" => $_GET[trap_service_id],
+				"trap_fixed_status" => $_GET[trap_fixed_status],
+				"trap_is_final" => $_GET[trap_is_final],
+				"trap_prio" => (int)$_GET[trap_prio],
+				"orch_id" => $_GET[orch_id]
+				
+			
+			);
+		
+			$add_trap = bartlby_modify_trap($btl->RES, (int)$_GET[trap_id], $trap_obj);
+			error_reporting($o);
+			
+		} else {
+			$act="missing_param";	
+		}
+	break;
+	case 'add_trap':
 	
+		if($_GET[trap_name]  && $_GET[trap_catcher]) {
 	
+			$_GET[trap_is_final] = $_GET[trap_is_final] ? 1 : 0;
+			$trap_obj = array(
+				"trap_name" => $_GET[trap_name],
+				"trap_catcher" => $_GET[trap_catcher],
+				"trap_status_text" => $_GET[trap_status_text],
+				"trap_status_ok" => $_GET[trap_status_ok],
+				"trap_status_warning" => $_GET[trap_status_warning],
+				"trap_status_critical" => $_GET[trap_status_critical],
+				"trap_service_id" => (int)$_GET[trap_service_id],
+				"trap_fixed_status" => (int)$_GET[trap_fixed_status],
+				"trap_is_final" => (int)$_GET[trap_is_final],
+				"trap_prio" => (int)$_GET[trap_prio],
+				"orch_id" => (int)$_GET[orch_id],
+				
+			
+			);
+
+			//var_dump($trap_obj);
+			
+			$add_trap = bartlby_add_trap($btl->RES, $trap_obj);
+			
+			
+			
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	break;
 	case 'add_servergroup':
 		if($_GET[servergroup_name]  && $_GET[servergroup_members]) {
 			
@@ -1142,7 +1214,10 @@ switch($act) {
 					"exec_plan" => $exec_plan,
 					"enabled_triggers" => $triggerstr,
 					"default_service_type" => $_GET[default_service_type],
-					"orch_id" => $_GET[orch_id]
+					"orch_id" => $_GET[orch_id],
+					"web_hooks" => $_GET[web_hooks],
+					'json_endpoint' => $_GET[json_endpoint],
+					'web_hooks_level' => (int)$_GET[web_hooks_level]
 					
 				);
 				$add_server=bartlby_add_server($btl->RES, $srv_obj);

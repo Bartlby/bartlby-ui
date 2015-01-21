@@ -285,6 +285,17 @@
               }
           }
           break;
+          case BARTLBY_AUDIT_TYPE_TRAP:
+          $re = bartlby_get_trap_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) {
+              if($re) {
+                bartlby_modify_trap($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));  
+              } else {
+                $tmp_res=bartlby_add_trap($btl->RES, json_decode($aRow[prev_object],true));
+                bartlby_set_trap_id($btl->RES, $tmp_res, $aRow["object_id"]);
+              }
+          }
+          break;          
         
         }
         
@@ -339,8 +350,16 @@
           $obj_link=" <a href='servicegroup_detail.php?servicegroup_id=" . $aRow["object_id"]  . "'>" . $aRow["label"] .  "</a>";
           $obj_type="SERVICEGROUP";
           break;
+          case BARTLBY_AUDIT_TYPE_TRAP:
+          $obj_link=" <a href='trap_detail.php?trap_id=" . $aRow["object_id"]  . "'>" . $aRow["label"] .  "</a>";
+          //$obj_link=" " . $aRow["label"] .  " ";
+          $obj_type="TRAP";
+          break;
         
         }
+
+        //$obj_type=$aRow["type"];
+        
       $row[] = $obj_link;
       $row[] = $obj_type;
 

@@ -1,7 +1,7 @@
 <?
 include "bartlby_sdk.php";
-$priv_key="30391def8ac1bf34310ad32f2edf929a7ae642fc";
-$pub_key="cbafc69f1134e866d8ac291d23c45e46d21f70b2";
+$priv_key="0b76bedb4bfc7176d8bc3df1c090f7f7eaa522c7";
+$pub_key="0b76bedb4bfc7176d8bc3df1c090f7f7eaa522c7";
 
 
 
@@ -10,7 +10,7 @@ $sdk = new BartlbyAPISDK($priv_key, $pub_key, "http://localhost");
 $json_data="";
 $params="";
 $method="GET";
-$request_uri="/api/v1/running/core";
+$request_uri="/api/v1/running/trap/2";
 
 $r = $sdk->doRequest($request_uri,$method, $params, $json_data);
 $arr = json_decode($r,true);

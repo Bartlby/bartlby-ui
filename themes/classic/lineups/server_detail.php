@@ -26,10 +26,22 @@
 		<?=$this->disp_box("server_detail_server_group_info")?>
 			
 		</div>
+
+		<div id=server_gauglets_ajax class='fifty_float_left'>
+		<?=$this->disp_box("server_detail_gauglets")?>
+			
+		</div>	
+		
+
 		<div id=server_detail_orch_ajax class='fifty_float_left'>
 		<?=$this->disp_box("server_detail_orch")?>
 			
 		</div>
+		<div id=server_detail_orch_ajax class='fifty_float_left'>
+		<?=$this->disp_box("server_detail_web_hooks")?>
+			
+		</div>
+	
 	</div>
 	<div class=col-lg-8>
 				

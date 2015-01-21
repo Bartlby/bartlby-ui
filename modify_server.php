@@ -176,12 +176,60 @@ if($defaults[default_service_type] == 10) {
 	$types[9][s]=1;
 }
 
+$types[10][c]="";
+$types[10][v]="11";
+$types[10][k]="TRAP";
+if($defaults[default_service_type] == 11) {
+	$types[10][s]=1;
+}
+
+$types[11][c]="";
+$types[11][v]="12";
+$types[11][k]="JSON";
+if($defaults[default_service_type] == 12) {
+	$types[11][s]=1;
+}
+
 
 if(!$defaults[default_service_type]) {
 	$types[0][s]=1;	
 }
 
 
+
+//Events Enabled
+$eventenabled[0][c]="";
+$eventenabled[0][v] = 0; //No
+$eventenabled[0][k] = "Disabled"; //No
+$eventenabled[0][s]=0;
+
+$eventenabled[1][c]="";
+$eventenabled[1][v] = 1; //No
+$eventenabled[1][k] = "HARD"; //No
+$eventenabled[1][s]=0;
+
+$eventenabled[2][c]="";
+$eventenabled[2][v] = 2; //No
+$eventenabled[2][k] = "SOFT"; //No
+$eventenabled[2][s]=0;
+
+
+$eventenabled[3][c]="";
+$eventenabled[3][v] = 3; //No
+$eventenabled[3][k] = "BOTH"; //No
+$eventenabled[3][s]=0;
+
+if(is_int($defaults[web_hooks_level]) && $defaults[web_hooks_level] == 1) {
+	$eventenabled[1][s]=1;	
+	
+} else if (is_int($defaults[web_hooks_level]) && $defaults[web_hooks_level] == 2) {
+	
+	$eventenabled[2][s]=1;
+} else if(is_int($defaults[web_hooks_level]) && $defaults[web_hooks_level] == 3) {
+	$eventenabled[3][s]=1;
+} else {
+	$eventenabled[0][s]=1;
+}
 
 $fm_action="modify_server";
 $layout->setTitle("Modify Server");
@@ -434,6 +482,42 @@ $ov .= $layout->FormBox(
 			1=>$layout->orchDropdown(true, $defaults[orch_id])
 	)
 ,true);
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>Web Hooks</b></h4>" . ''
+		)
+,true);
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"Web Hook Level?",
+			1=>$layout->DropDown("web_hooks_level", $eventenabled)
+			
+		)
+,true);
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"Web Hooks (one per line):",
+			1=>$layout->TextArea("web_hooks", $defaults[web_hooks])
+	)
+,true);
+
+
+$ov .= $layout->FormBox(
+		array(
+			0=>"<h4><b>JSON Options</b></h4>" . ''
+		)
+,true);
+$ov .= $layout->FormBox(
+		array(
+			0=>"JSON Endpoint:",
+			1=>$layout->Field("json_endpoint", "text", $defaults[json_endpoint])
+	)
+,true);
+
+
 $ov .= $layout->FormBox(
 		array(
 			0=>"<h4><b>SSH Options</b></h4>" . ''

@@ -86,6 +86,13 @@ if($defaults[service_type] == 10) {
 	$svc_type="SSH";
 }
 
+if($defaults[service_type] == 11) {
+	$svc_type="TRAP";
+}
+if($defaults[service_type] == 12) {
+	$svc_type="JSON";
+}
+
 if($defaults["notify_enabled"]==1) {
 	$noti_en="<input type=checkbox class='switch'  disabled checked>";
 } else {
@@ -251,6 +258,14 @@ $layout->create_box($info_box_title, $core_content, "service_detail_orch", array
 
 
 
+$info_box_title='History';  
+$layout->create_box($info_box_title, $core_content, "service_detail_service_history", array(
+											"service" => $defaults,											
+											)											
+		, "service_detail_service_history", false, false);
+
+$layout->Tab("History", $layout->disp_box("service_detail_service_history"));
+
 
 
 $info_box_title='Service Info';  
@@ -281,7 +296,7 @@ if(is_array($defaults[servicegroups])) {
 												
 			, "service_detail_group_info", false, true);
 }
-if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_type] == 2 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9)) {
+if(file_exists("gauglets/" . $defaults[plugin]  . ".php") && ($defaults[service_type] == 2 || $defaults[service_type] == 11 || $defaults[service_type] == 10  || $defaults[service_type] == 1 || $defaults[service_type] == 4 || $defaults[service_type] == 6 || $defaults[service_type] == 7|| $defaults[service_type] == 8  || $defaults[service_type] == 9)) {
 	
 	
 	

@@ -40,6 +40,10 @@
                         $t = " Servergroup";
                         $link = "<a href='servergroup_detail.php?servergroup_id=" . $aRow[object_id] . "'>" . $aRow[label] . "</A>";
                       break;
+                      case BARTLBY_AUDIT_TYPE_TRAP:
+                        $t = " Trap";
+                        $link = " " . $aRow[label] . " ";
+                      break;
                       default:
                         $t = "";
                         $link = "";

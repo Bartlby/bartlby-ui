@@ -35,6 +35,9 @@ RewriteRule ^(.*)/worker/(.*)$ worker.php [QSA,L]
 RewriteRule ^(.*)/extension$ extension.php [QSA,L]
 RewriteRule ^(.*)/extension/(.*)$ extension.php [QSA,L]
 
+RewriteRule ^(.*)/trap$ trap.php [QSA,L]
+RewriteRule ^(.*)/trap/(.*)$ trap.php [QSA,L]
+
 
 
 

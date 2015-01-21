@@ -21,6 +21,9 @@ $editable_service_fields[] = array("server_notify", "Notifications Enabled");
 $editable_service_fields[] = array("server_flap_seconds", "Flap Seconds");
 $editable_service_fields[] = array("exec_plan", "Execution Plan");
 $editable_service_fields[] = array("orch_id", "Orchestra ID");
+$editable_service_fields[] = array("json_endpoint", "JSON Endpoint");
+$editable_service_fields[] = array("web_hooks", "Web hooks");
+$editable_service_fields[] = array("web_hooks_level", "Web Hooks Level");
 
 
 

@@ -9,6 +9,10 @@ class QuickDowntime {
 		
 
 	}
+
+	function _js_hook() {
+		return '<script src="extensions/QuickDowntime/qd.js?v=1" type="text/javascript"></script>';
+	}
 	/* XAJAX FUNCTIONS*/
 	function qd_add_downtime() {
 		global $xajax;
@@ -110,7 +114,6 @@ class QuickDowntime {
 	function _servicegroupoptions($size) {
 		global $btl;
 		global $layout;
-		$layout->addScript('<script src="extensions/QuickDowntime/qd.js" type="text/javascript"></script>');
 		
 
 		$obj = $btl->_BTL["object"];
@@ -123,7 +126,6 @@ class QuickDowntime {
 	function _servergroupoptions($size) {
 		global $btl;
 		global $layout;
-		$layout->addScript('<script src="extensions/QuickDowntime/qd.js" type="text/javascript"></script>');
 		
 
 		$obj = $btl->_BTL["object"];
@@ -137,7 +139,6 @@ class QuickDowntime {
 		
 		global $btl;
 		global $layout;
-		$layout->addScript('<script src="extensions/QuickDowntime/qd.js" type="text/javascript"></script>');
 		
 
 		$obj = $btl->_BTL["object"];
@@ -151,7 +152,6 @@ class QuickDowntime {
 	function _serveroptions($size) {
 		global $btl;
 		global $layout;
-		$layout->addScript('<script src="extensions/QuickDowntime/qd.js" type="text/javascript"></script>');
 		
 
 		$obj = $btl->_BTL["object"];

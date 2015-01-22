@@ -109,6 +109,9 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		global $_GET;
 		global $_SESSION;
 		global $Bartlby_CONF_used_instance;
+
+		global $btl;
+		
 		$this->box_count=1;
 		if(bartlby_config(getcwd() . "/ui-extra.conf", "theme") != "") {
 			$this->theme=bartlby_config(getcwd() . "/ui-extra.conf", "theme");
@@ -464,6 +467,16 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 	function display($lineup_file="", $base_path=false) {
 	global $xajax;
 	global $confs;
+	global $btl;
+
+
+		if($btl) {
+			$js=$btl->getExtensionsReturn("_js_hook", $this, false, true);
+			for($x=0; $x<count($js); $x++) $this->addScript($js[$x][out]);
+			
+		}
+
+	
 		if($lineup_file=="no") $lineup_file="";
 		
 		
@@ -700,7 +713,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 
 		}
 		
-
+		
 
 		ob_start();
 		include($this->template_file);
@@ -719,7 +732,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			echo "<script>btl_start_auto_reload()</script>";
 		}
 
-
+		
 			
 		
 		

@@ -1792,7 +1792,7 @@ if($m[2] == "5724") {
 			}
 					
 	}	
-	function getExtensionsReturn($method, $layout, $ign=false) {
+	function getExtensionsReturn($method, $layout, $ign=false, $skip_box = false) {
 		
 		$r=array();
 		$dhl = opendir("extensions");
@@ -1807,6 +1807,7 @@ if($m[2] == "5724") {
 				if (class_exists($file)) {
 					$clh = new $file();
 					if(method_exists($clh, $method)) {
+						
 						$o = $clh->$method();
 						$ex[ex_name]=$file;
 						$ex[out] = $o;
@@ -1833,7 +1834,7 @@ if($m[2] == "5724") {
 								
 							
 							
-							if($layout) {
+							if($layout && !$skip_box) {
 								$layout->create_box($info_box_title, $core_content, "extension_" . $ex[ex_name]);
 							}
 						}

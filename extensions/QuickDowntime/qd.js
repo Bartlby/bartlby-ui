@@ -40,8 +40,10 @@ function qd_load_done(dl) {
 		  confirmButtonText: "Yes",
 		  closeOnConfirm: true
 		},
-		function(){
-			xajax_ExtensionAjax("QuickDowntime", "qd_add_downtime", xajax.getFormValues("qd_form"));
+		function(isConfirm){
+			if(isConfirm) {
+				xajax_ExtensionAjax("QuickDowntime", "qd_add_downtime", xajax.getFormValues("qd_form"));
+			}
 			$('#qd_go_btn').removeAttr("disabled");  	
 		});
 				

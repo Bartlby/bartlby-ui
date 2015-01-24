@@ -146,16 +146,8 @@ if($_GET[datatables_output] == 1) {
 					$evnt_type=$msg[id];	
 				break;
 			}
-			$replaced_msg=str_replace("\\dbr", "\\n",$msg[message]);
-			/*
-			$replaced_msg=str_replace("}", "",$replaced_msg);
-			$replaced_msg=str_replace("{", "",$replaced_msg);
-			*/
-			//$replaced_msg = utf8_encode($replaced_msg);
-			$replaced_msg = trim($replaced_msg);	
 			
-			$replaced_msg = preg_replace( '/\s+/', ' ', $replaced_msg );
-			$evnt_object = json_decode($replaced_msg,true);
+			$evnt_object = json_decode($msg[message],true);
 			
 			
 			$svc_color=$btl->getColor($evnt_object[service][current_state]);

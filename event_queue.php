@@ -120,7 +120,7 @@ if($_GET[datatables_output] == 1) {
 	if($_GET[table] == "event_log") {
 
 		$msg_array=array();
-		for($x=128; $x>=0; $x--) {
+		for($x=0; $x<MAX_EVENT_QUEUE; $x++) {
 			$msg=bartlby_event_fetch($btl->RES, $x);
 			
 			if($msg[id] == 0) {
@@ -134,7 +134,7 @@ if($_GET[datatables_output] == 1) {
 		krsort($msg_array);
 
 		foreach($msg_array as $msg) {
-
+			
 			switch($msg[id]) {
 				case 2:
 					$evnt_type="STATE CHANGE";
@@ -158,8 +158,8 @@ if($_GET[datatables_output] == 1) {
 			$evnt_object = json_decode($replaced_msg,true);
 			
 			
-			$svc_color=$btl->getColor($evnt_object[current_state]);
-			$svc_state=$btl->getState($evnt_object[current_state]);
+			$svc_color=$btl->getColor($evnt_object[service][current_state]);
+			$svc_state=$btl->getState($evnt_object[service][current_state]);
 			
 						$ajax_lbl = "label-default";
 						if($svc_color == "green") {
@@ -178,11 +178,11 @@ if($_GET[datatables_output] == 1) {
 			$output = $evnt_object[type] . " <br>";
 			//$output = (" . $evnt_object[service_id] . ")  - ";
 			//$output .=  $evnt_object[current_state] . " <br>";
-			$output .=  $evnt_object[current_output] . " <br>";
+			$output .=  $evnt_object[service][current_output] . " <br>";
 
-			$msgo = $evnt_object[current_output];
+			$msgo = $evnt_object[service][current_output];
 			$st = "<span class='label " . $ajax_lbl  . "'>" . $svc_state . "</span>";
-			$lnk =  "<a href='service_detail.php?service_id=" .$evnt_object[service_id] . "'>" .  $evnt_object[server_and_service_name] . " </a>";
+			$lnk =  "<a href='service_detail.php?service_id=" .$evnt_object[service][service_id] . "'>" .  $evnt_object[service][service_name] . "/" . $evnt_object[service][server_name] . " </a>";
 		
 			
 			

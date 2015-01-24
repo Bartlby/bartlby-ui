@@ -43,6 +43,7 @@ define("BARTLBY_RELNOT", "");
 define("LOOP_CONTINUE", -2);
 define("LOOP_BREAK", -1);
 define("MAX_NOTIFICATION_LOG", 512);
+define("MAX_EVENT_QUEUE", 128);
 $wdays[0]="Sunday";
 $wdays[1]="Monday";
 $wdays[2]="Tuesday";

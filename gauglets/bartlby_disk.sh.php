@@ -5,7 +5,7 @@ $max_value=100;
 
 
 
-$ar = explode("\dbr",   $plcs[service][new_server_text]);
+$ar = explode("\dbr",   $plcs[service][current_output]);
 
 for($x=0; $x<count($ar); $x++) {
 				preg_match("/disk: (.*?) reached (.*?)%/", $ar[$x], $m);

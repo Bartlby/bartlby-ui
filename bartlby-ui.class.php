@@ -1683,7 +1683,7 @@ if($m[2] == "5724") {
         			
         		}
         		if(!$has_right) {
-        			$r[$x][new_server_text] = "you are missing: view_service_output right";	
+        			$r[$x][current_output] = "you are missing: view_service_output right";	
         		}
         		
 			

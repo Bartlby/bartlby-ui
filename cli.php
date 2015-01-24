@@ -352,7 +352,7 @@ for($tt=0; $tt<$lines; $tt++) {
 					
 					////////////////////////////
 					
-					$out_text=$f[$z][new_server_text];
+					$out_text=$f[$z][current_output];
 					$disp_service=$f[$z][service_name];
 					
 					if($per_server[$f[$z][server_name]][$f[$z][current_state]] >= 5 && $group_similar == 1) {
@@ -584,7 +584,7 @@ function btl_disp_service() {
 	ncurses_wattron($w, NCURSES_A_REVERSE);
  	ncurses_mvwaddstr($w, 22,1,"Last Output:");
 	ncurses_wattroff($w, NCURSES_A_REVERSE);
-        ncurses_mvwaddstr($w, 23,1,str_replace("\dbr", "\n", $defaults[new_server_text]));
+        ncurses_mvwaddstr($w, 23,1,str_replace("\dbr", "\n", $defaults[current_output]));
 
 
 	

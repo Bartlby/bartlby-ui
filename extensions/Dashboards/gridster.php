@@ -375,7 +375,7 @@ li.gridst {
 								
  											st='<span class=\'label ' + lbl + '\'>' + data.SVC_DETAIL.svc_state + '</span>';
  												
- 												$('#' + id).html('<div class=\"panel panel-default\"><div class=\"panel-heading\"> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </div><div class=\"panel-body\">' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.new_server_text.substring(0,30) + '</A></div></div>');
+ 												$('#' + id).html('<div class=\"panel panel-default\"><div class=\"panel-heading\"> ' + data.SVC_DETAIL.server_name + '/' + data.SVC_DETAIL.service_name.substring(0,7) +  ' </div><div class=\"panel-body\">' + st + '  <a href=\'service_detail.php?service_id=' + data.SVC_DETAIL.service_id + '\'>  ' + data.SVC_DETAIL.current_output.substring(0,30) + '</A></div></div>');
  								
  											});
  									} else {

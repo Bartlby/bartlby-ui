@@ -10,5 +10,5 @@
 }
 </style>
 <div style='height: 250px;overflow:scroll'>
-<div ><kbd><?=str_replace( "\\dbr", "<br>",nl2br(htmlspecialchars($plcs[service][new_server_text])))?></kbd></div>
+<div ><kbd><?=str_replace( "\\dbr", "<br>",nl2br(htmlspecialchars($plcs[service][current_output])))?></kbd></div>
 </div>

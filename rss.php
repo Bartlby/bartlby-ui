@@ -25,7 +25,7 @@
 			for($x=0; $x<count($servs); $x++) {
 				$xml .= "<item>";
 				$xml .= "<title>" . $servs[$x][server_name] . ":" . $servs[$x][service_name] . "[" . $btl->getState($servs[$x][current_state]) . "]</title>";
-				$xml .= "<description>" . $servs[$x][new_server_text] . "</description>";
+				$xml .= "<description>" . $servs[$x][current_output] . "</description>";
 				$xml .= "<link>" . $btl->BASE_URL . "services.php?service_id=" . $servs[$x][service_id] . "</link>";
 				$xml .= "</item>";	
 			}

@@ -30,7 +30,7 @@ if(!$defaults) {
 }
 
 if(!$btl->hasRight("view_service_output", false)) {
-	$defaults[new_server_text] = "you are missing: view_service_output right";	
+	$defaults[current_output] = "you are missing: view_service_output right";	
 } 
 
 

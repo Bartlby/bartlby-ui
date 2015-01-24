@@ -8,7 +8,7 @@ $max_value=100-$max_value;
 
 //Get current Value
 
-preg_match("/Free Swap: ([0-9]+)%/", $plcs[service][new_server_text], $m);
+preg_match("/Free Swap: ([0-9]+)%/", $plcs[service][current_output], $m);
 
 
 $cur_val = 100-$m[1];

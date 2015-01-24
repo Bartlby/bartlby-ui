@@ -8,7 +8,7 @@ if(!$max_value) $max_value=10;
 //Get current Value
 
 
-if(preg_match("/, ([0-9\.]+) ([0-9\.]+) ([0-9\.]+)/", $plcs[service][new_server_text], $m)) {
+if(preg_match("/, ([0-9\.]+) ([0-9\.]+) ([0-9\.]+)/", $plcs[service][current_output], $m)) {
 	$cur_val[0]=$m[1];
 	$cur_val[1]=$m[2];
 	$cur_val[2]=$m[3];

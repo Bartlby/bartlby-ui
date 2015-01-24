@@ -151,7 +151,7 @@ function updateServiceDetail($svc_idx) {
 	$res->AddAssign("service_status", "innerHTML", $defaults[service_retain_current] . " / " . $defaults[service_retain]);
 	$res->AddAssign("service_next_check", "innerHTML", date("d.m.Y H:i:s", $defaults[last_check]+$defaults[check_interval]));
 	$res->AddAssign("service_last_check", "innerHTML", date("d.m.Y H:i:s", $defaults[last_check]));
-	$res->AddAssign("service_new_server_text", "innerHTML",  $defaults[new_server_text]);
+	$res->AddAssign("service_current_output", "innerHTML",  $defaults[current_output]);
 	$res->AddAssign("service_currently_running", "innerHTML", $currun);
 	$res->AddAssign("service_last_notify_send", "innerHTML", date("d.m.Y H:i:s", $defaults[last_notify_send]));
 	$res->AddAssign("service_current_state", "innerHTML", '<font color="' .  $svc_color . '">' . $svc_state . '</font>');

@@ -24,7 +24,7 @@ while(list($k,$v)=@each($servers)) {
 	
 	echo "<script language='javascript'>window.external.addServer('" . $k . "', '" . $v[0][server_name] . "');</script>";
 	for($y=0; $y<count($v); $y++) {
-		echo "<script language='javascript'>window.external.addService('" . $v[$y][server_id] . "', '" . $v[$y][service_id] . "', '" . $v[$y][service_name] . "', '" . $v[$y][current_state] . "',  '" . clean_ugly_string($v[$y][new_server_text]) . "');</script>\n";
+		echo "<script language='javascript'>window.external.addService('" . $v[$y][server_id] . "', '" . $v[$y][service_id] . "', '" . $v[$y][service_name] . "', '" . $v[$y][current_state] . "',  '" . clean_ugly_string($v[$y][current_output]) . "');</script>\n";
 	}	
 }
 echo "<script language='javascript'>window.external.FinishTree();</script>\n";

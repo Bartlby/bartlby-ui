@@ -300,11 +300,11 @@ if($thread_count == -1) {
 	$sched_theads .= '<thead>
 								  <tr>
 								  	
-									  <th>PID</th>
-									  <th>Startup Time</th>
-									  <th>Status</th>
-									  <th>IDLE</th>
-									  <th>CPU Time</th>
+									  <th width=10>PID</th>
+									  <th width=200>Startup Time</th>
+									  <th width=10>Status</th>
+									  <th width=10>IDLE</th>
+									  <th width=90>CPU Time</th>
 									  <th>Service</th>
 									  
 								  </tr>

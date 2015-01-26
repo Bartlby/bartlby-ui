@@ -11,6 +11,7 @@ $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("core.event_queue");
 $layout= new Layout();
 $layout->do_auto_reload=true;
+$layout->skip_main_reload=true;
 $layout->set_menu("core");
 $layout->setTitle("Bartlby Last Event's");
 

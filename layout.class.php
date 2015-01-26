@@ -655,7 +655,11 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		$this->UIVERSION=BARTLBY_UI_VERSION;
 		$this->RELNOT=BARTLBY_RELNOT;
 		
-		$this->create_box($this->BoxTitle, $this->OUT, "MAIN", "", "", false, true);
+		$refresh_main = true;
+		if($this->skip_main_reload == true) {
+			$refresh_main=false;
+		}
+		$this->create_box($this->BoxTitle, $this->OUT, "MAIN", "", "", false, $refresh_main);
 
 		
 	

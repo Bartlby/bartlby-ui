@@ -638,7 +638,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Core", "Config","choose_config.php");
                 $this->ext_menu .= $this->addSub("Core", "Statistic","statistic.php");
                 
-		$this->ext_menu .= $this->addSub("Core", "Event Queue","event_queue.php");
+		$this->ext_menu .= $this->addSub("Core", "Queues/Threads","event_queue.php");
 		$this->ext_menu .= $this->addSub("Core", "Extensions","extensions.php");
 		$this->ext_menu .= $this->addSub("Core", "About","version.php");
 		$this->ext_menu .= $this->endMenu();

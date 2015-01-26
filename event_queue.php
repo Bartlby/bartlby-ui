@@ -10,6 +10,7 @@ include "bartlby-ui.class.php";
 $btl=new BartlbyUi($Bartlby_CONF);
 $btl->hasRight("core.event_queue");
 $layout= new Layout();
+$layout->do_auto_reload=true;
 $layout->set_menu("core");
 $layout->setTitle("Bartlby Last Event's");
 
@@ -288,9 +289,67 @@ $not_log .= '<table class="notify_log_table table table-bordered">
 
 $not_log .= "</table>";
 
+
+$thread_count = bartlby_get_thread_count($btl->RES);
+
+if($thread_count == -1) {
+	$sched_theads = 'Not in Worker Mode';
+} else {
+	$sched_theads = '<div class="table-responsive"><table class="no-border hover list">';
+	$sched_theads .= '<thead>
+								  <tr>
+								  	
+									  <th>PID</th>
+									  <th>Startup Time</th>
+									  <th>Status</th>
+									  <th>IDLE</th>
+									  <th>CPU Time</th>
+									  <th>Service</th>
+									  
+								  </tr>
+							  </thead>  ';
+	$sched_theads .='             <tbody class="no-border-y">';
+                
+     
+
+	for($x=0; $x<$thread_count; $x++) {
+		$i = bartlby_get_thread_info($btl->RES, $x);
+		$svc_f = "NONE";
+		if($i[service_id] > 0) {
+			$tmp_svc = bartlby_get_object_by_id($btl->RES, BARTLBY_OBJECT_SERVICE, $i[service_id]);
+			$svc_f = "<a href='service_detail.php?service_id=" . $tmp_svc[service_id] . "'>" . $tmp_svc[server_name] . "/" . $tmp_svc[service_name] . "</A>";
+		}
+		$wrk = $i[idle] == 1 ? "true" : "false";
+		$sht = $i[shutdown] == 1 ? "shutdown" : "running";
+		$sched_theads .= '
+				<tr class="items">
+                  <td>' . $i[pid] . '</td>
+                  <td>' . date("d.m.Y H:i:s", $i[start_time]) . '</td>
+                  <td>' . $sht .  '</td>
+                  <td>' . $wrk . '</td>
+                  <td>' . $i[time_used] . ' ms</td>
+                  <td> ' . $svc_f . ' </td>
+                </tr>
+		';		
+
+	}
+	$sched_threads .= '
+              </tbody>
+            </table></div>';
+
+}
+
+
+
+
+$layout->create_box("Threads", $sched_theads, "sched_workers","", "", false, true);
+$sched_theads_box .= $layout->disp_box("sched_workers");
 //$layout->AddScript("<script>$(document).ready(function() { $('.1').dataTable();});</script>");
 $layout->SetMainTabName("Event Queue");
 $layout->Tab("Notification Aggregation Queue", "" . $not_log, "ev_not_log", true);
+
+$layout->Tab("Worker Info", "" . $sched_theads_box, "worker_threads", false);
+
 $layout->OUT .= $evnts;
 
 

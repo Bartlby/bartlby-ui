@@ -297,6 +297,7 @@ if($thread_count == -1) {
 									  <th width=10>Status</th>
 									  <th width=10>IDLE</th>
 									  <th width=90>CPU Time</th>
+									  <th width=90>Memory</th>
 									  <th>Service</th>
 									  
 								  </tr>
@@ -321,6 +322,7 @@ if($thread_count == -1) {
                   <td>' . $sht .  '</td>
                   <td>' . $wrk . '</td>
                   <td>' . $i[time_used] . ' ms</td>
+                  <td>' . $i[memory_used] . ' kb</td>
                   <td> ' . $svc_f . ' </td>
                 </tr>
 		';		

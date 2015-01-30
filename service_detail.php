@@ -98,6 +98,13 @@ if($defaults["notify_enabled"]==1) {
 } else {
 	$noti_en="<input type=checkbox class='switch'  disabled>";
 }
+
+if($defaults["script_enabled"]==1) {
+	$script_enabled="<input type=checkbox class='switch'  disabled checked>";
+} else {
+	$script_enabled="<input type=checkbox class='switch'  disabled>";
+}
+
 if($defaults["service_active"]==1) {
 	$serv_en="<input type=checkbox class='switch'  disabled checked>";
 } else {
@@ -185,6 +192,7 @@ if($defaults[check_starttime] != 0) {
 $plan_box = $btl->resolveServicePlan($defaults[exec_plan]);
 
 
+
 if($defaults[renotify_interval] != 0) {
 		$renot_en="every " . $defaults[renotify_interval] . " runs ( " . $btl->intervall(($defaults[check_interval]*$defaults[renotify_interval])) . ") ";
 } else {
@@ -255,6 +263,14 @@ $layout->create_box($info_box_title, $core_content, "service_detail_orch", array
 											)
 											
 		, "service_detail_orch", false, true);
+
+$info_box_title='Script';  
+$layout->create_box($info_box_title, $core_content, "service_detail_script", array(
+											"service" => $defaults,
+											"script_enabled" => $script_enabled,
+											)
+											
+		, "service_detail_script", false, false);
 
 
 
@@ -385,6 +401,9 @@ $ibox[2][k]="Critical";
 $ibox[3][c]="grey";
 $ibox[3][v]=4;
 $ibox[3][k]="Info";
+
+
+
 
 
 

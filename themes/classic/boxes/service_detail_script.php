@@ -1,0 +1,51 @@
+
+<table  width='100%' class="table no-strip borderless">
+	<tbody class=" ">
+
+	<tr>
+		<td width=150 class='font2'>Script:</td>
+		<td align=left >
+			<div class="code inline"><?echo htmlentities($plcs[service][script]);				
+			?>
+			</div>
+
+		</td>
+		<td>&nbsp;</td>           
+	</tr>
+		<tr>
+		<td width=150 class='font2'>Enabled:</td>
+		<td align=left ><?=$plcs[script_enabled]?></font></td>
+		<td>&nbsp;</td>           
+	</tr>
+	
+
+
+
+
+
+	</tbody>
+</table>
+
+
+<script>
+$(document).ready(function() {
+
+
+	$('.code').each(function() {
+
+	    var $this = $(this),
+	        $code = $this.html();
+
+	    $this.empty();
+
+	    var myCodeMirror = CodeMirror(this, {
+	        value: $code,
+	        mode: 'lua',
+	        lineNumbers: !$this.is('.inline'),
+	        readOnly: true,
+	        theme: "midnight"
+	    });
+
+	});
+});
+</script>

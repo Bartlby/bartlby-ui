@@ -31,7 +31,9 @@ echo $this->Form("fm1", "bartlby_action.php", "POST", true);
 
 		<?=$this->disp_box("toggles")?>
 		<?=$this->disp_box("active")?>
+		<?=$this->disp_box("script")?>
 		<?=$this->disp_box("orch")?>
+
 		
 		
 	</div>

@@ -147,6 +147,13 @@ if(is_int($defaults[notify_super_users]) && $defaults[notify_super_users] == 0) 
 	$notsuperenabled="checked";
 }
 
+if(is_int($defaults[script_enabled]) && $defaults[script_enabled] == 0) {
+	$scriptenabled="";
+} else {
+	$scriptenabled="checked";
+}
+
+
 $handled[0][c]="";
 $handled[0][v] = 0; //No
 $handled[0][k] = "Unhandled"; //No
@@ -613,13 +620,27 @@ $toggle_box_out .= $layout->FormBox(
 
 ,true);
 
+$script_box_out .= $layout->FormBox(
+		array(
+			0=>"Script:",
+			1=>$layout->codeMirror("service_script", $defaults[script], "lua")
+		)
+,true);
+$script_box_out.= $layout->FormBox(
+		array(
+			0=>"Enabled:",
+			1=>$layout->Field("script_enabled", "checkbox", "1", "", "class='switch' " . $scriptenabled)
+		)
+,true);
+
+
+
 $orch_box_out .= $layout->FormBox(
 		array(
 			0=>"Orchestra ID:",
 			1=>$layout->orchDropdown(false, -1)
 		)
 ,true);
-
 
 
 $layout->create_box("Basic Settings", '<span class="form-horizontal" role="form"> ' . $active_box_out . "</span>", "basic");
@@ -630,6 +651,9 @@ $layout->create_box("Toggles", '<span class="form-horizontal" role="form"> ' . $
 $layout->create_box("Cluster/Orchestra Settings", '<span class="form-horizontal" role="form"> ' . $orch_box_out . "</span>", "orch");
 
 $layout->create_box("Timing Settings", '<span class="form-horizontal" role="form"> ' . $timing_box_out . "</span>", "timing");
+
+
+$layout->create_box("Script", '<span class="form-horizontal" role="form"> ' . $script_box_out . "</span>", "script");
 
 
 $active_box_out="";

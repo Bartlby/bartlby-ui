@@ -249,9 +249,42 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->OUT .= $rr;	
 		}
 	}
-	 
+	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300) {
+		$r =  "<textarea class=form-control name='$name' id='$name' style='width:100%; height:100%;' >" . htmlentities($val) . "</textarea>
+		<script>
+			var editor" .  $name . " = CodeMirror.fromTextArea(document.getElementById('" . $name . "'), {
+  					lineNumbers: true,
+  					mode: '" . $type . "',
+  					theme: 'midnight',
+  					lineWrapping: true
+			});
+			editor" .  $name . ".setSize(" . $w . ", ". $h . ");
+			editor" .  $name . ".setOption(\"maxLength\", " . $limit . ");
+			editor" .  $name . ".on(\"beforeChange\", CMUtils.enforceMaxLength);
+
+		
+			function editor" .  $name . "_sample() {
+				$.get('/lua/bartlby_service_hook.lua', function(d) {
+					editor" .  $name . ".setValue(d);
+				});
+			}
+		</script>
+		
+		<span class='btn-sm btn-primary' onClick='editor" .  $name . "_sample()'>Load Sample Service Hook</span>
+		";
+
+		$r = '<div class="form-group" id="fg_' . $name . '">
+				    
+				   	 <div class="col-sm-12">
+				      ' . $r . '
+				      </div>
+				    
+				  </div>';
+		return $r;
+
+	} 
 	function TextArea($name, $def, $height=7, $width=100) {
-		$r = "<textarea class=form-control name='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
+		$r = "<textarea class=form-control name='$name' id='$name' cols=$width rows=$height style='width:100%'>$def</textarea>\n";
 		$r = '<div class="form-group" id="fg_' . $name . '">
 				    
 				   	 <div class="col-sm-12">

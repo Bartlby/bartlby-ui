@@ -1936,6 +1936,8 @@ if($m[2] == "5724") {
 						"usid" => $re[$x][usid],
 						"notify_super_users" => $re[$x][notify_super_users],
 						"handled" => 0,
+						"script" => $re[$x][script],
+						"script_enabled" => $re[$x][script_enabled],
 						"orch_id" => $srv_temp[orch_id]
 					);
 				

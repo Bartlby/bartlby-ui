@@ -6,7 +6,8 @@
 					"NOTIFYLOG",
 					"SCHED",
 					"TRIGGER",
-					"SHM"
+					"SHM",
+					"LUA"
 					
 
 			);

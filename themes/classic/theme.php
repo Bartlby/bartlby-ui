@@ -64,6 +64,8 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 	
 	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
 	
+	<link href="themes/classic/css/codemirror/codemirror.css" rel="stylesheet">
+	<link href="themes/classic/css/codemirror/midnight.css" rel="stylesheet">
 	
 	
 	<link href='themes/classic/css/slider.css' rel='stylesheet'>
@@ -86,6 +88,9 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 
 	<!-- jQuery -->
 	<script src="themes/classic/js/jquery-1.11.0.min.js"></script>
+
+	<script src="themes/classic/js/codemirror/codemirror.js"></script>
+	<script src="themes/classic/js/codemirror/lua.js"></script>
 
 
 	<script src="themes/classic/js/bootstrap.js"></script>

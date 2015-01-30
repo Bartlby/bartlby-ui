@@ -54,7 +54,7 @@
 			<td  colspan=1>
 			Running: <b><?=$plcs[running]?></b>
 			</td>
-			<td align=right >Avg Round Time:<b><?=$plcs[round_ms_time]?></b> ms / avg service delay:<b> <?=$plcs[average_delay]?> sec.</b></td>
+			<td align=right >Avg Round Time:<b><?=$plcs[round_ms_time]?></b> ms / avg service delay:<b> <?=$plcs[average_delay]?> ms.</b></td>
 		</tr>
 		<?
 			}

@@ -264,14 +264,16 @@ $layout->create_box($info_box_title, $core_content, "service_detail_orch", array
 											
 		, "service_detail_orch", false, true);
 
-$info_box_title='Script';  
-$layout->create_box($info_box_title, $core_content, "service_detail_script", array(
-											"service" => $defaults,
-											"script_enabled" => $script_enabled,
-											)
-											
-		, "service_detail_script", false, false);
+if(strlen($defaults[script]) > 3) {
+	$info_box_title='Script';  
+	$layout->create_box($info_box_title, $core_content, "service_detail_script", array(
+												"service" => $defaults,
+												"script_enabled" => $script_enabled,
+												)
+												
+			, "service_detail_script", false, false);
 
+}
 
 
 $info_box_title='History';  

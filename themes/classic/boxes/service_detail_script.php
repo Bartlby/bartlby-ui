@@ -5,7 +5,7 @@
 	<tr>
 		<td width=150 class='font2'>Script:</td>
 		<td align=left >
-			<div class="code inline"><?echo htmlentities($plcs[service][script]);				
+			<div class="code inline"><?echo htmlspecialchars($plcs[service][script]);				
 			?>
 			</div>
 
@@ -34,12 +34,13 @@ $(document).ready(function() {
 	$('.code').each(function() {
 
 	    var $this = $(this),
-	        $code = $this.html();
+	        $code = $this.html(),
+	        $unescaped = $('<div/>').html($code).text();;
 
 	    $this.empty();
 
 	    var myCodeMirror = CodeMirror(this, {
-	        value: $code,
+	        value: $unescaped,
 	        mode: 'lua',
 	        lineNumbers: !$this.is('.inline'),
 	        readOnly: true,

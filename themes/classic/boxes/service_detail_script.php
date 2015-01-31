@@ -5,7 +5,7 @@
 	<tr>
 		<td width=150 class='font2'>Script:</td>
 		<td align=left >
-			<div class="code inline" style='height: 300px; overflow: auto;'><?echo htmlspecialchars($plcs[service][script]);				
+			<div class="code inline" style='height: 300px; overflow: auto;font-size: 16px;'><?echo htmlspecialchars($plcs[service][script]);				
 			?>
 			</div>
 

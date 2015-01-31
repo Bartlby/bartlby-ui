@@ -250,15 +250,24 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 	}
 	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300) {
-		$r =  "<textarea class=form-control name='$name' id='$name' style='width:100%; height:100%;' >" . htmlentities($val) . "</textarea>
+		$r =  "<style>
+		.CodeMirror {
+			height: 500px;
+			width: auto;
+			font-size: 16px;
+		}
+	
+		</style>
+		<textarea class=form-control name='$name' id='$name' style='width:100%; height:100%;' >" . htmlentities($val) . "</textarea>
 		<script>
 			var editor" .  $name . " = CodeMirror.fromTextArea(document.getElementById('" . $name . "'), {
   					lineNumbers: true,
   					mode: '" . $type . "',
-  					theme: 'midnight',
-  					lineWrapping: true
+  					theme: 'monokai',
+  					lineWrapping: true,
+  					viewportMargin: 200
 			});
-			editor" .  $name . ".setSize(" . $w . ", ". $h . ");
+			//editor" .  $name . ".setSize(" . $w . ", ". $h . ");
 			editor" .  $name . ".setOption(\"maxLength\", " . $limit . ");
 			editor" .  $name . ".on(\"beforeChange\", CMUtils.enforceMaxLength);
 

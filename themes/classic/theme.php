@@ -65,7 +65,7 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
 	<link href="themes/classic/css/bootstrap.css" rel="stylesheet">
 	
 	<link href="themes/classic/css/codemirror/codemirror.css" rel="stylesheet">
-	<link href="themes/classic/css/codemirror/midnight.css" rel="stylesheet">
+	<link href="themes/classic/css/codemirror/monokai.css" rel="stylesheet">
 	
 	
 	<link href='themes/classic/css/slider.css' rel='stylesheet'>

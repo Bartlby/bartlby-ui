@@ -620,12 +620,8 @@ $toggle_box_out .= $layout->FormBox(
 
 ,true);
 
-$script_box_out .= $layout->FormBox(
-		array(
-			0=>"Script:",
-			1=>$layout->codeMirror("service_script", $defaults[script], "lua")
-		)
-,true);
+$script_box_out .= $layout->codeMirror("service_script", $defaults[script], "lua");
+
 $script_box_out.= $layout->FormBox(
 		array(
 			0=>"Enabled:",
@@ -653,7 +649,7 @@ $layout->create_box("Cluster/Orchestra Settings", '<span class="form-horizontal"
 $layout->create_box("Timing Settings", '<span class="form-horizontal" role="form"> ' . $timing_box_out . "</span>", "timing");
 
 
-$layout->create_box("Script", '<span class="form-horizontal" role="form"> ' . $script_box_out . "</span>", "script");
+$layout->create_box("Script", ' ' . $script_box_out . "", "script");
 
 
 $active_box_out="";

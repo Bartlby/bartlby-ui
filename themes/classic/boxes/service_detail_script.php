@@ -5,7 +5,7 @@
 	<tr>
 		<td width=150 class='font2'>Script:</td>
 		<td align=left >
-			<div class="code inline"><?echo htmlspecialchars($plcs[service][script]);				
+			<div class="code inline" style='height: 300px; overflow: auto;'><?echo htmlspecialchars($plcs[service][script]);				
 			?>
 			</div>
 
@@ -44,7 +44,7 @@ $(document).ready(function() {
 	        mode: 'lua',
 	        lineNumbers: !$this.is('.inline'),
 	        readOnly: true,
-	        theme: "midnight"
+	        theme: "monokai"
 	    });
 
 	});

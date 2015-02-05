@@ -26,7 +26,7 @@
 			
 			<td width=15>
 
-								<span class="fa-bell fa-lg">
+								<span class="fa-lg">
 			  						<i class="fa fa-eye "></i>
 			  				
 								</span>
@@ -51,7 +51,7 @@
 			
 				<td width=15>
 
-					<span class="fa-bell fa-lg">
+					<span class="fa-lg">
   						<i class="fa fa-check "></i>
   				
 					</span>
@@ -64,7 +64,7 @@
 			
 				<td width=15>
 
-					<span class="fa-bell fa-lg">
+					<span class="fa-lg">
   						<i class="fa fa-comment "></i>
   				
 					</span>
@@ -81,7 +81,7 @@
                         
 						<td width=15>
 
-								<span class="fa-bell fa-lg">
+								<span class="fa-lg">
 			  						<i class="fa fa-play-circle "></i>
 			  				
 								</span>
@@ -91,7 +91,7 @@
                         
                         <td width=15>
 
-								<span class="fa-bell fa-lg">
+								<span class="fa-lg">
 			  						<i class="fa fa-copy "></i>
 			  				
 								</span>
@@ -101,7 +101,7 @@
 
                         <td width=15>
 
-								<span class="fa-bell fa-lg">
+								<span class="fa-lg">
 			  						<i class="fa fa-line-chart "></i>
 			  				
 								</span>
@@ -115,7 +115,7 @@
 		<tr>
 				<td width=15>
 
-								<span class="fa-bell fa-lg">
+								<span class="fa-lg">
 			  						<i class="fa fa-trash-o "></i>
 			  				
 								</span>
@@ -124,7 +124,7 @@
 			
 			 			<td width=15>
 
-								<span class="fa-bell fa-lg">
+								<span class=" fa-lg">
 			  						<i class="fa fa-pencil "></i>
 			  				
 								</span>

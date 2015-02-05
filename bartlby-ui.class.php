@@ -196,9 +196,88 @@ class BartlbyUi {
 		
 		
 	}
+
+	function safe_lua_env() {
+		$this->LUA->eval(<<<CODE
+
+				-- save a pointer to globals that would be unreachable in sandbox
+				local e=_ENV
+
+				-- sample sandbox environment
+				sandbox_env = {
+				  ipairs = ipairs,
+				  next = next,
+				  pairs = pairs,
+				  pcall = pcall,
+				  tonumber = tonumber,
+				  tostring = tostring,
+				  type = type,
+				  unpack = unpack,
+				  coroutine = { create = coroutine.create, resume = coroutine.resume, 
+				      running = coroutine.running, status = coroutine.status, 
+				      wrap = coroutine.wrap },
+				  string = { byte = string.byte, char = string.char, find = string.find, 
+				      format = string.format, gmatch = string.gmatch, gsub = string.gsub, 
+				      len = string.len, lower = string.lower, match = string.match, 
+				      rep = string.rep, reverse = string.reverse, sub = string.sub, 
+				      upper = string.upper },
+				  table = { insert = table.insert, maxn = table.maxn, remove = table.remove, 
+				      sort = table.sort },
+				  math = { abs = math.abs, acos = math.acos, asin = math.asin, 
+				      atan = math.atan, atan2 = math.atan2, ceil = math.ceil, cos = math.cos, 
+				      cosh = math.cosh, deg = math.deg, exp = math.exp, floor = math.floor, 
+				      fmod = math.fmod, frexp = math.frexp, huge = math.huge, 
+				      ldexp = math.ldexp, log = math.log, log10 = math.log10, max = math.max, 
+				      min = math.min, modf = math.modf, pi = math.pi, pow = math.pow, 
+				      rad = math.rad, random = math.random, sin = math.sin, sinh = math.sinh, 
+				      sqrt = math.sqrt, tan = math.tan, tanh = math.tanh },
+				  os = { clock = os.clock, difftime = os.difftime, time = os.time },
+				}
+
+				function run_sandbox(sb_env, sb_func, ...)
+				  local sb_orig_env=_ENV
+				  if (not sb_func) then return nil end
+				  _ENV=sb_env
+				  local sb_ret={e.pcall(sb_func, ...)}
+				  _ENV=sb_orig_env
+				  return e.table.unpack(sb_ret)
+				end
+
+				function my_eval(expr) 
+					if(expr)
+					then
+						return 1
+					else
+						return 0
+					end
+				end
+					
+					
+
+CODE
+			);
+
+	}
+
 	function bartlby_service_matches_string($svc, $string) {
 		if(!$string) return true;
 		
+		if(extension_loaded("lua")) {
+			if($this->LUA == false) {
+				$this->LUA = new lua();
+				$this->safe_lua_env();
+			}
+			try {
+				$this->LUA->assign("search", $svc);
+				$r = $this->LUA->eval("return my_eval(" . $string . ")");
+			} catch (Exception $ex) {
+				return false;
+			}
+			if($r == 1) return true;
+			if($r == 0) return false;
+			
+		}
+
 		$rt = true;
 		
 		if(strstr($string, " ")) {
@@ -942,6 +1021,7 @@ if($m[2] == "5724") {
 			}
 		}	
 	
+		$this->LUA=false;
 		$this->UserActivityFeedDB="CREATE TABLE UserActivityFeed (user_id integer, txt TEXT, user_name TEXT ,insert_date DATE) ";
 
 		

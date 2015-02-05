@@ -612,6 +612,13 @@ function logview_next() {
 	d=$("#date_filter").val((p.getMonth() + 1) + '/' + p.getDate() + '/' +  p.getFullYear());
 	logview_update_filter($("#date_filter").val());
 }
+
+function go_small() {
+	
+}
+function go_big() {
+	
+}
 $(function(){
   //Functions
   function toggleSideBar(_this){
@@ -623,12 +630,16 @@ $(function(){
       $(".fa",b).addClass("fa-angle-left").removeClass("fa-angle-right");
       w.removeClass("sb-collapsed");
       $.cookie('BTL_sidebar','open',{expires:365, path:'/'});
+      go_big();
+
     }else{
       $(".fa",b).removeClass("fa-angle-left").addClass("fa-angle-right");
-      w.addClass("sb-collapsed");
+            w.addClass("sb-collapsed");
       $.cookie('BTL_sidebar','closed',{expires:365, path:'/'});
+       go_small();
     }
     //updateHeight();
+
   }
     
   function updateHeight(){
@@ -659,6 +670,7 @@ $(function(){
     }
   }
         
+      
 
       /*VERTICAL MENU*/
       $(".cl-vnavigation li ul").each(function(){
@@ -945,6 +957,7 @@ $(function(){
     if($.cookie('BTL_sidebar') && $.cookie('BTL_sidebar') == 'closed'){
         $('#cl-wrapper').addClass('sb-collapsed');
         $('.fa',$('#sidebar-collapse')[0]).addClass('fa-angle-right').removeClass('fa-angle-left');
+        go_small();
     }
   });
 

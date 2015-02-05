@@ -23,7 +23,7 @@ $(document).ready(function() {
 		$.plot($("#state_change_flotchart"), [
 			{ label: "State Changes",  data: state_changes_whats_on}			
 		], {
-			colors: ['#2196f3'],
+			colors: ['#1F62C3'],
 			series: {
 				lines: { show: true },
 				points: { show: true }

@@ -166,15 +166,22 @@ if(count($confs) > 0) {
 					"btl_instance_id": $('[name=btl_instance_id]').val()
 			})
 			.done(function() {
-				swal("OK", "Login Successfull", "success");
-				delay(function() {
-					document.location.href='overview.php';
-				}, 500);
+				document.location.href='overview.php';
 			})
 			.fail(function() {
 				swal("Error", "Login Failed", "error");	
 			});
 			 
+		});
+		$("#password").keypress(function(e) {
+				if(e.which == 13) {
+					$("#login_btn").click();
+				}
+		});
+		$("#login_username").keypress(function(e) {
+				if(e.which == 13) {
+					$("#password").focus();
+				}
 		});
 	});
 
@@ -188,8 +195,8 @@ if(count($confs) > 0) {
 
 	<div class="middle-login">
 		<div class="block-flat">
-			<div class="header">							
-				<h3 class="text-center">Bartlby</h3>
+			<div class="header bartlby_verlauf">							
+				<h3 class="text-center"><img style='margin-top: 5px;' src='/themes/bartlby_login_logo.png'></h3>
 			</div>
 			<div>
 				<form style="margin-bottom: 0px !important;" class="form-horizontal" action="login.php" id=lform method=POST>

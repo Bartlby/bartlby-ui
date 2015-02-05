@@ -185,9 +185,10 @@ if(!$_SESSION["service_display_prio"]) $_SESSION["service_display_prio"]=50;
     <div class="cl-navblock" style='background-color: #333; xwidth:241px'>
       <div class="menu-space">
         <div class="content">
-          <div class="sidebar-logo">
-            <div class="logo">BARTLBY
-                <a href="index2.html"></a>
+          <div class="sidebar-logo bartlby_verlauf">
+            <div class="logo">
+            	<img style='margin-left: 5px; margin-right:5px;padding-top: 10px;' class='' id=logo_big  src='/themes/bartlby_sidebar_logo.png'>
+                
             </div>
           </div>
           <!--<div class="side-user">

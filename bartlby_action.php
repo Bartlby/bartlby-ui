@@ -1121,6 +1121,87 @@ switch($act) {
 			$act="missing_param";	
 		}
 	break;
+
+	case 'delete_trigger':
+		$s = bartlby_delete_trigger($btl->RES, $_GET[trigger_id]);
+	break;
+	case 'modify_trigger':
+		if($_GET[trigger_name]  && $_GET[trigger_data]) {
+	
+			$_GET[trigger_enabled] = $_GET[trigger_enabled] ? 1 : 0;
+			$exec_plan = "";
+			$df=false;
+			while(list($k, $v) = each($_GET[wdays_plan])) {
+				if($v != "") {
+					$df = true;		
+				}
+				$exec_plan .= $k . "=" . $v . "|";	
+			}
+			
+			if($df == false) {
+				$exec_plan="";	
+			}
+			
+			$trigger_obj = array(
+				"trigger_name" => $_GET[trigger_name],
+				"trigger_data" => $_GET[trigger_data],
+				"trigger_enabled" => (int)$_GET[trigger_enabled],
+				"trigger_execplan" => $exec_plan,
+				"trigger_type" => (int)$_GET[trigger_type],
+				"orch_id" => (int)$_GET[orch_id],
+			);
+		
+			$add_trigger = bartlby_modify_trigger($btl->RES, (int)$_GET[trigger_id], $trigger_obj);
+			error_reporting($o);
+			
+		} else {
+			$act="missing_param";	
+		}
+	break;
+	case 'add_trigger':
+	
+		if($_GET[trigger_name]  && $_GET[trigger_data]) {
+	
+			$_GET[trigger_enabled] = $_GET[trigger_enabled] ? 1 : 0;
+			$exec_plan = "";
+			$df=false;
+			while(list($k, $v) = each($_GET[wdays_plan])) {
+				if($v != "") {
+					$df = true;		
+				}
+				$exec_plan .= $k . "=" . $v . "|";	
+			}
+			
+			if($df == false) {
+				$exec_plan="";	
+			}
+
+			$trigger_obj = array(
+				"trigger_name" => $_GET[trigger_name],
+				"trigger_data" => $_GET[trigger_data],
+				"trigger_execplan" => $exec_plan,
+				"trigger_enabled" => (int)$_GET[trigger_enabled],
+				"trigger_type" => (int)$_GET[trigger_type],
+				"orch_id" => (int)$_GET[orch_id],
+			);
+
+			
+			$add_trigger = bartlby_add_trigger($btl->RES, $trigger_obj);
+			
+			
+			
+			
+			
+			
+			
+						
+		} else {
+			$act="missing_param";	
+		}
+	break;
+
+
+
 	case 'add_servergroup':
 		if($_GET[servergroup_name]  && $_GET[servergroup_members]) {
 			

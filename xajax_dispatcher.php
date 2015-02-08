@@ -273,6 +273,98 @@ function bulkEditValuesTrap($trap_ids, $new_values, $mode = 0) {
 	return $res;
 }
 
+function bulkEditValuesTrigger($trigger_ids, $new_values, $mode = 0) {
+	global $btl;
+	$res = new xajaxresponse();
+	$output = "";
+	//FIXME check for <= 0 $service_ids
+	$btl->trigger_list_loop(function($svc, $shm) use(&$trigger_ids, &$new_values, &$mode, &$res, &$output, &$btl) {
+		$f = in_array("" . $svc[server_id], $server_ids);
+		
+		if(count($trigger_ids) == 0) {
+			$f = true;
+		}
+		$doedit=0;
+		if($f) {
+		
+		
+			$output .= "Working on:  " . $svc[trigger_name] . "(" . $svc[trigger_id] . ")\n";
+			@reset($new_values);
+
+			if((int)$mode == 3) {
+				bartlby_delete_trigger($btl->RES, $svc[trigger_id]);
+				$output .= "<font color=red>Removed Trigger with id: " . $svc[trigger_id] . "</font>\n";
+			}	
+
+			while(list($k, $v) = @each($new_values)) {
+				
+				if(preg_match("/_typefield\$/i", $k)) {
+					continue;
+				}
+
+				if($new_values[$k . "_typefield"] != "unused") {
+					$newvalue= $v;
+					$oldvalue=$svc[$k];
+					switch($new_values[$k . "_typefield"]) {
+						case 'set':
+						break;
+						case 'regex':
+							$regex = explode("#", $newvalue);
+							$newvalue = preg_replace("#" . $regex[1] . "#i", $regex[2], $oldvalue);
+						break;
+						case 'add':
+							$newvalue = $oldvalue + $newvalue;
+						break;
+						case 'sub':
+							$newvalue = $oldvalue - $newvalue;
+						break;
+						case 'addrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue + $newrand;
+						break;
+						case 'subrand':
+							$r = explode(",", $newvalue);
+							$newrand=rand($r[0], $r[1]);
+							$newvalue = $oldvalue - $newrand;
+						break;
+						case 'toggle':
+							//$newvalue = $oldvalue - $newvalue;
+							if($oldvalue == 0) $newvalue=1;
+							if($oldvalue == 1) $newvalue=0;
+						break;
+
+
+					}
+					if($oldvalue != $newvalue) {
+						$output .= "$k to <b>$newvalue</b> was:  $oldvalue \n";	
+						$svc[$k] = $newvalue;
+						$doedit=1;
+					}
+					
+					if((int)$mode == 1) {
+						//Real Mode:
+
+						if($doedit == 1) {
+							$ret=bartlby_modify_trigger($btl->RES,  $svc[trigger_id], $svc);
+							$output .= "<font color=red>DONE in REALMODE ($ret)</font>\n";
+						}
+					}
+
+					
+										
+
+				}
+			}
+		$output .= "-------------\n";	
+		}
+	});
+	
+	bartlby_reload($btl->RES);
+	$res->addAssign("triggers_bulk_output", "innerHTML", "<pre>$output</pre>");
+	return $res;
+}
+
 function bulkEditValuesServer($server_ids, $new_values, $mode = 0) {
 	global $btl;
 	$res = new xajaxresponse();
@@ -1316,6 +1408,39 @@ function AddModifyTrap($aFormValues) {
 	return $res;
 
 }
+
+function AddModifyTrigger($aFormValues) {
+
+	global $_GET, $_POST;
+	
+	$av = $aFormValues;
+	
+	$res = new xajaxResponse();
+	
+	
+	
+	$al="";
+	
+	if(!bartlbize_field($av[trigger_name])) {
+		$res->addAssign("error_trigger_name", "innerHTML", "Trigger Name required");
+		$al="1";
+	} else {
+		$res->addAssign("error_trigger_name", "innerHTML", "");
+	}
+	
+	
+	
+	if($al == "")  {
+		$res->addScript("document.fm1.submit()");
+	}
+	
+	return $res;
+
+}
+
+
+
+
 function AddModifyServerGroup($aFormValues) {
 	global $_GET, $_POST;
 	

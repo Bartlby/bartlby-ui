@@ -42,7 +42,11 @@
                       break;
                       case BARTLBY_AUDIT_TYPE_TRAP:
                         $t = " Trap";
-                        $link = " " . $aRow[label] . " ";
+                        $link = "<a href='trap_detail.php?trap_id="  . $aRow[object_id] . "'>" . $aRow[label] . "</A>";
+                      break;
+                      case BARTLBY_AUDIT_TYPE_TRIGGER:
+                        $t = " Trigger";
+                        $link = "<a href='trigger_detail.php?trigger_id="  . $aRow[object_id] . "'>" . $aRow[label] . "</A>";
                       break;
                       default:
                         $t = "";

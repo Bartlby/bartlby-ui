@@ -5,6 +5,7 @@ $xajax->registerFunction("AddModifyClient");
 $xajax->registerFunction("AddModifyServerGroup");
 $xajax->registerFunction("AddModifyServiceGroup");
 $xajax->registerFunction("AddModifyTrap");
+$xajax->registerFunction("AddModifyTrigger");
 
 
 $xajax->registerFunction("AddModifyService");
@@ -67,6 +68,7 @@ $xajax->registerFunction("bulkDisableNotifys");
 $xajax->registerFunction("bulkEditValues");
 $xajax->registerFunction("bulkEditValuesServer");
 $xajax->registerFunction("bulkEditValuesTrap");
+$xajax->registerFunction("bulkEditValuesTrigger");
 $xajax->registerFunction("trapTester");
 $xajax->registerFunction("showTrapData");
 $xajax->registerFunction("setServiceDisplayPrio");

@@ -249,7 +249,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->OUT .= $rr;	
 		}
 	}
-	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300) {
+	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300, $hide_sample = false) {
 		$r =  "<style>
 		.CodeMirror {
 			height: 500px;
@@ -278,9 +278,15 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 				});
 			}
 		</script>
-		
-		<span class='btn-sm btn-primary' onClick='editor" .  $name . "_sample()'>Load Sample Service Hook</span>
 		";
+
+		if($hide_sample == false) {
+			$r .= "
+				<span class='btn-sm btn-primary' onClick='editor" .  $name . "_sample()'>Load Sample Service Hook</span>
+			";
+		} else {
+			$r .= "";
+		}
 
 		$r = '<div class="form-group" id="fg_' . $name . '">
 				    
@@ -570,6 +576,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Monitoring", "Services","services.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Servers","servers.php");
                 $this->ext_menu .= $this->addSub("Monitoring", "Traps","traps.php");
+                $this->ext_menu .= $this->addSub("Monitoring", "Triggers","triggers.php");
 		$this->ext_menu .= $this->endMenu();
 
 
@@ -639,6 +646,14 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
                 $this->ext_menu .= $this->addSub("Trap/s", "Add","add_trap.php");
                 $this->ext_menu .= $this->addSub("Trap/s", "Modify","trap_list.php?script=modify_trap.php");
                 $this->ext_menu .= $this->addSub("Trap/s", "Delete","trap_list.php?script=delete_trap.php");
+		$this->ext_menu .= $this->endMenu();
+
+
+		$this->ext_menu .= $this->beginMenu();
+		$this->ext_menu .= $this->addRoot("Triggers/s", "fa fa-bullhorn");
+                $this->ext_menu .= $this->addSub("Triggers/s", "Add","add_trigger.php");
+                $this->ext_menu .= $this->addSub("Triggers/s", "Modify","trigger_list.php?script=modify_trigger.php");
+                $this->ext_menu .= $this->addSub("Triggers/s", "Delete","trigger_list.php?script=delete_trigger.php");
 		$this->ext_menu .= $this->endMenu();
 
 

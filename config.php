@@ -154,6 +154,10 @@ if(!function_exists("bartlby_generic_audit")) {
 			$re = bartlby_get_trap_by_id($r, $id);
 			$label=$re[trap_name];
 			break;
+			case BARTLBY_AUDIT_TYPE_TRIGGER:
+			$re = bartlby_get_trigger_by_id($r, $id);
+			$label=$re[trigger_name];
+			break;
 		
 		}
 		
@@ -235,6 +239,9 @@ if(!function_exists("bartlby_generic_audit")) {
 			break;
 			case BARTLBY_AUDIT_TYPE_TRAP:
 			$readable_type="TRAP";
+			break;
+			case BARTLBY_AUDIT_TYPE_TRIGGER:
+			$readable_type="TRIGGER";
 			break;
 		
 		}

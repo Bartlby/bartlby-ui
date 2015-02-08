@@ -1166,6 +1166,21 @@ function bulk_trap_edit(mode) {
 
 }
 
+function bulk_trigger_edit(mode) {
+	triggers_to_handle=new Array();
+			$('.trigger_checkbox').each(function() {
+				
+				if($(this).is(':checked')) {
+						triggers_to_handle.push($(this).data("trigger_id"));
+				}
+			});
+			console.log("Handle Triggers");
+			console.log(triggers_to_handle);
+
+			xajax_bulkEditValuesTrigger(triggers_to_handle, xajax.getFormValues("triggers_bulk_form"), mode);
+
+}
+
 
 function bulk_server_edit(mode) {
 	servers_to_handle=new Array();
@@ -1576,7 +1591,38 @@ $('[data-rel="ajax_trap_list"]').selectize({
 });
 
 
-  
+$('[data-rel="ajax_trigger_list"]').selectize({
+    plugins: ['remove_button', 'drag_drop'],
+     valueField: 'value',
+    labelField: 'text',
+    searchField: 'text',
+    create: false,
+    placeholder: "Search a Triggername",
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: 'trigger_list.php?dropdown_search=1&dropdown_name=trigger_id&dropdown_term=' + query,
+            type: 'GET',
+            dataType: 'json',
+            error: function() {
+                callback();
+            },
+            success: function(res) {
+              if(res == null) return callback();
+              return_items=new Array();
+              for(x=0; x<res.length; x++) {
+                return_items=return_items.concat(res[x].items);               
+                
+              }
+              
+
+
+                callback(return_items);
+            }
+        });
+    }
+});
+
 
 
 
@@ -1970,6 +2016,37 @@ $('[data-rel="ajax_report_service"]').selectize({
 //Trap
 
 
+//Trigger
+    $("#triggers_bulk_edit").click(function() {
+      window.clearTimeout(window.trigger_list_timer); //Disable auto reload
+      if($('.trigger_checkbox').is(":checked") == false) {
+        if(!confirm("You have not selected any trigger if you continue - all your bulk actions will apply to EVERY trigger (system wide)!!")) {
+          return;
+        }
+      }
+      $('#myModal').modal('show');
+    });
+
+	$("#triggers_bulk_edit_run").click(function() {
+      bulk_trigger_edit(1);
+    });
+    $("#triggers_bulk_edit_delete").click(function() {
+      if(confirm("You really want to delete the selected services?")) {
+        bulk_trigger_edit(3);  
+      }
+      
+    });
+    //BULK EDIT trigger
+    $("#triggers_bulk_edit_dry_run").click(function() {
+      //Get Service id list
+      bulk_trigger_edit(0);
+
+    });
+        
+
+
+//Trigger
+
 
     $("#services_bulk_force").click(function() {
     var force_services = new Array();
@@ -2055,6 +2132,11 @@ $('[data-rel="ajax_report_service"]').selectize({
       trap_char = "&";
     }
 
+	trigger_ajax_url = document.location.href.replace(/\/s.*\.php/, "/triggers.php");
+    trigger_char = "?";
+    if(trigger_ajax_url.match(/\?/)) {
+      trigger_char = "&";
+    }
   
      
     $("#toggle_reload").on('ifClicked', function() {
@@ -2261,10 +2343,45 @@ window.traps_table = $('#traps_table').dataTable({
         });
 
 
-  
+ window.triggers_table = $('#triggers_table').dataTable({
+          "iDisplayLength": 50,
+          "fnDrawCallback": function ( oSettings ) {
+            checkCheckBoxes();
+          },
+          "aoColumns": [
+            { "sWidth": "1" , "sClass": "center_td" },
+            { "sWidth": "10" , "sClass": "" },
+            { "sWidth": "1", "sClass": "" },
+            
+            ],
+          "aaSortingFixed": [[ 0, 'asc' ]],
+          "bSort": false,
+          "aaSorting": [[ 1, 'asc' ]],
+          "sDom": "<'row'<'col-sm-12'T<'pull-right form-group'f><'pull-left form-group'l>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>",
+          "sAjaxSource": trigger_ajax_url + trigger_char + "datatables_output=1",
+          "bServerSide": true,
+          "bProcessing": true,
+    
+        "oTableTools": {
+          "sSwfPath": "/themes/classic/js/copy_csv_xls_pdf.swf",
+            "aButtons": ["csv", "pdf","xls" ]
+        },
+          "oLanguage": {
+            "sEmptyTable": "No Trigger found",
+            "sProcessing": '<i class="fa fa-spinner fa-spin"></i> Loading'
+          }
+          
+       
+        });
+
+         
 }
 
 
+
+
+
+  
 
 
 
@@ -2512,6 +2629,17 @@ function checkCheckBoxes() {
     }
   });
   
+  $("#trigger_checkbox_select_all").on('ifClicked',function() {
+    if(!$(this).is(':checked')) {
+      console.log("check all");
+      
+      $('.trigger_checkbox').iCheck('check');
+    } else {
+      console.log("UNCHECK ALL");
+    
+      $('.trigger_checkbox').iCheck('uncheck');
+    }
+  });
    
 }
 

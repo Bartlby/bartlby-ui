@@ -295,6 +295,17 @@
                 bartlby_set_trap_id($btl->RES, $tmp_res, $aRow["object_id"]);
               }
           }
+          break;        
+          case BARTLBY_AUDIT_TYPE_TRIGGER:
+          $re = bartlby_get_trigger_by_id($btl->RES, $aRow["object_id"]);
+          if((int)$_GET[recover_id]>0) {
+              if($re) {
+                bartlby_modify_trigger($btl->RES, $aRow["object_id"], json_decode($aRow[prev_object],true));  
+              } else {
+                $tmp_res=bartlby_add_trigger($btl->RES, json_decode($aRow[prev_object],true));
+                bartlby_set_trigger_id($btl->RES, $tmp_res, $aRow["object_id"]);
+              }
+          }
           break;          
         
         }
@@ -352,6 +363,11 @@
           break;
           case BARTLBY_AUDIT_TYPE_TRAP:
           $obj_link=" <a href='trap_detail.php?trap_id=" . $aRow["object_id"]  . "'>" . $aRow["label"] .  "</a>";
+          //$obj_link=" " . $aRow["label"] .  " ";
+          $obj_type="TRAP";
+          break;
+          case BARTLBY_AUDIT_TYPE_TRIGGER:
+          $obj_link=" <a href='trigger_detail.php?trigger_id=" . $aRow["object_id"]  . "'>" . $aRow["label"] .  "</a>";
           //$obj_link=" " . $aRow["label"] .  " ";
           $obj_type="TRAP";
           break;

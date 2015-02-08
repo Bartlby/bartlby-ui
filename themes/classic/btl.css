@@ -9,6 +9,37 @@ background: linear-gradient(to right,  rgba(30,87,153,1) 0%,rgba(41,137,216,1) 0
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#00cbc9',GradientType=1 ) !important; /* IE6-9 */
 
 }
+.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
+    background-color: #1F62C3;
+    border-color: #1F62C3;
+
+}
+
+a {
+    color: #1F62C3;
+    text-decoration: none;
+}
+a:hover, a:focus {
+    xcolor: #0C408A;
+    text-decoration: underline;
+}
+.btn-primary {
+    background-color: #1F62C3;
+    background-image: radial-gradient(circle, #1F62C3 80%, #1F62C3 81%);
+}
+.btn-primary:hover { 
+    background-color: #1F62C3;
+    border-color: #1F62C3;
+
+
+}
+.nav-tabs>li.active>a {
+    color: #1F62C3;
+}
+.nav-tabs>li>a:hover {
+ color: #1F62C3;   
+}
+
 .diff {
     display: inline-block;
 }

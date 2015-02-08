@@ -1642,6 +1642,19 @@ if($m[2] == "5724") {
 			if($rtc == -2) continue;
 		}
 	}
+	function trigger_list_loop($fcn) {
+		
+		for($x=0; $x<$this->info[triggers]; $x++) {
+			$srvcgrp = bartlby_get_trigger($this->RES, $x);
+			if($srvcgrp[is_gone] == 2) {
+				//Skip deleted services
+				continue;
+			}
+			$rtc=$fcn($srvcgrp, $x);
+			if($rtc == -1) break;
+			if($rtc == -2) continue;
+		}
+	}
 	function server_list_loop($fcn) {
 		for($x=0; $x<$this->info[server]; $x++) {
 
@@ -2493,6 +2506,44 @@ function create_package($package_name, $in_services = array(), $with_plugins, $w
 
 
 	}
+function getTriggerOptions($defaults, $layout, $btn_size="btn-sm") {
+		
+
+		
+
+
+		
+		$copy_link = "modify_trigger.php?copy=true&trigger_id=" . $defaults[trigger_id];
+		$modify_link="modify_trigger.php?trigger_id=" . $defaults[trigger_id];
+		$logview_link = "logview.php?trigger_id=" . $defaults[trigger_id];
+		$delete_link = "delete_trigger.php?trigger_id=" . $defaults[trigger_id];
+
+		$ret = '<div class="btn-group">
+									
+					 <span onClick="document.location.href=\'' .  $modify_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="edit" class="fa fa-pencil "></i></span>
+					 <span onClick="document.location.href=\'' .  $copy_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="copy" class="fa fa-copy "></i></span>
+					 <span onClick="document.location.href=\'' .  $delete_link . '\';" class="btn btn-primary ' . $btn_size . '"><i title="delete" class="fa fa-trash "></i></span>
+					 
+					
+					 
+				</div>';
+	
+		return $ret;
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+	
+
 	function getserveroptions($defaults, $layout, $btn_size="btn-sm") {
 		$defaults[service_id]="";
 		

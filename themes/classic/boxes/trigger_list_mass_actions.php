@@ -14,14 +14,10 @@ Perform Action on Selected Triggers<br>
 <?
 //$editable_service_fields[] = array("orch_id", "Orchestra ID");
 $editable_service_fields[] = array("trigger_name", "Name");
-$editable_service_fields[] = array("trigger_catcher", "Catcher Rule");
-$editable_service_fields[] = array("trigger_status_text", "Status Text Rule");
-$editable_service_fields[] = array("trigger_status_ok", "OK Status Rule");
-$editable_service_fields[] = array("trigger_status_warning", "WARNING Status Rule");
-$editable_service_fields[] = array("trigger_status_critical", "CRITICAL Status Rule");
-$editable_service_fields[] = array("trigger_service_id", "Assigned Service ID");
-$editable_service_fields[] = array("trigger_prio", "Prio");
-$editable_service_fields[] = array("trigger_is_final", "Is Final?");
+$editable_service_fields[] = array("trigger_data", "Data");
+$editable_service_fields[] = array("trigger_execplan", "Execplan");
+$editable_service_fields[] = array("trigger_enabled", "Enabled");
+$editable_service_fields[] = array("trigger_type", "Type");
 $editable_service_fields[] = array("orch_id", "Orchestra ID");
 
 

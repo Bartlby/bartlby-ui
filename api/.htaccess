@@ -38,6 +38,8 @@ RewriteRule ^(.*)/extension/(.*)$ extension.php [QSA,L]
 RewriteRule ^(.*)/trap$ trap.php [QSA,L]
 RewriteRule ^(.*)/trap/(.*)$ trap.php [QSA,L]
 
+RewriteRule ^(.*)/trigger$ trigger.php [QSA,L]
+RewriteRule ^(.*)/trigger/(.*)$ trigger.php [QSA,L]
 
 
 

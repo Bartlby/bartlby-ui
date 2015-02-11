@@ -134,30 +134,7 @@ if($_GET["new"] == "true") {
 	
 }
 
-$optind=0;
-$plgs=bartlby_config($btl->CFG, "trigger_dir");
-$dh=opendir($plgs);
-while ($file = readdir ($dh)) { 
-   if ($file != "." && $file != "..") { 
-   	clearstatcache();
-   	if(is_executable($plgs . "/" . $file) && !is_dir($plgs . "/" . $file)) {
-   		
-       		$triggers[$optind][c]="";
-       		$triggers[$optind][v]=$file;
-       		$triggers[$optind][k]=$file;
-       		/*if($defaults[plugin] == $file) {
-       			$plugins[$optind][s]=1;	
-       		}*/
-       		
-       		if(strstr((string)$defaults[enabled_triggers],"|" . $file . "|")) {
-				$triggers[$optind][s]=1;	
-			}
-       		
-       		$optind++;
-       	}
-   } 
-}
-closedir($dh); 
+$triggers = $btl->getTriggerDropdown($defaults);
 
 
 

@@ -119,6 +119,35 @@ function utf8_encode_all($dat) // -- It returns $dat encoded to UTF8
 
 class BartlbyUi {
 	
+
+	function getTriggerDropdown($defaults) {
+		
+		$optind=0;
+		$triggers = array();
+		//echo $defaults[enabled_triggers];
+		$this->trigger_list_loop(function($trg) use (&$triggers, &$optind, &$defaults) {
+					
+					$triggers[$optind][c]="";
+		       		$triggers[$optind][v]=$trg["trigger_id"];
+		       		$triggers[$optind][k]=$trg["trigger_name"];
+		       		
+		       		/*if($defaults[plugin] == $file) {
+		       			$plugins[$optind][s]=1;	
+		       		}*/
+		       		//echo $trigger["trigger_id"]  . "<br>";
+		       		if(strstr((string)$defaults[enabled_triggers],"|" . $trg["trigger_id"] . "|")) {
+						$triggers[$optind][s]=1;
+						//echo "HAS<br>";	
+						
+					}
+		       		
+		       		$optind++;
+
+		});
+		return $triggers;
+		
+
+	}
 	function html_report_footer() {
 		return "</body></html>";
 	}

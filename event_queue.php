@@ -47,7 +47,17 @@ if($_GET[datatables_output] == 1) {
 			if($svc_color == "red") {
 				$ajax_lbl = "label-danger";
 			}
+			/*
+				#define NOTIFICATION_TYPE_SIRENE  -1
+				#define NOTIFICATION_TYPE_NORMAL 0
+				#define NOTIFICATION_TYPE_RENOTIFY 2
+				#define NOTIFICATION_TYPE_ESCALATION 1
+				#define NOTIFICATION_TYPE_AGGREGATE 3
+			*/
 			switch($el[type]) {
+				case -1:
+					$el_type="sirene";
+				break;
 				case 0:
 					$el_type = "normal";
 				break;
@@ -56,6 +66,9 @@ if($_GET[datatables_output] == 1) {
 				break;
 				case 1:
 					$el_type="escalation";		
+				break;
+				case 3:
+					$el_type="aggregate";
 				break;
 			}
 
@@ -74,7 +87,13 @@ if($_GET[datatables_output] == 1) {
 
 			$btl->worker_list_loop(function($wrk, $idx) use (&$el_worker, &$el) {
 					if($wrk[worker_id] == $el[worker_id]) {
-						$el_worker=$wrk[name];
+						$el_worker="<a href='worker_detail.php?worker_id=" . $wrk[worker_id]  . "'>" . $wrk[name] . "</A>";
+						return LOOP_BREAK;
+					}
+			});
+			$btl->trigger_list_loop(function($wrk, $idx) use (&$el_trigger, &$el) {
+					if($wrk[trigger_id] == $el[trigger_id]) {
+						$el_trigger="<a href='trigger_detail.php?trigger_id=" . $wrk[trigger_id]  . "'>" . $wrk[trigger_name] . "</A>";
 						return LOOP_BREAK;
 					}
 			});
@@ -101,7 +120,7 @@ if($_GET[datatables_output] == 1) {
 			//$not_log .= "<tr><td>" . date("d.m.Y H:i:s", $el[time]) . "</td><td>" . $el_worker . "</td><td>" . $el_service . "</td><td>" . $el_state . "</td><td>" . $el[trigger_name] . "</td><td>" . $el_type . "</td><td>" . $el_agg. "</td><td>" . $el_via. "</td></tr>";
 				if($xc >= $_GET[iDisplayStart] && $xc <= $_GET[iDisplayStart]+$_GET[iDisplayLength]) {
 
-					$ajax_search["aaData"][] = array($id,date("d.m.Y H:i:s", $el[time]), $el_worker , $el_service, $el_state, $el[trigger_name], $el_type, $el_agg, $el_via);		//FIXME
+					$ajax_search["aaData"][] = array($id,date("d.m.Y H:i:s", $el[time]), $el_worker , $el_service, $el_state, $el_trigger, $el_type, $el_agg, $el_via);		//FIXME
 					$ajax_displayed_records++;
 				}
 				$xc++;

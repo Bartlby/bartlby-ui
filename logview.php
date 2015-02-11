@@ -145,7 +145,10 @@ if($_GET[datatables_output] == 1) {
 			}
 
 
-			
+		} else if($log_detail_o[1] == "AGG") {
+			$tmp=explode("|", $log_detail_o[2]);
+			$outline = "Sent Aggregation Message (" . $tmp[0] . ") to " . $tmp[1] . "<br>" . $tmp[2];
+			$stcheck=10;
 		}  else if($log_detail_o[1] == "NOT") {
 			$tmp=explode("|", $log_detail_o[2]);
 			if($_GET[server_id] && !cmpServiceIDHasServer($tmp[0], $_GET[server_id])) {
@@ -263,6 +266,7 @@ if($_GET[datatables_output] == 1) {
 			case 7: $img="<span class='label label-primary'>Notification</span>" . $hstate; break;
 			case 8: $img="<span class='label label-default'>Info</span>" . $hstate; break;
 			case 9: $img="<span class='label label-default'>Trap</span>" . $hstate; break;
+			case 10: $img="<span class='label label-primary'>Notification</span>" . $hstate; break;
 		}
 		
 		if(preg_match("/^AgentSyncer.*/i", $outline)) {

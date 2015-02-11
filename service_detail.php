@@ -204,22 +204,10 @@ if($defaults[escalate_divisor] != 0) {
 		$escal_en="not enabled";
 }
 
-
-$triggers = "";
-if(strlen($defaults[enabled_triggers]) > 2) {
-	$tr_array = explode("|", $defaults[enabled_triggers]);
-	for($x=0; $x<count($tr_array); $x++) {
-			if($tr_array[$x] != "") {
-				$triggers .= $tr_array[$x] . ",";
-			}
-	}
-	
-	
-}
+$triggers = $btl->getTriggerString( $defaults[enabled_triggers] );
 $handled = "UNHANDLED";
 if($defaults[handled] == 1) $handled = "HANDLED";
 
-if($triggers == "") $triggers = "all";
 
 
 $info_box_title='Timing';  

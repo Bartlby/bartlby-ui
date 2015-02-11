@@ -80,18 +80,8 @@ if($defaults["server_enabled"]==1) {
 } else {
 	$server_en="<input type=checkbox class=switch disabled>";
 }
-$triggers = "";
-if(strlen($defaults[enabled_triggers]) > 2) {
-	$tr_array = explode("|", $defaults[enabled_triggers]);
-	for($x=0; $x<count($tr_array); $x++) {
-			if($tr_array[$x] != "") {
-				$triggers .= $tr_array[$x] . ",";
-			}
-	}
-	
-	
-}
-if($triggers == "") $triggers="all";
+
+$triggers = $btl->getTriggerString( $defaults[enabled_triggers] );
 
 $svc_type="UNKOWN";
 if($defaults[default_service_type] == 1) {

@@ -44,18 +44,7 @@ if($defaults["servicegroup_active"]==1) {
 }
 
 
-$triggers = "";
-if(strlen($defaults[enabled_triggers]) > 2) {
-	$tr_array = explode("|", $defaults[enabled_triggers]);
-	for($x=0; $x<count($tr_array); $x++) {
-			if($tr_array[$x] != "") {
-				$triggers .= $tr_array[$x] . ",";
-			}
-	}
-	
-	
-}
-if($triggers == "") $triggers = "all";
+$triggers = $btl->getTriggerString( $defaults[enabled_triggers] );
 
 $info_box_title='ServiceGroup Info';  
 

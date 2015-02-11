@@ -120,6 +120,23 @@ function utf8_encode_all($dat) // -- It returns $dat encoded to UTF8
 class BartlbyUi {
 	
 
+	function getTriggerString($selected) {
+		$out_str="";
+		//echo $defaults[enabled_triggers];
+		$this->trigger_list_loop(function($trg) use (&$out_str, &$selected) {
+					
+					if(strstr((string)$selected,"|" . $trg["trigger_id"] . "|")) {
+						$out_str .= "<a href='trigger_detail.php?trigger_id=" . $trg[trigger_id] . "'>" . $trg[trigger_name] . "</A>,";
+						
+					}
+		       		
+		       		
+
+		});		
+		if($out_str == "") $out_str="all";
+		return $out_str;
+	}
+
 	function getTriggerDropdown($defaults) {
 		
 		$optind=0;

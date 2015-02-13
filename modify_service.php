@@ -596,7 +596,10 @@ $toggle_box_out .= $layout->FormBox(
 
 ,true);
 
-$script_box_out .= $layout->codeMirror("service_script", $defaults[script], "lua");
+
+$script_box_out .= $layout->codeMirror("service_script", $defaults[script], "lua",2047, 650, 300, array(
+		array("label"=>"Service Hook", "script"=>"/sample_scripts/bartlby_service_hook.lua")
+	));
 
 $script_box_out.= $layout->FormBox(
 		array(

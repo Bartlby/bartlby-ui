@@ -186,7 +186,12 @@ $ov .= $layout->FormBox(
 $ov .= $layout->FormBox(
 		array(
 			0=>"Data",
-			1=>$layout->codemirror("trigger_data", nl_safe($defaults[trigger_data]), "lua", 1023,650, 300, true)
+			1=>$layout->codemirror("trigger_data", nl_safe($defaults[trigger_data]), "lua", 1023,650, 300, array(
+					array("label"=>"SMTP", "script"=>"/sample_scripts/trigger_sample.smtp"),
+					array("label"=>"LUA", "script"=>"/sample_scripts/trigger_sample.lua"),
+					array("label"=>"Webhook", "script"=>"/sample_scripts/trigger_sample.webhook"),
+					
+				))
 		)
 ,true);
 

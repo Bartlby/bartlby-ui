@@ -249,7 +249,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			$this->OUT .= $rr;	
 		}
 	}
-	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300, $hide_sample = false) {
+	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300, $samples = array()) {
 		$r =  "<style>
 		.CodeMirror {
 			height: 500px;
@@ -272,21 +272,19 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 			editor" .  $name . ".on(\"beforeChange\", CMUtils.enforceMaxLength);
 
 		
-			function editor" .  $name . "_sample() {
-				$.get('/lua/bartlby_service_hook.lua', function(d) {
+			function editor" .  $name . "_sample(fn) {
+				$.get(fn, function(d) {
 					editor" .  $name . ".setValue(d);
 				});
 			}
 		</script>
 		";
-
-		if($hide_sample == false) {
+		
+		for($x=0; $x<count($samples); $x++) {
 			$r .= "
-				<span class='btn-sm btn-primary' onClick='editor" .  $name . "_sample()'>Load Sample Service Hook</span>
+				<span class='btn-sm btn-primary' onClick='editor" .  $name . "_sample(\"" . $samples[$x]["script"] . "\")'>" . $samples[$x]["label"] . "</span>
 			";
-		} else {
-			$r .= "";
-		}
+		} 
 
 		$r = '<div class="form-group" id="fg_' . $name . '">
 				    

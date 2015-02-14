@@ -41,19 +41,24 @@ $info_box_title='Trigger Info';
 
 
 switch($defaults["trigger_type"]) {
-	case 1:
+	case TRIGGER_TYPE_LOCAL:
 		$trigger_type = "BASH local /trigger dir";
 	break;
-	case 2:
-		$trigger_type = "Shell";
+	case TRIGGER_TYPE_SMTP:
+		$trigger_type = "SMTP";
 	break;
-	case 3:
-		$trigger_type = "Webhook";
+	case TRIGGER_TYPE_LUA:
+		$trigger_type = "LUA";
 	break;
-	case 4:
-		$trigger_type = "Lua";
+	case TRIGGER_TYPE_WEBHOOKS:
+		$trigger_type = "WEBHOOKS";
+	break;
+	default:
+		$trigger_type = $defaults["trigger_type"];
 	break;
 }
+
+
 
 $layout->create_box($info_box_title, $core_content, "trigger_detail_trigger_info", array(
 										"trigger" => $defaults,

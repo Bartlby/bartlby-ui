@@ -250,6 +250,7 @@ function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts
 		}
 	}
 	function codeMirror($name, $val, $type, $limit=2047, $w=650, $h=300, $samples = array()) {
+		
 		$r =  "<style>
 		.CodeMirror {
 			height: 500px;

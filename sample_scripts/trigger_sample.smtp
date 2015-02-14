@@ -1,6 +1,10 @@
 {
-	"host" => "localhost",
-	"port" => 25,
-	"from" => "from@bartlby.org",
-	"headers => "X-Reply-To: asdas@adsd.de \r\n"
-}
+    "url": "smtp://mail.januschka.com:25",
+    "from": "helmut@januschka.com",
+    "headers": [
+        "X-Custom-Header: asdf\r\n",
+        "X-Custom-Header: asdf\r\n"
+    ],
+    "username": "helmut@januschka.com",
+    "password": "xxxx"
+}		

@@ -56,37 +56,39 @@ if($_GET["new"] == "true") {
 }
 
 $trigger_type[0][c]="";
-$trigger_type[0][v] = 1; //No
-$trigger_type[0][k] = "TRIGGER (executable inside bartlby triggers)"; //No
+$trigger_type[0][v] = TRIGGER_TYPE_LOCAL; //No
+$trigger_type[0][k] = "Executable (inside trigger_dir)"; //No
 $trigger_type[0][s]=0;
 
 $trigger_type[1][c]="";
-$trigger_type[1][v] = 2; //No
-$trigger_type[1][k] = "Shell"; //No
+$trigger_type[1][v] = TRIGGER_TYPE_SMTP; //No
+$trigger_type[1][k] = "SMTP"; //No
 $trigger_type[1][s]=0;
 
 $trigger_type[2][c]="";
-$trigger_type[2][v] = 3; //No
-$trigger_type[2][k] = "WEBHOOK"; //No
+$trigger_type[2][v] = TRIGGER_TYPE_WEBHOOKS; //No
+$trigger_type[2][k] = "WEBHOOKS"; //No
 $trigger_type[2][s]=0;
 
 
 $trigger_type[3][c]="";
-$trigger_type[3][v] = 4; //No
-$trigger_type[3][k] = "Lua"; //No
+$trigger_type[3][v] = TRIGGER_TYPE_LUA; //No
+$trigger_type[3][k] = "LUA"; //No
 $trigger_type[3][s]=0;
 
 switch($defaults[trigger_type]) {
-	case 1:
+	case TRIGGER_TYPE_LOCAL:
 		$trigger_type[0][s]=1;
 	break;
-	case 2:
+	case TRIGGER_TYPE_SMTP:
 		$trigger_type[1][s]=1;
 	break;
-	case 3:
+	case TRIGGER_TYPE_WEBHOOKS:
 		$trigger_type[2][s]=1;
 	break;
-	
+	case TRIGGER_TYPE_LUA:
+		$trigger_type[3][s]=1;
+	break;
 }
 
 
@@ -186,7 +188,7 @@ $ov .= $layout->FormBox(
 $ov .= $layout->FormBox(
 		array(
 			0=>"Data",
-			1=>$layout->codemirror("trigger_data", nl_safe($defaults[trigger_data]), "lua", 1023,650, 300, array(
+			1=>$layout->codemirror("trigger_data", $defaults[trigger_data], "lua", 1023,650, 300, array(
 					array("label"=>"SMTP", "script"=>"/sample_scripts/trigger_sample.smtp"),
 					array("label"=>"LUA", "script"=>"/sample_scripts/trigger_sample.lua"),
 					array("label"=>"Webhook", "script"=>"/sample_scripts/trigger_sample.webhook"),

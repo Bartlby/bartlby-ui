@@ -1,12 +1,12 @@
-function bartlby_trigger_hook(svc_obj, svc_table) 
--- You recieve a Table with tbe following keys
--- service_id, current_output, current_state -> use like svc_table["service_id"]
--- REMEMBER SCRIPT SIZE IS LIMITED TO 2048 characters - in worst case do a 
--- return dofile('/usr/local/scripts/1.lua')
+function bartlby_trigger(worker, svc, msg)
+-- input: svc table (maybe empty, svc.current_state, svc.last_state, svc.current_output, svc.service_name, svc.server_name)
+-- input: worker (worker table -> worker.worker_id, worker.worker_name, worker.mail)
+-- you also have a few ENV variables
 
-	return 1
+--if you hit the character limit do a "dofile('asad.lua')"
+  
+  
 end
-
--- in the main if you return a negative value no hook will be called
-return 1
+--if you return a negative value - no trigger will be fired - else
+--the bartlby_trigger() will be fired
 

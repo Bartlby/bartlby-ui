@@ -341,7 +341,7 @@ $ov .= $layout->FormBox(
 $ov .= $layout->FormBox(
 		array(
 			0=>"Triggers:",
-			1=>$layout->DropDown("worker_triggers[]", $triggers, "multiple") . " <a class='btn btn-default fa fa-play' href='javascript:simulateTriggers();'> Fire Simulated Message</a>"
+			1=>$layout->DropDown("worker_triggers[]", $triggers, "multiple") . " <a class='btn btn-default fa fa-play' href='javascript:xajax_simulateTriggers(" . $defaults[worker_id] . ");'> Fire Simulated Message</a>"
 		)
 ,true);
 

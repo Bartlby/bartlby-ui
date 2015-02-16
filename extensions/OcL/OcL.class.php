@@ -20,36 +20,16 @@ class OcL {
 
 	function fire_trigger($wrk, $msg) {
 		global $btl;
-			$exi=-1;
-
-			$trigger_dir=bartlby_config($btl->CFG, "trigger_dir");
-			if(!$trigger_dir) {
-				$cmd_out="Trigger_dir not set";	
-			} else {
-				$base_dir=bartlby_config($btl->CFG, "basedir");
-				
-				$trs=explode("|", $wrk[enabled_triggers]);
-				
-				for($x=0; $x<count($trs); $x++) {
-					if($trs[$x] == "") {
-						continue;	
-					}	
-					if(!is_executable($trigger_dir . "/" . $trs[$x])) {
-						continue;
-					}
-
-					$estr="export BARTLBY_HOME=\"$base_dir\";" .  $trigger_dir . "/" . $trs[$x] . " \"" . $wrk[mail] . "\" \"" . $wrk[icq] . "\" \"" . $wrk[name] . "\" \"" . $msg . "\"";
-
-					$cmd_out .= "<hr><b>" . $trs[$x] . "</b><br>";
-					$p=popen($estr . "2>&1", "r");
-					while(!feof($p)) {
-						$cmd_out .= fgets($p, 1024);
-					}
-					$exi=(fclose($p)>>8)&0xFF;
-					
-					
-				}
-			}		
+			$fp = fsockopen(API_PORTIER_HOST, API_PORTIER_PORT);
+			$p[worker_id]=(int)$wrk[worker_id];
+			$p[type_of_notification]=3;
+			$p[method]="exec_trigger";
+			$p[trigger_id] = -1;
+			$p[message] = $msg;
+			$p[service_id]  = -1;
+			fwrite($fp, json_encode($p) . "\n");
+			fclose($fp);
+	
 	}
 	function ocl_save_managed() {
 		global $btl, $xajax;

@@ -21,6 +21,22 @@ for($z=0; $z<count($layout->deprecated); $z++) {
 echo $depre;		
 $xajax->processRequests();
 
+function simulateTriggers($worker_id) {
+	$fp = fsockopen(API_PORTIER_HOST, API_PORTIER_PORT);
+	$p[worker_id]=(int)$worker_id;
+	$p[type_of_notification]=3;
+	$p[method]="exec_trigger";
+	$p[trigger_id] = -1;
+	$p[message] = "Simulation Message";
+	$p[service_id]  = -1;
+	
+	
+	fwrite($fp, json_encode($p) . "\n");
+	fclose($fp);
+	$res=new xajaxResponse();
+	return $res;
+}
+
 
 function showTrapData($id) {
 	global $layout, $btl;

@@ -74,5 +74,6 @@ $xajax->registerFunction("showTrapData");
 $xajax->registerFunction("setServiceDisplayPrio");
 
 $xajax->registerFunction("regen_keys");
+$xajax->registerFunction("simulateTriggers");
 
 ?>

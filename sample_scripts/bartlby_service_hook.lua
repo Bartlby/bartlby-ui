@@ -17,10 +17,9 @@ function bartlby_service_trigger_hook(svc_obj, svc_table)
 -- so you can cancel the notification - if you return a value <0
 -- You recieve a Table with tbe following keys
 -- service_id, current_output, current_state -> use like svc_table["service_id"]
-
--- you can call bartlby_service_set_status(svc_obj, state) - to set a new state
--- you can call bartlby_service_set_output(svc_obj, "new output") - to set new output text
-
+-- return positiv to go on with trigger
+-- return -1 - to skip this notification
+-- return -2 - to force this message to  not aggregate
 	return 1
 end
 

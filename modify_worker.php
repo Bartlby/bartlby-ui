@@ -242,8 +242,8 @@ $ov .= $layout->FormBox(
 ,true);
 $ov .= $layout->FormBox(
 		array(
-			0=>"ICQ",
-			1=>$layout->Field("worker_icq", "text", $defaults[icq])
+			0=>"MobileNR",
+			1=>$layout->Field("worker_mobilenr", "text", $defaults[mobilenr])
 		)
 ,true);
 

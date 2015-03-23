@@ -26,7 +26,7 @@ $portier_content = json_encode(array(
 	"passive_text" => "asdsasddsa"
 	));
 
-$modify_server = '{"server_name":"localhos1","server_ip":"127.0.0.1","server_port":"9030","server_icon":"01generic.gif","server_enabled":1,"server_notify":0,"server_flap_seconds":"120","server_ssh_keyfile":"asdasd","server_ssh_passphrase":"asddasdasdasd","server_ssh_username":"dasdasdas","server_dead":null,"default_service_type":"1","enabled_triggers":"|jabber.sh|sms.sh|mail.sh|icq.sh|push.sh|","exec_plan":"0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59|","orch_id":"0"}';
+$modify_server = '{"server_name":"localhos1","server_ip":"127.0.0.1","server_port":"9030","server_icon":"01generic.gif","server_enabled":1,"server_notify":0,"server_flap_seconds":"120","server_ssh_keyfile":"asdasd","server_ssh_passphrase":"asddasdasdasd","server_ssh_username":"dasdasdas","server_dead":null,"default_service_type":"1","enabled_triggers":"|4|3|2|1|7|","exec_plan":"0=00:00-23:59|1=00:00-23:59|2=00:00-23:59|3=00:00-23:59|4=00:00-23:59|5=00:00-23:59|6=00:00-23:59|","orch_id":"0"}';
 
 $content=$modify_server;
 

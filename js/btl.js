@@ -2655,7 +2655,6 @@ function modify_service_make_24() {
 function simulateTriggers() {
       wname=document.fm1.worker_name.value;
       wmail=document.fm1.worker_mail.value;
-      wicq=document.fm1.worker_icq.value;
       TRR=document.fm1['worker_triggers[]'];
       wstr='|';
       for(x=0; x<=TRR.length-1; x++) {
@@ -2666,7 +2665,7 @@ function simulateTriggers() {
         }
         
       }
-      window.open('trigger.php?user='+wname+'&mail='+wmail+'&icq='+wicq+'&trs=' + wstr, 'tr', 'width=600, height=600, scrollbars=yes');
+      window.open('trigger.php?user='+wname+'&mail='+wmail+'&trs=' + wstr, 'tr', 'width=600, height=600, scrollbars=yes');
 }
 
 

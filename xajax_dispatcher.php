@@ -1579,11 +1579,11 @@ function AddModifyWorker($aFormValues) {
 		$res->addAssign("error_worker_mail", "innerHTML", "");
 	}
 	
-	if(!bartlbize_int($av[worker_icq], true)){
-		$res->addAssign("error_worker_icq", "innerHTML", "required field");
+	if(!bartlbize_int($av[worker_mobilenr], true)){
+		$res->addAssign("error_worker_mobilenr", "innerHTML", "required field");
 		$al="1";
 	} else {
-		$res->addAssign("error_worker_icq", "innerHTML", "");
+		$res->addAssign("error_worker_mobilenr", "innerHTML", "");
 	}
 	
 	if(!bartlbize_int($av[escalation_limit])){

@@ -479,7 +479,7 @@ switch($act) {
 			//, , $svcstr, $notifystr, , ,$end_pw, $triggerstr, , , $exec_plan
 			$wrk_obj = array(
 				"name" =>$_GET[worker_name],
-				"icq" => $_GET[worker_icq],
+				"mobilenr" => $_GET[worker_mobilenr],
 				"mail" => $_GET[worker_mail],
 				"services" => $svcstr,
 				"notify_levels" => $notifystr,
@@ -594,7 +594,7 @@ switch($act) {
 			
 			$wrk_obj = array(
 				"name" =>$_GET[worker_name],
-				"icq" => $_GET[worker_icq],
+				"mobilenr" => $_GET[worker_mobilenr],
 				"mail" => $_GET[worker_mail],
 				"services" => $svcstr,
 				"notify_levels" => $notifystr,

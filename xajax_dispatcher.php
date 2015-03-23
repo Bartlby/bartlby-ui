@@ -1579,7 +1579,7 @@ function AddModifyWorker($aFormValues) {
 		$res->addAssign("error_worker_mail", "innerHTML", "");
 	}
 	
-	if(!bartlbize_int($av[worker_mobilenr], true)){
+	if(!bartlbize_field($av[worker_mobilenr], true)){
 		$res->addAssign("error_worker_mobilenr", "innerHTML", "required field");
 		$al="1";
 	} else {

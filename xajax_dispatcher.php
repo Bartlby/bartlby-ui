@@ -32,7 +32,13 @@ function simulateTriggers($worker_id) {
 	
 	
 	fwrite($fp, json_encode($p) . "\n");
+
+	while (!feof($fp)) {
+    		$str=fgets($fp, 256);
+	}
 	fclose($fp);
+
+
 	$res=new xajaxResponse();
 	return $res;
 }

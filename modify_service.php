@@ -130,6 +130,13 @@ if(is_int($defaults[script_enabled]) && $defaults[script_enabled] == 0) {
 }
 
 
+if(is_int($defaults[baseline_enabled]) && $defaults[baseline_enabled] == 0) {
+	$baselineenabled="";
+} else {
+	$baselineenabled="checked";
+}
+
+
 $handled[0][c]="";
 $handled[0][v] = 0; //No
 $handled[0][k] = "Unhandled"; //No
@@ -610,6 +617,19 @@ $script_box_out.= $layout->FormBox(
 
 
 
+$baseline_box_out .= $layout->codeMirror("service_baseline", $defaults[baseline], "lua",2047, 650, 300, array(
+		array("label"=>"Baseline Config", "script"=>"/sample_scripts/baseline_sample.txt")
+	));
+
+$baseline_box_out.= $layout->FormBox(
+		array(
+			0=>"Enabled:",
+			1=>$layout->Field("baseline_enabled", "checkbox", "1", "", "class='switch' " . $baselineenabled)
+		)
+,true);
+
+
+
 $orch_box_out .= $layout->FormBox(
 		array(
 			0=>"Orchestra ID:",
@@ -629,6 +649,8 @@ $layout->create_box("Timing Settings", '<span class="form-horizontal" role="form
 
 
 $layout->create_box("Script", ' ' . $script_box_out . "", "script");
+
+$layout->create_box("Baseline", ' ' . $baseline_box_out . "", "baseline");
 
 
 $active_box_out="";

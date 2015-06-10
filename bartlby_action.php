@@ -678,6 +678,7 @@ switch($act) {
 			$_GET[service_active] = $_GET[service_active] ? 1 : 0;
 			$_GET[notify_super_users] = $_GET[notify_super_users] ? 1 : 0;
 			$_GET[script_enabled] = $_GET[script_enabled] ? 1 : 0;
+			$_GET[baseline_enabled] = $_GET[baseline_enabled] ? 1 : 0;
 
 				$svc_obj = array(
 					
@@ -713,6 +714,8 @@ switch($act) {
 					"notify_super_users" => $_GET[notify_super_users],
 					"script" => $_GET[service_script],
 					"script_enabled" => $_GET[script_enabled],
+					"baseline" => $_GET[service_baseline],
+					"baseline_enabled" => $_GET[baseline_enabled],
 					"orch_id" => $srv[orch_id]
 				);
 
@@ -792,6 +795,7 @@ switch($act) {
 				$_GET[notify_super_users] = $_GET[notify_super_users] ? 1 : 0;
 
 				$_GET[script_enabled] = $_GET[script_enabled] ? 1 : 0;
+				$_GET[baseline_enabled] = $_GET[baseline_enabled] ? 1 : 0;
 
 
 				$svc_obj = array(
@@ -828,6 +832,8 @@ switch($act) {
 					"usid" => $_GET[usid],
 					"script" => $_GET[service_script],
 					"script_enabled" => $_GET[script_enabled],
+					"baseline" => $_GET[service_baseline],
+					"baseline_enabled" => $_GET[baseline_enabled],
 					"orch_id" => $srv_temp[orch_id]
 				);
 				

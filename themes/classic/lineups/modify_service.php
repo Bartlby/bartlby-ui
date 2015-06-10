@@ -20,7 +20,7 @@ echo $this->Form("fm1", "bartlby_action.php", "POST", true);
 	<div class="col-sm-6">
 		<?=$this->disp_box("basic")?>
 		<?=$this->disp_box("timing")?>
-		
+		<?=$this->disp_box("baseline")?>
 
 	</div>
 	
@@ -32,6 +32,7 @@ echo $this->Form("fm1", "bartlby_action.php", "POST", true);
 		<?=$this->disp_box("toggles")?>
 		<?=$this->disp_box("active")?>
 		<?=$this->disp_box("script")?>
+		
 		<?=$this->disp_box("orch")?>
 
 		

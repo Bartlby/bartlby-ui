@@ -105,6 +105,12 @@ if($defaults["script_enabled"]==1) {
 	$script_enabled="<input type=checkbox class='switch'  disabled>";
 }
 
+if($defaults["baseline_enabled"]==1) {
+	$baseline_enabled="<input type=checkbox class='switch'  disabled checked>";
+} else {
+	$baseline_enabled="<input type=checkbox class='switch'  disabled>";
+}
+
 if($defaults["service_active"]==1) {
 	$serv_en="<input type=checkbox class='switch'  disabled checked>";
 } else {
@@ -260,6 +266,19 @@ if(strlen($defaults[script]) > 3) {
 												)
 												
 			, "service_detail_script", false, false);
+
+}
+
+
+
+if(strlen($defaults[baseline]) > 3) {
+	$info_box_title='Baseline';  
+	$layout->create_box($info_box_title, $core_content, "service_detail_baseline", array(
+												"service" => $defaults,
+												"baseline_enabled" => $baseline_enabled,
+												)
+												
+			, "service_detail_baseline", false, false);
 
 }
 

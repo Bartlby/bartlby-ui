@@ -51,6 +51,10 @@
 		<div id=service_detail_downtime_notice_ajax class='fifty_float_left'>
 			<?=$this->disp_box("service_detail_downtime_notice")?>
 		</div>
+		<div id=service_detail_downtime_notice_ajax class='fifty_float_left'>
+			<?=$this->disp_box("service_detail_baseline")?>
+		</div>
+
 		<div id=service_detail_group_check_ajax class='fifty_float_left'>
 		<?=$this->disp_box("service_detail_group_check")?>
 		</div>

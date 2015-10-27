@@ -2077,6 +2077,8 @@ if($m[2] == "5724") {
 						"handled" => 0,
 						"script" => $re[$x][script],
 						"script_enabled" => $re[$x][script_enabled],
+						"baseline" => $re[$x][baseline],
+						"baseline_enabled" => $re[$x][baseline_enabled],
 						"orch_id" => $srv_temp[orch_id]
 					);
 				

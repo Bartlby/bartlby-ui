@@ -23,8 +23,12 @@ if($_GET[datatables_output] == 1) {
 	}
 	$handle = "";
 	
-	$logf=bartlby_config($btl->CFG, "statehistory_logdir") .  "/" .  (int)$_GET[service_id] . "-" .  date("Y.m.d", $ch_time) . ".history";
+	
+	//asprintf(&file_path, "%s/%02d/%02d/%02d/%ld-%02d-%02d-%02d.history", cfg_statehistory_dir, tmnow->tm_year + 1900,tmnow->tm_mon + 1,tmnow->tm_mday, svc->service_id,tmnow->tm_year + 1900,tmnow->tm_mon + 1,tmnow->tm_mday);
+	$logf=bartlby_config($btl->CFG, "statehistory_logdir") . "/" .  date("Y/m/d", $ch_time)  . "/" .  (int)$_GET[service_id] . "-" .  date("Y-m-d", $ch_time) . ".history";
 	$xc = 0;
+
+	
 
 	
 	$fla=@file_get_contents($logf);

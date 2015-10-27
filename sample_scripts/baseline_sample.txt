@@ -1,0 +1,10 @@
+ 		{ 
+            "alg": "standard_deviation", 
+            "time_tolerance": 120, 
+            "value_tolerance": 200, 
+            "days_back": 7, 
+            "data_source": "history", 
+            "min_records": 20, 
+            "max_records": 100, 
+            "include_keys": ["test_value"] 
+        } 

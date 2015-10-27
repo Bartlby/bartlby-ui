@@ -2807,6 +2807,7 @@ function getTriggerOptions($defaults, $layout, $btn_size="btn-sm") {
 				$exec="export BARTLBY_CURR_SERVICE=\"" . $svc[service_name] . "\"; export BARTLBY_CURR_HOST=\"" . $svc[server_name] . "\"; export BARTLBY_CURR_PLUGIN=\"" . $svc[plugin] . "\"; export BARTLBY_HOME=\"$btlhome\"; export BARTLBY_CONFIG=\"" . $this->CFG . "\"; " . $cmd . "  graph " . $svc[service_id] . " 2>&1";
 				
 
+
 				$fp=popen($exec, "r");
 				$output="<hr><pre>";
 				while(!feof($fp)) {

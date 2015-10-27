@@ -54,7 +54,7 @@ class Pusher {
 		global $layout, $_GET, $defaults, $btl;
 		$k = $btl->user . "_PusherAPIKey";
 		$this->storage->save_key($k, $_GET["PusherAPIKey"]);
-		return "APIKey: <b>" . $_GET["PusherAPIKey"] . "</b> stored";
+		return "APIKey: <b>" . $_GET["PusherAPIKey"] . "</b> stored for user: " . $btl->user;
 	}
 	function _POST_modify_worker() {
 		global $layout, $_GET, $defaults, $btl;

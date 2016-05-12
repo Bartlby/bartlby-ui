@@ -48,7 +48,8 @@ if(count($confs) > 0) {
 	  }
 	</style>
 	
-	<script src="//crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha1.js"></script>
 
 	<link href="themes/classic/css/jquery-ui-1.10.0.custom.css" rel="stylesheet"/>
 	
